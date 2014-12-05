@@ -1,0 +1,41 @@
+Config { font = "-*-Fixed-Bold-R-Normal-*-13-*-*-*-*-*-*-*"
+       , bgColor = "#000000"
+       , fgColor = "#FFFFFF"
+       , position = TopW L 100
+       , commands = [ Run Weather "KAUS" ["-t"," <tempF>F"
+       	 	      	  	  	 ,"-L","64"
+					 ,"-H","77"
+					 ,"--normal","green"
+					 ,"--high","red"
+					 ,"--low","lightblue"
+					 ] 36000
+                    , Run Cpu ["-L","3"
+		      	      ,"-H","50"
+			      ,"--normal","green"
+			      ,"--high","red"
+			      ] 10
+                    , Run Memory ["-t","Mem: <usedratio>%"] 10
+                    , Run Date "%a %b %_d %l:%M" "date" 10
+                    , Run BatteryP ["BAT0"]
+		      	  	   [ "--template" , "Battery: <left>% <timeleft>"
+				   , "--Low"      , "10"        -- units: %
+				   , "--High"     , "80"        -- units: %
+				   , "--low"      , "darkred"
+				   , "--normal"   , "darkorange"
+				   , "--high"     , "darkgreen"
+				   , "--" -- battery specific options
+				   , "-f"	, "APD1/online"
+                                   -- discharging status
+                                   , "-o"	, "<left>% (<timeleft>)"
+                                   -- AC "on" status
+                                   , "-O"	, "<fc=#dAA520>Charging</fc>"
+				   ] 50
+		    , Run StdinReader
+		    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , lowerOnStart = True
+       , border = BottomB 
+       , borderColor = "#85E0FF"
+       , template = "%StdinReader% }{ %cpu% <fc=#00008A>|</fc> %memory% <fc=#00008A>|</fc> %battery% <fc=#00008A>|</fc> %date% <fc=#00008A>|</fc> %KAUS%"
+       }
