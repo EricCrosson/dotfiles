@@ -1,0 +1,36 @@
+startup_message off	# disable the startup screen
+vbell off               # replace the screen flash with an audible bell
+
+defscrollback 15000     # keep n lines of the buffer
+altscreen on            # prevents the excessive output of programs > buffer
+markkeys "h=^b:j=^n:l=^f:$=^e:k=^p:0=^a"  # emacs keybindings for copy mode
+
+backtick 1 86400 86400 ruby -e "require 'date'; puts ((Date.today.yday.to_i-4)/365.25+(Date.today.year.to_i-1993)).round(5)" 2>/dev/null || echo "no ruby"
+
+hardstatus on           # status line at the bottom
+hardstatus alwayslastline
+hardstatus string "%{.kW}%-w%{.rW}%f%n %t%{-}%+w %=%{..r} %{..c}[%H %l] %{..g} %m/%d %c %{..y} | %1` "
+
+### For multiuser screen sharing
+multiuser on
+
+### Do I feel like preventing anybody from writing in my terminals?
+# writelock on
+
+### resize keybindings
+bind + resize +5
+bind - resize -5
+bind = resize =
+bind R source /home/eric/.screenrc
+
+### direct access to many screens
+bind  ! select 11
+bind  @ select 12
+bind \# select 13
+bind  $ select 14
+bind  % select 15
+bind \^ select 16
+bind  & select 17
+bind  * select 18
+bind  ( select 19
+bind  ) select 10

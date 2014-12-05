@@ -1,0 +1,242 @@
+<monitors version="1">
+  <configuration>
+      <clone>no</clone>
+      <output name="LVDS1">
+          <vendor>LGD</vendor>
+          <product>0x02d8</product>
+          <serial>0x00000000</serial>
+          <width>1366</width>
+          <height>768</height>
+          <rate>60</rate>
+          <x>0</x>
+          <y>0</y>
+          <rotation>normal</rotation>
+          <reflect_x>no</reflect_x>
+          <reflect_y>no</reflect_y>
+          <primary>yes</primary>
+      </output>
+      <output name="VGA1">
+      </output>
+      <output name="HDMI1">
+      </output>
+      <output name="DP1">
+      </output>
+      <output name="HDMI2">
+      </output>
+      <output name="HDMI3">
+      </output>
+      <output name="DP2">
+      </output>
+      <output name="DP3">
+      </output>
+  </configuration>
+  <configuration>
+      <clone>no</clone>
+      <output name="LVDS1">
+          <vendor>LGD</vendor>
+          <product>0x02d8</product>
+          <serial>0x00000000</serial>
+          <width>1366</width>
+          <height>768</height>
+          <rate>60</rate>
+          <x>1920</x>
+          <y>312</y>
+          <rotation>normal</rotation>
+          <reflect_x>no</reflect_x>
+          <reflect_y>no</reflect_y>
+          <primary>yes</primary>
+      </output>
+      <output name="VGA1">
+      </output>
+      <output name="HDMI1">
+      </output>
+      <output name="DP1">
+          <vendor>BNQ</vendor>
+          <product>0x78cd</product>
+          <serial>0x00005445</serial>
+          <width>1920</width>
+          <height>1080</height>
+          <rate>60</rate>
+          <x>0</x>
+          <y>0</y>
+          <rotation>normal</rotation>
+          <reflect_x>no</reflect_x>
+          <reflect_y>no</reflect_y>
+          <primary>no</primary>
+      </output>
+      <output name="HDMI2">
+      </output>
+      <output name="HDMI3">
+      </output>
+      <output name="DP2">
+      </output>
+      <output name="DP3">
+      </output>
+  </configuration>
+  <configuration>
+      <clone>no</clone>
+      <output name="LVDS1">
+          <vendor>LGD</vendor>
+          <product>0x02d8</product>
+          <serial>0x00000000</serial>
+      </output>
+      <output name="VGA1">
+          <vendor>SAM</vendor>
+          <product>0x0424</product>
+          <serial>0x54443234</serial>
+          <width>1920</width>
+          <height>1200</height>
+          <rate>60</rate>
+          <x>0</x>
+          <y>0</y>
+          <rotation>normal</rotation>
+          <reflect_x>no</reflect_x>
+          <reflect_y>no</reflect_y>
+          <primary>yes</primary>
+      </output>
+      <output name="HDMI1">
+      </output>
+      <output name="DP1">
+      </output>
+      <output name="HDMI2">
+      </output>
+      <output name="HDMI3">
+      </output>
+      <output name="DP2">
+      </output>
+      <output name="DP3">
+      </output>
+  </configuration>
+  <configuration>
+      <clone>no</clone>
+      <output name="LVDS1">
+          <vendor>LGD</vendor>
+          <product>0x02d8</product>
+          <serial>0x00000000</serial>
+          <width>1366</width>
+          <height>768</height>
+          <rate>60</rate>
+          <x>0</x>
+          <y>0</y>
+          <rotation>normal</rotation>
+          <reflect_x>no</reflect_x>
+          <reflect_y>no</reflect_y>
+          <primary>yes</primary>
+      </output>
+      <output name="VGA1">
+          <vendor>DEL</vendor>
+          <product>0x6015</product>
+          <serial>0x30303433</serial>
+          <width>1360</width>
+          <height>768</height>
+          <rate>60</rate>
+          <x>1366</x>
+          <y>0</y>
+          <rotation>normal</rotation>
+          <reflect_x>no</reflect_x>
+          <reflect_y>no</reflect_y>
+          <primary>no</primary>
+      </output>
+      <output name="HDMI1">
+      </output>
+      <output name="DP1">
+      </output>
+      <output name="HDMI2">
+      </output>
+      <output name="HDMI3">
+      </output>
+      <output name="DP2">
+      </output>
+      <output name="DP3">
+      </output>
+  </configuration>
+  <configuration>
+      <clone>no</clone>
+      <output name="LVDS1">
+          <vendor>LGD</vendor>
+          <product>0x02d8</product>
+          <serial>0x00000000</serial>
+      </output>
+      <output name="VGA1">
+          <vendor>LEN</vendor>
+          <product>0x1152</product>
+          <serial>0x01010101</serial>
+          <width>1440</width>
+          <height>900</height>
+          <rate>75</rate>
+          <x>0</x>
+          <y>150</y>
+          <rotation>normal</rotation>
+          <reflect_x>no</reflect_x>
+          <reflect_y>no</reflect_y>
+          <primary>no</primary>
+      </output>
+      <output name="HDMI1">
+      </output>
+      <output name="DP1">
+      </output>
+      <output name="HDMI2">
+      </output>
+      <output name="HDMI3">
+          <vendor>ACR</vendor>
+          <product>0x0016</product>
+          <serial>0x81903cd6</serial>
+          <width>1680</width>
+          <height>1050</height>
+          <rate>60</rate>
+          <x>1440</x>
+          <y>0</y>
+          <rotation>normal</rotation>
+          <reflect_x>no</reflect_x>
+          <reflect_y>no</reflect_y>
+          <primary>yes</primary>
+      </output>
+      <output name="DP2">
+      </output>
+      <output name="DP3">
+      </output>
+  </configuration>
+  <configuration>
+      <clone>no</clone>
+      <output name="LVDS1">
+          <vendor>LGD</vendor>
+          <product>0x02d8</product>
+          <serial>0x00000000</serial>
+          <width>1366</width>
+          <height>768</height>
+          <rate>60</rate>
+          <x>0</x>
+          <y>432</y>
+          <rotation>normal</rotation>
+          <reflect_x>no</reflect_x>
+          <reflect_y>no</reflect_y>
+          <primary>yes</primary>
+      </output>
+      <output name="VGA1">
+          <vendor>DEL</vendor>
+          <product>0xa00f</product>
+          <serial>0x30343553</serial>
+          <width>1920</width>
+          <height>1200</height>
+          <rate>60</rate>
+          <x>1366</x>
+          <y>0</y>
+          <rotation>normal</rotation>
+          <reflect_x>no</reflect_x>
+          <reflect_y>no</reflect_y>
+          <primary>no</primary>
+      </output>
+      <output name="HDMI1">
+      </output>
+      <output name="DP1">
+      </output>
+      <output name="HDMI2">
+      </output>
+      <output name="HDMI3">
+      </output>
+      <output name="DP2">
+      </output>
+      <output name="DP3">
+      </output>
+  </configuration>
+</monitors>
