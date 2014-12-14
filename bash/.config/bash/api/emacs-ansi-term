@@ -1,0 +1,27 @@
+
+_zero="${BASH_SOURCE[0]}"
+_zero="$(basename ${_zero%.sh})"
+_zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+[[ -n "${!_zero}" ]] && return
+printf -v ${_zero} "Loaded"
+
+# Emacs ansi-term directory tracking
+# track directory, username, and cwd for remote logons
+if [ $TERM = eterm-color ]; then
+    function eterm-set-cwd {
+        $@
+        echo -e "\033AnSiTc" $(pwd)
+    }
+
+    function eterm-reset {      # set hostname, user, and cwd
+        echo -e "\033AnSiTu" $(whoami)
+        echo -e "\033AnSiTc" $(pwd)
+        echo -e "\033AnSiTh" $(hostname)
+    }
+
+    for temp in cd pushd popd; do
+        alias $temp="eterm-set-cwd $temp"
+    done
+
+    eterm-reset                 # set hostname, user, and cwd now
+fi

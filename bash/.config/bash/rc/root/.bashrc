@@ -1,0 +1,21 @@
+
+PS1='\[\e[1;31m\][\u@\h \W]\$\[\e[0m\] '
+
+alias ssh='ssh '
+alias sshfs='sshfs -o follow_symlinks '
+alias df='df -h '
+alias copy='rsync --partial --progress --append --rsh=ssh -r -h '
+alias move='rsync --partial --progress --append --rsh=ssh -r -h --remove-sent-files '
+
+alias l='ls -lAh --color=always '
+alias echo='echo -e '
+alias mkdir='mkdir -p '
+alias scan='sudo nmap -FPn '
+alias less='less -R '
+alias g='grep '
+alias gv='grep -v '
+alias grep='grep --color=always '
+alias gpp='g++ '
+alias du='du -h '
+alias bc='bc -lq '
+alias quit='exit '

@@ -1,0 +1,12 @@
+
+_zero="${BASH_SOURCE[0]}"
+_zero="$(basename ${_zero%.sh})"
+_zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+[[ -n "${!_zero}" ]] && return
+printf -v ${_zero} "Loaded"
+
+# TODO: create a lookup function, pass the program such as
+#
+#   err-code $(whatev command i just ran)
+#         "This is the error code"
+EXIT_HELP=-2

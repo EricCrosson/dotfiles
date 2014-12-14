@@ -1,0 +1,22 @@
+
+_zero="${BASH_SOURCE[0]}"
+_zero="$(basename ${_zero%.sh})"
+_zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+[[ -n "${!_zero}" ]] && return
+printf -v ${_zero} "Loaded"
+
+function calculate() {
+    while [[ $1 == --* ]]; do
+        case $1 in
+            --dec)
+                shift
+                dec="$1" ;;
+
+            *) # default
+                error "$1 is unrecognized. Aborting"
+                exit -1 ;;
+        esac
+        shift
+    done
+    echo "scale=${dec:-3}; $*" | bc
+    }

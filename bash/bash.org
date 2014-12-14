@@ -1,0 +1,1232 @@
++STARTUP: content
+#+TODO: TODO(t) IN-PROGRESS(p) VERIFY(v) | OPTIONAL(o) DONE(d) CANCELED(c)
+
+* Introduction
+** License
+#+BEGIN_SRC sh :tangle .bashrc
+  # BASH initialization and customizations
+  # Copyright (C) 2013 Eric Crosson
+  #
+  # This program is free software: you can redistribute it and/or modify
+  # it under the terms of the GNU General Public License as published by
+  # the Free Software Foundation, either version 3 of the License, or
+  # (at your option) any later version.
+  #
+  # This program is distributed in the hope that it will be useful,
+  # but WITHOUT ANY WARRANTY; without even the implied warranty of
+  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  # GNU General Public License for more details.
+  #
+  # You should have received a copy of the GNU General Public License
+  # along with this program. If not, see <http://www.gnu.org/licenses/>.
+#+END_SRC
+
+** [0/1] TODOs
+- [ ] screen output belongs in .bash_profile (for scp)
+* bashrc
+** Compatibility
+
+See this [[http://stackoverflow.com/a/11700430][Stack Overflow post]] about making all line endings compatible
+to the cygwin bash interpreter.
+
+#+BEGIN_SRC sh :tangle .bashrc
+   # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+   # for examples
+   (set -o igncr) 2>/dev/null && set -o igncr; # this comment is needed
+ #+END_SRC
+** Shell settings
+#+BEGIN_SRC sh :tangle .bashrc
+  # Shell settings
+  shopt -s extglob                # include extra (non-std) glob opts
+  shopt -s dotglob                # include dot-files in globbing
+  shopt -s cdspell                # fix folder spellings
+  shopt -s checkwinsize           # fix line wraps after resizing
+  shopt -s cdable_vars            # able to cd into dir described by a var
+  shopt -s histappend             # don't overwrite history
+  set -o emacs                    # set Emacs bindings
+  [ -t 0 ] && stty -ixon          # enable C-s history nav
+  bind Space:magic-space          # replace any ! symbol on space
+#+END_SRC
+
+** Exports
+#+BEGIN_SRC sh :tangle .bashrc
+  # Exports
+  export email='eric.s.crosson@gmail.com'
+  export EDITOR="emacsclient -ta "
+  export VISUAL="emacsclient -ta "
+  export BROWSER='chromium &2>/dev/null '
+  export HISTIGNORE=' *'          # ignore commands prepended with ' '
+  export HISTCONTROL=ignoredups   # ignore duplicates in history
+  export true=0
+  export false=1
+  unset MAILCHECK
+
+  # Ruby
+  export GEM_HOME=~/.gem
+  export GEM_PATH=~/.gem
+#+END_SRC
+
+** Fortune-mod
+#+BEGIN_SRC sh :tangle .bashrc
+  # Fortune variables
+  fortune_args="-s"
+  unset no_fortune keep_it_clean
+#+END_SRC
+
+** Contextual tests
+
+I use these tests to determine which configs should be sourced.
+
+#+BEGIN_SRC sh :tangle .bashrc
+  # Operating system tests
+  function isArch(){
+      [[ $(uname -r |grep -io "arch\\|libre") ]] && \
+          return $true; return $false; }
+
+  function atWork(){
+      [[ $(hostname) == orpheus ]] && \
+          return $true; return $false; }
+#+END_SRC
+
+** Argument handling
+
+| Known argument | function   |
+|----------------+------------|
+| --silent       | no fortune |
+
+#+BEGIN_SRC sh :tangle .bashrc
+  while [[ $1 == *"-"* ]]; do     # Parse arguments
+      case $1 in
+          --silent ) no_fortune=1 ;;
+      esac; shift; done
+#+END_SRC
+
+** Source configs
+#+BEGIN_SRC sh :tangle .bashrc
+  # Source configs
+  declare -r api=~/.config/bash/api
+  source ${api}/io
+  for src in /etc/bashrc /usr/share/git/git-prompt.sh; do
+      source ${src} 2>/dev/null # no worries if dne
+  done
+  for src in ${api}/*; do source ${src}; done
+#+END_SRC
+
+** Mining config
+Note: this section has been disabled.
+#+BEGIN_SRC sh
+  mining=$HOME/Dropbox/mining
+  case $(uname -a) in
+      ,*Linux* ) pathAppend ${mining}/nix ;;
+      ,* )       pathAppend ${mining}/win ;;
+  esac
+#+END_SRC
+
+** Path setup and aliases
+#+BEGIN_SRC sh :tangle .bashrc
+  # Path setup
+  pathAppend ${scripts}/nix      # Enviornment variables for all systems
+  pathAppend ${HOME}/.cask/bin   # Emacs dependency managment
+  pathAppend ${scripts}/$(hostname);
+  [[ $- == *i* ]] && pathAppend ${classes} CDPATH
+
+  loadFile ${aliases}/global # Global aliases
+  case $(uname -a) in                # OS-specific settings
+      ,*Linux* )
+          isArch && loadFile ${user_init_d}/arch
+
+          pathAppend ~/.gem/ruby/2.0.0/bin
+          pathAppend ${scripts}/linux
+          loadFile ${aliases}/linux ;;
+
+      ,*Darwin* )
+          pathAppend ${scripts}/mac
+          loadFile ${aliases}/mac ;;
+
+      ,*Cygwin* )
+          pathAppend ${scripts}/windows
+          loadFile ${aliases}/win ;;
+  esac
+
+#+END_SRC
+
+#+BEGIN_SRC sh :tangle .bashrc
+  # Add Ruby gem bin dir to $PATH
+  ruby_base=$HOME/.gem/ruby
+  [[ -d ${ruby_base} ]] && pathAppend ${ruby_base}/$(\ls -1 ${ruby_base} | tail -n1)/bin
+#+END_SRC
+
+** NSFW?
+#+BEGIN_SRC sh :tangle .bashrc
+  if atWork; then                 # Work settings
+      keep_it_clean=1
+      loadFile ${aliases}/centtech
+      pathAppend ${scripts}/centtech
+  fi
+
+  if [[ -z $no_fortune && $(which fortune 2>/dev/null) ]]; then
+      [ -z keep_it_clean ] && fortune_args="${fortune_args}a" # NSFW?
+      message $Green "$(fortune $fortune_args)\n"; fi
+#+END_SRC
+
+** PS1 formatting
+#+BEGIN_SRC sh :tangle .bashrc
+  # Source formatting script
+  case $(uname -a) in
+      ,*Linux*|*Darwin* )
+          # Reset color for command output (invoked before each command)
+          case $(uname -a) in
+              ,*Darwin* ) trap_add 'echo -ne "\033[00m"' DEBUG ;;
+              ,*Linux* )  trap_add 'echo -ne "\e[0m"'    DEBUG ;;
+          esac
+          fill="--- "
+          reset_style=$Color_Off
+          status_style=$reset_style'\033[0;90m'  # gray; 0;37m = lighter color
+          prompt_style=$reset_style
+          command_style=$reset_style'\033[1;29m' # bold black
+          ;;
+  esac
+
+  # TODO: https://krash.be/node/25
+  #       color PS1 based on exit code of previous command
+  function prompt_command() {
+      case $(uname -a) in
+          ,*Linux*|*Darwin* )
+              PS1=$(\cat <<EOF
+  \[$status_style\]$fill\t\n\
+  $(
+  git branch &>/dev/null; [ $? -eq 0 ] &&
+    echo -n $(echo $(git status) | grep "nothing to commit" &> /dev/null 2>&1; \
+    [ $? -eq 0 ] && echo $Green$(__git_ps1 2>/dev/null "(%s)") || echo $IRed$(__git_ps1 2>/dev/null "{%s}"););
+  )\
+  \[$prompt_style\]${debian_chroot:+($debian_chroot)}\u@\h:$(color_path_symlinks.sh)\$\[$command_style\]
+  EOF
+              )
+              PS1="${PS1} "       # Add the space before user input
+              ;;
+      esac
+  }
+  PROMPT_COMMAND=prompt_command
+#+END_SRC
+** Directory hopping
+
+Thanks to [[http:/geocities.com/h2428][Petar Marinov]]. This code is public domain.
+
+#+BEGIN_SRC sh :tangle .bashrc
+  cd_func ()
+  {
+    # TODO: document
+    # TODO: add a way to cd backwards while DROPPING items instead of keeping them in the tree.
+    local x2 the_new_dir adir index
+    local -i cnt
+
+    if [[ $1 ==  "--" ]]; then
+      dirs -v
+      return 0
+    fi
+
+    the_new_dir=$1
+    [[ -z $1 ]] && the_new_dir=$HOME
+
+    if [[ ${the_new_dir:0:1} == '-' ]]; then
+      # Extract dir N from dirs
+      index=${the_new_dir:1}
+      [[ -z $index ]] && index=1
+      adir=$(dirs +$index)
+      the_new_dir=$adir
+    fi
+
+    # '~' has to be substituted by ${HOME}
+    [[ ${the_new_dir:0:1} == '~' ]] && the_new_dir="${HOME}${the_new_dir:1}"
+
+    # Now change to the new dir and add to the top of the stack
+    pushd "${the_new_dir}" > /dev/null
+    [[ $? -ne 0 ]] && return 1
+    the_new_dir=$(pwd)
+
+    # Trim down everything beyond 11th entry
+    popd -n +11 2>/dev/null 1>/dev/null
+
+    # Remove any other occurence of this dir, skipping the top of the stack
+    for ((cnt=1; cnt <= 10; cnt++)); do
+      x2=$(dirs +${cnt} 2>/dev/null)
+      [[ $? -ne 0 ]] && return 0
+      [[ ${x2:0:1} == '~' ]] && x2="${HOME}${x2:1}"
+      if [[ "${x2}" == "${the_new_dir}" ]]; then
+        popd -n +$cnt &>/dev/null
+        cnt=cnt-1
+      fi
+    done
+
+    return 0
+  }
+
+  alias cd='cd_func '
+  alias bd='cd - '     # Back Directory
+  alias sd='cd -- '    # list directories
+#+END_SRC
+** Machine specific configs
+#+BEGIN_SRC sh :tangle .bashrc
+  # Lastly, load machine-specific init scripts
+  loadFile ${user_init_d}/$(hostname) 2>/dev/null # don't care if dne
+#+END_SRC
+
+* commacd
+
+[[http://shyiko.com/2014/10/10/commacd/][So, what is commacd exactly?]]
+
+#+BEGIN_SRC sh :tangle .bashrc
+
+  # commacd - a faster way to move around (Bash 3+).
+  # https://github.com/shyiko/commacd
+  #
+  # ENV variables that can be used to control commacd:
+  #   COMMACD_CD - function to change the directory (by default commacd uses builtin cd and pwd)
+  #   COMMACD_NOTTY - set it to "on" when you want to suppress user input (= print multiple matches and exit)
+  #
+  # @version 0.1.0
+  # @author Stanley Shyiko <stanley.shyiko@gmail.com>
+  # @license MIT
+
+  # turn on case-insensitive search by default
+  shopt -s nocaseglob
+
+  _commacd_split() { echo "$1" | sed $'s|/|\\\n/|g' | sed '/^[[:space:]]*$/d'; }
+  _commacd_join() { local IFS="$1"; shift; echo "$*"; }
+  _commacd_expand() ( shopt -s extglob nullglob; local ex=($1); printf "%s\n" "${ex[@]}"; )
+
+  _command_cd() {
+    local dir=$1
+    if [[ -z "$COMMACD_CD" ]]; then
+      builtin cd "$dir" && pwd
+    else
+      $COMMACD_CD "$dir"
+    fi
+  }
+
+  # show match selection menu
+  _commacd_choose_match() {
+    local matches=("$@")
+    for i in "${!matches[@]}"; do
+      printf "%s\t%s\n" "$i" "${matches[$i]}" >&2
+    done
+    local selection;
+    read -e -p ': ' selection >&2
+    if [[ -n "$selection" ]]; then
+      echo -n "${matches[$selection]}"
+    else
+      echo -n "$PWD"
+    fi
+  }
+
+  _commacd_forward_by_prefix() {
+    local path="${*%/}/" IFS=$'\n'
+    # shellcheck disable=SC2046
+    local matches=($(_commacd_expand "$(_commacd_join \* $(_commacd_split "$path"))"))
+    case ${#matches[@]} in
+      0) echo -n "$PWD";;
+      ,*) printf "%s\n" "${matches[@]}"
+    esac
+  }
+
+  # jump forward (`,`)
+  _commacd_forward() {
+    if [[ -z "$*" ]]; then return 1; fi
+    local IFS=$'\n'
+    local dir=($(_commacd_forward_by_prefix "$@"))
+    if [[ "$COMMACD_NOTTY" == "on" ]]; then
+      printf "%s\n" "${dir[@]}"
+      return
+    fi
+    if [[ ${#dir[@]} -gt 1 ]]; then
+      dir=$(_commacd_choose_match "${dir[@]}")
+    fi
+    _command_cd "$dir"
+  }
+
+  # search backward for the vcs root (`,,`)
+  _commacd_backward_vcs_root() {
+    local dir="$PWD"
+    while [[ ! -d "$dir/.git" && ! -d "$dir/.hg" && ! -d "$dir/.svn" ]]; do
+      dir="${dir%/*}"
+      if [[ -z "$dir" ]]; then
+        echo -n "$PWD"
+        return
+      fi
+    done
+    echo -n "$dir"
+  }
+
+  # search backward for the directory whose name begins with $1 (`,, $1`)
+  _commacd_backward_by_prefix() {
+    local prev_dir dir="${PWD%/*}" matches match IFS=$'\n'
+    while [[ -n "$dir" ]]; do
+      prev_dir="$dir"
+      dir="${dir%/*}"
+      matches=($(_commacd_expand "$dir/${1}*/"))
+      for match in "${matches[@]}"; do
+          if [[ "$match" == "$prev_dir/" ]]; then
+            echo -n "$prev_dir"
+            return
+          fi
+      done
+    done
+    # at this point there is still a possibility that $1 is an actual path (passed in
+    # by completion or whatever), so let's check that one out
+    if [[ -d "$1" ]]; then echo -n "$1"; return; fi
+    # otherwise fallback to pwd
+    echo -n "$PWD"
+  }
+
+  # replace $1 with $2 in $PWD (`,, $1 $2`)
+  _commacd_backward_substitute() {
+    echo -n "${PWD/$1/$2}"
+  }
+
+  # choose `,,` strategy based on a number of arguments
+  _commacd_backward() {
+    local dir=
+    case $# in
+      0) dir=$(_commacd_backward_vcs_root);;
+      1) dir=$(_commacd_backward_by_prefix "$@");;
+      2) dir=$(_commacd_backward_substitute "$@");;
+      ,*) return 1
+    esac
+    if [[ "$COMMACD_NOTTY" == "on" ]]; then
+      echo -n "${dir}"
+      return
+    fi
+    _command_cd "$dir"
+  }
+
+  _commacd_backward_forward_by_prefix() {
+    local dir="$PWD" path="${*%/}/" matches match IFS=$'\n'
+    if [[ "${path:0:1}" == "/" ]]; then
+      # assume that we've been brought here by the completion
+      dir=(${path%/}*)
+      printf "%s\n" "${dir[@]}"
+      return
+    fi
+    while [[ -n "$dir" ]]; do
+      dir="${dir%/*}"
+      # shellcheck disable=SC2046
+      matches=($(_commacd_expand "$dir/$(_commacd_join \* $(_commacd_split "$path"))"))
+      case ${#matches[@]} in
+        0) ;;
+        ,*) printf "%s\n" "${matches[@]}"
+           return;;
+      esac
+    done
+    echo -n "$PWD"
+  }
+
+  # combine backtracking with `, $1` (`,,, $1`)
+  _commacd_backward_forward() {
+    if [[ -z "$*" ]]; then return 1; fi
+    local IFS=$'\n'
+    local dir=($(_commacd_backward_forward_by_prefix "$@"))
+    if [[ "$COMMACD_NOTTY" == "on" ]]; then
+      printf "%s\n" "${dir[@]}"
+      return
+    fi
+    if [[ ${#dir[@]} -gt 1 ]]; then
+      dir=$(_commacd_choose_match "${dir[@]}")
+    fi
+    _command_cd "$dir"
+  }
+
+  _commacd_completion() {
+    local pattern=${COMP_WORDS[COMP_CWORD]} IFS=$'\n'
+    # shellcheck disable=SC2088
+    if [[ "${pattern:0:2}" == "~/" ]]; then
+      # shellcheck disable=SC2116
+      pattern=$(echo ~/"${pattern:2}")
+    fi
+    local completion=($(COMMACD_NOTTY=on $1 "$pattern"))
+    if [[ "$completion" == "$PWD" || "${completion// /\\ }" == "$pattern" ]]; then
+      return
+    fi
+    # remove trailing / (if any)
+    for i in "${!completion[@]}"; do
+      completion[$i]="${completion[$i]%/}";
+    done
+    COMPREPLY=($(compgen -W "$(printf "%s\n" "${completion[@]}")" -- ''))
+  }
+
+  _commacd_forward_completion() {
+    _commacd_completion _commacd_forward
+  }
+
+  _commacd_backward_completion() {
+    _commacd_completion _commacd_backward
+  }
+
+  _commacd_backward_forward_completion() {
+    _commacd_completion _commacd_backward_forward
+  }
+
+  alias ,=_commacd_forward
+  alias ,,=_commacd_backward
+  alias ,,,=_commacd_backward_forward
+
+  complete -o filenames -F _commacd_forward_completion ,
+  complete -o filenames -F _commacd_backward_completion ,,
+  complete -o filenames -F _commacd_backward_forward_completion ,,,
+
+#+END_SRC
+
+* plus
+
+This file contains neat tricks to extend the functionality of
+bash.
+
+#+BEGIN_SRC sh :tangle .config/bash/api/plus
+  _zero="${BASH_SOURCE[0]}"
+  _zero="$(basename ${_zero%.sh})"
+  _zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+  [[ -n "${!_zero}" ]] && return
+  printf -v ${_zero} "Loaded"
+
+  # Thanks to http://onthebalcony.wordpress.com/2008/03/08
+  # \/just-for-fun-map-as-higher-order-function-in-bash/
+
+  map () {
+      [ $# -le 1 ] && return;
+      local f=$1
+      local x=$2
+      shift 2
+      local xs=$@
+      $f $x
+      map "$f" $xs
+  }
+
+  rota () {
+    local f=$1
+    shift
+    local args=($@)
+    local idx=$(($#-1))
+    local last=${args[$idx]}
+    args[$idx]=
+    $f $last ${args[@]}
+  }
+
+#+END_SRC
+* iog
+#+BEGIN_SRC sh :tangle .config/bash/api/io
+  _zero="${BASH_SOURCE[0]}"
+  _zero="$(basename ${_zero%.sh})"
+  _zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+  [[ -n "${!_zero}" ]] && return
+  printf -v ${_zero} "Loaded"
+
+  # Avoid adding duplicates to a path. $2, if non-nil, is the variable
+  # to append $1 to
+  function pathAppend() {
+      newPath=$1; list=$2; shift; shift
+      [[ -z $newPath ]] && return $false;
+      [[ -z $list ]] && list=PATH
+      [[ -z $(echo ${!list}|grep $newPath) ]] && export $(echo $list)="${!list}:$newPath"; }
+
+  function loadFile() { [[ -f $1 ]] && source "$1" || echoerr "$1 not found"; }
+
+  ## For all functions below:
+  # ARGS: color, string_to_print
+  function changeColor() { echo -ne $1 ; }
+
+  # Does not append newline
+  function message() { changeColor ${1}; echo -ne "$2"; changeColor ${Color_Off}; }
+
+  ## These functions do append newlines
+  # Functions for printing errors
+  export ALERT="(i)"
+  function warning() { message ${BYellow} "warning: " 1>&2; message ${BWhite} "$\n" 1>&2; }
+  function echoerr() { echo "$@" 1>&2; } # echo to stderr
+  function error() { message ${BRed} "error: " 1>&2; message ${BWhite} "$@\n" 1>&2; }
+
+  # Functions for printing
+  function section() { message ${BBlue} ":: "; message ${BWhite} "$@\n"; }
+  function note() { message ${BGreen} "==> "; message ${BWhite} "$@\n"; }
+  function subnote() { message ${BBlue} "  -> "; message ${BWhite} "$@\n"; }
+  ## End functions that append newlines
+
+  # Functinon to append a command to a trap
+  # $0 (code) (traps to modify)
+  trap_add() {
+      trap_add_cmd=$1; shift || echo "${FUNCNAME} usage error"
+      for trap_add_name in "$@"; do
+          trap -- "$(
+              # helper fn to get existing trap command from output
+              # of trap -p
+              extract_trap_cmd() { printf '%s\n' "$3"; }
+              # print existing trap command with newline
+              eval "extract_trap_cmd $(trap -p "${trap_add_name}")"
+              # print the new trap command
+              printf '%s\n' "${trap_add_cmd}"
+          )" "${trap_add_name}" \
+              || echo "unable to add to trap ${trap_add_name}"
+      done
+  }
+  declare -f -t trap_add
+
+  # This function provides a safe way to prompt for passwords. The
+  # result is stored in $secret_passwd
+  function query_password() {
+      read -p "Password: " -s secret_passwd && echo "" # insert carriage return
+      # TODO: find a way to abort nicely
+      # [[ -z $secret_passwd ]] && exit 1
+  }
+
+  # Printing stack traces
+  function print_call_trace()
+  {
+      # skipping i=0 as this is print_call_trace itself
+      for ((i = 1; i < ${#FUNCNAME[@]}; i++)); do
+          echo -n  ${BASH_SOURCE[$i]}:${BASH_LINENO[$i-1]}:${FUNCNAME[$i]}"(): "
+          sed -n "${BASH_LINENO[$i-1]}p" $0
+      done
+  }
+
+  function ntest()
+  {
+      if [[ $(which prettyping.sh) ]]; then
+          prettyping.sh google.com
+      else
+          ping -c3 google.com
+      fi
+  }
+
+  export config=$HOME/.config
+  export classes=$HOME/classes
+  export scripts=$HOME/bin
+  export bash_config=${config}/bash
+  export aliases=${bash_config}/aliases
+  export user_init_d=${bash_config}/user.init
+
+  loadFile ${bash_config}/api/colors
+#+END_SRC
+* math
+#+BEGIN_SRC sh :tangle .config/bash/api/math
+  _zero="${BASH_SOURCE[0]}"
+  _zero="$(basename ${_zero%.sh})"
+  _zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+  [[ -n "${!_zero}" ]] && return
+  printf -v ${_zero} "Loaded"
+
+  function calculate() {
+      while [[ $1 == --* ]]; do
+          case $1 in
+              --dec)
+                  shift
+                  dec="$1" ;;
+
+              ,*) # default
+                  error "$1 is unrecognized. Aborting"
+                  exit -1 ;;
+          esac
+          shift
+      done
+      echo "scale=${dec:-3}; $*" | bc
+      }
+#+END_SRC
+* error
+#+BEGIN_SRC sh :tangle .config/bash/api/error
+  _zero="${BASH_SOURCE[0]}"
+  _zero="$(basename ${_zero%.sh})"
+  _zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+  [[ -n "${!_zero}" ]] && return
+  printf -v ${_zero} "Loaded"
+
+  # TODO: create a lookup function, pass the program such as
+  #
+  #   err-code $(whatev command i just ran)
+  #         "This is the error code"
+  EXIT_HELP=-2
+#+END_SRC
+* colors
+
+Bash color dictionary. Defined Tuesday December 18, 2012 in the year of our
+
+#+BEGIN_SRC sh :tangle .config/bash/api/colors
+  _zero="${BASH_SOURCE[0]}"
+  _zero="$(basename ${_zero%.sh})"
+  _zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+  [[ -n "${!_zero}" ]] && return
+  printf -v ${_zero} "Loaded"
+
+  Color_Off='\e[0m'       # Text Reset
+
+  # Regular Colors
+  Gray='\e[0;30m'         # Gray
+  Black='\e[0;30m'        # Black
+  Red='\e[0;31m'          # Red
+  Green='\e[0;32m'        # Green
+  Yellow='\e[0;33m'       # Yellow
+  Blue='\e[0;34m'         # Blue
+  Purple='\e[0;35m'       # Purple
+  Cyan='\e[0;36m'         # Cyan
+  White='\e[0;37m'        # White
+
+  # Bold
+  BBlack='\e[1;29m'       # Black
+  BRed='\e[1;31m'         # Red
+  BGreen='\e[1;32m'       # Green
+  BYellow='\e[1;33m'      # Yellow
+  BBlue='\e[1;34m'        # Blue
+  BPurple='\e[1;35m'      # Purple
+  BCyan='\e[1;36m'        # Cyan
+  BWhite='\e[1;37m'       # White
+
+  # Underline
+  UBlack='\e[4;30m'       # Black
+  URed='\e[4;31m'         # Red
+  UGreen='\e[4;32m'       # Green
+  UYellow='\e[4;33m'      # Yellow
+  UBlue='\e[4;34m'        # Blue
+  UPurple='\e[4;35m'      # Purple
+  UCyan='\e[4;36m'        # Cyan
+  UWhite='\e[4;37m'       # White
+
+  # Background
+  On_Black='\e[40m'       # Black
+  On_Red='\e[41m'         # Red
+  On_Green='\e[42m'       # Green
+  On_Yellow='\e[43m'      # Yellow
+  On_Blue='\e[44m'        # Blue
+  On_Purple='\e[45m'      # Purple
+  On_Cyan='\e[46m'        # Cyan
+  On_White='\e[47m'       # White
+
+  # High Intensty
+  IBlack='\e[0;90m'       # Black
+  IRed='\e[0;91m'         # Red
+  IGreen='\e[0;92m'       # Green
+  IYellow='\e[0;93m'      # Yellow
+  IBlue='\e[0;94m'        # Blue
+  IPurple='\e[0;95m'      # Purple
+  ICyan='\e[0;96m'        # Cyan
+  IWhite='\e[0;97m'       # White
+
+  # Bold High Intensty
+  BIBlack='\e[1;90m'      # Black
+  BIRed='\e[1;91m'        # Red
+  BIGreen='\e[1;92m'      # Green
+  BIYellow='\e[1;93m'     # Yellow
+  BIBlue='\e[1;94m'       # Blue
+  BIPurple='\e[1;95m'     # Purple
+  BICyan='\e[1;96m'       # Cyan
+  BIWhite='\e[1;97m'      # White
+
+  # High Intensty backgrounds
+  On_IBlack='\e[0;100m'   # Black
+  On_IRed='\e[0;101m'     # Red
+  On_IGreen='\e[0;102m'   # Green
+  On_IYellow='\e[0;103m'  # Yellow
+  On_IBlue='\e[0;104m'    # Blue
+  On_IPurple='\e[10;95m'  # Purple
+  On_ICyan='\e[0;106m'    # Cyan
+  On_IWhite='\e[0;107m'   # White
+#+END_SRC
+* candid timers
+
+This section consists of clever hooks to keep track of sub-process
+execution times. Traditionally, displaying the runtime of a
+sub-process takes forethought: one must prepend the desired command
+with `time'. What about those instances when you didn't know you
+would like to time the last command you ran? I see three choices:
+
+1. Run the command again, this time with `time' in front
+
+   Drawbacks: won't work with GNU Make, also, slow as possible.
+2. Dance around with $HISTTIMEFORMAT- gnarly!
+3. Install this code and run the command `took'
+
+Why `took'? To find out how much time the last command "took."
+
+Note: running `some-long-command; took` will provide inaccurate
+readings! This is because the hook to stop timing the current command
+is run when the PS1 is displayed for the next command. Running `took`
+in this instance will provide the length of time taken to run the
+previous command! (As in, the action that happened the last time you
+hit enter.)
+
+#+BEGIN_SRC sh :tangle .bashrc
+  ### Caveat- I have not found a way to make this code work if it is not
+  ### installed in one's .bashrc.
+
+  # Prefixes to avoid namespace collisions
+  function esc_timer_start() {
+      esc_timer=${esc_timer:-$SECONDS} ;}
+
+  function esc_timer_stop() {
+      esc_timer_show=$(($SECONDS - $esc_timer))
+      unset esc_timer ; }
+
+  # Convert integer seconds to days,HH:MM:SS
+  function esc_seconds_to_days() {
+      printf "%ddays,%02d:%02d:%02d" $(((($1/60)/60)/24))   \
+          $(((($1/60)/60)%24)) $((($1/60)%60)) $(($1%60)) | \
+          sed 's/^1days/1day/;s/^0days,\(00:\)*//;s/^0//' ; }
+
+  # Install hooks where appropriate
+  trap_add 'esc_timer_start' DEBUG
+  PROMPT_COMMAND="${PROMPT_COMMAND}; esc_timer_stop"
+
+  # The command to print our calculated information
+  alias took='echo $(esc_seconds_to_days ${esc_timer_show})'
+
+  ### End official caveat ###
+#+END_SRC
+
+* homeless code
+** SSH and VNC tab completion
+#+BEGIN_SRC sh :tangle .config/bash/api/tabcomplete-ssh
+  _zero="${BASH_SOURCE[0]}"
+  _zero="$(basename ${_zero%.sh})"
+  _zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+  [[ -n "${!_zero}" ]] && return
+  printf -v ${_zero} "Loaded"
+
+  # Enable tab-complete on ssh hosts
+  complete -o default -o nospace -W "$(/usr/bin/en vruby 2>/dev/null -ne \
+  'puts $_.split(/[,\s]+/)[1..-1].reject{|host| host.match(/\*|\?/)} \
+  if $_.match(/^\s*Host\s+/);' < $HOME/.ssh/config)" scp sftp ssh sshfs vnc
+#+END_SRC
+
+** Emacs directory tracking
+#+BEGIN_SRC sh :tangle .config/bash/api/emacs-ansi-term
+  _zero="${BASH_SOURCE[0]}"
+  _zero="$(basename ${_zero%.sh})"
+  _zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+  [[ -n "${!_zero}" ]] && return
+  printf -v ${_zero} "Loaded"
+
+  # Emacs ansi-term directory tracking
+  # track directory, username, and cwd for remote logons
+  if [ $TERM = eterm-color ]; then
+      function eterm-set-cwd {
+          $@
+          echo -e "\033AnSiTc" $(pwd)
+      }
+
+      function eterm-reset {      # set hostname, user, and cwd
+          echo -e "\033AnSiTu" $(whoami)
+          echo -e "\033AnSiTc" $(pwd)
+          echo -e "\033AnSiTh" $(hostname)
+      }
+
+      for temp in cd pushd popd; do
+          alias $temp="eterm-set-cwd $temp"
+      done
+
+      eterm-reset                 # set hostname, user, and cwd now
+  fi
+#+END_SRC
+
+* work configs
+** shoretelrc
+*** Unique include identifier
+#+BEGIN_SRC sh :tangle no
+  _zero="${BASH_SOURCE[0]}"
+  _zero="$(basename ${_zero%.sh})"
+  _zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+  [[ -n "${!_zero}" ]] && return
+  printf -v ${_zero} "Loaded"
+#+END_SRC
+*** Perforce settings
+#+BEGIN_SRC sh :tangle no
+  export P4USER=ecrosson
+  export P4CLIENT=eric-desktop
+  export P4PORT=10.160.0.30:1667
+#+END_SRC
+
+*** Hardy Heron configs
+#+BEGIN_SRC sh :tangle no
+  case $(uname -a) in
+      ,*Linux* ) # handle Hardy Heron
+              export EDITOR="emacs -q"
+              export VISUAL="emacs -q"
+              ;;
+  esac
+#+END_SRC
+
+*** Phone registration
+#+BEGIN_SRC sh :tangle no
+  unset P_ALL P_NAMES p2s p8s p8cgs
+
+  # Usage:
+  # $1- variable name in bash
+  # $2- variable value in bash
+  # $3- type of phone (optional)
+  function register_phone()
+  {
+      export $1=$2
+
+      [[ $(echo $P_ALL|grep "$2") || $(echo $P_NAMES|grep "$1") ]] && return;
+
+      export P_ALL="${P_ALL} $2"
+      export P_NAMES="${P_NAMES} $1"
+
+      if [[ $3 ]]; then
+          case $3 in
+              ,*2)   export p2s="${p2s} $2"     ;;
+              ,*8c*) export p8cgs="${p8cgs} $2" ;;
+              ,*)    export p8s="${p8s} $2"     ;;
+          esac; fi
+  }
+
+  register_phone phalarope p8cg0010491612AE.shoretel.com p8cg
+  register_phone booby     p80010492862F2.shoretel.com   p8
+  register_phone wren      p80010492862FA.shoretel.com   p8
+  register_phone raptor    p8001049161277.shoretel.com   p8
+  register_phone cormorant p2001049286248.shoretel.com   p2
+  register_phone pelican   p20010491612C7.shoretel.com   p2
+#+END_SRC
+* aliases
+** readme
+#+BEGIN_SRC markdown :tangle .config/bash/aliases/README.md
+  # Aliases
+
+  Different systems need different aliases- and putting them all in my
+  main config file quickly grew out of hand. With this structure, I can
+  easily load and manage OS-specific aliases- see the section marked
+  'Alias management' in `global.sh`.
+#+END_SRC
+** centtech aliases
+#+BEGIN_SRC sh :tangle .config/bash/aliases/centtech
+  # alias sshbj='ssh nerneez -t screen -x bjennings/mon '
+#+END_SRC
+
+** global aliases
+#+BEGIN_SRC sh :tangle .config/bash/aliases/global
+  # TODO: abolish the reduntant 'alias'
+
+  # Global aliases
+  alias so='source ~/.bashrc'
+  alias drop='bg 2>/dev/null && disown 2>/dev/null'
+  alias quit='exit '
+  alias path='echo $PATH | sed -r "s/:/\n/g"'
+  alias gdb='gdb -q '
+  alias ssh-key-to-xclip-for-github='xclip < ~/.ssh/id_rsa.pub'
+  alias res='clear && source $HOME/.bashrc'
+
+  # coreutils
+  alias up='cd ..; '
+  alias ping='ping -c3 '
+  alias grep='grep --color=always '
+  alias g='grep '
+  alias tree='tree -l '
+  alias caly='cal -y'
+  alias heads='head -n50 '
+  alias tails='tail -n50 '
+  alias chmod='chmod -v '
+  alias du='du -chs '
+  alias echo='echo -e '
+  alias mkdir='mkdir -p '
+  alias shred='shred --random-source=/dev/urandom -v '
+  alias df='df -h '
+  alias rm='rm -v '
+  alias less='less -reg '
+  # TODO: make OS inspecific
+  # alias which='alias | which --tty-only --read-alias --show-dot --show-tilde '
+  alias chx='chmod +x '
+  function mc () { mkdir -p "$@" && eval cd "\"\$$#\""; }
+
+  # inflation/compression
+  alias zip='zip -r '
+
+  # ls aliases
+  alias l='ls -lABhp --group-directories-first --color=always '
+  alias ls='ls --color=always '
+  alias ll='ls --color=always -1 '
+
+  # Git aliases
+  alias k='git status '
+  alias ka='git add '
+  alias kb='git branch '
+  alias kc='git commit '
+  alias kca='git commit -a '
+  alias kcm='git commit -m '
+  alias kcam='git commit -am '
+  alias kp='git push '
+  alias kcl='git clone '
+  alias ku='git pull '
+  alias kd='git diff '
+  alias kdw='git diffw '
+  alias git-first-commit='git log $(git log --pretty=format:%H|tail -1) '
+
+  # Emacs aliases
+  alias emcas='emacs '
+  alias e='emacs '
+  alias eq='emacs -q '
+  alias ed='emacs --daemon '
+  alias et='emacsclient -t '
+  alias ek='emacsclient -e "(kill-emacs)"'
+  alias carton_install='curl -fsSkL https://raw.github.com/rejeep/cask.el/master/go | python'
+
+  # GNU Screen aliases
+  alias s='screen'
+
+  # SSH aliases (for quick connect)
+  alias move='rsync -Prahz --rsh=ssh --remove-sent-files '
+  alias copy='rsync -Prahz --rsh=ssh '
+  alias scp='scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no '
+  alias ssh='ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no '
+  alias sshfs='sshfs -o follow_symlinks -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no '
+  alias sunny='ssh -Yt sun screen -x mon'
+  alias irons='ssh -Yt irons screen -x hershal/'
+
+  # Aliasing functions
+  function emr() { emacsclient -c -a emacs "/sudo:root@localhost:$1"; }
+  #function evince() { evince "$1" 2>/dev/null & }
+
+  # Find files matching a given pattern
+  function ff() { ffand "$1" "$2"; }
+
+  # Find a file with pattern $1 in name and execute $2 on it:
+  function ffand() { find . -type f -iname '*'${1:-}'*' -exec ${2:-file} {} \; ; }
+
+  # General functions
+  function inside_screen() { [[ -z $STY ]] && echo "false" || echo "true"; }
+
+  function cmdcat() {
+      # Output the source of the following command
+      cat $(which $*)
+  }
+#+END_SRC
+** linux aliases
+#+BEGIN_SRC sh :tangle .config/bash/aliases/linux
+  _zero="${BASH_SOURCE[0]}"
+  _zero="$(basename ${_zero%.sh})"
+  _zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+  [[ -n "${!_zero}" ]] && return
+  printf -v ${_zero} "Loaded"
+
+  ### VLC
+  alias vlc='vlc -f -I ncurses '
+  alias cvlc='cvlc -f -I ncurses '
+
+  ### PDF readers
+  alias z='zathura '
+  alias evince='evince 2>/dev/null '
+
+  ### X windowing system
+  alias xinv='xcalib -invert -alter '
+  alias xterm='xterm -fg white -bg black '
+
+  ### GPG
+  alias encrypt='gpg -ac --no-options '
+  alias decrypt='gpg --no-options '
+
+  ### Document readers
+  alias ev='evince '
+
+  ### Internet management
+  alias dhcpcd='sudo dhcpcd -S domain_name_servers=8.8.8.8 '
+  alias netdn='sudo killall wpa_supplicant dhcpcd 2>/dev/null && sudo rmmod e1000e 2>/dev/null && sudo rfkill block all'
+
+  ### Kernel modules
+  alias lanup='sudo modprobe e1000e; sudo dhcpcd $(li)'
+  alias landn='sudo rmmod e1000e'
+  alias pt='sudo powertop '
+
+  ### Virtual Box
+  alias vboxinit='sudo modprobe vboxdrv'
+  alias vboxdown='sudo rmmod vboxdrv'
+
+  ### Power
+  alias pdown='sudo shutdown -h now'
+  alias wjioe='sudo systemctl suspend '
+  alias hibernate='sudo systemctl suspend '
+
+  ### coreutils
+  alias psc='ps xawf -eo pid,user,cgroup,args'
+  alias pe='ps -e '
+  alias bc='bc -lq '
+  alias sudo='sudo '
+  alias gv='grep --color=always -v '
+  alias scan='sudo nmap -FPn '
+  alias clock="date | awk '{print \$4}' "
+
+  ### NAS management
+  alias ndtrx='dtrx --one=here -n '
+  alias d_ndtrx="echo $(\alias | \grep 'alias ndtrx' | cut -f2 -d\') "
+
+  ### Color cat
+  # Thanks to http://felixcrux.com/blog/syntax-highlighting-cat
+  function pygmentize_cat() {
+      for arg in "$@"; do
+          pygmentize -g "$arg" 2>/dev/null || cat "$arg"
+      done
+  }
+  [[ $(which cat 2>/dev/null) ]] && alias cat='pygmentize_cat '
+
+  ### Daemons
+  alias teamviewerd="sudo systemctl start teamviewerd "
+
+  ## Serve current dir
+  alias webserv='ruby -r webrick -e "s = WEBrick::HTTPServer.new(:Port => 9090, :DocumentRoot => Dir.pwd); trap("INT") { s.shutdown }; s.start" '
+
+  ### FOSS Web browsers
+  # Surf
+  alias surf='surf -g '
+
+  # Chromium
+  alias chrome='chromium --memory-model=low &>/dev/null '
+  alias ichrome='chromium --memory-model=low --incognito &>/dev/null '
+
+  ### Compilers
+  alias gpp='g++ -ggdb3 '
+  alias gcc='gcc -ggdb3 '
+
+  ### VNC
+  alias vncmac='vncviewer 192.168.0.104 -passwd ~/.vnc/passwd '
+  alias vncwin='vncviewer 192.168.0.125 -passwd ~/.x11vnc/passwd &>/dev/null '
+
+  ### rdesktop
+  alias rdieeewin='rdesktop -g 1268x980 -P -z -x l -r sound:off -u \
+  windowsuser 128.83.198.11:3389 '
+  alias rdfatty='rdesktop -g 1268x980 -P -z -x l -r sound:off -u \
+  windowsuser 128.83.198.135:3389 '
+  alias rdwin='rdesktop -g 1360x740 -P -z -x l -r sound:off -u \
+  windowsuser 192.168.0.125:3389 '
+  alias rdhooti='rdesktop -u eric -K -g 1368x740 hooti.mine.nu '
+
+  ### Spelling corrections
+  alias htpo='htop '
+
+#+END_SRC
+** mac aliases
+#+BEGIN_SRC sh :tangle .config/bash/aliases/mac
+  _zero="${BASH_SOURCE[0]}"
+  _zero="$(basename ${_zero%.sh})"
+  _zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+  [[ -n "${!_zero}" ]] && return
+  printf -v ${_zero} "Loaded"
+
+  # General aliases
+  unalias l ls ll
+  alias l='ls -AFho '
+  alias ll='ls -1 '
+  alias espeak='say '
+  alias mute='volume 0 '
+  alias light='brightness -m '
+  alias macupdate='sudo port selfupdate && sudo port upgrade outdated; brightness -m .1 '
+
+  # Application aliases
+  alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport '
+  alias chess='/Applications/Chess.app/Contents/Resources/sjeng.ChessEngine '
+  alias rename='/Applications/NameChanger.app/Contents/MacOS/NameChange '
+  alias finder='open /System/Library/CoreServices/Finder.app '
+
+  # Hibernation aliases
+  alias wjioe='sudo pmset sleepnow'
+  alias hibernate='sudo pmset sleepnow'
+#+END_SRC
+** windows aliases
+#+BEGIN_SRC sh :tangle .config/bash/aliases/win
+  _zero="${BASH_SOURCE[0]}"
+  _zero="$(basename ${_zero%.sh})"
+  _zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+  [[ -n "${!_zero}" ]] && return
+  printf -v ${_zero} "Loaded"
+
+  alias install_apt_cyg='svn --force export http://apt-cyg.googlecode.com/svn/trunk/ /bin/ && chmod +x /bin/apt-cyg'
+  alias cdrom='nircmd.exe cdrom '
+  alias chrome='/cygdrive/c/Users/eric/AppData/Local/Google/Chrome/Application/chrome.exe &>/dev/null '
+  alias vlc='/cygdrive/c/Program\ Files\ \(x86\)/VideoLAN/VLC/vlc.exe '
+  alias cph='explorer .'
+  alias pdown='shutdown -s -t 0'
+  alias restart='shutdown -r -t 0'
+  alias ch='cd /cygdrive/c/Users/eric/'
+  alias gyg='apt-cyg --noupdate '
+  alias dim='nircmd monitor off'
+  alias mute='nircmd mutesysvolume 2'
+  alias hibernate='nircmd standby'
+  alias wjioe='nircmd standby'
+  alias ip='ipconfig | grep --color=none "IPv4 Address" '
+#+END_SRC
+* user.init
+** readme
+#+BEGIN_SRC markdown :tangle .config/bash/user.init/README.md
+  # user.init
+
+  This directory contains scripts to be run only by a specific
+  machine. See the last line in my .bashrc- if a file exists in this
+  directory matching the hostname of the current machine, it will be
+  executed. This is a handy way to keep my main configuration global,
+  while handling the idiosyncrasies that need to be dealt with.
+#+END_SRC
+** Arch Linux
+#+BEGIN_SRC sh :tangle .config/bash/user.init/arch
+  alias pacman='sudo pacman '
+
+  function orphans() {
+      if [[ -z $(which pacman 2>/dev/null) ]]; then
+          echo "Pacman is not installed on this system."
+          return $false
+      fi
+
+      if [[ ! -n $(pacman -Qdt) ]]; then
+          section "No orphans to remove"
+      else
+          sudo pacman -Rs $(pacman -Qdtq)
+      fi
+  }
+
+  # Convenient variables
+  if [[ $(which ip 2>/dev/null) ]]; then
+      # "Wireless Interface"
+      function wi() { export wi=${wi:-$(ip addr | \grep -o -e "wlp[[:alnum:]]*" | sort -u | head -n1)}; echo $wi; }
+      # "LAN Interface"
+      function li() { export li=${li:-$(ip addr | \grep -o -e "enp[[:alnum:]]*" | sort -u | head -n1)}; echo $li; }
+      ip=$(ip addr | \grep -A4 "wlp\\|eth\\|enp" \
+          | \grep -o "[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*" | head -n1)
+      function ext() { [[ -z $ext ]] && ext=$(curl -s http://ipecho.net/plain; echo); echo $ext; }
+  fi
+#+END_SRC
+* root bashrc
+** PS1 formatting
+
+Danger, Will Robinson!
+
+#+BEGIN_SRC sh :tangle .config/bash/rc/root/.bashrc
+  PS1='\[\e[1;31m\][\u@\h \W]\$\[\e[0m\] '
+#+END_SRC
+
+** Aliases
+
+Nothing fancy here, don't want to leave any security holes
+
+#+BEGIN_SRC sh :tangle .config/bash/rc/root/.bashrc
+  alias ssh='ssh '
+  alias sshfs='sshfs -o follow_symlinks '
+  alias df='df -h '
+  alias copy='rsync --partial --progress --append --rsh=ssh -r -h '
+  alias move='rsync --partial --progress --append --rsh=ssh -r -h --remove-sent-files '
+#+END_SRC
+
+coreutil aliases
+
+#+BEGIN_SRC sh :tangle .config/bash/rc/root/.bashrc
+  alias l='ls -lAh --color=always '
+  alias echo='echo -e '
+  alias mkdir='mkdir -p '
+  alias scan='sudo nmap -FPn '
+  alias less='less -R '
+  alias g='grep '
+  alias gv='grep -v '
+  alias grep='grep --color=always '
+  alias gpp='g++ '
+  alias du='du -h '
+  alias bc='bc -lq '
+  alias quit='exit '
+#+END_SRC
+* logout
+#+BEGIN_SRC sh :tangle .config/bash/.bash_logout
+  #
+  # ~/.bash_logout
+  #
+
+  clear
+  reset
+#+END_SRC

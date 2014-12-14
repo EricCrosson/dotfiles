@@ -1,0 +1,21 @@
+
+_zero="${BASH_SOURCE[0]}"
+_zero="$(basename ${_zero%.sh})"
+_zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+[[ -n "${!_zero}" ]] && return
+printf -v ${_zero} "Loaded"
+
+alias install_apt_cyg='svn --force export http://apt-cyg.googlecode.com/svn/trunk/ /bin/ && chmod +x /bin/apt-cyg'
+alias cdrom='nircmd.exe cdrom '
+alias chrome='/cygdrive/c/Users/eric/AppData/Local/Google/Chrome/Application/chrome.exe &>/dev/null '
+alias vlc='/cygdrive/c/Program\ Files\ \(x86\)/VideoLAN/VLC/vlc.exe '
+alias cph='explorer .'
+alias pdown='shutdown -s -t 0'
+alias restart='shutdown -r -t 0'
+alias ch='cd /cygdrive/c/Users/eric/'
+alias gyg='apt-cyg --noupdate '
+alias dim='nircmd monitor off'
+alias mute='nircmd mutesysvolume 2'
+alias hibernate='nircmd standby'
+alias wjioe='nircmd standby'
+alias ip='ipconfig | grep --color=none "IPv4 Address" '

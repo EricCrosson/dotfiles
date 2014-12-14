@@ -1,0 +1,26 @@
+
+alias pacman='sudo pacman '
+
+function orphans() {
+    if [[ -z $(which pacman 2>/dev/null) ]]; then
+        echo "Pacman is not installed on this system."
+        return $false
+    fi
+
+    if [[ ! -n $(pacman -Qdt) ]]; then
+        section "No orphans to remove"
+    else
+        sudo pacman -Rs $(pacman -Qdtq)
+    fi
+}
+
+# Convenient variables
+if [[ $(which ip 2>/dev/null) ]]; then
+    # "Wireless Interface"
+    function wi() { export wi=${wi:-$(ip addr | \grep -o -e "wlp[[:alnum:]]*" | sort -u | head -n1)}; echo $wi; }
+    # "LAN Interface"
+    function li() { export li=${li:-$(ip addr | \grep -o -e "enp[[:alnum:]]*" | sort -u | head -n1)}; echo $li; }
+    ip=$(ip addr | \grep -A4 "wlp\\|eth\\|enp" \
+        | \grep -o "[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*" | head -n1)
+    function ext() { [[ -z $ext ]] && ext=$(curl -s http://ipecho.net/plain; echo); echo $ext; }
+fi

@@ -1,0 +1,29 @@
+
+_zero="${BASH_SOURCE[0]}"
+_zero="$(basename ${_zero%.sh})"
+_zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
+[[ -n "${!_zero}" ]] && return
+printf -v ${_zero} "Loaded"
+
+# Thanks to http://onthebalcony.wordpress.com/2008/03/08
+# \/just-for-fun-map-as-higher-order-function-in-bash/
+
+map () {
+    [ $# -le 1 ] && return;
+    local f=$1
+    local x=$2
+    shift 2
+    local xs=$@
+    $f $x
+    map "$f" $xs
+}
+
+rota () {
+  local f=$1
+  shift
+  local args=($@)
+  local idx=$(($#-1))
+  local last=${args[$idx]}
+  args[$idx]=
+  $f $last ${args[@]}
+}
