@@ -24,16 +24,16 @@
   "The path to esc's init.org configuration file."
   :type         'file
   :options      '("~/.emacs.d/init.org"
-                  "~/.config/.emacs.d/init.org")
+                  "~/dotfiles/emacs/.emacs.d/init.org")
   :group        'boil)
-(setq esc/emacs-init-org-path "~/.emacs.d/init.org")
+(setq esc/emacs-init-org-path "~/dotfiles/emacs/.emacs.d/init.org")
 
 (defcustom esc/bash-org-path nil
   "The path to esc's bash.org configuration file."
   :type         'file
-  :options      '("~/.config/bash/bash.org")
+  :options      '("~/dotfiles/bash/bash.org")
   :group        'boil)
-(setq esc/bash-org-path "~/.config/bash/bash.org")
+(setq esc/bash-org-path "~/dotfiles/bash/bash.org")
 
 (defcustom esc/prog-mode-hook nil
     "esc's code to \\[prog-mode-hook]."
