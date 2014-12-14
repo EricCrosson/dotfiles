@@ -907,7 +907,6 @@ hit enter.)
   alias path='echo $PATH | sed -r "s/:/\n/g"'
   alias gdb='gdb -q '
   alias ssh-key-to-xclip-for-github='xclip < ~/.ssh/id_rsa.pub'
-  alias res='clear && source $HOME/.bashrc'
 
   # coreutils
   alias up='cd ..; '
