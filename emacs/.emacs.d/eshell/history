@@ -1,0 +1,3 @@
+touch pseudop_operations.{c,h}
+l
+touch tac.cpp
