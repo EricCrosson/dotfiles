@@ -511,7 +511,7 @@ bash.
   }
 
 #+END_SRC
-* iog
+* io
 #+BEGIN_SRC sh :tangle .config/bash/api/io
   _zero="${BASH_SOURCE[0]}"
   _zero="$(basename ${_zero%.sh})"
