@@ -422,3 +422,8 @@ PROMPT_COMMAND="${PROMPT_COMMAND}; esc_timer_stop"
 alias took='echo $(esc_seconds_to_days ${esc_timer_show})'
 
 ### End official caveat ###
+
+function org() {
+    pushd ~/org &> /dev/null
+    git-sync
+}

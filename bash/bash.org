@@ -778,6 +778,18 @@ hit enter.)
 #+END_SRC
 
 * homeless code
+** git-sync
+
+The purpose of this script is to bring me to my org dir for making
+changes. Naturally, I'll want the dir updated, so use git-sync to
+update the repo after I'm there.
+
+#+BEGIN_SRC sh :tangle .bashrc
+  function org() {
+      pushd ~/org &> /dev/null
+      git-sync
+  }
+#+END_SRC
 ** SSH and VNC tab completion
 #+BEGIN_SRC sh :tangle .config/bash/api/tabcomplete-ssh
   _zero="${BASH_SOURCE[0]}"
