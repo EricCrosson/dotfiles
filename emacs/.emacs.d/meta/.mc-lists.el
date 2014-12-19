@@ -6,6 +6,7 @@
 	autopair-insert-opening
 	autopair-insert-or-skip-quote
 	autopair-skip-close-maybe
+	backward-sexp
 	c-electric-brace
 	c-electric-colon
 	c-electric-delete-forward
