@@ -37,7 +37,7 @@ myAccent = "#85E0FF"
 
 myBar = "xmobar /home/dallas/.xmobarrc"
 myBorderWidth = 2
-myWorkspaces = ["1" 
+myWorkspaces = ["1"
                ,"2"
                ,"3"
                ,"4"
@@ -45,21 +45,21 @@ myWorkspaces = ["1"
                ]
 
 main = do
-    h <- spawnPipe myBar -- used in logHook 
+    h <- spawnPipe myBar -- used in logHook
     xmonad $ defaultConfig
-        { terminal = myTerminal 
+        { terminal = myTerminal
         , workspaces = myWorkspaces
         , focusedBorderColor = myAccent
         , borderWidth = myBorderWidth
         , manageHook =  myManageHook
-        , layoutHook = avoidStruts $ 
-                       smartBorders $ 
-                       spacing 2 $ 
+        , layoutHook = avoidStruts $
+                       smartBorders $
+                       spacing 2 $
                        layoutHook defaultConfig
         , startupHook = myStartup
-        , logHook = myLogHook h
-        , modMask = mod4Mask 
-        } 
+        -- , logHook = myLogHook h
+        , modMask = mod4Mask
+        }
         `additionalKeysP` addedKeys
 
 myScratchpads = [ NS "alsamixer" "xterm -e alsamixer" (title =? "alsamixer") (customFloating $ W.RationalRect 0.6 0.1 0.35 0.5)
@@ -88,7 +88,7 @@ addedKeys = [("M4-r", spawn "dmenu_run")
             ,("M4-x M4-k", spawn "xkill")
             ,("M4-<Return>", namedScratchpadAction myScratchpads "xterm")
             ,("M4-S-<Return>", spawn "xterm -e /home/dallas/scripts/screen.sh")
-            ] 
+            ]
             -- Search functionality (thanks tylevad on Github!)
             ++ [("M4-s " ++ k, S.promptSearchBrowser myXPConfig myBrowser f) | (k,f) <- searchEngines]
                where searchEngines = [ ("g", S.google)
@@ -102,7 +102,7 @@ myManageHook = composeAll [ manageDocks
                           , namedScratchpadManageHook myScratchpads
                           ]
 
-myLogHook h = (dynamicLogWithPP . namedScratchpadFilterOutWorkspacePP $ myPP h)
+-- myLogHook h = (dynamicLogWithPP . namedScratchpadFilterOutWorkspacePP $ myPP h)
 
 myPP h = xmobarPP
   { ppCurrent         = xmobarColor myEmpty "" . wrap "{" "}" . xmobarColor myHighlight ""
@@ -126,5 +126,3 @@ myXPConfig = defaultXPConfig
   , historySize = 0
   , height = 16
   }
-
-
