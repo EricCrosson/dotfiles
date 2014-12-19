@@ -5,3 +5,8 @@ emacs/.emacs.d/session.*
 /xmonad/.xmonad/xmonad.o
 /emacs/.emacs.d/ac-comphist.dat
 /xmonad/.xmonad/xmonad-x86_64-linux
+/emacs/.emacs.d/elpa/archives/gnu/archive-contents
+/emacs/.emacs.d/elpa/archives/marmalade/archive-contents
+/emacs/.emacs.d/elpa/archives/melpa-stable/archive-contents
+/emacs/.emacs.d/elpa/archives/melpa/archive-contents
+/emacs/.emacs.d/meta/keyfreq
