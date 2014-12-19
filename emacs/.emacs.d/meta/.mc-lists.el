@@ -18,6 +18,7 @@
 	c-electric-star
 	c-indent-line-or-region
 	comint-delchar-or-maybe-eof
+	comment-dwim
 	dabbrev-expand
 	delete-region
 	dired-previous-line
