@@ -34,7 +34,7 @@
 ;;;;;;  esc/c++-mode-hook esc/c-mode-common-hook esc/minibuffer-exit-hook
 ;;;;;;  esc/minibuffer-setup-hook esc/prog-mode-hook) "boilerplate/boilerplate"
 ;;;;;;  "../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21645 60759 403562 413000))
+;;;;;;  (21646 3087 366057 136000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el
 
 (autoload 'esc/prog-mode-hook "boilerplate/boilerplate" "\

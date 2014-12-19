@@ -184,6 +184,14 @@
   `(eval-after-load ,mode
      '(progn ,@body)))
 
+(defmacro message-progress (message &rest body)
+  "Message MESSAGE and run BODY. Then message MESSSAGE...done."
+  (declare (indent defun))
+  `(progn
+     (message ,message)
+     (progn ,@body)
+     (message (concat ,message "...done"))))
+
 (defmacro autoload-from-package (package functions)
   "From PACKAGE (string), autoload FUNCTIONS (list)."
   (declare (indent defun))
@@ -268,8 +276,6 @@ comment to the line."
     single-mode-autoloads))
 
 (add-hook 'after-save-hook 'esc/auto-byte-recompile)
-
-(add-hook 'kill-emacs-hook 'update-esc-lisp-autoloads)
 
 (autoload-from-package "lua-mode" '(lua-mode))
 (after 'lua-mode-autoloads
@@ -375,15 +381,6 @@ comment to the line."
     (unless (eq ibuffer-sorting-mode 'alphabetic)
       (ibuffer-do-sort-by-alphabetic)))
   (add-hook 'ibuffer-hook 'esc/ibuffer-vc-refresh))
-
-;; (after 'ibuffer-vc-autoloads
-;;   (setq ibuffer-formats
-;;         '((mark modified read-only vc-status-mini " "
-;;                 (name 18 18 :left :elide)         " "
-;;                 (size 9 -1  :right)               " "
-;;                 (mode 16 16 :left :elide)         " "
-;;                 (vc-status 16 16 :left)           " "
-;;                 filename-and-process))))
 
 (add-hook 'prog-mode-hook 'esc/prog-mode-hook)
 
@@ -645,28 +642,28 @@ comment to the line."
 
 (setq paradox-github-token "37204ef66b6566274616d130ec61a0cd4f98e066")
 
+(add-hook 'kill-emacs-hook 'update-esc-lisp-autoloads)
+
 (cond ((or (eq system-type 'ms-dos)
            (eq system-type 'windows-nt)
            (eq system-type 'cygwin))
        ;; TODO: wrap message construct with a done-ifier
-       (message "Loading Windows specific configuration...")
-       (setq w32-pass-lwindow-to-system nil
-             w32-pass-rwindow-to-system nil
-             w32-pass-apps-to-system nil
-             w32-lwindow-modifier 'super ; Left Windows key
-             w32-rwindow-modifier 'super ; Right Windows key
-             w32-apps-modifier 'hyper)   ; Menu key
-       ;; export CYGWIN="nodosfilewarning winsymlinks"
-       (require-package '(w32-symlinks))
-       ;; (customize-option 'w32-symlinks-handle-shortcuts)
-       (message "Loading Windows specific configuration...done"))
+       (message-progress "Loading Windows specific configuration..."
+         (setq w32-pass-lwindow-to-system nil
+               w32-pass-rwindow-to-system nil
+               w32-pass-apps-to-system nil
+               w32-lwindow-modifier 'super ; Left Windows key
+               w32-rwindow-modifier 'super ; Right Windows key
+               w32-apps-modifier 'hyper)   ; Menu key
+         ;; export CYGWIN="nodosfilewarning winsymlinks"
+         ;; (customize-option 'w32-symlinks-handle-shortcuts)
+         (require-package '(w32-symlinks)))
 
-      ((or (eq system-type 'darwin))
-       (message "Loading Darwin specific configuration...")
-       (setq mac-command-modifier 'meta)
-       (setq mac-option-modifier 'super)
-       (setq ns-function-modifier 'hyper)
-       (message "Loading Darwin specific configuration...done")))
+       ((or (eq system-type 'darwin))
+        (message-progress "Loading Darwin specific configuration..."
+          (setq mac-command-modifier 'meta)
+          (setq mac-option-modifier 'super)
+          (setq ns-function-modifier 'hyper))))
 
 ;; auto-dired-reload
   ;; Reload dired after making changes
@@ -940,15 +937,3 @@ comment to the line."
 (fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
 (message "All done, %s%s" (user-login-name) ".")
 ;;; .emacs.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(paradox-automatically-star t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

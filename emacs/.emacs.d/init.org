@@ -58,8 +58,8 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 - [ ] human readable sizes in dired
   First have to determine how to unhide information on demand
 - [ ] windmove in org buffers
-- [ ] naming standard for org babel files sectioning
 - [ ] quick dict(ionary)
+- [ ] naming standard for org babel files sectioning
 ** [0/1] super helpful defuns to implement
 - [ ] byte-compile-directory
   (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
@@ -281,6 +281,16 @@ a read; stop this and go take a look if you haven't.
      '(progn ,@body)))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defmacro message-progress (message &rest body)
+    "Message MESSAGE and run BODY. Then message MESSSAGE...done."
+    (declare (indent defun))
+    `(progn
+       (message ,message)
+       (progn ,@body)
+       (message (concat ,message "...done"))))
+#+END_SRC
+
 The macros below are to facilitate loading with minimal code. This is
 Emacs; we use lists. Get used to it, they're pretty great.
 
@@ -388,8 +398,7 @@ Make zipped files obvious.
     (setq ad-return-value (concat ad-return-value ".gz"))))
 #+END_SRC
 
-* Autoloads
-** Require packages
+* Package initialization
 
 TODO: add optional minimum required emacs version for attempted
 include to the require-package macro
@@ -417,18 +426,11 @@ include to the require-package macro
       single-mode-autoloads))
 #+END_SRC
 
-TODO: make this nice, currently in transition period
-
-#+NAME: boilerplate autoloads
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'after-save-hook 'esc/auto-byte-recompile)
 #+END_SRC
 
-** Summon the magical cookies
-#+NAME: black magic -- begin!
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'kill-emacs-hook 'update-esc-lisp-autoloads)
-#+END_SRC
+* Autoloads
 ** Lua mode config
 Lua: necessary for Awesome WM.
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -554,7 +556,7 @@ Autoloads for the king, ace-window.
       (autoload-from-package "auto-complete"  '(global-auto-complete-mode)) ;autocomplete syntax
 #+END_SRC
 
-** Scroll all mode
+** Scroll all mode autoloads
 TODO: add hook
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq mwheel-scroll-up-function 'mwheel-scroll-all-scroll-up-all
@@ -574,7 +576,7 @@ Keep the minibuffer sane.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'minibuffer-setup-hook 'esc/minibuffer-setup-hook)
 #+END_SRC
-** ibuffer
+** ibuffer hook
 
 Modify dired view to include human readable size information.
 
@@ -613,15 +615,15 @@ ibuffer-vc is great; make it automatic.
 Include vc status info in the buffer list.
 Mabye I'll include this one day, for now it can live in hibernation.
 
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; (after 'ibuffer-vc-autoloads
-  ;;   (setq ibuffer-formats
-  ;;         '((mark modified read-only vc-status-mini " "
-  ;;                 (name 18 18 :left :elide)         " "
-  ;;                 (size 9 -1  :right)               " "
-  ;;                 (mode 16 16 :left :elide)         " "
-  ;;                 (vc-status 16 16 :left)           " "
-  ;;                 filename-and-process))))
+#+BEGIN_SRC emacs-lisp :tangle no
+  (after 'ibuffer-vc-autoloads
+    (setq ibuffer-formats
+          '((mark modified read-only vc-status-mini " "
+                  (name 18 18 :left :elide)         " "
+                  (size 9 -1  :right)               " "
+                  (mode 16 16 :left :elide)         " "
+                  (vc-status 16 16 :left)           " "
+                  filename-and-process))))
 #+END_SRC
 
 ** Prog mode
@@ -1045,6 +1047,15 @@ Some esc-keys weren't mapped with shell use in mind. Here's a bandaid.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq paradox-github-token "37204ef66b6566274616d130ec61a0cd4f98e066")
 #+END_SRC
+** Kill emacs hook
+
+Summon the magical cookies.
+
+#+NAME: black magic -- begin!
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'kill-emacs-hook 'update-esc-lisp-autoloads)
+#+END_SRC
+
 * OS configuration
 
 Operating system-specific configurations take place here, within this
@@ -1058,24 +1069,22 @@ would find the time to beef these up more.
              (eq system-type 'windows-nt)
              (eq system-type 'cygwin))
          ;; TODO: wrap message construct with a done-ifier
-         (message "Loading Windows specific configuration...")
-         (setq w32-pass-lwindow-to-system nil
-               w32-pass-rwindow-to-system nil
-               w32-pass-apps-to-system nil
-               w32-lwindow-modifier 'super ; Left Windows key
-               w32-rwindow-modifier 'super ; Right Windows key
-               w32-apps-modifier 'hyper)   ; Menu key
-         ;; export CYGWIN="nodosfilewarning winsymlinks"
-         (require-package '(w32-symlinks))
-         ;; (customize-option 'w32-symlinks-handle-shortcuts)
-         (message "Loading Windows specific configuration...done"))
+         (message-progress "Loading Windows specific configuration..."
+           (setq w32-pass-lwindow-to-system nil
+                 w32-pass-rwindow-to-system nil
+                 w32-pass-apps-to-system nil
+                 w32-lwindow-modifier 'super ; Left Windows key
+                 w32-rwindow-modifier 'super ; Right Windows key
+                 w32-apps-modifier 'hyper)   ; Menu key
+           ;; export CYGWIN="nodosfilewarning winsymlinks"
+           ;; (customize-option 'w32-symlinks-handle-shortcuts)
+           (require-package '(w32-symlinks)))
 
-        ((or (eq system-type 'darwin))
-         (message "Loading Darwin specific configuration...")
-         (setq mac-command-modifier 'meta)
-         (setq mac-option-modifier 'super)
-         (setq ns-function-modifier 'hyper)
-         (message "Loading Darwin specific configuration...done")))
+         ((or (eq system-type 'darwin))
+          (message-progress "Loading Darwin specific configuration..."
+            (setq mac-command-modifier 'meta)
+            (setq mac-option-modifier 'super)
+            (setq ns-function-modifier 'hyper))))
 #+END_SRC
 * Dired configuration
 #+NAME: dired configuration

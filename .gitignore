@@ -10,3 +10,4 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/elpa/archives/melpa-stable/archive-contents
 /emacs/.emacs.d/elpa/archives/melpa/archive-contents
 /emacs/.emacs.d/meta/keyfreq
+/emacs/.emacs.d/meta/saveplace.el
