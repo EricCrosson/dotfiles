@@ -263,7 +263,8 @@ This macro runs conses through \\[esc-key] for convenience."
   ("C-x C-b" . ibuffer)              ; use font-lock with buffer lists
   ("C-x M-b" . bury-buffer)
   ("C-x M-B" . esc/bury-other-buffer)
-  ("C-c o"   . clone-indirect-buffer-other-window))
+  ("C-c o"   . clone-indirect-buffer-other-window)
+  ("C-c C-o" . ff-find-other-file))
 
 (after 'expand-region-autoloads     ;thanks magnar
   (esc-key "C-=" 'er/expand-region))
