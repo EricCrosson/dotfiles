@@ -106,6 +106,36 @@
       (list-files-in-subtree-matching-regexp-recursive
        esc-lisp-path "loaddefs.el"))
 
+(defmacro after (mode &rest body)
+  "`eval-after-load' MODE evaluate BODY."
+  (declare (indent defun))
+  `(eval-after-load ,mode
+     '(progn ,@body)))
+
+(defmacro message-progress (message &rest body)
+  "Message MESSAGE and run BODY. Then message MESSSAGE...done."
+  (declare (indent defun))
+  `(progn
+     (message ,message)
+     (progn ,@body)
+     (message (concat ,message "...done"))))
+
+(defmacro autoload-from-package (package functions)
+  "From PACKAGE (string), autoload FUNCTIONS (list)."
+  (declare (indent defun))
+  `(mapc (lambda (fn) (autoload fn ,package nil t))
+         ,functions))
+
+(defmacro require-package (packages)
+  "Require PACKAGES (list) quietly."
+  (declare (indent defun))
+  `(mapc (lambda (package) (require package nil 'noerror))
+         ,packages))
+
+(setq load-prefer-newer t)
+(require-package '(auto-compile))
+(auto-compile-on-load-mode 1)
+
 (when (require 'package nil 'noerror)
   (setq package-user-dir "~/.emacs.d/elpa/")
   (mapc (lambda (source)
@@ -177,37 +207,6 @@
       backup-by-copying-when-mismatch t)
 
 (defalias 'undefun 'fmakunbound)
-
-(defmacro after (mode &rest body)
-  "`eval-after-load' MODE evaluate BODY."
-  (declare (indent defun))
-  `(eval-after-load ,mode
-     '(progn ,@body)))
-
-(defmacro message-progress (message &rest body)
-  "Message MESSAGE and run BODY. Then message MESSSAGE...done."
-  (declare (indent defun))
-  `(progn
-     (message ,message)
-     (progn ,@body)
-     (message (concat ,message "...done"))))
-
-(defmacro autoload-from-package (package functions)
-  "From PACKAGE (string), autoload FUNCTIONS (list)."
-  (declare (indent defun))
-  `(mapc (lambda (fn) (autoload fn ,package nil t))
-         ,functions))
-
-(defmacro require-package (packages)
-  "Require PACKAGES (list) quietly."
-  (declare (indent defun))
-  `(mapc (lambda (package) (require package nil 'noerror))
-         ,packages))
-
-(defmacro activate-package (packages)
-  "Activates PACKAGES (list)."
-  (declare (indent defun))
-  `(mapc (lambda (package) (funcall package 1)) ,packages))
 
 (defadvice org-agenda (around shrink-agenda-buffer activate)
   "Shrink the agenda after initial display."
