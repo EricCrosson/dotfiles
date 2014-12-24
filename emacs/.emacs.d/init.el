@@ -169,7 +169,7 @@
 ;; Backup settings
 (push '("." . "~/.config/.emacs.d/") backup-directory-alist)
 (desktop-save-mode 1)                   ;use desktop file
-(setq desktop-save 'ask-if-new          ;save open buffers
+(setq desktop-save 'nil                 ;save open buffers
       desktop-path '("~/emacs.d")       ;local desktop files
       desktop-base-filename "desktop"
       desktop-load-locked-desktop t     ;never freeze after crash

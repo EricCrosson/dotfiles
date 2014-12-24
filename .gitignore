@@ -1,5 +1,5 @@
 *~
-/emacs//.emacs.d/ac-comphist.dat
+/emacs/.emacs.d/ac-comphist.dat
 emacs/.emacs.d/session.*
 /xmonad/.xmonad/xmonad.hi
 /xmonad/.xmonad/xmonad.o
@@ -11,3 +11,6 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/elpa/archives/melpa/archive-contents
 /emacs/.emacs.d/meta/keyfreq
 /emacs/.emacs.d/meta/saveplace.el
+/emacs/.emacs.d/esc-lisp/headache/
+/emacs/.emacs.d/esc-lisp/springboard/
+/emacs/.emacs.d/elpa/*-readme.txt
