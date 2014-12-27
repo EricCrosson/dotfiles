@@ -1113,6 +1113,22 @@ would find the time to beef these up more.
   (add-hook 'dired-load-hook 'esc/dired-load-hook)
 #+END_SRC
 
+* Color theme stack
+  #+BEGIN_SRC emacs-lisp :tangle esc-lisp/color-theme-stack.el
+    (require 'cl)
+    (require 'color-theme)
+
+    (defvar color-theme-stack nil
+      "Stack of color themes.")
+
+    (defun color-theme-push ()
+      "Switch to a theme, saving the old one."
+      (push (color-theme-make-snapshot) color-theme-stack))
+
+    (defun color-theme-pop ()
+      "Restore the previous theme in use."
+      (funcall (pop color-theme-stack)))
+  #+END_SRC
 ** Wdired
 #+BEGIN_SRC emacs-lisp :tangle yes
   (eval-after-load "wdired"
