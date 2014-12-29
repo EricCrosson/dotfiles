@@ -1093,7 +1093,7 @@ would find the time to beef these up more.
           (message-progress "Loading Darwin specific configuration..."
             (setq mac-command-modifier 'meta)
             (setq mac-option-modifier 'super)
-            (setq ns-function-modifier 'hyper))))
+            (setq ns-function-modifier 'hyper)))))
 #+END_SRC
 * Dired configuration
 #+NAME: dired configuration

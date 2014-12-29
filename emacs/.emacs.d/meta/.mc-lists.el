@@ -34,6 +34,7 @@
 	esc/pull-up-line
 	esc/toggle-letter-case
 	forward-sexp
+	ignore
 	indent-for-tab-command
 	insert-register
 	kill-region

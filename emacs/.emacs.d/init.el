@@ -662,7 +662,7 @@ comment to the line."
         (message-progress "Loading Darwin specific configuration..."
           (setq mac-command-modifier 'meta)
           (setq mac-option-modifier 'super)
-          (setq ns-function-modifier 'hyper))))
+          (setq ns-function-modifier 'hyper)))))
 
 ;; auto-dired-reload
   ;; Reload dired after making changes
