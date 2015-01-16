@@ -1056,6 +1056,10 @@ Some esc-keys weren't mapped with shell use in mind. Here's a bandaid.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq paradox-github-token "37204ef66b6566274616d130ec61a0cd4f98e066")
 #+END_SRC
+** Big fringe mode hook
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-hook 'big-fringe-mode-hook 'esc/big-fringe-mode-hook)
+   #+END_SRC
 ** Kill emacs hook
 
 Summon the magical cookies.
@@ -1171,6 +1175,7 @@ My favorite mode. This was the reason I started using Emacs, didja know?
       (local-set-key (kbd "C-c C-a") 'org-todo))
     (add-hook 'org-mode-hook 'esc/after-org-mode-hook))
 #+END_SRC
+
 #+NAME: adding comments to org
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'org

@@ -641,6 +641,8 @@ comment to the line."
 
 (setq paradox-github-token "37204ef66b6566274616d130ec61a0cd4f98e066")
 
+(add-hook 'big-fringe-mode-hook 'esc/big-fringe-mode-hook)
+
 (add-hook 'kill-emacs-hook 'update-esc-lisp-autoloads)
 
 (cond ((or (eq system-type 'ms-dos)
