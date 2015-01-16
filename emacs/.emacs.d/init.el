@@ -151,6 +151,7 @@
 
 (put 'overwrite-mode 'disabled t)       ;There shall be no 'insert'
 (fset 'yes-or-no-p 'y-or-n-p)           ;change yes-no to y-n
+(setq-default size-indication-mode t)
 (setq debug-on-error t
       ring-bell-function 'ignore        ;turn off alarms completely
       uniquify-separator ":"            ;needs to be set before uniquify
@@ -271,6 +272,7 @@ comment to the line."
     ; elpa does?
     esc-mode                             ;The Power Glove
     cnsim-mode-autoloads
+    big-fringe-mode ;; why is this here again? how to auto-load by nature of being in esc-lisp?
     ;; TODO: find a way to autoload the whole shebang
     single-mode-autoloads))
 
@@ -640,6 +642,8 @@ comment to the line."
   (setq bitly-access-token "b4a5cd4e51df442ab97012cfc2764c599d6eabf8"))
 
 (setq paradox-github-token "37204ef66b6566274616d130ec61a0cd4f98e066")
+
+(add-hook 'big-fringe-mode-hook 'esc/big-fringe-mode-hook)
 
 (add-hook 'kill-emacs-hook 'update-esc-lisp-autoloads)
 

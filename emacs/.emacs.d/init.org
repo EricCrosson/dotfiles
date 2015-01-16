@@ -246,6 +246,7 @@ like the long setq syntax for now.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (put 'overwrite-mode 'disabled t)       ;There shall be no 'insert'
   (fset 'yes-or-no-p 'y-or-n-p)           ;change yes-no to y-n
+  (setq-default size-indication-mode t)
   (setq debug-on-error t
         ring-bell-function 'ignore        ;turn off alarms completely
         uniquify-separator ":"            ;needs to be set before uniquify
@@ -431,6 +432,7 @@ include to the require-package macro
       ; elpa does?
       esc-mode                             ;The Power Glove
       cnsim-mode-autoloads
+      big-fringe-mode ;; why is this here again? how to auto-load by nature of being in esc-lisp?
       ;; TODO: find a way to autoload the whole shebang
       single-mode-autoloads))
 #+END_SRC
@@ -1056,6 +1058,10 @@ Some esc-keys weren't mapped with shell use in mind. Here's a bandaid.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq paradox-github-token "37204ef66b6566274616d130ec61a0cd4f98e066")
 #+END_SRC
+** Big fringe mode hook
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (add-hook 'big-fringe-mode-hook 'esc/big-fringe-mode-hook)
+   #+END_SRC
 ** Kill emacs hook
 
 Summon the magical cookies.
@@ -1171,6 +1177,7 @@ My favorite mode. This was the reason I started using Emacs, didja know?
       (local-set-key (kbd "C-c C-a") 'org-todo))
     (add-hook 'org-mode-hook 'esc/after-org-mode-hook))
 #+END_SRC
+
 #+NAME: adding comments to org
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'org
