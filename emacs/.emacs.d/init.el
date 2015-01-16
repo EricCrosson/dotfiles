@@ -151,6 +151,7 @@
 
 (put 'overwrite-mode 'disabled t)       ;There shall be no 'insert'
 (fset 'yes-or-no-p 'y-or-n-p)           ;change yes-no to y-n
+(setq-default size-indication-mode t)
 (setq debug-on-error t
       ring-bell-function 'ignore        ;turn off alarms completely
       uniquify-separator ":"            ;needs to be set before uniquify
@@ -271,6 +272,7 @@ comment to the line."
     ; elpa does?
     esc-mode                             ;The Power Glove
     cnsim-mode-autoloads
+    big-fringe-mode ;; why is this here again? how to auto-load by nature of being in esc-lisp?
     ;; TODO: find a way to autoload the whole shebang
     single-mode-autoloads))
 
