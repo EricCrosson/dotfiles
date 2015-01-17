@@ -38,5 +38,6 @@ delay_to_stable_xorg=2
 # begin synergy server
 # ((sleep $delay_to_stable_xorg); synergys) &
 
-exec xmonad
+exec dwm
+# exec xmonad
 # exec awesome

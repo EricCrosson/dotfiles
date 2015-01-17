@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# declare -r date=$(date +"%R")
+# declare -r batt=$(acpi -b | sed 's/.*[charging|unknown], \([0-9]*\)%.*/\1/gi')
+# declare -r status=$(acpi -b | sed 's/.*: \([a-zA-Z]*\),.*/\1/gi')
+
+# while true; do
+#     xsetroot -name "$(echo $date $batt $status)"
+#     sleep 60s
+# done
+
+exec dwm
