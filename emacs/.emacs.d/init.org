@@ -47,6 +47,7 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 :PROPERTIES:
 :COOKIE_DATA: recursive
 :END:
+- [ ] remove tangles files from git, provide makefile
 - [ ] C-h C-k takes you to org instead of .el
 - [ ] tangling scripts adds execute permission
   (write-region "" nil custom-file)
