@@ -252,6 +252,8 @@ This macro runs conses through \\[esc-key] for convenience."
   ("C-c l \\" . li/indent-entire-defun)
   ("C-s-e"    . li/eval-current-defun)
   ("C-c l e"  . li/eval-current-sexp))
+;; Preserving stock org functionality
+(esc-key "C-c l l" 'org-store-link)
 
 ;; single-mode != vi
 (esc-keys
