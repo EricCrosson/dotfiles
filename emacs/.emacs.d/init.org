@@ -43,12 +43,11 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (load-theme 'wombat)
 #+END_SRC
-* [0/9] TODOs
+* [0/11] TODOs
 :PROPERTIES:
 :COOKIE_DATA: recursive
 :END:
 - [ ] remove tangles files from git, provide makefile
-- [ ] C-h C-k takes you to org instead of .el
 - [ ] tangling scripts adds execute permission
   (write-region "" nil custom-file)
 - [ ] allow tabs in makefile-mode
@@ -60,17 +59,20 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
   First have to determine how to unhide information on demand
 - [ ] windmove in org buffers
 - [ ] quick dict(ionary)
+  for definitions, not spell check
 - [ ] naming standard for org babel files sectioning
+- [ ] no tabs in align  
 ** [0/1] super helpful defuns to implement
 - [ ] byte-compile-directory
   (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
   mirror byte-compile-file's method of querying file to compile
-** advice to implement
-- [ ] OPTIONAL: defcustom to accept an :autoload in addition to :require
+** [0/2] advice to implement
+- [ ] OPTIONAL: defcustom to accept an :autoload in addition
+  to :require
+- [ ] C-h C-k takes you to org instead of .el
 ** [0/2] ibuffer changes
 - [ ] ibuffer, create mode to replace sort-by -mode with -ssh host
 - [ ] ibuffer-vc, make it group files over tramp
-
 * Free variables
 
 This section declares variables to prevent compiler warnings.
