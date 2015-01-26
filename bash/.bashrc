@@ -50,21 +50,36 @@ fortune_args="-s"
 unset no_fortune keep_it_clean
 
 # Operating system tests
-function isArch(){
+isArch(){
     [[ $(uname -r |grep -io "arch\\|libre") ]] && \
         return $true; return $false; }
 
-function atWork(){
+atWork(){
     [[ $(hostname) == orpheus ]] && \
         return $true; return $false; }
 
-while [[ $1 == *"-"* ]]; do     # Parse arguments
-    case $1 in
-        --silent ) no_fortune=1 ;;
-    esac; shift; done
+# Execute getopt
+ARGS=$(getopt -o st -l "silent,test" -n ".bashrc" -- "$@");
+
+# Fail on bad arguments
+if [ $? -ne 0 ]; then
+    echo -e ""
+    exit 1
+fi
+
+eval set -- "${ARGS}";
+
+while true; do
+    case "${1}" in
+        -s|--silent) no_fortune=1 ;;
+        -t|--test)   echo "Test works" ;;
+        --) break ;;
+    esac
+    shift
+done
 
 # Source configs
-declare -r api=~/.config/bash/api
+declare -r api=~/.config/bash/api 2>/dev/null
 source ${api}/io
 for src in /etc/bashrc /usr/share/git/git-prompt.sh; do
     source ${src} 2>/dev/null # no worries if dne
@@ -127,7 +142,7 @@ esac
 
 # TODO: https://krash.be/node/25
 #       color PS1 based on exit code of previous command
-function prompt_command() {
+prompt_command() {
     case $(uname -a) in
         *Linux*|*Darwin* )
             PS1=$(\cat <<EOF
@@ -401,15 +416,15 @@ complete -o filenames -F _commacd_backward_forward_completion ,,,
 ### installed in one's .bashrc.
 
 # Prefixes to avoid namespace collisions
-function esc_timer_start() {
+esc_timer_start() {
     esc_timer=${esc_timer:-$SECONDS} ;}
 
-function esc_timer_stop() {
+esc_timer_stop() {
     esc_timer_show=$(($SECONDS - $esc_timer))
     unset esc_timer ; }
 
 # Convert integer seconds to days,HH:MM:SS
-function esc_seconds_to_days() {
+esc_seconds_to_days() {
     printf "%ddays,%02d:%02d:%02d" $(((($1/60)/60)/24))   \
         $(((($1/60)/60)%24)) $((($1/60)%60)) $(($1%60)) | \
         sed 's/^1days/1day/;s/^0days,\(00:\)*//;s/^0//' ; }
@@ -423,7 +438,7 @@ alias took='echo $(esc_seconds_to_days ${esc_timer_show})'
 
 ### End official caveat ###
 
-function org() {
+org() {
     pushd ~/org &> /dev/null
     git-sync
 }

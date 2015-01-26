@@ -1,4 +1,4 @@
-+STARTUP: content
+#+STARTUP: content
 #+TODO: TODO(t) IN-PROGRESS(p) VERIFY(v) | OPTIONAL(o) DONE(d) CANCELED(c)
 
 * Introduction
@@ -79,32 +79,46 @@ I use these tests to determine which configs should be sourced.
 
 #+BEGIN_SRC sh :tangle .bashrc
   # Operating system tests
-  function isArch(){
+  isArch(){
       [[ $(uname -r |grep -io "arch\\|libre") ]] && \
           return $true; return $false; }
 
-  function atWork(){
+  atWork(){
       [[ $(hostname) == orpheus ]] && \
           return $true; return $false; }
 #+END_SRC
 
 ** Argument handling
 
-| Known argument | function   |
+| Argument       | function   |
 |----------------+------------|
-| --silent       | no fortune |
+| -s or --silent | no fortune |
 
 #+BEGIN_SRC sh :tangle .bashrc
-  while [[ $1 == *"-"* ]]; do     # Parse arguments
-      case $1 in
-          --silent ) no_fortune=1 ;;
-      esac; shift; done
+  # Execute getopt
+  ARGS=$(getopt -o s -l "silent" -n ".bashrc" -- "$@");
+
+  # Fail on bad arguments
+  if [ $? -ne 0 ]; then
+      echo -e ""
+      exit 1
+  fi
+
+  eval set -- "${ARGS}";
+
+  while true; do
+      case "${1}" in
+          -s|--silent) no_fortune=1 ;;
+          --) break ;;
+      esac
+      shift
+  done
 #+END_SRC
 
 ** Source configs
 #+BEGIN_SRC sh :tangle .bashrc
   # Source configs
-  declare -r api=~/.config/bash/api
+  declare -r api=~/.config/bash/api 2>/dev/null
   source ${api}/io
   for src in /etc/bashrc /usr/share/git/git-prompt.sh; do
       source ${src} 2>/dev/null # no worries if dne
@@ -189,7 +203,7 @@ Note: this section has been disabled.
 
   # TODO: https://krash.be/node/25
   #       color PS1 based on exit code of previous command
-  function prompt_command() {
+  prompt_command() {
       case $(uname -a) in
           ,*Linux*|*Darwin* )
               PS1=$(\cat <<EOF
@@ -521,32 +535,32 @@ bash.
 
   # Avoid adding duplicates to a path. $2, if non-nil, is the variable
   # to append $1 to
-  function pathAppend() {
+  pathAppend() {
       newPath=$1; list=$2; shift; shift
       [[ -z $newPath ]] && return $false;
       [[ -z $list ]] && list=PATH
       [[ -z $(echo ${!list}|grep $newPath) ]] && export $(echo $list)="${!list}:$newPath"; }
 
-  function loadFile() { [[ -f $1 ]] && source "$1" || echoerr "$1 not found"; }
+  loadFile() { [[ -f $1 ]] && source "$1" || echoerr "$1 not found"; }
 
   ## For all functions below:
   # ARGS: color, string_to_print
-  function changeColor() { echo -ne $1 ; }
+  changeColor() { echo -ne $1 ; }
 
   # Does not append newline
-  function message() { changeColor ${1}; echo -ne "$2"; changeColor ${Color_Off}; }
+  message() { changeColor ${1}; echo -ne "$2"; changeColor ${Color_Off}; }
 
   ## These functions do append newlines
   # Functions for printing errors
   export ALERT="(i)"
-  function warning() { message ${BYellow} "warning: " 1>&2; message ${BWhite} "$\n" 1>&2; }
-  function echoerr() { echo "$@" 1>&2; } # echo to stderr
-  function error() { message ${BRed} "error: " 1>&2; message ${BWhite} "$@\n" 1>&2; }
+  warning() { message ${BYellow} "warning: " 1>&2; message ${BWhite} "$\n" 1>&2; }
+  echoerr() { echo "$@" 1>&2; } # echo to stderr
+  error() { message ${BRed} "error: " 1>&2; message ${BWhite} "$@\n" 1>&2; }
 
   # Functions for printing
-  function section() { message ${BBlue} ":: "; message ${BWhite} "$@\n"; }
-  function note() { message ${BGreen} "==> "; message ${BWhite} "$@\n"; }
-  function subnote() { message ${BBlue} "  -> "; message ${BWhite} "$@\n"; }
+  section() { message ${BBlue} ":: "; message ${BWhite} "$@\n"; }
+  note() { message ${BGreen} "==> "; message ${BWhite} "$@\n"; }
+  subnote() { message ${BBlue} "  -> "; message ${BWhite} "$@\n"; }
   ## End functions that append newlines
 
   # Functinon to append a command to a trap
@@ -570,14 +584,14 @@ bash.
 
   # This function provides a safe way to prompt for passwords. The
   # result is stored in $secret_passwd
-  function query_password() {
+  query_password() {
       read -p "Password: " -s secret_passwd && echo "" # insert carriage return
       # TODO: find a way to abort nicely
       # [[ -z $secret_passwd ]] && exit 1
   }
 
   # Printing stack traces
-  function print_call_trace()
+  print_call_trace()
   {
       # skipping i=0 as this is print_call_trace itself
       for ((i = 1; i < ${#FUNCNAME[@]}; i++)); do
@@ -586,7 +600,7 @@ bash.
       done
   }
 
-  function ntest()
+  ntest()
   {
       if [[ $(which prettyping.sh) ]]; then
           prettyping.sh google.com
@@ -612,7 +626,7 @@ bash.
   [[ -n "${!_zero}" ]] && return
   printf -v ${_zero} "Loaded"
 
-  function calculate() {
+  calculate() {
       while [[ $1 == --* ]]; do
           case $1 in
               --dec)
@@ -754,15 +768,15 @@ hit enter.)
   ### installed in one's .bashrc.
 
   # Prefixes to avoid namespace collisions
-  function esc_timer_start() {
+  esc_timer_start() {
       esc_timer=${esc_timer:-$SECONDS} ;}
 
-  function esc_timer_stop() {
+  esc_timer_stop() {
       esc_timer_show=$(($SECONDS - $esc_timer))
       unset esc_timer ; }
 
   # Convert integer seconds to days,HH:MM:SS
-  function esc_seconds_to_days() {
+  esc_seconds_to_days() {
       printf "%ddays,%02d:%02d:%02d" $(((($1/60)/60)/24))   \
           $(((($1/60)/60)%24)) $((($1/60)%60)) $(($1%60)) | \
           sed 's/^1days/1day/;s/^0days,\(00:\)*//;s/^0//' ; }
@@ -785,7 +799,7 @@ changes. Naturally, I'll want the dir updated, so use git-sync to
 update the repo after I'm there.
 
 #+BEGIN_SRC sh :tangle .bashrc
-  function org() {
+  org() {
       pushd ~/org &> /dev/null
       git-sync
   }
@@ -815,12 +829,12 @@ update the repo after I'm there.
   # Emacs ansi-term directory tracking
   # track directory, username, and cwd for remote logons
   if [ $TERM = eterm-color ]; then
-      function eterm-set-cwd {
+      eterm-set-cwd {
           $@
           echo -e "\033AnSiTc" $(pwd)
       }
 
-      function eterm-reset {      # set hostname, user, and cwd
+      eterm-reset {      # set hostname, user, and cwd
           echo -e "\033AnSiTu" $(whoami)
           echo -e "\033AnSiTc" $(pwd)
           echo -e "\033AnSiTh" $(hostname)
@@ -869,7 +883,7 @@ update the repo after I'm there.
   # $1- variable name in bash
   # $2- variable value in bash
   # $3- type of phone (optional)
-  function register_phone()
+  register_phone()
   {
       export $1=$2
 
@@ -940,7 +954,7 @@ update the repo after I'm there.
   # TODO: make OS inspecific
   # alias which='alias | which --tty-only --read-alias --show-dot --show-tilde '
   alias chx='chmod +x '
-  function mc () { mkdir -p "$@" && eval cd "\"\$$#\""; }
+  mc () { mkdir -p "$@" && eval cd "\"\$$#\""; }
 
   # inflation/compression
   alias zip='zip -r '
@@ -987,19 +1001,19 @@ update the repo after I'm there.
   alias irons='ssh -Yt irons screen -x hershal/'
 
   # Aliasing functions
-  function emr() { emacsclient -c -a emacs "/sudo:root@localhost:$1"; }
-  #function evince() { evince "$1" 2>/dev/null & }
+  emr() { emacsclient -c -a emacs "/sudo:root@localhost:$1"; }
+  #evince() { evince "$1" 2>/dev/null & }
 
   # Find files matching a given pattern
-  function ff() { ffand "$1" "$2"; }
+  ff() { ffand "$1" "$2"; }
 
   # Find a file with pattern $1 in name and execute $2 on it:
-  function ffand() { find . -type f -iname '*'${1:-}'*' -exec ${2:-file} {} \; ; }
+  ffand() { find . -type f -iname '*'${1:-}'*' -exec ${2:-file} {} \; ; }
 
   # General functions
-  function inside_screen() { [[ -z $STY ]] && echo "false" || echo "true"; }
+  inside_screen() { [[ -z $STY ]] && echo "false" || echo "true"; }
 
-  function cmdcat() {
+  cmdcat() {
       # Output the source of the following command
       cat $(which $*)
   }
@@ -1064,7 +1078,7 @@ update the repo after I'm there.
 
   ### Color cat
   # Thanks to http://felixcrux.com/blog/syntax-highlighting-cat
-  function pygmentize_cat() {
+  pygmentize_cat() {
       for arg in "$@"; do
           pygmentize -g "$arg" 2>/dev/null || cat "$arg"
       done
@@ -1171,7 +1185,7 @@ update the repo after I'm there.
 #+BEGIN_SRC sh :tangle .config/bash/user.init/arch
   alias pacman='sudo pacman '
 
-  function orphans() {
+  orphans() {
       if [[ -z $(which pacman 2>/dev/null) ]]; then
           echo "Pacman is not installed on this system."
           return $false
@@ -1187,12 +1201,12 @@ update the repo after I'm there.
   # Convenient variables
   if [[ $(which ip 2>/dev/null) ]]; then
       # "Wireless Interface"
-      function wi() { export wi=${wi:-$(ip addr | \grep -o -e "wlp[[:alnum:]]*" | sort -u | head -n1)}; echo $wi; }
+      wi() { export wi=${wi:-$(ip addr | \grep -o -e "wlp[[:alnum:]]*" | sort -u | head -n1)}; echo $wi; }
       # "LAN Interface"
-      function li() { export li=${li:-$(ip addr | \grep -o -e "enp[[:alnum:]]*" | sort -u | head -n1)}; echo $li; }
+      li() { export li=${li:-$(ip addr | \grep -o -e "enp[[:alnum:]]*" | sort -u | head -n1)}; echo $li; }
       ip=$(ip addr | \grep -A4 "wlp\\|eth\\|enp" \
           | \grep -o "[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*\.[[:digit:]]*" | head -n1)
-      function ext() { [[ -z $ext ]] && ext=$(curl -s http://ipecho.net/plain; echo); echo $ext; }
+      ext() { [[ -z $ext ]] && ext=$(curl -s http://ipecho.net/plain; echo); echo $ext; }
   fi
 #+END_SRC
 * root bashrc

@@ -8,12 +8,12 @@ printf -v ${_zero} "Loaded"
 # Emacs ansi-term directory tracking
 # track directory, username, and cwd for remote logons
 if [ $TERM = eterm-color ]; then
-    function eterm-set-cwd {
+    eterm-set-cwd {
         $@
         echo -e "\033AnSiTc" $(pwd)
     }
 
-    function eterm-reset {      # set hostname, user, and cwd
+    eterm-reset {      # set hostname, user, and cwd
         echo -e "\033AnSiTu" $(whoami)
         echo -e "\033AnSiTc" $(pwd)
         echo -e "\033AnSiTh" $(hostname)
