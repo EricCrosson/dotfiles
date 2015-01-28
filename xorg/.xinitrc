@@ -39,7 +39,7 @@ delay_to_stable_xorg=2
 # ((sleep $delay_to_stable_xorg); synergys) &
 
 # exec dwm
-# exec gnome-session
+exec gnome-session
 # exec gnome-session --session=xmonad
 # exec xmonad
-exec awesome
+# exec awesome
