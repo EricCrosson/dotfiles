@@ -1062,6 +1062,10 @@ Some esc-keys weren't mapped with shell use in mind. Here's a bandaid.
    #+BEGIN_SRC emacs-lisp :tangle yes
      (add-hook 'big-fringe-mode-hook 'esc/big-fringe-mode-hook)
    #+END_SRC
+** Haskell mode hook
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'haskell-mode-hook 'haskell-indent-mode)
+#+END_SRC
 ** Kill emacs hook
 
 Summon the magical cookies.
