@@ -62,7 +62,7 @@ function pygmentize_cat() {
         pygmentize -g "$arg" 2>/dev/null || cat "$arg"
     done
 }
-[[ $(which cat 2>/dev/null) ]] && alias cat='pygmentize_cat '
+[[ $(which cat 2>/dev/null) ]]&& $(which pygmentize_cat 2>/dev/null) && alias cat='pygmentize_cat '
 
 ### Daemons
 alias teamviewerd="sudo systemctl start teamviewerd "
