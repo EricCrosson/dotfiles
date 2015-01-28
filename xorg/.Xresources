@@ -24,7 +24,7 @@ xterm*color14:        rgb:a1/cd/cd
 !white
 xterm*color7:         rgb:ff/ff/ff
 
-xterm*reverseVideo:   off
+xterm*reverseVideo:   on
 
 xterm*metaSendsEscape: true
 xterm*cursorColor: red
