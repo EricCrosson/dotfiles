@@ -137,7 +137,7 @@ git branch &>/dev/null; [ $? -eq 0 ] &&
   echo -n $(echo $(git status) | grep "nothing to commit" &> /dev/null 2>&1; \
   [ $? -eq 0 ] && echo $Green$(__git_ps1 2>/dev/null "(%s)") || echo $IRed$(__git_ps1 2>/dev/null "{%s}"););
 )\
-\[$prompt_style\]${debian_chroot:+($debian_chroot)}\u@\h:$(color_path_symlinks.sh)\$\[$command_style\]
+\[$prompt_style\]${debian_chroot:+($debian_chroot)}\u@\h:$(color_path_symlinks)\$\[$command_style\]
 EOF
             )
             PS1="${PS1} "       # Add the space before user input
