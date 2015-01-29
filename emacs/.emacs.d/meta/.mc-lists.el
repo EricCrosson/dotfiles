@@ -31,6 +31,7 @@
 	esc/insert-surrounding-brackets-with-colon
 	esc/insert-surrounding-chevrons
 	esc/insert-surrounding-parens
+	esc/open-line-below
 	esc/pull-up-line
 	esc/toggle-letter-case
 	forward-sexp
