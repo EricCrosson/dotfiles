@@ -1,8 +1,0 @@
-touch pseudop_operations.{c,h}
-l
-touch tac.cpp
-(Matrix.identity 3)
-(Matrix.identity 3)
-(Matrix.isIdentity '((1 0) (0 1)))
-ls
-./rprint.sh 10 2

@@ -16,3 +16,5 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/elpa/*-readme.txt
 /emacs/.emacs.d/url/
 /emacs/.emacs.d/recentf
+/emacs/.emacs.d/ido.last
+/emacs/.emacs.d/eshell/history
