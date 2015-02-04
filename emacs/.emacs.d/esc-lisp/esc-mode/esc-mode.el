@@ -333,7 +333,7 @@ This macro runs conses through \\[esc-key] for convenience."
   ("C-M-," . esc/insert-surrounding-chevrons)
   ("C-M-'" . esc/insert-surrounding-quotes)
   ("C-M-*" . esc/insert-surrounding-stars)
-  ("C-M-$" . esc/insert-surrounding-dollars)
+  ("C-M-g" . esc/insert-surrounding-dollars)
   ("C-M-`" . esc/insert-surrounding-ticks))
 
 ;; programming delimeter and line hacks
