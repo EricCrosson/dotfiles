@@ -445,6 +445,9 @@ include to the require-package macro
 
 * Autoloads
 ** Single mode config
+
+TODO: find a better place for this code
+
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defvar single-mode-map (make-keymap)
     "The keymap for \\[single-mode].")
