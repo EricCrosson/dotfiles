@@ -1,11 +1,7 @@
 ;;
 
-;;;### (autoloads (single/single-mode-hook single/kill-current-buffer
-;;;;;;  single/iedit-mode single/read-only-mode single/undo single/query-replace
-;;;;;;  single/ff-in-single-mode single/scroll-down single/scroll-up
-;;;;;;  single/quit-single-mode single-wrap-around-read-only-mode
-;;;;;;  single-mode-enabled) "single-mode" "../../../../../.emacs.d/esc-lisp/single-mode/single-mode.el"
-;;;;;;  (21645 60759 403562 413000))
+;;;### (autoloads nil "single-mode" "../../../../../.emacs.d/esc-lisp/single-mode/single-mode.el"
+;;;;;;  (21705 16240 864682 627000))
 ;;; Generated autoloads from ../../../../../.emacs.d/esc-lisp/single-mode/single-mode.el
 
 (autoload 'single-mode-enabled "single-mode" "\

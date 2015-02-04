@@ -1,8 +1,27 @@
 ;;
 
-;;;### (autoloads nil "boilerplate/boilerplate" "boilerplate/boilerplate.el"
-;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from boilerplate/boilerplate.el
+;;;### (autoloads nil "boilerplate/boilerplate" "../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el"
+;;;;;;  (21714 29750 823294 404000))
+;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el
+
+(autoload 'esc/toggle-fullscreen-buffer "boilerplate/boilerplate" "\
+Bring up a temporary buffer in fullscreen mode, or restore the
+previous window configuration.
+
+WIN-REGISTER         is the register to store the old window configuration in.
+
+TOGGLED-MODE-TEST    is the major mode of the toggled state, in other words a
+                     test to determine which way to toggle the buffers.
+
+TOGGLE-COMMAND       is the command to run when toggling into the temporary
+                     state.
+
+CLEAR-COMMAND        is an optional command to run when reverting back to the
+                     original state; i.e. toggle a flag
+
+\(fn WIN-REGISTER TOGGLED-MODE-TEST TOGGLE-COMMAND &optional TOGGLE-COMMAND-TEST CLEAR-COMMAND)" nil t)
+
+(put 'esc/toggle-fullscreen-buffer 'lisp-indent-function 'defun)
 
 (autoload 'esc/prog-mode-hook "boilerplate/boilerplate" "\
 esc's hook to \\[prog-mode-hook].
@@ -450,25 +469,6 @@ prefixed) then after the other-buffer is buried, the command
 
 \(fn &optional SWITCH-TO-OTHER-BUFFER)" t nil)
 
-(autoload 'esc/toggle-fullscreen-buffer "boilerplate/boilerplate" "\
-Bring up a temporary buffer in fullscreen mode, or restore the
-previous window configuration.
-
-WIN-REGISTER         is the register to store the old window configuration in.
-
-TOGGLED-MODE-TEST    is the major mode of the toggled state, in other words a
-                     test to determine which way to toggle the buffers.
-
-TOGGLE-COMMAND       is the command to run when toggling into the temporary
-                     state.
-
-CLEAR-COMMAND        is an optional command to run when reverting back to the
-                     original state; i.e. toggle a flag
-
-\(fn WIN-REGISTER TOGGLED-MODE-TEST TOGGLE-COMMAND &optional TOGGLE-COMMAND-TEST CLEAR-COMMAND)" nil t)
-
-(put 'esc/toggle-fullscreen-buffer 'lisp-indent-function 'defun)
-
 (autoload 'esc/raise-ansi-term "boilerplate/boilerplate" "\
 If the current buffer is:
 
@@ -555,9 +555,9 @@ Bury the compilation buffer after a successful compile.
 
 ;;;***
 
-;;;### (autoloads nil "dired-config/dired-config" "dired-config/dired-config.el"
+;;;### (autoloads nil "dired-config/dired-config" "../../../../.emacs.d/esc-lisp/dired-config/dired-config.el"
 ;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from dired-config/dired-config.el
+;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/dired-config/dired-config.el
 
 (autoload 'esc/dired-mode-hook "dired-config/dired-config" "\
 esc's hook to \\[dired-mode-hook].
@@ -629,9 +629,9 @@ Otherwise, signal a `file-notify-error'.
 
 ;;;***
 
-;;;### (autoloads nil "ido-config/ido-config" "ido-config/ido-config.el"
+;;;### (autoloads nil "ido-config/ido-config" "../../../../.emacs.d/esc-lisp/ido-config/ido-config.el"
 ;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from ido-config/ido-config.el
+;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/ido-config/ido-config.el
 
 (autoload 'ido-recentf-open "ido-config/ido-config" "\
 Use `ido-completing-read' to \\[find-file] a recent file
@@ -646,9 +646,9 @@ Refresh imenu and jump to a function in the buffer using
 
 ;;;***
 
-;;;### (autoloads nil "lisp-infection/lisp-infection" "lisp-infection/lisp-infection.el"
+;;;### (autoloads nil "lisp-infection/lisp-infection" "../../../../.emacs.d/esc-lisp/lisp-infection/lisp-infection.el"
 ;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from lisp-infection/lisp-infection.el
+;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/lisp-infection/lisp-infection.el
 
 (autoload 'li/mark-current-defun "lisp-infection/lisp-infection" "\
 Mark the current defun.
@@ -697,9 +697,9 @@ Replace the preceding sexp with its value.
 
 ;;;***
 
-;;;### (autoloads nil "multiple-cursors-config/mc-config" "multiple-cursors-config/mc-config.el"
+;;;### (autoloads nil "multiple-cursors-config/mc-config" "../../../../.emacs.d/esc-lisp/multiple-cursors-config/mc-config.el"
 ;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from multiple-cursors-config/mc-config.el
+;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/multiple-cursors-config/mc-config.el
 
 (autoload 'esc/multiple-cursors-mode-enabled-hook "multiple-cursors-config/mc-config" "\
 esc's code to \\[multiple-cursors-mode-enabled-hook].
@@ -733,9 +733,9 @@ Simplified version of backward search that supports multiple cursors.
 ;;;***
 
 ;;;### (autoloads nil "scroll-all-mode-config/scroll-all-config"
-;;;;;;  "scroll-all-mode-config/scroll-all-config.el" (21705 16240
-;;;;;;  864682 627000))
-;;; Generated autoloads from scroll-all-mode-config/scroll-all-config.el
+;;;;;;  "../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all-config.el"
+;;;;;;  (21705 16240 864682 627000))
+;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all-config.el
 
 (autoload 'mwheel-scroll-all-function-all "scroll-all-mode-config/scroll-all-config" "\
 
@@ -874,10 +874,8 @@ Loop to capture and insert commands for `twinkle-fingers'.
 
 ;;;***
 
-;;;### (autoloads (update-esc-lisp-autoloads get-project-loaddefs-path
-;;;;;;  list-files-in-subtree-matching-regexp-recursive autoloads)
-;;;;;;  "update-autoloads/update-autoloads" "../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el"
-;;;;;;  (21645 60759 403562 413000))
+;;;### (autoloads nil "update-autoloads/update-autoloads" "../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el"
+;;;;;;  (21705 16240 864682 627000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el
 
 (let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads/update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads/update-autoloads" loads))))

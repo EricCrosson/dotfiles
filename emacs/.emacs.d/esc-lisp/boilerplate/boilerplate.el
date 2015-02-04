@@ -35,6 +35,34 @@
   :group        'boil)
 (setq esc/bash-org-path "~/dotfiles/bash/bash.org")
 
+;;;###autoload
+(defmacro esc/toggle-fullscreen-buffer (win-register toggled-mode-test toggle-command
+                                                     &optional
+                                                     toggle-command-test
+                                                     clear-command)
+  "Bring up a temporary buffer in fullscreen mode, or restore the
+previous window configuration.
+
+WIN-REGISTER         is the register to store the old window configuration in.
+
+TOGGLED-MODE-TEST    is the major mode of the toggled state, in other words a
+                     test to determine which way to toggle the buffers.
+
+TOGGLE-COMMAND       is the command to run when toggling into the temporary
+                     state.
+
+CLEAR-COMMAND        is an optional command to run when reverting back to the
+                     original state; i.e. toggle a flag"
+  (declare (indent defun))
+  `(progn
+     (if ,toggled-mode-test
+         (progn (jump-to-register ,win-register)
+                (when (not (equal nil ,clear-command))
+                  ,clear-command))
+       (window-configuration-to-register ,win-register)
+       ,toggle-command
+       (delete-other-windows))))
+
 (defcustom esc/prog-mode-hook nil
     "esc's code to \\[prog-mode-hook]."
     :type 'hook
@@ -975,34 +1003,6 @@ prefixed) then after the other-buffer is buried, the command
   (mode-line-other-buffer)
   (bury-buffer)
   (when current-prefix-arg (mode-line-other-buffer)))
-
-;;;###autoload
-(defmacro esc/toggle-fullscreen-buffer (win-register toggled-mode-test toggle-command
-                                                     &optional
-                                                     toggle-command-test
-                                                     clear-command)
-  "Bring up a temporary buffer in fullscreen mode, or restore the
-previous window configuration.
-
-WIN-REGISTER         is the register to store the old window configuration in.
-
-TOGGLED-MODE-TEST    is the major mode of the toggled state, in other words a
-                     test to determine which way to toggle the buffers.
-
-TOGGLE-COMMAND       is the command to run when toggling into the temporary
-                     state.
-
-CLEAR-COMMAND        is an optional command to run when reverting back to the
-                     original state; i.e. toggle a flag"
-  (declare (indent defun))
-  `(progn
-     (if ,toggled-mode-test
-         (progn (jump-to-register ,win-register)
-                (when (not (equal nil ,clear-command))
-                  ,clear-command))
-       (window-configuration-to-register ,win-register)
-       ,toggle-command
-       (delete-other-windows))))
 
 ;; I don't really use ansi-term at this time.
 ;;;###autoload
