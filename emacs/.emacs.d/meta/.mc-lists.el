@@ -3,6 +3,10 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+	LaTeX-insert-left-brace
+	TeX-insert-backslash
+	TeX-insert-dollar
+	TeX-insert-sub-or-superscript
 	autopair-insert-opening
 	autopair-insert-or-skip-quote
 	autopair-skip-close-maybe
@@ -31,6 +35,7 @@
 	esc/insert-surrounding-brackets-with-colon
 	esc/insert-surrounding-chevrons
 	esc/insert-surrounding-parens
+	esc/open-line-below
 	esc/pull-up-line
 	esc/toggle-letter-case
 	forward-sexp
@@ -61,6 +66,7 @@
 (setq mc/cmds-to-run-once
       '(
 	beginning-of-buffer
+	compile
 	describe-key-briefly
 	eval-expression
 	handle-switch-frame

@@ -59,7 +59,7 @@ atWork(){
         return $true; return $false; }
 
 # Execute getopt
-ARGS=$(getopt -o st -l "silent,test" -n ".bashrc" -- "$@");
+ARGS=$(getopt -o s -l "silent" -n ".bashrc" -- "$@");
 
 # Fail on bad arguments
 if [ $? -ne 0 ]; then
@@ -72,7 +72,6 @@ eval set -- "${ARGS}";
 while true; do
     case "${1}" in
         -s|--silent) no_fortune=1 ;;
-        -t|--test)   echo "Test works" ;;
         --) break ;;
     esac
     shift
@@ -88,7 +87,6 @@ for src in ${api}/*; do source ${src}; done
 
 # Path setup
 pathAppend ${scripts}/nix      # Enviornment variables for all systems
-pathAppend ${HOME}/.cask/bin   # Emacs dependency managment
 pathAppend ${scripts}/$(hostname);
 [[ $- == *i* ]] && pathAppend ${classes} CDPATH
 
@@ -152,7 +150,7 @@ git branch &>/dev/null; [ $? -eq 0 ] &&
   echo -n $(echo $(git status) | grep "nothing to commit" &> /dev/null 2>&1; \
   [ $? -eq 0 ] && echo $Green$(__git_ps1 2>/dev/null "(%s)") || echo $IRed$(__git_ps1 2>/dev/null "{%s}"););
 )\
-\[$prompt_style\]${debian_chroot:+($debian_chroot)}\u@\h:$(color_path_symlinks.sh)\$\[$command_style\]
+\[$prompt_style\]${debian_chroot:+($debian_chroot)}\u@\h:$(color_path_symlinks)\$\[$command_style\]
 EOF
             )
             PS1="${PS1} "       # Add the space before user input

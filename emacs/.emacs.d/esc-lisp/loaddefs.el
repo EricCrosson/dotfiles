@@ -1,41 +1,27 @@
 ;;
 
-;;;### (autoloads (esc/bury-compilation-buffer-if-successful esc/auto-byte-recompile
-;;;;;;  esc/previous-error esc/rotate-window-split esc/toggle-window-dedicated
-;;;;;;  esc/toggle-window-selectability esc/should-have-opened-this-in-other-window
-;;;;;;  esc/hsplit-last-buffer esc/vsplit-last-buffer esc/raise-magit-status
-;;;;;;  esc/raise-eshell-in-current-dir esc/raise-eshell esc/raise-ansi-term
-;;;;;;  esc/toggle-fullscreen-buffer esc/bury-other-buffer esc/bury-buffer-delete-window
-;;;;;;  esc/org-prev-source-code-block esc/org-next-source-code-block
-;;;;;;  esc/insert-key-combination touch rename-defun describe-keymap
-;;;;;;  esc/pull-up-line esc/backward-kill-line esc/scroll-down-slight
-;;;;;;  esc/scroll-up-slight esc/edit-configs esc/proced-in-this-frame
-;;;;;;  esc/zoom-out esc/zoom-in esc/minimap-toggle esc/display-emacs-init-time
-;;;;;;  esc/goto-line-with-feedback esc/open-line-above esc/open-line-below
-;;;;;;  esc/swap-buffer-locations esc/unroll-cc-arguments esc/toggle-fullscreen
-;;;;;;  esc/toggle-selective-display esc/multi-occur-in-this-mode
-;;;;;;  esc/get-buffers-matching-mode esc/rename-current-buffer-file
-;;;;;;  esc/delete-current-buffer-file esc/increment-number-at-point
-;;;;;;  esc/back-to-indentation-or-beginning esc/insert-date esc/date
-;;;;;;  esc/time esc/word-count esc/remove-dos-eol esc/copy-line
-;;;;;;  esc/insert-numeric-sequence esc/toggle-letter-case esc/save-buffers-kill-emacs
-;;;;;;  esc/insert-defun-at-point esc/eval-and-replace esc/kill-whole-word
-;;;;;;  esc/delete-whole-word esc/edit-my-bash esc/edit-my-emacs
-;;;;;;  esc/mode-line-other-buffer-other-window esc/magic-autoload-next-defun-or-macro
-;;;;;;  esc/copy-file-name-to-clipboard esc/insert-file-name esc/middle-click-yank
-;;;;;;  esc/insert-surrounding-dollars esc/insert-surrounding-stars
-;;;;;;  esc/insert-surrounding-quotes esc/insert-surrounding-chevrons
-;;;;;;  esc/insert-surrounding-brackets-with-colon esc/insert-surrounding-brackets
-;;;;;;  esc/insert-surrounding-pipes esc/insert-surrounding-braces
-;;;;;;  esc/insert-surrounding-parens esc/insert-little-arrow esc/insert-surrounding-ticks
-;;;;;;  esc/yank-and-move esc/javadoc-method-comment esc/insert-short-gpl
-;;;;;;  esc/iedit-mode-hook esc/comint-mode-hook esc/erc-mode-hook
-;;;;;;  esc/enh-ruby-mode-hook esc/fundamental-mode-hook esc/emacs-lisp-mode-hook
-;;;;;;  esc/c++-mode-hook esc/c-mode-common-hook esc/minibuffer-exit-hook
-;;;;;;  esc/minibuffer-setup-hook esc/prog-mode-hook) "boilerplate/boilerplate"
-;;;;;;  "../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21646 3087 366057 136000))
+;;;### (autoloads nil "boilerplate/boilerplate" "../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el"
+;;;;;;  (21714 29750 823294 404000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el
+
+(autoload 'esc/toggle-fullscreen-buffer "boilerplate/boilerplate" "\
+Bring up a temporary buffer in fullscreen mode, or restore the
+previous window configuration.
+
+WIN-REGISTER         is the register to store the old window configuration in.
+
+TOGGLED-MODE-TEST    is the major mode of the toggled state, in other words a
+                     test to determine which way to toggle the buffers.
+
+TOGGLE-COMMAND       is the command to run when toggling into the temporary
+                     state.
+
+CLEAR-COMMAND        is an optional command to run when reverting back to the
+                     original state; i.e. toggle a flag
+
+\(fn WIN-REGISTER TOGGLED-MODE-TEST TOGGLE-COMMAND &optional TOGGLE-COMMAND-TEST CLEAR-COMMAND)" nil t)
+
+(put 'esc/toggle-fullscreen-buffer 'lisp-indent-function 'defun)
 
 (autoload 'esc/prog-mode-hook "boilerplate/boilerplate" "\
 esc's hook to \\[prog-mode-hook].
@@ -258,7 +244,7 @@ Offer to save each buffer(once only), then kill this Emacs process.
 
 (autoload 'esc/toggle-letter-case "boilerplate/boilerplate" "\
 Toggle the letter case of current word or text selection.
-Toggles between: all lower, Init Caps, ALL CAPS.
+Toggles between: “all lower”, “Init Caps”, “ALL CAPS”.
 
 \(fn)" t nil)
 
@@ -483,25 +469,6 @@ prefixed) then after the other-buffer is buried, the command
 
 \(fn &optional SWITCH-TO-OTHER-BUFFER)" t nil)
 
-(autoload 'esc/toggle-fullscreen-buffer "boilerplate/boilerplate" "\
-Bring up a temporary buffer in fullscreen mode, or restore the
-previous window configuration.
-
-WIN-REGISTER         is the register to store the old window configuration in.
-
-TOGGLED-MODE-TEST    is the major mode of the toggled state, in other words a
-                     test to determine which way to toggle the buffers.
-
-TOGGLE-COMMAND       is the command to run when toggling into the temporary
-                     state.
-
-CLEAR-COMMAND        is an optional command to run when reverting back to the
-                     original state; i.e. toggle a flag
-
-\(fn WIN-REGISTER TOGGLED-MODE-TEST TOGGLE-COMMAND &optional TOGGLE-COMMAND-TEST CLEAR-COMMAND)" nil t)
-
-(put 'esc/toggle-fullscreen-buffer 'lisp-indent-function 'defun)
-
 (autoload 'esc/raise-ansi-term "boilerplate/boilerplate" "\
 If the current buffer is:
 
@@ -588,13 +555,8 @@ Bury the compilation buffer after a successful compile.
 
 ;;;***
 
-;;;### (autoloads (esc/dired-back-to-start-of-files esc/search-my-lisp-dir
-;;;;;;  esc/dired-up-level-reuse-buffer esc/dired-find-file-single-mode
-;;;;;;  esc/dired-jump-to-bottom esc/dired-back-to-top esc/dired-load-hook-install-details
-;;;;;;  esc/dired-load-hook-omit-files esc/dired-load-hook-hide-data
-;;;;;;  esc/dired-load-hook esc/dired-mode-hook) "dired-config/dired-config"
-;;;;;;  "../../../../.emacs.d/esc-lisp/dired-config/dired-config.el"
-;;;;;;  (21645 60759 403562 413000))
+;;;### (autoloads nil "dired-config/dired-config" "../../../../.emacs.d/esc-lisp/dired-config/dired-config.el"
+;;;;;;  (21705 16240 864682 627000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/dired-config/dired-config.el
 
 (autoload 'esc/dired-mode-hook "dired-config/dired-config" "\
@@ -667,9 +629,8 @@ Otherwise, signal a `file-notify-error'.
 
 ;;;***
 
-;;;### (autoloads (ido-goto-symbol ido-recentf-open) "ido-config/ido-config"
-;;;;;;  "../../../../.emacs.d/esc-lisp/ido-config/ido-config.el"
-;;;;;;  (21645 60759 403562 413000))
+;;;### (autoloads nil "ido-config/ido-config" "../../../../.emacs.d/esc-lisp/ido-config/ido-config.el"
+;;;;;;  (21705 16240 864682 627000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/ido-config/ido-config.el
 
 (autoload 'ido-recentf-open "ido-config/ido-config" "\
@@ -685,11 +646,8 @@ Refresh imenu and jump to a function in the buffer using
 
 ;;;***
 
-;;;### (autoloads (li/eval-and-replace li/indent-entire-defun li/eval-current-sexp
-;;;;;;  li/delete-sexp li/beginning-of-sexp li/end-of-sexp li/copy-sexp
-;;;;;;  li/mark-current-sexp li/mark-current-defun) "lisp-infection/lisp-infection"
-;;;;;;  "../../../../.emacs.d/esc-lisp/lisp-infection/lisp-infection.el"
-;;;;;;  (21645 60759 399562 365000))
+;;;### (autoloads nil "lisp-infection/lisp-infection" "../../../../.emacs.d/esc-lisp/lisp-infection/lisp-infection.el"
+;;;;;;  (21705 16240 864682 627000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/lisp-infection/lisp-infection.el
 
 (autoload 'li/mark-current-defun "lisp-infection/lisp-infection" "\
@@ -739,10 +697,8 @@ Replace the preceding sexp with its value.
 
 ;;;***
 
-;;;### (autoloads (mc/search-backward mc/search-forward mc/search
-;;;;;;  esc/multiple-cursors-mode-disabled-hook esc/multiple-cursors-mode-enabled-hook)
-;;;;;;  "multiple-cursors-config/mc-config" "../../../../.emacs.d/esc-lisp/multiple-cursors-config/mc-config.el"
-;;;;;;  (21645 60759 403562 413000))
+;;;### (autoloads nil "multiple-cursors-config/mc-config" "../../../../.emacs.d/esc-lisp/multiple-cursors-config/mc-config.el"
+;;;;;;  (21705 16240 864682 627000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/multiple-cursors-config/mc-config.el
 
 (autoload 'esc/multiple-cursors-mode-enabled-hook "multiple-cursors-config/mc-config" "\
@@ -776,10 +732,9 @@ Simplified version of backward search that supports multiple cursors.
 
 ;;;***
 
-;;;### (autoloads (mwheel-scroll-all-scroll-down-all mwheel-scroll-all-scroll-up-all
-;;;;;;  mwheel-scroll-all-function-all) "scroll-all-mode-config/scroll-all-config"
+;;;### (autoloads nil "scroll-all-mode-config/scroll-all-config"
 ;;;;;;  "../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all-config.el"
-;;;;;;  (21645 60759 403562 413000))
+;;;;;;  (21705 16240 864682 627000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all-config.el
 
 (autoload 'mwheel-scroll-all-function-all "scroll-all-mode-config/scroll-all-config" "\
@@ -919,10 +874,8 @@ Loop to capture and insert commands for `twinkle-fingers'.
 
 ;;;***
 
-;;;### (autoloads (update-esc-lisp-autoloads get-project-loaddefs-path
-;;;;;;  list-files-in-subtree-matching-regexp-recursive autoloads)
-;;;;;;  "update-autoloads/update-autoloads" "../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el"
-;;;;;;  (21645 60759 403562 413000))
+;;;### (autoloads nil "update-autoloads/update-autoloads" "../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el"
+;;;;;;  (21705 16240 864682 627000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el
 
 (let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads/update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads/update-autoloads" loads))))

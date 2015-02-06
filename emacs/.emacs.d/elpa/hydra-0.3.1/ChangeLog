@@ -1,0 +1,23 @@
+2015-01-24  Oleh Krehel	 <ohwoeowho@gmail.com>
+
+	Merge commit '440c41cc3f5137d694211719abaa38c0193a08a2' from hydra
+
+2015-01-24  Oleh Krehel	 <ohwoeowho@gmail.com>
+
+	Add 'packages/hydra/' from commit
+	'cfac8bd9e73ea1e219250867b22881354fc2d56e'
+
+	git-subtree-dir: packages/hydra git-subtree-mainline:
+	685c83b6320396e3cc6d7b4eb79d7481fe059416 git-subtree-split:
+	cfac8bd9e73ea1e219250867b22881354fc2d56e
+
+2015-01-24  Oleh Krehel	 <ohwoeowho@gmail.com>
+
+	Setup git subtree add for hydra
+
+	git subtree add --prefix packages/hydra hydra
+
+2015-01-21  Oleh Krehel	 <ohwoeowho@gmail.com>
+
+	hydra: New package
+

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Xmonad GNOME (Composite)
+Comment=Tiling window manager
+TryExec=/usr/bin/gnome-session
+Exec=/usr/sbin/gnome-xmonad-composite
+Type=XSession

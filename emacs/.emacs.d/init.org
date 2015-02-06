@@ -62,7 +62,7 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 - [ ] quick dict(ionary)
   for definitions, not spell check
 - [ ] naming standard for org babel files sectioning
-- [ ] no tabs in align  
+- [ ] no tabs in align
 ** [0/1] super helpful defuns to implement
 - [ ] byte-compile-directory
   (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
@@ -314,7 +314,7 @@ It is my belief that backup files should not be so obtrusive as to tempt users t
   ;; Backup settings
   (push '("." . "~/.config/.emacs.d/") backup-directory-alist)
   (desktop-save-mode 1)                   ;use desktop file
-  (setq desktop-save 'nil                 ;save open buffers
+  (setq desktop-save 'if-exists                 ;save open buffers
         desktop-path '("~/emacs.d")       ;local desktop files
         desktop-base-filename "desktop"
         desktop-load-locked-desktop t     ;never freeze after crash
@@ -437,8 +437,7 @@ include to the require-package macro
       esc-mode                             ;The Power Glove
       cnsim-mode-autoloads
       big-fringe-mode ;; why is this here again? how to auto-load by nature of being in esc-lisp?
-      ;; TODO: find a way to autoload the whole shebang
-      single-mode-autoloads))
+      ))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -446,6 +445,51 @@ include to the require-package macro
 #+END_SRC
 
 * Autoloads
+** Single mode config
+
+TODO: find a better place for this code
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defvar single-mode-map (make-keymap)
+    "The keymap for \\[single-mode].")
+
+  (define-minor-mode single-mode
+    "Toggle single-mode.
+  A minor mode for quick navigation- reinventing the vim wheel."
+    nil " single" 'single-mode-map
+    (suppress-keymap single-mode-map))
+  (add-hook 'single-mode-hook 'single/single-mode-hook)
+
+  (defvar single-line-shift-amount 6
+    "The number of lines to shift in esc-mode-map.")
+
+  (defvar single-restore-nil-read-only-state nil
+    "This indicates we need to restore a state of (read-only-mode -1).
+  This variable is nil by default.")
+
+  (define-key single-mode-map (kbd "'") 'single/quit-single-mode)
+  (define-key single-mode-map (kbd "<escape>") 'single/quit-single-mode)
+  (define-key single-mode-map (kbd "j") 'single/scroll-up)
+  (define-key single-mode-map (kbd "k") 'single/scroll-down)
+  (define-key single-mode-map (kbd ",") 'beginning-of-buffer)
+  (define-key single-mode-map (kbd ".") 'end-of-buffer)
+  (define-key single-mode-map (kbd "5") 'single/query-replace)
+  (define-key single-mode-map (kbd "Z") 'single/undo)
+  (define-key single-mode-map (kbd "q") 'single/read-only-mode)
+  (define-key single-mode-map (kbd "`") 'single/iedit-mode)
+  (define-key single-mode-map (kbd "K") 'single/kill-current-buffer)
+
+  (define-key single-mode-map (kbd "`") 'kill-current-buffer)
+  (define-key single-mode-map (kbd "SPC") 'ace-jump-mode)
+  (define-key single-mode-map (kbd "x") 'execute-extended-command)
+  (define-key single-mode-map (kbd "p") 'scroll-down)
+  (define-key single-mode-map (kbd "n") 'scroll-up)
+  (define-key single-mode-map (kbd "9") 'end-of-buffer)
+  (define-key single-mode-map (kbd "0") 'beginning-of-buffer)
+  (define-key single-mode-map (kbd "s") 'isearch-forward)
+  (define-key single-mode-map (kbd "r") 'isearch-backward)
+  (define-key single-mode-map (kbd "e") 'eval-region)
+#+END_SRC
 ** Lua mode config
 Lua: necessary for Awesome WM.
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1066,6 +1110,10 @@ Some esc-keys weren't mapped with shell use in mind. Here's a bandaid.
    #+BEGIN_SRC emacs-lisp :tangle yes
      (add-hook 'big-fringe-mode-hook 'esc/big-fringe-mode-hook)
    #+END_SRC
+** Haskell mode hook
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'haskell-mode-hook 'haskell-indent-mode)
+#+END_SRC
 ** Kill emacs hook
 
 Summon the magical cookies.
@@ -1809,7 +1857,7 @@ Wait, is this even being used??
     ("C-M-," . esc/insert-surrounding-chevrons)
     ("C-M-'" . esc/insert-surrounding-quotes)
     ("C-M-*" . esc/insert-surrounding-stars)
-    ("C-M-$" . esc/insert-surrounding-dollars)
+    ("C-M-g" . esc/insert-surrounding-dollars)
     ("C-M-`" . esc/insert-surrounding-ticks))
 
   ;; programming delimeter and line hacks
