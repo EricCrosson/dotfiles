@@ -5,7 +5,7 @@ _zero=$(echo "${_zero}" | tr [a-z] [A-Z] | sed -e 's/[.-]/_/g')
 [[ -n "${!_zero}" ]] && return
 printf -v ${_zero} "Loaded"
 
-function calculate() {
+calculate() {
     while [[ $1 == --* ]]; do
         case $1 in
             --dec)

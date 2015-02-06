@@ -7,32 +7,32 @@ printf -v ${_zero} "Loaded"
 
 # Avoid adding duplicates to a path. $2, if non-nil, is the variable
 # to append $1 to
-function pathAppend() {
+pathAppend() {
     newPath=$1; list=$2; shift; shift
     [[ -z $newPath ]] && return $false;
     [[ -z $list ]] && list=PATH
     [[ -z $(echo ${!list}|grep $newPath) ]] && export $(echo $list)="${!list}:$newPath"; }
 
-function loadFile() { [[ -f $1 ]] && source "$1" || echoerr "$1 not found"; }
+loadFile() { [[ -f $1 ]] && source "$1" || echoerr "$1 not found"; }
 
 ## For all functions below:
 # ARGS: color, string_to_print
-function changeColor() { echo -ne $1 ; }
+changeColor() { echo -ne $1 ; }
 
 # Does not append newline
-function message() { changeColor ${1}; echo -ne "$2"; changeColor ${Color_Off}; }
+message() { changeColor ${1}; echo -ne "$2"; changeColor ${Color_Off}; }
 
 ## These functions do append newlines
 # Functions for printing errors
 export ALERT="(i)"
-function warning() { message ${BYellow} "warning: " 1>&2; message ${BWhite} "$\n" 1>&2; }
-function echoerr() { echo "$@" 1>&2; } # echo to stderr
-function error() { message ${BRed} "error: " 1>&2; message ${BWhite} "$@\n" 1>&2; }
+warning() { message ${BYellow} "warning: " 1>&2; message ${BWhite} "$\n" 1>&2; }
+echoerr() { echo "$@" 1>&2; } # echo to stderr
+error() { message ${BRed} "error: " 1>&2; message ${BWhite} "$@\n" 1>&2; }
 
 # Functions for printing
-function section() { message ${BBlue} ":: "; message ${BWhite} "$@\n"; }
-function note() { message ${BGreen} "==> "; message ${BWhite} "$@\n"; }
-function subnote() { message ${BBlue} "  -> "; message ${BWhite} "$@\n"; }
+section() { message ${BBlue} ":: "; message ${BWhite} "$@\n"; }
+note() { message ${BGreen} "==> "; message ${BWhite} "$@\n"; }
+subnote() { message ${BBlue} "  -> "; message ${BWhite} "$@\n"; }
 ## End functions that append newlines
 
 # Functinon to append a command to a trap
@@ -56,14 +56,14 @@ declare -f -t trap_add
 
 # This function provides a safe way to prompt for passwords. The
 # result is stored in $secret_passwd
-function query_password() {
+query_password() {
     read -p "Password: " -s secret_passwd && echo "" # insert carriage return
     # TODO: find a way to abort nicely
     # [[ -z $secret_passwd ]] && exit 1
 }
 
 # Printing stack traces
-function print_call_trace()
+print_call_trace()
 {
     # skipping i=0 as this is print_call_trace itself
     for ((i = 1; i < ${#FUNCNAME[@]}; i++)); do
@@ -72,7 +72,7 @@ function print_call_trace()
     done
 }
 
-function ntest()
+ntest()
 {
     if [[ $(which prettyping.sh) ]]; then
         prettyping.sh google.com

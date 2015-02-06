@@ -29,7 +29,7 @@ alias less='less -reg '
 # TODO: make OS inspecific
 # alias which='alias | which --tty-only --read-alias --show-dot --show-tilde '
 alias chx='chmod +x '
-function mc () { mkdir -p "$@" && eval cd "\"\$$#\""; }
+mc () { mkdir -p "$@" && eval cd "\"\$$#\""; }
 
 # inflation/compression
 alias zip='zip -r '
@@ -76,19 +76,19 @@ alias sunny='ssh -Yt sun screen -x mon'
 alias irons='ssh -Yt irons screen -x hershal/'
 
 # Aliasing functions
-function emr() { emacsclient -c -a emacs "/sudo:root@localhost:$1"; }
-#function evince() { evince "$1" 2>/dev/null & }
+emr() { emacsclient -c -a emacs "/sudo:root@localhost:$1"; }
+#evince() { evince "$1" 2>/dev/null & }
 
 # Find files matching a given pattern
-function ff() { ffand "$1" "$2"; }
+ff() { ffand "$1" "$2"; }
 
 # Find a file with pattern $1 in name and execute $2 on it:
-function ffand() { find . -type f -iname '*'${1:-}'*' -exec ${2:-file} {} \; ; }
+ffand() { find . -type f -iname '*'${1:-}'*' -exec ${2:-file} {} \; ; }
 
 # General functions
-function inside_screen() { [[ -z $STY ]] && echo "false" || echo "true"; }
+inside_screen() { [[ -z $STY ]] && echo "false" || echo "true"; }
 
-function cmdcat() {
+cmdcat() {
     # Output the source of the following command
     cat $(which $*)
 }

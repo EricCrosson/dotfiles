@@ -57,7 +57,7 @@ alias d_ndtrx="echo $(\alias | \grep 'alias ndtrx' | cut -f2 -d\') "
 
 ### Color cat
 # Thanks to http://felixcrux.com/blog/syntax-highlighting-cat
-function pygmentize_cat() {
+pygmentize_cat() {
     for arg in "$@"; do
         pygmentize -g "$arg" 2>/dev/null || cat "$arg"
     done
