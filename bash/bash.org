@@ -126,21 +126,10 @@ I use these tests to determine which configs should be sourced.
   for src in ${api}/*; do source ${src}; done
 #+END_SRC
 
-** Mining config
-Note: this section has been disabled.
-#+BEGIN_SRC sh
-  mining=$HOME/Dropbox/mining
-  case $(uname -a) in
-      ,*Linux* ) pathAppend ${mining}/nix ;;
-      ,* )       pathAppend ${mining}/win ;;
-  esac
-#+END_SRC
-
 ** Path setup and aliases
 #+BEGIN_SRC sh :tangle .bashrc
   # Path setup
   pathAppend ${scripts}/nix      # Enviornment variables for all systems
-  pathAppend ${HOME}/.cask/bin   # Emacs dependency managment
   pathAppend ${scripts}/$(hostname);
   [[ $- == *i* ]] && pathAppend ${classes} CDPATH
 
@@ -618,6 +607,7 @@ bash.
 
   loadFile ${bash_config}/api/colors
 #+END_SRC
+  
 * math
 #+BEGIN_SRC sh :tangle .config/bash/api/math
   _zero="${BASH_SOURCE[0]}"
@@ -642,6 +632,7 @@ bash.
       echo "scale=${dec:-3}; $*" | bc
       }
 #+END_SRC
+  
 * error
 #+BEGIN_SRC sh :tangle .config/bash/api/error
   _zero="${BASH_SOURCE[0]}"
@@ -656,9 +647,10 @@ bash.
   #         "This is the error code"
   EXIT_HELP=-2
 #+END_SRC
+  
 * colors
 
-Bash color dictionary. Defined Tuesday December 18, 2012 in the year of our
+Bash color dictionary. Defined Tuesday December 18, 2012.
 
 #+BEGIN_SRC sh :tangle .config/bash/api/colors
   _zero="${BASH_SOURCE[0]}"
