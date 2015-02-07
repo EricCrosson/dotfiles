@@ -153,6 +153,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)           ;change yes-no to y-n
 (setq-default size-indication-mode t)
 (setq debug-on-error t
+      initial-scratch-message nil
       ring-bell-function 'ignore        ;turn off alarms completely
       uniquify-separator ":"            ;needs to be set before uniquify
       uniquify-buffer-name-style 'post-forward ;is loaded
