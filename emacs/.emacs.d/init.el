@@ -613,7 +613,7 @@ This variable is nil by default.")
 
 (add-hook 'iedit-mode-hook 'esc/iedit-mode-hook)
 
-(global-git-gutter+-mode t)
+;(global-git-gutter+-mode t)
 (after 'git-gutter+
   ;;; Jump between hunks
   (define-key git-gutter+-mode-map (kbd "C-x n") 'git-gutter+-next-hunk)

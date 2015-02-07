@@ -977,7 +977,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 ** Git gutter + config
 #+NAME: Git gutter+ config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (global-git-gutter+-mode t)
+  ;(global-git-gutter+-mode t)
   (after 'git-gutter+
     ;;; Jump between hunks
     (define-key git-gutter+-mode-map (kbd "C-x n") 'git-gutter+-next-hunk)
