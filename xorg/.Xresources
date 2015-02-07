@@ -1,6 +1,8 @@
 emacs*cursorColor: red
 emacs*pointerColor: red
 
+emacs*font: -unknown-DejaVu Sans Mono-normal-normal-normal-*-11-*-*-*-m-0-iso10646-1
+
 xterm*color0:         rgb:19/19/19
 xterm*color8:         rgb:25/25/25
 !red
