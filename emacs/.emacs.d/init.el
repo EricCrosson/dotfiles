@@ -192,7 +192,7 @@
 ;; Char and font encoding
 (set-buffer-file-coding-system 'unix)   ;Unix mode. Always
 (setq c-default-style "linux"
-      c-basic-offset 2                  ;Fix the GNU tabbing default
+      c-basic-offset 2
       ido-create-new-buffer 'always
       require-final-newline 'visit-save ;compliance
       indent-tabs-mode nil
