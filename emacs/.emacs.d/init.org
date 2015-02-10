@@ -63,6 +63,8 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
   for definitions, not spell check
 - [ ] naming standard for org babel files sectioning
 - [ ] no tabs in align
+
+- [ ] gcov output parsed by emacs to hgihlight covered code in gdb mode
 ** [0/1] super helpful defuns to implement
 - [ ] byte-compile-directory
   (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
@@ -321,6 +323,15 @@ It is my belief that backup files should not be so obtrusive as to tempt users t
         desktop-load-locked-desktop t     ;never freeze after crash
         backup-by-copying-when-linked t
         backup-by-copying-when-mismatch t)
+#+END_SRC
+
+
+Allow hl-line-mode to fontify highlighted lines. Not all color themes
+seem to allow this (looking at you, wombat+).
+
+#+NAME: fontify hl-line-mode
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (set-face-attribute 'highlight nil :foreground 'unspecified)
 #+END_SRC
 
 * Aliases

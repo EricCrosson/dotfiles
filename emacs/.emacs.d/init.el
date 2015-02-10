@@ -208,6 +208,8 @@
       backup-by-copying-when-linked t
       backup-by-copying-when-mismatch t)
 
+(set-face-attribute 'highlight nil :foreground 'unspecified)
+
 (defalias 'undefun 'fmakunbound)
 
 (defadvice org-agenda (around shrink-agenda-buffer activate)
