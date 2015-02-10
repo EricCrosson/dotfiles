@@ -153,6 +153,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)           ;change yes-no to y-n
 (setq-default size-indication-mode t)
 (setq debug-on-error t
+      initial-scratch-message nil
       ring-bell-function 'ignore        ;turn off alarms completely
       uniquify-separator ":"            ;needs to be set before uniquify
       uniquify-buffer-name-style 'post-forward ;is loaded
@@ -191,7 +192,7 @@
 ;; Char and font encoding
 (set-buffer-file-coding-system 'unix)   ;Unix mode. Always
 (setq c-default-style "linux"
-      c-basic-offset 2                  ;Fix the GNU tabbing default
+      c-basic-offset 2
       ido-create-new-buffer 'always
       require-final-newline 'visit-save ;compliance
       indent-tabs-mode nil
@@ -615,7 +616,7 @@ This variable is nil by default.")
 
 (add-hook 'iedit-mode-hook 'esc/iedit-mode-hook)
 
-(global-git-gutter+-mode t)
+;(global-git-gutter+-mode t)
 (after 'git-gutter+
   ;;; Jump between hunks
   (define-key git-gutter+-mode-map (kbd "C-x n") 'git-gutter+-next-hunk)
@@ -979,3 +980,7 @@ This variable is nil by default.")
                       (esc-refile-targets-centtech :maxlevel . 5)
                       (esc-refile-targets-smash    :maxlevel . 5)
                       (org-agenda-files            :maxlevel . 4)))
+
+(fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
+(message "All done, %s%s" (user-login-name) ".")
+;;; .emacs.el ends here

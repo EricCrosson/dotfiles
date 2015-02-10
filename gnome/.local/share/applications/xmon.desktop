@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=xmon
+GenericName=GNU Screen wrapper
+Comment=Terminal multiplexer
+Icon=xterm-color_48x48
+Exec=/home/eric/bin/nix/xmon
+Terminal=false
+Categories=System;TerminalEmulator;
+StartupWMClass=Xterm
