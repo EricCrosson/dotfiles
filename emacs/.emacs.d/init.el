@@ -81,10 +81,6 @@
   (defvar global-auto-revert-non-file-buffers)
   (defvar auto-revert-verbose))
 
-(let ((default-directory "~/.emacs.d/"))       ;for easy
-  (normal-top-level-add-to-load-path '("."))   ;recursive
-  (normal-top-level-add-subdirs-to-load-path)) ;loading
-
 (defcustom esc-lisp-path nil
   "Path to esc's lisp library."
   :type 'path
@@ -98,6 +94,10 @@
   :options '("~/.emacs.d/esc-lisp/loaddefs.el")
   :group 'esc-mode)
 (setq esc-loaddefs-path "~/.emacs.d/esc-lisp/loaddefs.el")
+
+(let ((default-directory "~/.emacs.d/"))       ;for easy
+  (normal-top-level-add-to-load-path '("."))   ;recursive
+  (normal-top-level-add-subdirs-to-load-path)) ;loading
 
 (autoload 'list-files-in-subtree-matching-regexp-recursive
   (concat esc-lisp-path "update-autoloads/update-autoloads.el"))
@@ -635,6 +635,9 @@ This variable is nil by default.")
 
 (after 'ace-jump-mode
     (ace-jump-mode-enable-mark-sync))
+
+(after 'ace-window
+     (setq aw-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i)))
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)

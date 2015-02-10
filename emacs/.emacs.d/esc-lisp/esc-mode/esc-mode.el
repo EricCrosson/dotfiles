@@ -175,7 +175,8 @@ This macro runs conses through \\[esc-key] for convenience."
 
 ;; Programming bindings
 (esc-keys
-  ("C-c C-m" . compile))
+  ("C-c m" . compile)
+  ("C-c C-m" . recompile))
 
 ;; C-q cluster
 (esc-keys
@@ -269,7 +270,8 @@ This macro runs conses through \\[esc-key] for convenience."
   ("C-x M-b" . bury-buffer)
   ("C-x M-B" . esc/bury-other-buffer)
   ("C-c o"   . clone-indirect-buffer-other-window)
-  ("C-c C-o" . ff-find-other-file))
+  ("C-c C-o" . ff-find-other-file)
+  ("C-o"     . ace-window))
 
 (after 'expand-region-autoloads     ;thanks magnar
   (esc-key "C-=" 'er/expand-region))

@@ -139,10 +139,6 @@ need to keep the list updated, just load all subdirectories and go.
 
 #+NAME: load-path-creation
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (let ((default-directory "~/.emacs.d/"))       ;for easy
-    (normal-top-level-add-to-load-path '("."))   ;recursive
-    (normal-top-level-add-subdirs-to-load-path)) ;loading
-
   (defcustom esc-lisp-path nil
     "Path to esc's lisp library."
     :type 'path
@@ -156,6 +152,10 @@ need to keep the list updated, just load all subdirectories and go.
     :options '("~/.emacs.d/esc-lisp/loaddefs.el")
     :group 'esc-mode)
   (setq esc-loaddefs-path "~/.emacs.d/esc-lisp/loaddefs.el")
+
+  (let ((default-directory "~/.emacs.d/"))       ;for easy
+    (normal-top-level-add-to-load-path '("."))   ;recursive
+    (normal-top-level-add-subdirs-to-load-path)) ;loading
 
   (autoload 'list-files-in-subtree-matching-regexp-recursive
     (concat esc-lisp-path "update-autoloads/update-autoloads.el"))
@@ -1006,6 +1006,9 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'ace-jump-mode
       (ace-jump-mode-enable-mark-sync))
+
+  (after 'ace-window
+       (setq aw-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i)))
 #+END_SRC
 
 ** Save hooks
@@ -1700,7 +1703,8 @@ Wait, is this even being used??
 
   ;; Programming bindings
   (esc-keys
-    ("C-c C-m" . compile))
+    ("C-c m" . compile)
+    ("C-c C-m" . recompile))
 
   ;; C-q cluster
   (esc-keys
@@ -1794,7 +1798,8 @@ Wait, is this even being used??
     ("C-x M-b" . bury-buffer)
     ("C-x M-B" . esc/bury-other-buffer)
     ("C-c o"   . clone-indirect-buffer-other-window)
-    ("C-c C-o" . ff-find-other-file))
+    ("C-c C-o" . ff-find-other-file)
+    ("C-o"     . ace-window))
 
   (after 'expand-region-autoloads     ;thanks magnar
     (esc-key "C-=" 'er/expand-region))

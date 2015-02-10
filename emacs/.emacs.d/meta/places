@@ -1,24 +1,66 @@
 ;;; -*- coding: utf-8 -*-
-(("/home/eric/.config/.emacs.d/esc-lisp/boilerplate/boilerplate.el" . 27931)
- ("/home/eric/.config/.emacs.d/esc-lisp/loaddefs.el" . 17853)
- ("/home/eric/.config/.emacs.d/esc-lisp/single-mode/loaddefs.el" . 2228)
- ("/home/eric/.config/.emacs.d/init.el" . 24294)
- ("/home/eric/.config/.emacs.d/init.org" . 23144)
+(("/home/eric/dotfiles/emacs/.emacs.d/esc-lisp/single-mode/loaddefs.el" . 1942)
+ ("/home/eric/dotfiles/emacs/.emacs.d/esc-lisp/loaddefs.el" . 16846)
+ ("/home/eric/org/todo.org" . 260)
+ ("/home/eric/org/"
+  (dired-filename . "/home/eric/org/todo.org"))
+ ("/home/eric/Downloads/Micrium/Software/uCOS-II/Source/ucos_ii.h" . 26542)
+ ("/home/eric/"
+  (dired-filename . "/home/eric/Downloads"))
+ ("/home/eric/Downloads/"
+  (dired-filename . "/home/eric/Downloads/RTOS_4C123"))
+ ("/home/eric/Downloads/RTOS_4C123/"
+  (dired-filename . "/home/eric/Downloads/RTOS_4C123/os.c"))
+ ("/home/eric/workspace/ee445m-labs/lib/libos/"
+  (dired-filename . "/home/eric/workspace/ee445m-labs/lib/libos/os.h"))
+ ("/home/eric/workspace/ee445m-labs/doc/lab-manuals/todo.org" . 921)
+ ("/home/eric/workspace/ee445m-labs/lib/libos/os.h" . 1685)
+ ("/home/eric/workspace/ee445m-labs/"
+  (dired-filename . "/home/eric/workspace/ee445m-labs/doc"))
+ ("/home/eric/workspace/ee445m-labs/doc/"
+  (dired-filename . "/home/eric/workspace/ee445m-labs/doc/ideas"))
+ ("/home/eric/Downloads/RTOS_4C123/os.c" . 1924)
+ ("/home/eric/workspace/ee445m-labs/doc/ideas/"
+  (dired-filename . "/home/eric/workspace/ee445m-labs/doc/ideas/main.c"))
+ ("/home/eric/workspace/ee445m-labs/doc/ideas/main.c" . 385)
+ ("/home/eric/.emacs.d/ido.last" . 11466)
+ ("/home/eric/.emacs.d/recentf" . 1518)
+ ("/home/eric/workspace/ee445m-labs/driverlib/"
+  (dired-filename . "/home/eric/workspace/ee445m-labs/driverlib/adc.c"))
+ ("/home/eric/workspace/ee445m-labs/lib/"
+  (dired-filename . "/home/eric/workspace/ee445m-labs/lib/libfont"))
+ ("/home/eric/workspace/ee445m-labs/validation/"
+  (dired-filename . "/home/eric/workspace/ee445m-labs/validation/CMakeLists.txt"))
+ ("/home/eric/workspace/ee445m-labs/utils/"
+  (dired-filename . "/home/eric/workspace/ee445m-labs/utils/CMakeLists.txt"))
+ ("/home/eric/workspace/ee445m-labs/build/"
+  (dired-filename . "/home/eric/workspace/ee445m-labs/build/board-progs"))
+ ("/home/eric/workspace/ee445m-labs/bin/"
+  (dired-filename . "/home/eric/workspace/ee445m-labs/bin/Doxyfile"))
+ ("/home/eric/workspace/ee445m-labs/board-progs/"
+  (dired-filename . "/home/eric/workspace/ee445m-labs/board-progs/blinky"))
+ ("/home/eric/Downloads/Micrium/"
+  (dired-filename . "/home/eric/Downloads/Micrium/Software"))
+ ("/home/eric/Downloads/Micrium/Software/"
+  (dired-filename . "/home/eric/Downloads/Micrium/Software/uCOS-II"))
+ ("/home/eric/Downloads/Micrium/Software/uCOS-II/"
+  (dired-filename . "/home/eric/Downloads/Micrium/Software/uCOS-II/Source"))
+ ("/home/eric/Downloads/Micrium/Software/uCOS-II/Source/"
+  (dired-filename . "/home/eric/Downloads/Micrium/Software/uCOS-II/Source/ucos_ii.h"))
+ ("/home/eric/workspace/"
+  (dired-filename . "/home/eric/workspace/classes"))
+ ("/home/eric/workspace/ee445m-labs/doc/lab-manuals/" . 266)
+ ("/usr/local/share/emacs/24.4/lisp/play/doctor.el.gz" . 46706)
+ ("/home/eric/dotfiles/emacs/.emacs.d/init.org" . 11304)
+ ("/home/eric/dotfiles/zsh/"
+  (dired-filename . "/home/eric/dotfiles/zsh/.zshrc"))
+ ("/home/eric/dotfiles/zsh/.zshrc" . 263)
+ ("/home/eric/dotfiles/zsh/.config/"
+  (dired-filename . "/home/eric/dotfiles/zsh/.config/zsh"))
  ("/home/eric/.emacs.d/elpa/archives/gnu/archive-contents" . 14710)
  ("/home/eric/.emacs.d/elpa/archives/marmalade/archive-contents" . 107308)
  ("/home/eric/.emacs.d/elpa/archives/melpa-stable/archive-contents" . 99647)
  ("/home/eric/.emacs.d/elpa/archives/melpa/archive-contents" . 313080)
  ("/home/eric/.emacs.d/elpa/langdoc-20140120.1845/langdoc-autoloads.el" . 2137)
  ("/home/eric/.emacs.d/elpa/web-mode-20140921.2301/web-mode-autoloads.el" . 416)
- ("/home/eric/.ido.last" . 81117)
- ("/home/eric/.ssh/config" . 351)
- ("/home/eric/classes/ee460n/.gitignore" . 78)
- ("/home/eric/workspace/AppEngineBlog/src/com/eric/blog/PostServlet.java" . 2051)
- ("/home/eric/workspace/AppEngineBlog/src/com/eric/blog/SubscribeEmailServlet.java" . 2)
- ("/home/eric/workspace/AppEngineBlog/war/WEB-INF/appengine-web.xml" . 1315)
- ("/home/eric/workspace/AppEngineBlog/war/WEB-INF/web.xml" . 996)
- ("/home/eric/workspace/AppEngineBlog/war/blog.jsp" . 4854)
- ("/home/eric/workspace/AppEngineBlog/war/features.org" . 34)
- ("/home/eric/workspace/Guestbook/src/guestbook/SignGuestbookServlet.java" . 1354)
- ("/home/eric/workspace/Guestbook/war/guestbook.jsp" . 2431)
- ("/usr/share/emacs/24.3/lisp/simple.el.gz" . 236637))
+ ("/home/eric/.ssh/config" . 351))
