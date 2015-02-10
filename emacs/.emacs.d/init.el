@@ -207,6 +207,8 @@
       backup-by-copying-when-linked t
       backup-by-copying-when-mismatch t)
 
+(set-face-attribute 'highlight nil :foreground 'unspecified)
+
 (defalias 'undefun 'fmakunbound)
 
 (defadvice org-agenda (around shrink-agenda-buffer activate)
@@ -977,7 +979,3 @@ This variable is nil by default.")
                       (esc-refile-targets-centtech :maxlevel . 5)
                       (esc-refile-targets-smash    :maxlevel . 5)
                       (org-agenda-files            :maxlevel . 4)))
-
-(fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
-(message "All done, %s%s" (user-login-name) ".")
-;;; .emacs.el ends here

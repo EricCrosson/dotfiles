@@ -442,5 +442,3 @@ This macro runs conses through \\[esc-key] for convenience."
 
 (esc-mode 1)
 ;(diminish-or-restore 'esc-mode) ;in the background
-
-(provide 'esc-mode)
