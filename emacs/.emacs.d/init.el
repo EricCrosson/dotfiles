@@ -208,7 +208,9 @@
       backup-by-copying-when-linked t
       backup-by-copying-when-mismatch t)
 
+;; todo: make hl-line-mode slightly darker grey
 (set-face-attribute 'highlight nil :foreground 'unspecified)
+(set-face-attribute 'region nil :foreground 'unspecified :background "#666")
 
 (defalias 'undefun 'fmakunbound)
 
