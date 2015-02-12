@@ -199,9 +199,6 @@ This macro runs conses through \\[esc-key] for convenience."
 ;; Minimap bindings
 (esc-key "C-c M-m" 'esc/minimap-toggle)
 
-;; Flyspell bindings
-(esc-key "<f9>" 'flyspell-buffer)
-
 ;; Ace jump mode. Like an ace
 (after 'ace-jump-mode-autoloads
   (esc-keys
@@ -283,16 +280,6 @@ This macro runs conses through \\[esc-key] for convenience."
 (esc-keys
   ("C-c /"   . goto-last-change))
 
-;; TODO: convert to git-gutter+
-;; TODO: find a solution for git-gutter+ / symlinks
-;; git-gutter bindings
-;; (after 'git-gutter-autoloads
-;;   (esc-keys
-;;     ;("C-x g"   . git-gutter:toggle)
-;;     ("C-x C-p" . git-gutter:previous-hunk)
-;;     ("C-x C-n" . git-gutter:next-hunk)
-;;     ("C-x C-v" . git-gutter:revert-hunk)))
-
 ;; Font maniplation
 (esc-keys
   ("C-M-<" . esc/zoom-out)
@@ -300,9 +287,8 @@ This macro runs conses through \\[esc-key] for convenience."
 
 ;;; Function keys
 (esc-key "<f7>" 'scroll-all-mode)
-
-;; Follow mode
 (esc-key "<f8>" 'follow-delete-other-windows-and-split)
+(esc-key "<f9>" 'flyspell-buffer)
 
 ;; Helm
 (after 'helm-autoloads

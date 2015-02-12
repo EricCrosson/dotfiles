@@ -81,6 +81,10 @@
   (defvar global-auto-revert-non-file-buffers)
   (defvar auto-revert-verbose))
 
+(let ((default-directory "~/.emacs.d/"))       ;for easy
+  (normal-top-level-add-to-load-path '("."))   ;recursive
+  (normal-top-level-add-subdirs-to-load-path)) ;loading
+
 (defcustom esc-lisp-path nil
   "Path to esc's lisp library."
   :type 'path
@@ -737,6 +741,9 @@ This variable is nil by default.")
 
 (defvar color-theme-stack nil "Stack of color themes.")
 
+(set-face-attribute 'highlight nil :foreground 'unspecified :underline nil)
+(set-face-attribute 'region nil :foreground 'unspecified :underline nil :background "#666")
+
 (setq-default major-mode 'org-mode)  ;default mode for new buffers
 (setq org-replace-disputed-keys t    ;must be set before org is loaded
       org-clock-persist 'history
@@ -983,6 +990,14 @@ This variable is nil by default.")
                       (esc-refile-targets-centtech :maxlevel . 5)
                       (esc-refile-targets-smash    :maxlevel . 5)
                       (org-agenda-files            :maxlevel . 4)))
+
+(hydra-create "<f2>"
+  '(("k" text-scale-increase)
+    ("j" text-scale-decrease)))
+
+(hydra-create "C-M-<"
+  '(("," esc/zoom-out)
+    ("." esc/zoom-in)))
 
 (fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
 (message "All done, %s%s" (user-login-name) ".")
