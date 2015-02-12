@@ -331,8 +331,8 @@ seem to allow this (looking at you, wombat+).
 
 #+NAME: fontify hl-line-mode
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (set-face-attribute 'highlight nil :foreground 'unspecified)
-  (set-face-attribute 'region nil :foreground 'unspecified :background "#666")
+  (set-face-attribute 'highlight nil :foreground 'unspecified :underline nil)
+  (set-face-attribute 'region nil :foreground 'unspecified :underline nil :background "#666")
 #+END_SRC
 
 * Aliases
