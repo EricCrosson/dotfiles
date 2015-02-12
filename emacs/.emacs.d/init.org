@@ -507,7 +507,7 @@ Lua: necessary for Awesome WM.
   (after 'lua-mode-autoloads
     (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
     (add-to-list 'interpreter-mode-alist '("lua" . lua-mode)))
-#+END_SRC
+#+END_SRCc
 ** Undo tree autoloads
 Thanks to [[http://whattheemacsd.com/my-misc.el-02.html][Magnar]] for the advice.
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1139,16 +1139,15 @@ Summon the magical cookies.
 * OS configuration
 
 Operating system-specific configurations take place here, within this
-massive =cond=. As of now all I've really customized are the modifier
-keys. Maybe if I ever get away from using Arch (GNU/)Linux (yeah, right) I
-would find the time to beef these up more.
+massive =cond=.
 
 #+NAME: Operating System specific configurations
 #+BEGIN_SRC emacs-lisp :tangle yes
   (cond ((or (eq system-type 'ms-dos)
              (eq system-type 'windows-nt)
              (eq system-type 'cygwin))
-         ;; TODO: wrap message construct with a done-ifier
+
+         ;; Windows config
          (message-progress "Loading Windows specific configuration..."
            (setq w32-pass-lwindow-to-system nil
                  w32-pass-rwindow-to-system nil
@@ -1156,16 +1155,38 @@ would find the time to beef these up more.
                  w32-lwindow-modifier 'super ; Left Windows key
                  w32-rwindow-modifier 'super ; Right Windows key
                  w32-apps-modifier 'hyper)   ; Menu key
-           ;; export CYGWIN="nodosfilewarning winsymlinks"
-           ;; (customize-option 'w32-symlinks-handle-shortcuts)
-           (require-package '(w32-symlinks)))
+           (require-package '(w32-symlinks))
+#+END_SRC
 
+Note: for GNU Emacs compiled for Microsoft, both of the below options
+need to be set in order to follow symlinks. The shell snippet tells
+cygwin to create symlinks in a friendly format (old links need to be
+regenerated with this flag) and the sexp is loaded by Emacs allowing
+transparent use of symlinks.
+
+#+BEGIN_SRC sh :tangle no
+  # TODO: tangle me
+  export CYGWIN="nodosfilewarning winsymlinks"
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (customize-option 'w32-symlinks-handle-shortcuts)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+           ))
+#+END_SRC
+
+Begin Mac OS configuration
+
+#+BEGIN_SRC emacs-lisp :tangle yes
          ((or (eq system-type 'darwin))
           (message-progress "Loading Darwin specific configuration..."
             (setq mac-command-modifier 'meta)
             (setq mac-option-modifier 'super)
-            (setq ns-function-modifier 'hyper)))))
+            (setq ns-function-modifier 'hyper))))
 #+END_SRC
+
 * Dired configuration
 #+NAME: dired configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1663,8 +1684,9 @@ Wait, is this even being used??
     ("M-x"     . execute-extended-command)
     ("C-'"     . query-replace)
     ("C-x M-r" . revert-buffer-no-confirm)
-    ("C-x 2"    . esc/vsplit-last-buffer)
-    ("C-x 3"    . esc/hsplit-last-buffer))
+    ("C-x 2"   . esc/vsplit-last-buffer)
+    ("C-x 3"   . esc/hsplit-last-buffer)
+    ("M-s o"   . occur-dwim))
 
   ;; Search for current word up or down from point
   (esc-keys
@@ -1712,7 +1734,7 @@ Wait, is this even being used??
     ("C-x f"   . esc/toggle-selective-display)
     ("C-x M-f" . single/ff-in-single-mode))
 
-  ;; Fold-this keybindings. Thanks again Magnar!
+  ;; Fold-this keybindings. Thanks again [[https://github.com/magnars/fold-this.el][Magnar]]!
   (esc-keys
     ("C-c f"   . fold-this)
     ("C-c F"   . fold-this-unfold-all))
@@ -1820,8 +1842,8 @@ Wait, is this even being used??
     ("C-c C-o" . ff-find-other-file)
     ("C-o"     . ace-window))
 
-  (after 'expand-region-autoloads     ;thanks magnar
-    (esc-key "C-=" 'er/expand-region))
+  (after 'expand-region-autoloads      ;Three guesses [[https://github.com/magnars/expand-region.el][who]]
+    (esc-key "C-=" 'er/expand-region)) ;wrote this package
 
   ;; Help+
   (esc-keys
@@ -1856,7 +1878,6 @@ Wait, is this even being used??
 
   ;; Sysadmin bindings
   (esc-keys
-    ("C-x p"     . esc/proced-in-this-frame)
     ("C-M-+"     . esc/search-my-lisp-dir)
     ("C-c C-i"   . esc/edit-my-emacs)
     ("C-c C-M-i" . esc/edit-my-bash))
@@ -1906,23 +1927,30 @@ haven't had to look at it yet.
       ("'" . operate-on-number-at-point)))
 #+END_SRC
 
-**** esc binding hydras
-     TODO: determine how to integrate these into esc-mode-map
+** esc hydras
+TODO: determine how to integrate these into esc-mode-map
 
-     #+NAME: Change buffer text size
-     #+BEGIN_SRC emacs-lisp :tangle yes
-       (hydra-create "<f2>"
-         '(("k" text-scale-increase)
-           ("j" text-scale-decrease)))
-     #+END_SRC
+#+NAME: Change buffer text size
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (hydra-create "<f2>"
+    '(("k" text-scale-increase)
+      ("j" text-scale-decrease)))
+#+END_SRC
 
-     #+NAME: Change global text size
-     #+BEGIN_SRC emacs-lisp :tangle yes
-       (hydra-create "C-M-<"
-         '(("," esc/zoom-out)
-           ("." esc/zoom-in)))
-     #+END_SRC
+#+NAME: Change global text size
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (hydra-create "C-M-<"
+    '(("," esc/zoom-out)
+      ("." esc/zoom-in)))
+#+END_SRC
 
+#+NAME: Navigate compile warnings
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (hydra-create "C-`"
+    '(("h" first-error "first")
+      ("j" next-error "next")
+      ("k" previous-error "prev")))
+#+END_SRC
 
 ** esc hook
 #+NAME: esc-mode-hook

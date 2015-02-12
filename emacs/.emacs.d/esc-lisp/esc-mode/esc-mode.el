@@ -106,8 +106,9 @@ This macro runs conses through \\[esc-key] for convenience."
   ("M-x"     . execute-extended-command)
   ("C-'"     . query-replace)
   ("C-x M-r" . revert-buffer-no-confirm)
-  ("C-x 2"    . esc/vsplit-last-buffer)
-  ("C-x 3"    . esc/hsplit-last-buffer))
+  ("C-x 2"   . esc/vsplit-last-buffer)
+  ("C-x 3"   . esc/hsplit-last-buffer)
+  ("M-s o"   . occur-dwim))
 
 ;; Search for current word up or down from point
 (esc-keys
@@ -155,7 +156,7 @@ This macro runs conses through \\[esc-key] for convenience."
   ("C-x f"   . esc/toggle-selective-display)
   ("C-x M-f" . single/ff-in-single-mode))
 
-;; Fold-this keybindings. Thanks again Magnar!
+;; Fold-this keybindings. Thanks again [[https://github.com/magnars/fold-this.el][Magnar]]!
 (esc-keys
   ("C-c f"   . fold-this)
   ("C-c F"   . fold-this-unfold-all))
@@ -263,8 +264,8 @@ This macro runs conses through \\[esc-key] for convenience."
   ("C-c C-o" . ff-find-other-file)
   ("C-o"     . ace-window))
 
-(after 'expand-region-autoloads     ;thanks magnar
-  (esc-key "C-=" 'er/expand-region))
+(after 'expand-region-autoloads      ;Three guesses [[https://github.com/magnars/expand-region.el][who]]
+  (esc-key "C-=" 'er/expand-region)) ;wrote this package
 
 ;; Help+
 (esc-keys
@@ -299,7 +300,6 @@ This macro runs conses through \\[esc-key] for convenience."
 
 ;; Sysadmin bindings
 (esc-keys
-  ("C-x p"     . esc/proced-in-this-frame)
   ("C-M-+"     . esc/search-my-lisp-dir)
   ("C-c C-i"   . esc/edit-my-emacs)
   ("C-c C-M-i" . esc/edit-my-bash))

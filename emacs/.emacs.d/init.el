@@ -322,11 +322,6 @@ This variable is nil by default.")
 (define-key single-mode-map (kbd "r") 'isearch-backward)
 (define-key single-mode-map (kbd "e") 'eval-region)
 
-(autoload-from-package "lua-mode" '(lua-mode))
-(after 'lua-mode-autoloads
-  (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
-  (add-to-list 'interpreter-mode-alist '("lua" . lua-mode)))
-
 (autoload-from-package "undo-tree"
   '(undo-tree-undo
     undo-tree-redo))
@@ -699,7 +694,8 @@ This variable is nil by default.")
 (cond ((or (eq system-type 'ms-dos)
            (eq system-type 'windows-nt)
            (eq system-type 'cygwin))
-       ;; TODO: wrap message construct with a done-ifier
+
+       ;; Windows config
        (message-progress "Loading Windows specific configuration..."
          (setq w32-pass-lwindow-to-system nil
                w32-pass-rwindow-to-system nil
@@ -707,15 +703,17 @@ This variable is nil by default.")
                w32-lwindow-modifier 'super ; Left Windows key
                w32-rwindow-modifier 'super ; Right Windows key
                w32-apps-modifier 'hyper)   ; Menu key
-         ;; export CYGWIN="nodosfilewarning winsymlinks"
-         ;; (customize-option 'w32-symlinks-handle-shortcuts)
-         (require-package '(w32-symlinks)))
+         (require-package '(w32-symlinks))
 
-       ((or (eq system-type 'darwin))
-        (message-progress "Loading Darwin specific configuration..."
-          (setq mac-command-modifier 'meta)
-          (setq mac-option-modifier 'super)
-          (setq ns-function-modifier 'hyper)))))
+(customize-option 'w32-symlinks-handle-shortcuts)
+
+))
+
+((or (eq system-type 'darwin))
+ (message-progress "Loading Darwin specific configuration..."
+   (setq mac-command-modifier 'meta)
+   (setq mac-option-modifier 'super)
+   (setq ns-function-modifier 'hyper))))
 
 ;; auto-dired-reload
   ;; Reload dired after making changes
@@ -998,6 +996,11 @@ This variable is nil by default.")
 (hydra-create "C-M-<"
   '(("," esc/zoom-out)
     ("." esc/zoom-in)))
+
+(hydra-create "C-`"
+  '(("h" first-error "first")
+    ("j" next-error "next")
+    ("k" previous-error "prev")))
 
 (fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
 (message "All done, %s%s" (user-login-name) ".")

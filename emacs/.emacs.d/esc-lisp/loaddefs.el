@@ -1,8 +1,40 @@
 ;;
 
-;;;### (autoloads nil "boilerplate/boilerplate" "../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21714 29750 823294 404000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el
+;;;### (autoloads (esc/bury-compilation-buffer-if-successful esc/auto-byte-recompile
+;;;;;;  esc/previous-error esc/rotate-window-split esc/toggle-window-dedicated
+;;;;;;  esc/toggle-window-selectability esc/should-have-opened-this-in-other-window
+;;;;;;  esc/hsplit-last-buffer esc/vsplit-last-buffer esc/raise-magit-status
+;;;;;;  esc/raise-eshell-in-current-dir esc/raise-eshell esc/raise-ansi-term
+;;;;;;  esc/bury-other-buffer esc/bury-buffer-delete-window esc/org-prev-source-code-block
+;;;;;;  esc/org-next-source-code-block esc/insert-key-combination
+;;;;;;  touch rename-defun describe-keymap esc/pull-up-line esc/backward-kill-line
+;;;;;;  esc/scroll-down-slight esc/scroll-up-slight esc/edit-configs
+;;;;;;  esc/proced-in-this-frame esc/zoom-out esc/zoom-in esc/minimap-toggle
+;;;;;;  esc/display-emacs-init-time esc/goto-line-with-feedback esc/open-line-above
+;;;;;;  esc/open-line-below esc/swap-buffer-locations esc/unroll-cc-arguments
+;;;;;;  esc/toggle-fullscreen esc/toggle-selective-display esc/multi-occur-in-this-mode
+;;;;;;  esc/get-buffers-matching-mode esc/rename-current-buffer-file
+;;;;;;  esc/delete-current-buffer-file esc/increment-number-at-point
+;;;;;;  esc/back-to-indentation-or-beginning esc/insert-date esc/date
+;;;;;;  esc/time esc/word-count esc/remove-dos-eol esc/copy-line
+;;;;;;  esc/insert-numeric-sequence esc/toggle-letter-case esc/save-buffers-kill-emacs
+;;;;;;  esc/insert-defun-at-point esc/eval-and-replace esc/kill-whole-word
+;;;;;;  esc/delete-whole-word esc/edit-my-bash esc/edit-my-emacs
+;;;;;;  esc/mode-line-other-buffer-other-window esc/magic-autoload-next-defun-or-macro
+;;;;;;  esc/copy-file-name-to-clipboard esc/insert-file-name esc/middle-click-yank
+;;;;;;  esc/insert-surrounding-dollars esc/insert-surrounding-stars
+;;;;;;  esc/insert-surrounding-quotes esc/insert-surrounding-chevrons
+;;;;;;  esc/insert-surrounding-brackets-with-colon esc/insert-surrounding-brackets
+;;;;;;  esc/insert-surrounding-pipes esc/insert-surrounding-braces
+;;;;;;  esc/insert-surrounding-parens esc/insert-little-arrow esc/insert-surrounding-ticks
+;;;;;;  esc/yank-and-move esc/javadoc-method-comment esc/insert-short-gpl
+;;;;;;  esc/iedit-mode-hook esc/comint-mode-hook esc/erc-mode-hook
+;;;;;;  esc/enh-ruby-mode-hook esc/fundamental-mode-hook esc/emacs-lisp-mode-hook
+;;;;;;  esc/c++-mode-hook esc/c-mode-common-hook esc/minibuffer-exit-hook
+;;;;;;  esc/minibuffer-setup-hook esc/prog-mode-hook esc/toggle-fullscreen-buffer)
+;;;;;;  "boilerplate/boilerplate" "boilerplate/boilerplate.el" (21724
+;;;;;;  53254 0 0))
+;;; Generated autoloads from boilerplate/boilerplate.el
 
 (autoload 'esc/toggle-fullscreen-buffer "boilerplate/boilerplate" "\
 Bring up a temporary buffer in fullscreen mode, or restore the
@@ -244,7 +276,7 @@ Offer to save each buffer(once only), then kill this Emacs process.
 
 (autoload 'esc/toggle-letter-case "boilerplate/boilerplate" "\
 Toggle the letter case of current word or text selection.
-Toggles between: “all lower”, “Init Caps”, “ALL CAPS”.
+Toggles between: all lower, Init Caps, ALL CAPS.
 
 \(fn)" t nil)
 
@@ -555,9 +587,29 @@ Bury the compilation buffer after a successful compile.
 
 ;;;***
 
-;;;### (autoloads nil "dired-config/dired-config" "../../../../.emacs.d/esc-lisp/dired-config/dired-config.el"
-;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/dired-config/dired-config.el
+;;;### (autoloads (color-theme-pop color-theme-push) "color-theme-stack"
+;;;;;;  "color-theme-stack.el" (21724 54055 0 0))
+;;; Generated autoloads from color-theme-stack.el
+
+(autoload 'color-theme-push "color-theme-stack" "\
+Switch to a theme, saving the old one.
+
+\(fn)" nil nil)
+
+(autoload 'color-theme-pop "color-theme-stack" "\
+Restore the previous theme in use.
+
+\(fn)" nil nil)
+
+;;;***
+
+;;;### (autoloads (esc/dired-back-to-start-of-files esc/search-my-lisp-dir
+;;;;;;  esc/dired-up-level-reuse-buffer esc/dired-find-file-single-mode
+;;;;;;  esc/dired-jump-to-bottom esc/dired-back-to-top esc/dired-load-hook-install-details
+;;;;;;  esc/dired-load-hook-omit-files esc/dired-load-hook-hide-data
+;;;;;;  esc/dired-load-hook esc/dired-mode-hook) "dired-config/dired-config"
+;;;;;;  "dired-config/dired-config.el" (21724 53254 0 0))
+;;; Generated autoloads from dired-config/dired-config.el
 
 (autoload 'esc/dired-mode-hook "dired-config/dired-config" "\
 esc's hook to \\[dired-mode-hook].
@@ -629,9 +681,9 @@ Otherwise, signal a `file-notify-error'.
 
 ;;;***
 
-;;;### (autoloads nil "ido-config/ido-config" "../../../../.emacs.d/esc-lisp/ido-config/ido-config.el"
-;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/ido-config/ido-config.el
+;;;### (autoloads (ido-goto-symbol ido-recentf-open) "ido-config/ido-config"
+;;;;;;  "ido-config/ido-config.el" (21724 53254 0 0))
+;;; Generated autoloads from ido-config/ido-config.el
 
 (autoload 'ido-recentf-open "ido-config/ido-config" "\
 Use `ido-completing-read' to \\[find-file] a recent file
@@ -646,9 +698,11 @@ Refresh imenu and jump to a function in the buffer using
 
 ;;;***
 
-;;;### (autoloads nil "lisp-infection/lisp-infection" "../../../../.emacs.d/esc-lisp/lisp-infection/lisp-infection.el"
-;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/lisp-infection/lisp-infection.el
+;;;### (autoloads (li/eval-and-replace li/indent-entire-defun li/eval-current-sexp
+;;;;;;  li/delete-sexp li/beginning-of-sexp li/end-of-sexp li/copy-sexp
+;;;;;;  li/mark-current-sexp li/mark-current-defun) "lisp-infection/lisp-infection"
+;;;;;;  "lisp-infection/lisp-infection.el" (21724 53254 0 0))
+;;; Generated autoloads from lisp-infection/lisp-infection.el
 
 (autoload 'li/mark-current-defun "lisp-infection/lisp-infection" "\
 Mark the current defun.
@@ -697,9 +751,11 @@ Replace the preceding sexp with its value.
 
 ;;;***
 
-;;;### (autoloads nil "multiple-cursors-config/mc-config" "../../../../.emacs.d/esc-lisp/multiple-cursors-config/mc-config.el"
-;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/multiple-cursors-config/mc-config.el
+;;;### (autoloads (mc/search-backward mc/search-forward mc/search
+;;;;;;  esc/multiple-cursors-mode-disabled-hook esc/multiple-cursors-mode-enabled-hook)
+;;;;;;  "multiple-cursors-config/mc-config" "multiple-cursors-config/mc-config.el"
+;;;;;;  (21724 53254 0 0))
+;;; Generated autoloads from multiple-cursors-config/mc-config.el
 
 (autoload 'esc/multiple-cursors-mode-enabled-hook "multiple-cursors-config/mc-config" "\
 esc's code to \\[multiple-cursors-mode-enabled-hook].
@@ -732,10 +788,11 @@ Simplified version of backward search that supports multiple cursors.
 
 ;;;***
 
-;;;### (autoloads nil "scroll-all-mode-config/scroll-all-config"
-;;;;;;  "../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all-config.el"
-;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all-config.el
+;;;### (autoloads (mwheel-scroll-all-scroll-down-all mwheel-scroll-all-scroll-up-all
+;;;;;;  mwheel-scroll-all-function-all) "scroll-all-mode-config/scroll-all-config"
+;;;;;;  "scroll-all-mode-config/scroll-all-config.el" (21724 53254
+;;;;;;  0 0))
+;;; Generated autoloads from scroll-all-mode-config/scroll-all-config.el
 
 (autoload 'mwheel-scroll-all-function-all "scroll-all-mode-config/scroll-all-config" "\
 
@@ -874,9 +931,11 @@ Loop to capture and insert commands for `twinkle-fingers'.
 
 ;;;***
 
-;;;### (autoloads nil "update-autoloads/update-autoloads" "../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el"
-;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el
+;;;### (autoloads (update-esc-lisp-autoloads get-project-loaddefs-path
+;;;;;;  list-files-in-subtree-matching-regexp-recursive autoloads)
+;;;;;;  "update-autoloads/update-autoloads" "update-autoloads/update-autoloads.el"
+;;;;;;  (21724 53254 0 0))
+;;; Generated autoloads from update-autoloads/update-autoloads.el
 
 (let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads/update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads/update-autoloads" loads))))
 

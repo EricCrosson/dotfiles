@@ -62,14 +62,19 @@
   ;;;###autoload
   (defun esc/dired-load-hook-install-details ()
     (when (fboundp 'dired-details-install) (dired-details-install)))
+#+END_SRC
 
+Thanks [[http://whattheemacsd.com/setup-dired.el-02.html][Magnar]] for all the good ideas.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
   ;;;###autoload
   (defun esc/dired-back-to-top ()
     "Goes to the first line in dired, not the top of the buffer."
     (interactive)
     (beginning-of-buffer)
     (when (not (search-forward ".." nil 'noerror))
-      (beginning-of-buffer))          ;likely dired-omit-mode is enabled
+      (beginning-of-buffer)
+      (dired-next-line 1))          ;likely dired-omit-mode is enabled
     (dired-next-line 1))
 
   ;;;###autoload
@@ -78,7 +83,9 @@
     (interactive)
     (end-of-buffer)
     (dired-previous-line 1))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp :tangle yes
   ;;;###autoload
   (defun esc/dired-find-file-single-mode ()
     "This defun will invoke `dired-find-file` and open the file(s) at point in `single-mode'."
