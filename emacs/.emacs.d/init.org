@@ -325,16 +325,6 @@ It is my belief that backup files should not be so obtrusive as to tempt users t
         backup-by-copying-when-mismatch t)
 #+END_SRC
 
-
-Allow hl-line-mode to fontify highlighted lines. Not all color themes
-seem to allow this (looking at you, wombat+).
-
-#+NAME: fontify hl-line-mode
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (set-face-attribute 'highlight nil :foreground 'unspecified :underline nil)
-  (set-face-attribute 'region nil :foreground 'unspecified :underline nil :background "#666")
-#+END_SRC
-
 * Aliases
 #+NAME: alias fmakunbound => undefun
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1187,22 +1177,6 @@ would find the time to beef these up more.
   (add-hook 'dired-load-hook 'esc/dired-load-hook)
 #+END_SRC
 
-* Color theme stack
-  #+BEGIN_SRC emacs-lisp :tangle esc-lisp/color-theme-stack.el
-    (require 'cl)
-    (require 'color-theme)
-
-    (defvar color-theme-stack nil
-      "Stack of color themes.")
-
-    (defun color-theme-push ()
-      "Switch to a theme, saving the old one."
-      (push (color-theme-make-snapshot) color-theme-stack))
-
-    (defun color-theme-pop ()
-      "Restore the previous theme in use."
-      (funcall (pop color-theme-stack)))
-  #+END_SRC
 ** Wdired
 #+BEGIN_SRC emacs-lisp :tangle yes
   (eval-after-load "wdired"
@@ -1213,6 +1187,31 @@ would find the time to beef these up more.
        (define-key wdired-mode-map
          (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)))
 #+END_SRC
+
+* Colors
+
+  Initialize the color-theme-stack
+
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (defvar color-theme-stack nil "Stack of color themes.")
+  #+END_SRC
+
+  Lay the color-theme-stack api
+
+  #+BEGIN_SRC emacs-lisp :tangle esc-lisp/color-theme-stack.el
+    ;;;###autoload
+    (defun color-theme-push ()
+      "Switch to a theme, saving the old one."
+      (push (color-theme-make-snapshot) color-theme-stack)
+      (message "Color theme pushed"))
+
+    ;;;###autoload
+    (defun color-theme-pop ()
+      "Restore the previous theme in use."
+      (funcall (pop color-theme-stack))
+      (message "Color theme popped"))
+  #+END_SRC
+
 * Organize mode configuration
 ** org config
 My favorite mode. This was the reason I started using Emacs, didja know?

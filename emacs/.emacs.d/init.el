@@ -208,9 +208,6 @@
       backup-by-copying-when-linked t
       backup-by-copying-when-mismatch t)
 
-(set-face-attribute 'highlight nil :foreground 'unspecified :underline nil)
-(set-face-attribute 'region nil :foreground 'unspecified :underline nil :background "#666")
-
 (defalias 'undefun 'fmakunbound)
 
 (defadvice org-agenda (around shrink-agenda-buffer activate)
@@ -666,3 +663,327 @@ This variable is nil by default.")
 
 (after 'browse-kill-ring
   (browse-kill-ring-default-keybindings))
+
+(mouse-avoidance-mode 'exile)
+
+(after 'eldoc
+  (after 'diminish (diminish 'eldoc-mode))
+  (add-hook 'emacs-lisp-mode-hook (lambda() (turn-on-eldoc-mode))))
+
+(add-hook 'compilation-finish-functions
+          'esc/bury-compilation-buffer-if-successful)
+(add-to-list 'same-window-buffer-names "*compilation*")
+
+(defadvice he-substitute-string (after he-paredit-fix)
+  "Remove extra paren when expanding line in paredit"
+  (when (and (fboundp 'paredit-mode)
+             paredit-mode (equal (substring str -1) ")"))
+    (backward-delete-char 1)
+    (forward-char)))
+
+(after 'bitly
+  (setq bitly-access-token "b4a5cd4e51df442ab97012cfc2764c599d6eabf8"))
+
+(setq paradox-github-token "37204ef66b6566274616d130ec61a0cd4f98e066")
+
+(add-hook 'big-fringe-mode-hook 'esc/big-fringe-mode-hook)
+
+(add-hook 'haskell-mode-hook 'haskell-indent-mode)
+
+(add-hook 'kill-emacs-hook 'update-esc-lisp-autoloads)
+
+(cond ((or (eq system-type 'ms-dos)
+           (eq system-type 'windows-nt)
+           (eq system-type 'cygwin))
+       ;; TODO: wrap message construct with a done-ifier
+       (message-progress "Loading Windows specific configuration..."
+         (setq w32-pass-lwindow-to-system nil
+               w32-pass-rwindow-to-system nil
+               w32-pass-apps-to-system nil
+               w32-lwindow-modifier 'super ; Left Windows key
+               w32-rwindow-modifier 'super ; Right Windows key
+               w32-apps-modifier 'hyper)   ; Menu key
+         ;; export CYGWIN="nodosfilewarning winsymlinks"
+         ;; (customize-option 'w32-symlinks-handle-shortcuts)
+         (require-package '(w32-symlinks)))
+
+       ((or (eq system-type 'darwin))
+        (message-progress "Loading Darwin specific configuration..."
+          (setq mac-command-modifier 'meta)
+          (setq mac-option-modifier 'super)
+          (setq ns-function-modifier 'hyper)))))
+
+;; auto-dired-reload
+  ;; Reload dired after making changes
+  (after 'dash
+    (put '--each 'lisp-indent-function 1)
+    (--each '(dired-do-rename
+                dired-create-directory
+                wdired-abort-changes)
+        (eval `(defadvice ,it (after revert-buffer activate)
+                 (revert-buffer)))))
+  ;; end auto-dired-reload- thanks Magnar
+
+(add-hook 'dired-mode-hook 'esc/dired-mode-hook)
+(add-hook 'dired-load-hook 'esc/dired-load-hook)
+
+(eval-after-load "wdired"
+  '(progn
+     (define-key wdired-mode-map (kbd "C-a") 'esc/dired-back-to-start-of-files)
+     (define-key wdired-mode-map
+       (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
+     (define-key wdired-mode-map
+       (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)))
+
+(defvar color-theme-stack nil "Stack of color themes.")
+
+(setq-default major-mode 'org-mode)  ;default mode for new buffers
+(setq org-replace-disputed-keys t    ;must be set before org is loaded
+      org-clock-persist 'history
+      org-hide-leading-stars t
+      org-hide-emphasis-markers t
+      org-hierarchical-todo-statistics     nil
+      org-checkbox-hierarchical-statistics nil
+      org-src-fontify-natively t
+      org-directory "~/org"
+      org-plantuml-jar-path "~/classes/ee460n/res/plantuml.jar"
+      org-agenda-files (append '("~/org/todo.org")))
+
+(after 'org
+  ;; TODO: maybe put these defuns somewhere
+  (defun esc/add-imenu-to-menubar ()
+    (imenu-add-to-menubar "Imenu"))
+  (add-hook 'org-mode-hook 'esc/add-imenu-to-menubar)
+
+  (add-to-list 'org-modules 'org-habit)
+  (setq org-habit-graph-column 55)
+  (defun esc/after-org-mode-hook ()
+    (org-indent-mode)
+    (local-set-key (kbd "C-M-n") 'outline-next-visible-heading)
+    (local-set-key (kbd "C-M-p") 'outline-previous-visible-heading)
+    (local-set-key (kbd "C-c C-a") 'org-todo))
+  (add-hook 'org-mode-hook 'esc/after-org-mode-hook))
+
+(after 'org
+       (add-to-list 'org-structure-template-alist
+                    '("E"
+                      "#+BEGIN_SRC emacs-lisp ?\n\n#+END_SRC"
+                      "<emacs-lisp>\n?\n</emacs-lisp>")))
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (setq org-confirm-babel-evaluate nil)
+
+            (org-babel-do-load-languages
+             'org-babel-load-languages
+             '(;; Always execute these languages
+               (R               .       t)
+               (ditaa           .       t)
+               (dot             .       t)
+               (plantuml        .       t)
+               (emacs-lisp      .       t)
+               (lisp            .       t)
+               (clojure         .       t)
+               (scala           .       t)
+               (gnuplot         .       t)
+               (haskell         .       t)
+               (ocaml           .       t)
+               (python          .       t)
+               (ruby            .       t)
+               (sh              .       t)
+               (sqlite          .       t)
+               (octave          .       t)
+               (plantuml        .       t)
+               ;; Never execute these languages
+               (screen          .       nil)
+               (sql             .       nil)))))
+
+(add-to-list 'org-structure-template-alist
+        '("E"
+          "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"
+          "<src lang=\"emacs-lisp\">\n\n</src>"))
+
+;;; org-export-blocks-format-plantuml.el Export UML using plantuml
+;;
+;; OBSOLETED, use ob-plantuml.el bundled in org instead.
+;;
+;; Copy from org-export-blocks-format-ditaa
+;;
+;; E.g.
+;; #+BEGIN_UML
+;;   Alice -> Bob: Authentication Request
+;;   Bob --> Alice: Authentication Response
+;; #+END_UML
+
+(eval-after-load "org-exp-blocks"
+  '(progn
+     (add-to-list 'org-export-blocks '(uml iy/org-export-blocks-format-plantuml nil))
+     (add-to-list 'org-protecting-blocks "uml")))
+
+(defvar iy/org-plantuml-jar-path (expand-file-name "~/Dropbox/java-libs/plantuml.jar")
+  "Path to the plantuml jar executable.")
+(defun iy/org-export-blocks-format-plantuml (body &rest headers)
+  "Pass block BODY to the plantuml utility creating an image.
+  Specify the path at which the image should be saved as the first
+  element of headers, any additional elements of headers will be
+  passed to the plantuml utility as command line arguments."
+  (message "plantuml-formatting...")
+  (let* ((args (if (cdr headers) (mapconcat 'identity (cdr headers) " ")))
+         (data-file (make-temp-file "org-plantuml"))
+         (hash (progn
+                 (set-text-properties 0 (length body) nil body)
+                 (sha1 (prin1-to-string (list body args)))))
+         (raw-out-file (if headers (car headers)))
+         (out-file-parts (if (string-match "\\(.+\\)\\.\\([^\\.]+\\)$" raw-out-file)
+                             (cons (match-string 1 raw-out-file)
+                                   (match-string 2 raw-out-file))
+                           (cons raw-out-file "png")))
+         (out-file (concat (car out-file-parts) "_" hash "." (cdr out-file-parts))))
+    (unless (file-exists-p iy/org-plantuml-jar-path)
+      (error (format "Could not find plantuml.jar at %s" iy/org-plantuml-jar-path)))
+    (setq body (if (string-match "^\\([^:\\|:[^ ]\\)" body)
+                   body
+                 (mapconcat (lambda (x) (substring x (if (> (length x) 1) 2 1)))
+                            (org-split-string body "\n")
+                            "\n")))
+    (cond
+     ((or htmlp latexp docbookp)
+      (unless (file-exists-p out-file)
+        (mapc ;; remove old hashed versions of this file
+         (lambda (file)
+           (when (and (string-match (concat (regexp-quote (car out-file-parts))
+                                            "_\\([[:alnum:]]+\\)\\."
+                                            (regexp-quote (cdr out-file-parts)))
+                                    file)
+                      (= (length (match-string 1 out-file)) 40))
+             (delete-file (expand-file-name file
+                                            (file-name-directory out-file)))))
+         (directory-files (or (file-name-directory out-file)
+                              default-directory)))
+        (with-temp-file data-file (insert (concat "@startuml\n" body "\n@enduml")))
+        (message (concat "java -jar " iy/org-plantuml-jar-path " -pipe " args))
+        (with-temp-buffer
+          (call-process-shell-command
+           (concat "java -jar " iy/org-plantuml-jar-path " -pipe " args)
+           data-file
+           '(t nil))
+          (write-region nil nil out-file)))
+      (format "\n[[file:%s]]\n" out-file))
+     (t (concat
+         "\n#+BEGIN_EXAMPLE\n"
+         body (if (string-match "\n$" body) "" "\n")
+         "#+END_EXAMPLE\n")))))
+
+;; Include the latex-exporter
+(require 'ox-latex nil 'noerror)
+;; Add minted to the defaults packages to include when exporting.
+(add-to-list 'org-latex-packages-alist '("" "minted"))
+;; Tell the latex export to use the minted package for source
+;; code coloration.
+(setq org-latex-listings 'minted)
+;; Let the exporter use the -shell-escape option to let latex
+;; execute external programs.
+;; This obviously and can be dangerous to activate!
+(setq org-latex-pdf-process
+      '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+;; allow for export=>beamer by placing
+
+;; #+LaTeX_CLASS: beamer in org files
+(unless (boundp 'org-export-latex-classes)
+  (setq org-export-latex-classes nil))
+(add-to-list 'org-export-latex-classes
+  ;; beamer class, for presentations
+  '("beamer"
+     "\\documentclass[11pt]{beamer}\n
+      \\mode<{{{beamermode}}}>\n
+      \\usetheme{{{{beamertheme}}}}\n
+      \\usecolortheme{{{{beamercolortheme}}}}\n
+      \\beamertemplateballitem\n
+      \\setbeameroption{show notes}
+      \\usepackage[utf8]{inputenc}\n
+      \\usepackage[T1]{fontenc}\n
+      \\usepackage{hyperref}\n
+      \\usepackage{color}
+      \\usepackage{listings}
+      \\lstset{numbers=none,language=[ISO]C++,tabsize=4,
+  frame=single,
+  basicstyle=\\small,
+  showspaces=false,showstringspaces=false,
+  showtabs=false,
+  keywordstyle=\\color{blue}\\bfseries,
+  commentstyle=\\color{red},
+  }\n
+      \\usepackage{verbatim}\n
+      \\institute{{{{beamerinstitute}}}}\n
+       \\subject{{{{beamersubject}}}}\n"
+
+     ("\\section{%s}" . "\\section*{%s}")
+
+     ("\\begin{frame}[fragile]\\frametitle{%s}"
+       "\\end{frame}"
+       "\\begin{frame}[fragile]\\frametitle{%s}"
+       "\\end{frame}")))
+
+  ;; letter class, for formal letters
+
+  (add-to-list 'org-export-latex-classes
+
+  '("letter"
+     "\\documentclass[11pt]{letter}\n
+      \\usepackage[utf8]{inputenc}\n
+      \\usepackage[T1]{fontenc}\n
+      \\usepackage{color}"
+
+     ("\\section{%s}" . "\\section*{%s}")
+     ("\\subsection{%s}" . "\\subsection*{%s}")
+     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+     ("\\paragraph{%s}" . "\\paragraph*{%s}")
+     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+(setq org-default-notes-file (concat org-directory "/capture.org"))
+(after 'org
+  (after 'esc-mode
+    (esc-key "C-c C-p" 'org-capture)))
+
+(setq org-capture-templates
+      '(;; General tasks go here
+        ("t" "Todo" entry
+         (file+headline (concat org-directory "/todo.org") "Tasks")
+         "* TODO %?\n  %a")
+        ;; Used to record my state
+        ("j" "Journal" entry
+         (file+datetree (concat org-directory "/journal.org"))
+         "* %?\nEntered on %U\n  %i\n  %a")
+
+        ;;; Work-related captures
+        ("c" "Centaur" entry
+         (file+datetree (concat org-directory "/centtech/centtech.org"))
+         "* TODO %?\n  %i\n  %a")
+
+        ;;; Personal captures
+        ;; Notes about Super Smash Bros. 64
+        ("s" "Smash Bros." entry
+         (file+headline (concat org-directory "/smash/smash.org") "Notes")
+         "* %?\n")))
+
+(setq ;; Work refile locations
+ esc-refile-targets-centtech
+ `(,(concat org-directory "/centtech/lru.org")
+   ,(concat org-directory "/centtech/pse.org")
+   ,(concat org-directory "/centtech/newreg.org"))
+
+ ;; Personal refile locations
+ esc-refile-targets-smash
+ `(,(concat org-directory "/smash/64.org")
+   ,(concat org-directory "/smash/melee.org")
+   ,(concat org-directory "/smash/pm.org"))
+
+ org-refile-targets '((nil                         :maxlevel . 5)
+                      (esc-refile-targets-centtech :maxlevel . 5)
+                      (esc-refile-targets-smash    :maxlevel . 5)
+                      (org-agenda-files            :maxlevel . 4)))
+
+(fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
+(message "All done, %s%s" (user-login-name) ".")
+;;; .emacs.el ends here
