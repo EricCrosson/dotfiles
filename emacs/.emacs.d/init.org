@@ -47,6 +47,9 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 :PROPERTIES:
 :COOKIE_DATA: recursive
 :END:
+- [ ] scratch buffer as consistent config file
+  only emacs-lisp source blocks from the org file are loaded,
+  naturally
 - [ ] convert to use-package
 - [ ] remove tangles files from git, provide makefile
 - [ ] tangling scripts adds execute permission
@@ -141,6 +144,10 @@ need to keep the list updated, just load all subdirectories and go.
 
 #+NAME: load-path-creation
 #+BEGIN_SRC emacs-lisp :tangle yes
+  (let ((default-directory "~/.emacs.d/"))       ;for easy
+    (normal-top-level-add-to-load-path '("."))   ;recursive
+    (normal-top-level-add-subdirs-to-load-path)) ;loading
+
   (defcustom esc-lisp-path nil
     "Path to esc's lisp library."
     :type 'path
@@ -1212,6 +1219,17 @@ would find the time to beef these up more.
       (message "Color theme popped"))
   #+END_SRC
 
+** Color theme tweaks
+*** Wombat
+
+    - [ ] TODO fix wombat with multiple cursors
+
+    #+NAME: properly colorize wombat
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (set-face-attribute 'highlight nil :foreground 'unspecified :underline nil)
+      (set-face-attribute 'region nil :foreground 'unspecified :underline nil :background "#666")
+    #+END_SRC
+
 * Organize mode configuration
 ** org config
 My favorite mode. This was the reason I started using Emacs, didja know?
@@ -1738,9 +1756,6 @@ Wait, is this even being used??
   ;; Minimap bindings
   (esc-key "C-c M-m" 'esc/minimap-toggle)
 
-  ;; Flyspell bindings
-  (esc-key "<f9>" 'flyspell-buffer)
-
   ;; Ace jump mode. Like an ace
   (after 'ace-jump-mode-autoloads
     (esc-keys
@@ -1822,16 +1837,6 @@ Wait, is this even being used??
   (esc-keys
     ("C-c /"   . goto-last-change))
 
-  ;; TODO: convert to git-gutter+
-  ;; TODO: find a solution for git-gutter+ / symlinks
-  ;; git-gutter bindings
-  ;; (after 'git-gutter-autoloads
-  ;;   (esc-keys
-  ;;     ;("C-x g"   . git-gutter:toggle)
-  ;;     ("C-x C-p" . git-gutter:previous-hunk)
-  ;;     ("C-x C-n" . git-gutter:next-hunk)
-  ;;     ("C-x C-v" . git-gutter:revert-hunk)))
-
   ;; Font maniplation
   (esc-keys
     ("C-M-<" . esc/zoom-out)
@@ -1839,9 +1844,8 @@ Wait, is this even being used??
 
   ;;; Function keys
   (esc-key "<f7>" 'scroll-all-mode)
-
-  ;; Follow mode
   (esc-key "<f8>" 'follow-delete-other-windows-and-split)
+  (esc-key "<f9>" 'flyspell-buffer)
 
   ;; Helm
   (after 'helm-autoloads
@@ -1901,6 +1905,24 @@ haven't had to look at it yet.
       ("%" . apply-operation-to-number-at-point)
       ("'" . operate-on-number-at-point)))
 #+END_SRC
+
+**** esc binding hydras
+     TODO: determine how to integrate these into esc-mode-map
+
+     #+NAME: Change buffer text size
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (hydra-create "<f2>"
+         '(("k" text-scale-increase)
+           ("j" text-scale-decrease)))
+     #+END_SRC
+
+     #+NAME: Change global text size
+     #+BEGIN_SRC emacs-lisp :tangle yes
+       (hydra-create "C-M-<"
+         '(("," esc/zoom-out)
+           ("." esc/zoom-in)))
+     #+END_SRC
+
 
 ** esc hook
 #+NAME: esc-mode-hook
