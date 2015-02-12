@@ -1,7 +1,7 @@
 ;;
 
 ;;;### (autoloads nil "single-mode" "../../../../../.emacs.d/esc-lisp/single-mode/single-mode.el"
-;;;;;;  (21724 64129 476500 667000))
+;;;;;;  (21724 64935 716454 74000))
 ;;; Generated autoloads from ../../../../../.emacs.d/esc-lisp/single-mode/single-mode.el
 
 (autoload 'single-wrap-around-read-only-mode "single-mode" "\

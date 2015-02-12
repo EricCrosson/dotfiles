@@ -1,7 +1,7 @@
 ;;
 
 ;;;### (autoloads nil "boilerplate/boilerplate" "../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21724 62228 686610 513000))
+;;;;;;  (21724 64935 609787 414000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el
 
 (autoload 'esc/toggle-fullscreen-buffer "boilerplate/boilerplate" "\
@@ -582,7 +582,7 @@ Restore the previous theme in use.
 ;;;***
 
 ;;;### (autoloads nil "colors/color-theme-stack" "../../../../.emacs.d/esc-lisp/colors/color-theme-stack.el"
-;;;;;;  (21724 63756 163188 907000))
+;;;;;;  (21724 64931 226454 333000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/colors/color-theme-stack.el
 
 (autoload 'color-theme-push "colors/color-theme-stack" "\
@@ -598,7 +598,7 @@ Restore the previous theme in use.
 ;;;***
 
 ;;;### (autoloads nil "dired-config/dired-config" "../../../../.emacs.d/esc-lisp/dired-config/dired-config.el"
-;;;;;;  (21724 62224 403277 427000))
+;;;;;;  (21724 64931 373120 992000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/dired-config/dired-config.el
 
 (autoload 'esc/dired-mode-hook "dired-config/dired-config" "\
@@ -678,6 +678,24 @@ Refresh imenu and jump to a function in the buffer using
 
 ;;;***
 
+;;;### (autoloads nil "ido-extras/ido-extras" "../../../../.emacs.d/esc-lisp/ido-extras/ido-extras.el"
+;;;;;;  (21724 64935 793120 736000))
+;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/ido-extras/ido-extras.el
+
+(autoload 'ido-recentf-open "ido-extras/ido-extras" "\
+Use `ido-completing-read' to \\[find-file] a recent file.
+
+\(fn)" t nil)
+
+(autoload 'ido-goto-symbol "ido-extras/ido-extras" "\
+Use `ido-completing-read` to query a function in the current
+buffer and jump to it. Functions are defined by the active minor
+mode.
+
+\(fn &optional SYMBOL-LIST)" t nil)
+
+;;;***
+
 ;;;### (autoloads nil "lisp-infection/lisp-infection" "../../../../.emacs.d/esc-lisp/lisp-infection/lisp-infection.el"
 ;;;;;;  (21705 16240 864682 627000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/lisp-infection/lisp-infection.el
@@ -730,7 +748,7 @@ Replace the preceding sexp with its value.
 ;;;***
 
 ;;;### (autoloads nil "multiple-cursors-config/mc-config" "../../../../.emacs.d/esc-lisp/multiple-cursors-config/mc-config.el"
-;;;;;;  (21705 16240 864682 627000))
+;;;;;;  (21724 64970 513118 730000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/multiple-cursors-config/mc-config.el
 
 (autoload 'esc/multiple-cursors-mode-enabled-hook "multiple-cursors-config/mc-config" "\
@@ -765,7 +783,7 @@ Simplified version of backward search that supports multiple cursors.
 ;;;***
 
 ;;;### (autoloads nil "scroll-all-mode-config/scroll-all" "../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all.el"
-;;;;;;  (21724 63460 606539 320000))
+;;;;;;  (21724 64935 923120 729000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all.el
 
 (autoload 'mwheel-scroll-all-function-all "scroll-all-mode-config/scroll-all" "\
@@ -929,7 +947,7 @@ Loop to capture and insert commands for `twinkle-fingers'.
 ;;;***
 
 ;;;### (autoloads nil "update-autoloads/update-autoloads" "../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el"
-;;;;;;  (21724 62228 819943 838000))
+;;;;;;  (21724 64935 909787 396000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el
 
 (let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads/update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads/update-autoloads" loads))))

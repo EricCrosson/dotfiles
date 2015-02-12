@@ -25,7 +25,7 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/esc-lisp/dired-config/dired-config.el
 /emacs/.emacs.d/esc-lisp/esc-mode/
 /emacs/.emacs.d/esc-lisp/ido-extras/ido-extras.el
-/emacs/.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all.el
+/emacs/.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all-config.el
 /emacs/.emacs.d/esc-lisp/single-mode/single-mode.el
 /emacs/.emacs.d/esc-lisp/update-autoloads/update-autoloads.el
 /emacs/.emacs.d/init.el
