@@ -253,7 +253,7 @@ Emacs; we use lists. Get used to it, they're pretty great.
     (package-initialize))
 #+END_SRC
 
-* User settings
+* User metadata
 
 #+NAME: Hello, My Name Is
 #+BEGIN_SRC emacs-lisp :tangle yes
