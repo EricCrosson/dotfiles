@@ -1,0 +1,2 @@
+This contains the emacs-lisp code that I have personally authored,
+tweaked and compiled.
