@@ -383,8 +383,6 @@ This variable is nil by default.")
 (autoload-from-package "hide-lines"     '(hide-lines))
 (autoload-from-package "magit"          '(magit-status))
 (autoload-from-package "markdown-mode"  '(markdown-mode))
-(autoload-from-package "w3m"            '(w3m-browse-url)) ;web browsing
-(autoload-from-package "dic-lookup-w3m" '(dic-lookup-w3m)) ;web browsing
 (autoload-from-package "misc"           '(zap-up-to-char))
 (autoload-from-package "misc-cmds"      '(revert-buffer-no-confirm))
 (autoload-from-package "expand-region"  '(er/expand-region))
