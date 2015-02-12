@@ -17,6 +17,7 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
      :group   'autoloads)
   (setq esc-lisp-directory "~/.emacs.d/esc-lisp")
 #+END_SRC
+
 #+NAME: recursively find .el files
 #+BEGIN_SRC emacs-lisp :tangle update-autoloads.el
   ;;;###autoload
@@ -58,6 +59,7 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
           (setq current-directory-list (cdr current-directory-list)))
         el-files-list)))
 #+END_SRC
+
 #+NAME: find the nearest loaddefs.el file to pwd
 #+BEGIN_SRC emacs-lisp :tangle update-autoloads.el
   ;;;###autoload
@@ -81,10 +83,9 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
                       (replace-regexp-in-string "/$" "" base)))))
       (throw 'found nil)))
 #+END_SRC
+
 #+NAME: Verse of autoload Black Magic
 #+BEGIN_SRC emacs-lisp :tangle update-autoloads.el
-  ;; TODO: rename this defun
-  ;; TODO: better printing at defun termination
   ;;;###autoload
   (defun update-esc-lisp-autoloads (&optional base)
     "Update autoload definitions for Lisp files in the directories DIRS.
@@ -111,3 +112,5 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
             (update-file-autoloads el t (get-project-loaddefs-path el)))))
       (message (concat "Generating autoloads for " base "...done"))))
 #+END_SRC
+
+* [0/0] TODOs

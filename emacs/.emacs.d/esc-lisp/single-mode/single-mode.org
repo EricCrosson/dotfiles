@@ -1,4 +1,6 @@
-
+#+startup: content
+* Documentation
+#+BEGIN_SRC emacs-lisp :tangle yes
 ;; Single-mode.el --- A mode to browse files with less keystrokes
 ;; Copyright (C) <year>  <name of author>
 ;;
@@ -21,7 +23,10 @@
 ;; navigate files fairly well. This is a continual work in progress.
 
 ;;; Code:
+#+END_SRC
 
+* Variables
+#+BEGIN_SRC emacs-lisp :tangle yes
 (defvar single-mode-map (make-keymap)
   "The keymap for \\[single-mode].")
 
@@ -38,7 +43,10 @@
 (defvar single-restore-nil-read-only-state nil
   "This indicates we need to restore a state of (read-only-mode -1).
   This variable is nil by default.")
+#+END_SRC
 
+* Macros
+#+BEGIN_SRC emacs-lisp :tangle yes
 (defmacro single-mode-enabled ()
   "A macro to determine if \\[single-mode] is currently enabled."
   `(progn (and (boundp 'single-mode) single-mode)))
@@ -50,8 +58,11 @@
        (read-only-mode -1)
        ,block
        (when friendly
-         (read-only-mode 1)))))
+	 (read-only-mode 1)))))
+#+END_SRC
 
+* Api
+#+BEGIN_SRC emacs-lisp :tangle yes
 (defun single/quit-single-mode ()
   "Exit \\[single-mode]."
     (interactive)
@@ -124,15 +135,22 @@ This means, starting from `beginning-of-buffer'."
   "Hook for function `single-mode'."
   (if (single-mode-enabled)
       (progn
-        (when (not buffer-read-only)
-          (setq single-restore-nil-read-only-state t)
-          (read-only-mode 1))
-        (message "Single mode enabled"))
+	(when (not buffer-read-only)
+	  (setq single-restore-nil-read-only-state t)
+	  (read-only-mode 1))
+	(message "Single mode enabled"))
     (when single-restore-nil-read-only-state
       (setq single-restore-nil-read-only-state nil)
       (read-only-mode -1))
     (message "Single mode disabled")))
+#+END_SRC
 
+* Bindings
+This is usually not the preferred place to assign keybindings, but
+this is an esc-internal package. Find a place for your own bindings
+and feel free to destroy these!
+
+#+BEGIN_SRC emacs-lisp :tangle yes
 (define-key single-mode-map (kbd "'") 'single/quit-single-mode)
 (define-key single-mode-map (kbd "<escape>") 'single/quit-single-mode)
 (define-key single-mode-map (kbd "j") 'single/scroll-up)
@@ -155,7 +173,16 @@ This means, starting from `beginning-of-buffer'."
 (define-key single-mode-map (kbd "s") 'isearch-forward)
 (define-key single-mode-map (kbd "r") 'isearch-backward)
 (define-key single-mode-map (kbd "e") 'eval-region)
+#+END_SRC
 
+* Fin
+#+BEGIN_SRC emacs-lisp :tangle yes
 (provide 'single-mode)
 
 ;;; single-mode.el ends here
+#+END_SRC
+
+* [0/2] TODOs
+** TODO implement single-revert-buffer
+possibly without confirming also. I really like C-x M-r in esc-mode-map.
+** TODO add some defcustoms

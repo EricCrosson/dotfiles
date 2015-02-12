@@ -660,10 +660,13 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
          (kill-emacs)))
 
 #+END_SRC
+
+Thanks to the prolific [[http://ergoemacs.org/emacs/modernization_upcase-word.html][Xah Lee]].
+
 #+NAME: toggle-letter-case
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;;;###autoload
-  (defun esc/toggle-letter-case ()                ;thanks xah
+  (defun esc/toggle-letter-case ()
     "Toggle the letter case of current word or text selection.
   Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
     (interactive)
@@ -1055,6 +1058,9 @@ Everything will be appended to the kill ring."
       (kill-line -1)))
   (indent-according-to-mode))
 #+END_SRC
+
+[[http://whattheemacsd.com/key-bindings.el-03.html][Magnar]] said it best, here's one command I could not live without.
+
 #+NAME: pull-up-line
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;;;###autoload
@@ -1093,6 +1099,29 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
 #+END_SRC
 
 ** core functionality
+
+Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
+
+#+NAME: occur-dwim
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;;;###autoload
+  (defun occur-dwim ()
+    "Call `occur' with a sane default.
+
+  \\[occur-dwim] will offer as the default candidate:
+
+  - the current region, if it's active
+  - the current symbol, otherwise"
+    (interactive)
+    (push (if (region-active-p)
+              (buffer-substring-no-properties
+               (region-beginning)
+               (region-end))
+            (thing-at-point 'symbol))
+          regexp-history)
+    (call-interactively 'occur))
+#+END_SRC
+
 #+NAME: rename-deun
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;;;###autoload

@@ -81,6 +81,10 @@
   (defvar global-auto-revert-non-file-buffers)
   (defvar auto-revert-verbose))
 
+(let ((default-directory "~/.emacs.d/"))       ;for easy
+  (normal-top-level-add-to-load-path '("."))   ;recursive
+  (normal-top-level-add-subdirs-to-load-path)) ;loading
+
 (defcustom esc-lisp-path nil
   "Path to esc's lisp library."
   :type 'path
@@ -208,9 +212,6 @@
       backup-by-copying-when-linked t
       backup-by-copying-when-mismatch t)
 
-(set-face-attribute 'highlight nil :foreground 'unspecified)
-(set-face-attribute 'region nil :foreground 'unspecified :background "#666")
-
 (defalias 'undefun 'fmakunbound)
 
 (defadvice org-agenda (around shrink-agenda-buffer activate)
@@ -281,46 +282,6 @@ comment to the line."
 
 (add-hook 'after-save-hook 'esc/auto-byte-recompile)
 
-(defvar single-mode-map (make-keymap)
-  "The keymap for \\[single-mode].")
-
-(define-minor-mode single-mode
-  "Toggle single-mode.
-A minor mode for quick navigation- reinventing the vim wheel."
-  nil " single" 'single-mode-map
-  (suppress-keymap single-mode-map))
-(add-hook 'single-mode-hook 'single/single-mode-hook)
-
-(defvar single-line-shift-amount 6
-  "The number of lines to shift in esc-mode-map.")
-
-(defvar single-restore-nil-read-only-state nil
-  "This indicates we need to restore a state of (read-only-mode -1).
-This variable is nil by default.")
-
-(define-key single-mode-map (kbd "'") 'single/quit-single-mode)
-(define-key single-mode-map (kbd "<escape>") 'single/quit-single-mode)
-(define-key single-mode-map (kbd "j") 'single/scroll-up)
-(define-key single-mode-map (kbd "k") 'single/scroll-down)
-(define-key single-mode-map (kbd ",") 'beginning-of-buffer)
-(define-key single-mode-map (kbd ".") 'end-of-buffer)
-(define-key single-mode-map (kbd "5") 'single/query-replace)
-(define-key single-mode-map (kbd "Z") 'single/undo)
-(define-key single-mode-map (kbd "q") 'single/read-only-mode)
-(define-key single-mode-map (kbd "`") 'single/iedit-mode)
-(define-key single-mode-map (kbd "K") 'single/kill-current-buffer)
-
-(define-key single-mode-map (kbd "`") 'kill-current-buffer)
-(define-key single-mode-map (kbd "SPC") 'ace-jump-mode)
-(define-key single-mode-map (kbd "x") 'execute-extended-command)
-(define-key single-mode-map (kbd "p") 'scroll-down)
-(define-key single-mode-map (kbd "n") 'scroll-up)
-(define-key single-mode-map (kbd "9") 'end-of-buffer)
-(define-key single-mode-map (kbd "0") 'beginning-of-buffer)
-(define-key single-mode-map (kbd "s") 'isearch-forward)
-(define-key single-mode-map (kbd "r") 'isearch-backward)
-(define-key single-mode-map (kbd "e") 'eval-region)
-
 (autoload-from-package "lua-mode" '(lua-mode))
 (after 'lua-mode-autoloads
   (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
@@ -383,17 +344,16 @@ This variable is nil by default.")
   '(tea-time
     tea-timer-cancel))
 
-(autoload-from-package "iedit"          '(iedit)) ;multi-replace
-(autoload-from-package "hide-lines"     '(hide-lines))
-(autoload-from-package "magit"          '(magit-status))
-(autoload-from-package "markdown-mode"  '(markdown-mode))
-(autoload-from-package "w3m"            '(w3m-browse-url)) ;web browsing
-(autoload-from-package "dic-lookup-w3m" '(dic-lookup-w3m)) ;web browsing
-(autoload-from-package "misc"           '(zap-up-to-char))
-(autoload-from-package "misc-cmds"      '(revert-buffer-no-confirm))
-(autoload-from-package "expand-region"  '(er/expand-region))
-(autoload-from-package "autopair"       '(autopair-global-mode)) ;autopair characters
-(autoload-from-package "auto-complete"  '(global-auto-complete-mode)) ;autocomplete syntax
+(autoload-from-package "iedit"         '(iedit)) ;multi-replace
+(autoload-from-package "hide-lines"    '(hide-lines))
+(autoload-from-package "magit"         '(magit-status))
+(autoload-from-package "markdown-mode" '(markdown-mode))
+(autoload-from-package "misc"          '(zap-up-to-char))
+(autoload-from-package "misc-cmds"     '(revert-buffer-no-confirm))
+(autoload-from-package "expand-region" '(er/expand-region))
+(autoload-from-package "autopair"      '(autopair-global-mode)) ;autopair characters
+(autoload-from-package "auto-complete" '(global-auto-complete-mode)) ;autocomplete syntax
+(autoload-from-package "single-mode"   '(single-mode)) ;an esc-package
 
 (setq mwheel-scroll-up-function 'mwheel-scroll-all-scroll-up-all
       mwheel-scroll-down-function 'mwheel-scroll-all-scroll-down-all)
@@ -695,10 +655,13 @@ This variable is nil by default.")
 
 (add-hook 'kill-emacs-hook 'update-esc-lisp-autoloads)
 
+(fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
+
 (cond ((or (eq system-type 'ms-dos)
            (eq system-type 'windows-nt)
            (eq system-type 'cygwin))
-       ;; TODO: wrap message construct with a done-ifier
+
+       ;; Windows config
        (message-progress "Loading Windows specific configuration..."
          (setq w32-pass-lwindow-to-system nil
                w32-pass-rwindow-to-system nil
@@ -706,15 +669,20 @@ This variable is nil by default.")
                w32-lwindow-modifier 'super ; Left Windows key
                w32-rwindow-modifier 'super ; Right Windows key
                w32-apps-modifier 'hyper)   ; Menu key
-         ;; export CYGWIN="nodosfilewarning winsymlinks"
-         ;; (customize-option 'w32-symlinks-handle-shortcuts)
-         (require-package '(w32-symlinks)))
+         (require-package '(w32-symlinks))
 
-       ((or (eq system-type 'darwin))
-        (message-progress "Loading Darwin specific configuration..."
-          (setq mac-command-modifier 'meta)
-          (setq mac-option-modifier 'super)
-          (setq ns-function-modifier 'hyper)))))
+(customize-option 'w32-symlinks-handle-shortcuts)
+
+))
+
+((or (eq system-type 'darwin))
+ (message-progress "Loading Darwin specific configuration..."
+   (setq mac-command-modifier 'meta)
+   (setq mac-option-modifier 'super)
+   (setq ns-function-modifier 'hyper))))
+
+(require 'dired-details)
+(dired-details-install)
 
 ;; auto-dired-reload
   ;; Reload dired after making changes
@@ -737,6 +705,11 @@ This variable is nil by default.")
        (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
      (define-key wdired-mode-map
        (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)))
+
+(defvar color-theme-stack nil "Stack of color themes.")
+
+(set-face-attribute 'highlight nil :foreground 'unspecified :underline nil)
+(set-face-attribute 'region nil :foreground 'unspecified :underline nil :background "#666")
 
 (setq-default major-mode 'org-mode)  ;default mode for new buffers
 (setq org-replace-disputed-keys t    ;must be set before org is loaded
@@ -985,18 +958,18 @@ This variable is nil by default.")
                       (esc-refile-targets-smash    :maxlevel . 5)
                       (org-agenda-files            :maxlevel . 4)))
 
-(fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
+(hydra-create "<f2>"
+  '(("k" text-scale-increase)
+    ("j" text-scale-decrease)))
+
+(hydra-create "C-M-<"
+  '(("," esc/zoom-out)
+    ("." esc/zoom-in)))
+
+(hydra-create "C-`"
+  '(("h" first-error "first")
+    ("j" next-error "next")
+    ("k" previous-error "prev")))
+
 (message "All done, %s%s" (user-login-name) ".")
 ;;; .emacs.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(paradox-automatically-star t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

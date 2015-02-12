@@ -14,7 +14,10 @@
   (let ((activate (if (eq major-mode 'dired-mode) 1 -1)))
     (hl-line-mode activate)
     (after 'dired-x (dired-omit-mode activate)))
-  (setq-default dired-omit-verbose nil)
+  (setq-default dired-details-hidden-string "--- "
+                dired-recursive-copies 'always
+                dired-recursive-deletes 'top
+                dired-omit-verbose nil)
   (define-key dired-mode-map (kbd "C-a") 'esc/dired-back-to-start-of-files)
   (define-key dired-mode-map (kbd "M-RET") 'esc/dired-find-file-single-mode)
   (define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
@@ -26,9 +29,7 @@
   :type    'hook
   :options '((load "dired-x" nil t)
              (setq dired-listing-switches "-alh") ; todo: make friendly
-             (esc/dired-load-hook-hide-data)
-             (esc/dired-load-hook-omit-files)
-             (esc/dired-load-hook-install-details))
+             (esc/dired-load-hook-omit-files))
   :group   'esc-dired)
 
 ;;;###autoload
@@ -37,16 +38,7 @@
   (load "dired-x" nil t) ; todo: make friendly
   (setq-default dired-listing-switches "-alh")
   (setq-default dired-recursive-copies 'always)
-  (esc/dired-load-hook-hide-data)
-  (esc/dired-load-hook-omit-files)
-  (esc/dired-load-hook-install-details))
-
-;;;###autoload
-(defun esc/dired-load-hook-hide-data ()
-  (setq-default dired-details-hidden-string "--- "
-                dired-recursive-copies 'always
-                dired-recursive-deletes 'top
-                dired-omit-verbose nil))
+  (esc/dired-load-hook-omit-files))
 
 ;;;###autoload
 (defun esc/dired-load-hook-omit-files ()
@@ -55,18 +47,14 @@
   (after 'undo-tree
     (setq dired-omit-files (concat dired-omit-files "\\|^\\.*~undo-tree~$"))))
 
-;; TODO: what does this even do?
-;;;###autoload
-(defun esc/dired-load-hook-install-details ()
-  (when (fboundp 'dired-details-install) (dired-details-install)))
-
 ;;;###autoload
 (defun esc/dired-back-to-top ()
   "Goes to the first line in dired, not the top of the buffer."
   (interactive)
   (beginning-of-buffer)
   (when (not (search-forward ".." nil 'noerror))
-    (beginning-of-buffer))          ;likely dired-omit-mode is enabled
+    (beginning-of-buffer)
+    (dired-next-line 1))          ;likely dired-omit-mode is enabled
   (dired-next-line 1))
 
 ;;;###autoload

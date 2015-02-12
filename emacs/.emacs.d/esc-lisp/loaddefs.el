@@ -1,7 +1,7 @@
 ;;
 
 ;;;### (autoloads nil "boilerplate/boilerplate" "../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21714 29750 823294 404000))
+;;;;;;  (21724 62228 686610 513000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el
 
 (autoload 'esc/toggle-fullscreen-buffer "boilerplate/boilerplate" "\
@@ -422,6 +422,16 @@ Completion is available for the keymap name.
 
 \(fn KEYMAP)" t nil)
 
+(autoload 'occur-dwim "boilerplate/boilerplate" "\
+Call `occur' with a sane default.
+
+\\[occur-dwim] will offer as the default candidate:
+
+- the current region, if it's active
+- the current symbol, otherwise
+
+\(fn)" t nil)
+
 (autoload 'rename-defun "boilerplate/boilerplate" "\
 Rename FUNCTION to a new name. Makfunbound FUNCTION after
 evaling the newly named defun.
@@ -555,8 +565,40 @@ Bury the compilation buffer after a successful compile.
 
 ;;;***
 
+;;;### (autoloads (color-theme-pop color-theme-push) "color-theme-stack"
+;;;;;;  "color-theme-stack.el" (21724 56222 0 0))
+;;; Generated autoloads from color-theme-stack.el
+
+(autoload 'color-theme-push "color-theme-stack" "\
+Switch to a theme, saving the old one.
+
+\(fn)" nil nil)
+
+(autoload 'color-theme-pop "color-theme-stack" "\
+Restore the previous theme in use.
+
+\(fn)" nil nil)
+
+;;;***
+
+;;;### (autoloads nil "colors/color-theme-stack" "../../../../.emacs.d/esc-lisp/colors/color-theme-stack.el"
+;;;;;;  (21724 63756 163188 907000))
+;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/colors/color-theme-stack.el
+
+(autoload 'color-theme-push "colors/color-theme-stack" "\
+Switch to a theme, saving the old one.
+
+\(fn)" nil nil)
+
+(autoload 'color-theme-pop "colors/color-theme-stack" "\
+Restore the previous theme in use.
+
+\(fn)" nil nil)
+
+;;;***
+
 ;;;### (autoloads nil "dired-config/dired-config" "../../../../.emacs.d/esc-lisp/dired-config/dired-config.el"
-;;;;;;  (21705 16240 864682 627000))
+;;;;;;  (21724 62224 403277 427000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/dired-config/dired-config.el
 
 (autoload 'esc/dired-mode-hook "dired-config/dired-config" "\
@@ -569,17 +611,7 @@ esc's hook to \\[dired-load-hook].
 
 \(fn)" nil nil)
 
-(autoload 'esc/dired-load-hook-hide-data "dired-config/dired-config" "\
-
-
-\(fn)" nil nil)
-
 (autoload 'esc/dired-load-hook-omit-files "dired-config/dired-config" "\
-
-
-\(fn)" nil nil)
-
-(autoload 'esc/dired-load-hook-install-details "dired-config/dired-config" "\
 
 
 \(fn)" nil nil)
@@ -732,10 +764,32 @@ Simplified version of backward search that supports multiple cursors.
 
 ;;;***
 
-;;;### (autoloads nil "scroll-all-mode-config/scroll-all-config"
-;;;;;;  "../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all-config.el"
-;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all-config.el
+;;;### (autoloads nil "scroll-all-mode-config/scroll-all" "../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all.el"
+;;;;;;  (21724 63460 606539 320000))
+;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all.el
+
+(autoload 'mwheel-scroll-all-function-all "scroll-all-mode-config/scroll-all" "\
+
+
+\(fn FUNC ARG)" nil nil)
+
+(autoload 'mwheel-scroll-all-scroll-up-all "scroll-all-mode-config/scroll-all" "\
+
+
+\(fn &optional ARG)" nil nil)
+
+(autoload 'mwheel-scroll-all-scroll-down-all "scroll-all-mode-config/scroll-all" "\
+
+
+\(fn &optional ARG)" nil nil)
+
+;;;***
+
+;;;### (autoloads (mwheel-scroll-all-scroll-down-all mwheel-scroll-all-scroll-up-all
+;;;;;;  mwheel-scroll-all-function-all) "scroll-all-mode-config/scroll-all-config"
+;;;;;;  "scroll-all-mode-config/scroll-all-config.el" (21724 53254
+;;;;;;  0 0))
+;;; Generated autoloads from scroll-all-mode-config/scroll-all-config.el
 
 (autoload 'mwheel-scroll-all-function-all "scroll-all-mode-config/scroll-all-config" "\
 
@@ -875,7 +929,7 @@ Loop to capture and insert commands for `twinkle-fingers'.
 ;;;***
 
 ;;;### (autoloads nil "update-autoloads/update-autoloads" "../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el"
-;;;;;;  (21705 16240 864682 627000))
+;;;;;;  (21724 62228 819943 838000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el
 
 (let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads/update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads/update-autoloads" loads))))

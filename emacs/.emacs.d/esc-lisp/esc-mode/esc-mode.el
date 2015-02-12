@@ -106,8 +106,9 @@ This macro runs conses through \\[esc-key] for convenience."
   ("M-x"     . execute-extended-command)
   ("C-'"     . query-replace)
   ("C-x M-r" . revert-buffer-no-confirm)
-  ("C-x 2"    . esc/vsplit-last-buffer)
-  ("C-x 3"    . esc/hsplit-last-buffer))
+  ("C-x 2"   . esc/vsplit-last-buffer)
+  ("C-x 3"   . esc/hsplit-last-buffer)
+  ("M-s o"   . occur-dwim))
 
 ;; Search for current word up or down from point
 (esc-keys
@@ -128,13 +129,6 @@ This macro runs conses through \\[esc-key] for convenience."
   ;; TODO: rename defun
   ("C-M-c [" . esc/should-have-opened-this-in-other-window)
   ("C-M-c ]" . esc/toggle-window-selectability))
-
-(after 'windmove ; from home row (position)
-  (esc-keys
-    ("C-S-N"   . windmove-left)
-    ("C-S-P"   . windmove-right)
-    ("C-S-M-N" . windmove-down)
-    ("C-S-M-P" . windmove-up)))
 
 ;; Org mode keybindings
 (after 'org
@@ -162,7 +156,7 @@ This macro runs conses through \\[esc-key] for convenience."
   ("C-x f"   . esc/toggle-selective-display)
   ("C-x M-f" . single/ff-in-single-mode))
 
-;; Fold-this keybindings. Thanks again Magnar!
+;; Fold-this keybindings. Thanks again [[https://github.com/magnars/fold-this.el][Magnar]]!
 (esc-keys
   ("C-c f"   . fold-this)
   ("C-c F"   . fold-this-unfold-all))
@@ -205,9 +199,6 @@ This macro runs conses through \\[esc-key] for convenience."
 
 ;; Minimap bindings
 (esc-key "C-c M-m" 'esc/minimap-toggle)
-
-;; Flyspell bindings
-(esc-key "<f9>" 'flyspell-buffer)
 
 ;; Ace jump mode. Like an ace
 (after 'ace-jump-mode-autoloads
@@ -273,8 +264,8 @@ This macro runs conses through \\[esc-key] for convenience."
   ("C-c C-o" . ff-find-other-file)
   ("C-o"     . ace-window))
 
-(after 'expand-region-autoloads     ;thanks magnar
-  (esc-key "C-=" 'er/expand-region))
+(after 'expand-region-autoloads      ;Three guesses [[https://github.com/magnars/expand-region.el][who]]
+  (esc-key "C-=" 'er/expand-region)) ;wrote this package
 
 ;; Help+
 (esc-keys
@@ -290,16 +281,6 @@ This macro runs conses through \\[esc-key] for convenience."
 (esc-keys
   ("C-c /"   . goto-last-change))
 
-;; TODO: convert to git-gutter+
-;; TODO: find a solution for git-gutter+ / symlinks
-;; git-gutter bindings
-;; (after 'git-gutter-autoloads
-;;   (esc-keys
-;;     ;("C-x g"   . git-gutter:toggle)
-;;     ("C-x C-p" . git-gutter:previous-hunk)
-;;     ("C-x C-n" . git-gutter:next-hunk)
-;;     ("C-x C-v" . git-gutter:revert-hunk)))
-
 ;; Font maniplation
 (esc-keys
   ("C-M-<" . esc/zoom-out)
@@ -307,9 +288,8 @@ This macro runs conses through \\[esc-key] for convenience."
 
 ;;; Function keys
 (esc-key "<f7>" 'scroll-all-mode)
-
-;; Follow mode
 (esc-key "<f8>" 'follow-delete-other-windows-and-split)
+(esc-key "<f9>" 'flyspell-buffer)
 
 ;; Helm
 (after 'helm-autoloads
@@ -320,7 +300,6 @@ This macro runs conses through \\[esc-key] for convenience."
 
 ;; Sysadmin bindings
 (esc-keys
-  ("C-x p"     . esc/proced-in-this-frame)
   ("C-M-+"     . esc/search-my-lisp-dir)
   ("C-c C-i"   . esc/edit-my-emacs)
   ("C-c C-M-i" . esc/edit-my-bash))

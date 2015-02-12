@@ -1,3 +1,4 @@
+
 ;;;###autoload
 (defun mwheel-scroll-all-function-all (func arg)
   (if scroll-all-mode

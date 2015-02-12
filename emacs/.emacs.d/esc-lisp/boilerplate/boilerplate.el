@@ -567,7 +567,7 @@ temporarily enables it to allow getting help on disabled items and buttons."
        (kill-emacs)))
 
 ;;;###autoload
-(defun esc/toggle-letter-case ()                ;thanks xah
+(defun esc/toggle-letter-case ()
   "Toggle the letter case of current word or text selection.
 Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
   (interactive)
@@ -929,6 +929,23 @@ Completion is available for the keymap name."
       ;; Use `insert' instead of `princ', so control chars (e.g. \377) insert correctly.
       (with-current-buffer "*Help*"
         (insert (substitute-command-keys (concat "\\{" name "}")))))))
+
+;;;###autoload
+(defun occur-dwim ()
+  "Call `occur' with a sane default.
+
+\\[occur-dwim] will offer as the default candidate:
+
+- the current region, if it's active
+- the current symbol, otherwise"
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (thing-at-point 'symbol))
+        regexp-history)
+  (call-interactively 'occur))
 
 ;;;###autoload
 (defun rename-defun (function)
