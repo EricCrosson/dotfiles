@@ -322,6 +322,11 @@ This variable is nil by default.")
 (define-key single-mode-map (kbd "r") 'isearch-backward)
 (define-key single-mode-map (kbd "e") 'eval-region)
 
+(autoload-from-package "lua-mode" '(lua-mode))
+(after 'lua-mode-autoloads
+  (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+  (add-to-list 'interpreter-mode-alist '("lua" . lua-mode)))
+
 (autoload-from-package "undo-tree"
   '(undo-tree-undo
     undo-tree-redo))
@@ -689,6 +694,8 @@ This variable is nil by default.")
 
 (add-hook 'kill-emacs-hook 'update-esc-lisp-autoloads)
 
+(fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
+
 (cond ((or (eq system-type 'ms-dos)
            (eq system-type 'windows-nt)
            (eq system-type 'cygwin))
@@ -712,6 +719,9 @@ This variable is nil by default.")
    (setq mac-command-modifier 'meta)
    (setq mac-option-modifier 'super)
    (setq ns-function-modifier 'hyper))))
+
+(require 'dired-details)
+(dired-details-install)
 
 ;; auto-dired-reload
   ;; Reload dired after making changes
@@ -1000,6 +1010,5 @@ This variable is nil by default.")
     ("j" next-error "next")
     ("k" previous-error "prev")))
 
-(fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
 (message "All done, %s%s" (user-login-name) ".")
 ;;; .emacs.el ends here

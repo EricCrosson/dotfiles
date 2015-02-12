@@ -507,7 +507,7 @@ Lua: necessary for Awesome WM.
   (after 'lua-mode-autoloads
     (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
     (add-to-list 'interpreter-mode-alist '("lua" . lua-mode)))
-#+END_SRCc
+#+END_SRC
 ** Undo tree autoloads
 Thanks to [[http://whattheemacsd.com/my-misc.el-02.html][Magnar]] for the advice.
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -645,7 +645,7 @@ Keep the minibuffer sane.
 #+END_SRC
 ** ibuffer hook
 
-Modify dired view to include human readable size information.
+Modify ibuffer view to include human readable size information.
 
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Use human readable Size column instead of original one
@@ -982,7 +982,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
   (add-hook 'iedit-mode-hook 'esc/iedit-mode-hook)
 #+END_SRC
 
-** Git gutter + config
+** Git gutter+ config
 #+NAME: Git gutter+ config
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;(global-git-gutter+-mode t)
@@ -1134,6 +1134,12 @@ Summon the magical cookies.
   (add-hook 'kill-emacs-hook 'update-esc-lisp-autoloads)
 #+END_SRC
 
+Override the kill function.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
+#+END_SRC
+
 * OS configuration
 
 Operating system-specific configurations take place here, within this
@@ -1186,6 +1192,13 @@ Begin Mac OS configuration
 #+END_SRC
 
 * Dired configuration
+
+TODO: reduce this kludge
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (require 'dired-details)
+  (dired-details-install)
+#+END_SRC
+
 #+NAME: dired configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
     ;; auto-dired-reload
@@ -2061,7 +2074,6 @@ TODO: determine how to integrate these into esc-mode-map
 
 * Fin
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
   (message "All done, %s%s" (user-login-name) ".")
   ;;; .emacs.el ends here
 #+END_SRC

@@ -588,7 +588,7 @@ Bury the compilation buffer after a successful compile.
 ;;;***
 
 ;;;### (autoloads (color-theme-pop color-theme-push) "color-theme-stack"
-;;;;;;  "color-theme-stack.el" (21724 54055 0 0))
+;;;;;;  "color-theme-stack.el" (21724 56222 0 0))
 ;;; Generated autoloads from color-theme-stack.el
 
 (autoload 'color-theme-push "color-theme-stack" "\
@@ -605,10 +605,9 @@ Restore the previous theme in use.
 
 ;;;### (autoloads (esc/dired-back-to-start-of-files esc/search-my-lisp-dir
 ;;;;;;  esc/dired-up-level-reuse-buffer esc/dired-find-file-single-mode
-;;;;;;  esc/dired-jump-to-bottom esc/dired-back-to-top esc/dired-load-hook-install-details
-;;;;;;  esc/dired-load-hook-omit-files esc/dired-load-hook-hide-data
+;;;;;;  esc/dired-jump-to-bottom esc/dired-back-to-top esc/dired-load-hook-omit-files
 ;;;;;;  esc/dired-load-hook esc/dired-mode-hook) "dired-config/dired-config"
-;;;;;;  "dired-config/dired-config.el" (21724 53254 0 0))
+;;;;;;  "dired-config/dired-config.el" (21724 56253 0 0))
 ;;; Generated autoloads from dired-config/dired-config.el
 
 (autoload 'esc/dired-mode-hook "dired-config/dired-config" "\
@@ -621,17 +620,7 @@ esc's hook to \\[dired-load-hook].
 
 \(fn)" nil nil)
 
-(autoload 'esc/dired-load-hook-hide-data "dired-config/dired-config" "\
-
-
-\(fn)" nil nil)
-
 (autoload 'esc/dired-load-hook-omit-files "dired-config/dired-config" "\
-
-
-\(fn)" nil nil)
-
-(autoload 'esc/dired-load-hook-install-details "dired-config/dired-config" "\
 
 
 \(fn)" nil nil)
