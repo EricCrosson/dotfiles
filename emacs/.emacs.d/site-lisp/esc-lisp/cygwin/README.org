@@ -1,5 +1,5 @@
 This dir contains definitions that make breathing in a Microsoft
 environment less of a disaster.
 
-Less of. Nobody can paddle up shit creek without a shit paddle without
-getting covered in a least a [[https://s-media-cache-ak0.pinimg.com/236x/98/8b/33/988b33667f50dd8ac7b30705fd50be4f.jpg][little bit of shit]].
+Less of. Nobody can paddle up shit creek without a shit paddle and not
+get hosed with at least a [[https://s-media-cache-ak0.pinimg.com/236x/98/8b/33/988b33667f50dd8ac7b30705fd50be4f.jpg][little bit of shit]].
