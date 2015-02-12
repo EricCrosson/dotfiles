@@ -9,13 +9,6 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
   (defgroup autoloads nil
     "Simplified maintenance of magic-cookie autoloads."
     :version "0.1.0")
-
-  (defcustom esc-lisp-directory nil
-     "Path to esc-lisp directory."
-     :type    'file
-     :options '("~/.emacs.d/esc-lisp")
-     :group   'autoloads)
-  (setq esc-lisp-directory "~/.emacs.d/esc-lisp")
 #+END_SRC
 
 #+NAME: recursively find .el files
@@ -101,8 +94,8 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
      (let ((file buffer-file-name))
        (list
         (read-file-name "Update autoloads (recursively) in which dir: "
-                        esc-lisp-directory esc-lisp-directory))))
-    (unless base (setq base esc-lisp-directory))
+                        esc-lisp-path esc-lisp-path))))
+    (unless base (setq base esc-lisp-path))
     (setq base (replace-regexp-in-string "/$" "" (expand-file-name base)))
     (let ((el-files (list-files-in-subtree-matching-regexp-recursive
                      (expand-file-name base))))

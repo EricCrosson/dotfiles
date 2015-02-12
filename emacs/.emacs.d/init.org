@@ -46,7 +46,7 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (load-theme 'wombat)
 #+END_SRC
-* [0/15] TODOs
+* [1/15] TODOs
 :PROPERTIES:
 :COOKIE_DATA: recursive
 :END:
@@ -61,7 +61,7 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
   only emacs-lisp source blocks from the org file are loaded,
   naturally
 - [ ] convert to use-package
-- [ ] remove tangles files from git, provide makefile
+- [X] remove tangles files from git, provide makefile
 - [ ] tangling scripts adds execute permission
   (write-region "" nil custom-file)
 - [ ] allow tabs in makefile-mode
@@ -75,19 +75,14 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 - [ ] quick dict(ionary)
   for definitions, not spell check
 - [ ] naming standard for org babel files sectioning
-- [ ] no tabs in align
-
 - [ ] gcov output parsed by emacs to hgihlight covered code in gdb
   mode
-** [0/1] super helpful defuns to implement
 - [ ] byte-compile-directory
   (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
   mirror byte-compile-file's method of querying file to compile
-** [0/2] advice to implement
-- [ ] OPTIONAL: defcustom to accept an :autoload in addition
-  to :require
+** [0/1] advice to implement
 - [ ] C-h C-k takes you to org instead of .el
-** [0/2] ibuffer changes
+** [0/2] ibuffer upgrades
 - [ ] ibuffer, create mode to replace sort-by -mode with -ssh host
 - [ ] ibuffer-vc, make it group files over tramp
 * Free variables
@@ -155,25 +150,28 @@ need to keep the list updated, just load all subdirectories and go.
 
 #+NAME: load-path-creation
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (let ((default-directory "~/.emacs.d/"))       ;for easy
-    (normal-top-level-add-to-load-path '("."))   ;recursive
-    (normal-top-level-add-subdirs-to-load-path)) ;loading
+  (defcustom site-lisp-path nil
+    "Path to esc's lisp library."
+    :type 'path
+    :options '("~/.emacs.d/site-lisp/")
+    :group 'esc-mode)
+  (setq site-lisp-path "~/.emacs.d/site-lisp/")
 
   (defcustom esc-lisp-path nil
     "Path to esc's lisp library."
     :type 'path
-    :options '("~/.emacs.d/esc-lisp/")
+    :options '("~/.emacs.d/site-lisp/esc-lisp/")
     :group 'esc-mode)
-  (setq esc-lisp-path "~/.emacs.d/esc-lisp/")
+  (setq esc-lisp-path (concat site-lisp-path "esc-lisp/"))
 
   (defcustom esc-loaddefs-path nil
     "Path to `loaddefs.el' file used by esc's Emacs sessions."
     :type 'path
-    :options '("~/.emacs.d/esc-lisp/loaddefs.el")
+    :options '("~/.emacs.d/site-lisp/esc-lisp/loaddefs.el")
     :group 'esc-mode)
-  (setq esc-loaddefs-path "~/.emacs.d/esc-lisp/loaddefs.el")
+  (setq esc-loaddefs-path (concat esc-lisp-path "loaddefs.el"))
 
-  (let ((default-directory "~/.emacs.d/"))       ;for easy
+  (let ((default-directory site-lisp-path))       ;for easy
     (normal-top-level-add-to-load-path '("."))   ;recursive
     (normal-top-level-add-subdirs-to-load-path)) ;loading
 
@@ -188,7 +186,7 @@ need to keep the list updated, just load all subdirectories and go.
 * Macros
 
 I took the macro below from [[http://milkbox.net/note/single-file-master-emacs-configuration/][milkypostman]]. His article is really worth
-a read; stop this and go take a look if you haven't.
+a read; stop what you're doing and go take a look if you haven't.
 
 #+BEGIN_SRC emacs-lisp :tangle yes
 (defmacro after (mode &rest body)
@@ -212,7 +210,7 @@ notifications.
 #+END_SRC
 
 The macros below are to facilitate loading with minimal code. This is
-Emacs; we use lists. Get used to it, they're pretty great.
+lisp; we use lists. Get used to it, they're pretty great.
 
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defmacro autoload-from-package (package functions)
@@ -239,6 +237,7 @@ Emacs; we use lists. Get used to it, they're pretty great.
     (require-package '(auto-compile))
     (auto-compile-on-load-mode 1)
   #+END_SRC
+
 * Package configuration
 #+NAME: package-manager-initialization
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -255,7 +254,8 @@ Emacs; we use lists. Get used to it, they're pretty great.
 
 * User metadata
 
-#+NAME: Hello, My Name Is
+Hello, My Name Is
+
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq user-full-name "Eric Crosson"
         user-mail-address "esc@ericcrosson.com")
@@ -344,10 +344,14 @@ It is my belief that backup files should not be so obtrusive as to tempt users t
 #+END_SRC
 
 * Aliases
+
+I did not grow up in an era where this is a straightforward mnemonic.
+
 #+NAME: alias fmakunbound => undefun
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defalias 'undefun 'fmakunbound)
 #+END_SRC
+
 * Advice
 ** org advice
 
@@ -421,7 +425,8 @@ Prefix '0' to comment-dwim to kill comments entirely.
           (comment-kill comments)))))
 #+END_SRC
 
-TODO: write about how cool this is!
+TODO: write about how cool this is! (not related to above comment
+about a post)
 
 ** undo tree advice
 Make zipped files obvious.
@@ -451,6 +456,7 @@ include to the require-package macro
       auto-complete
       notifications
       dired-x
+      pretty-lambdada
 
       ;; custom packages
       ; is there a way to get these autoloads loaded implicitly, like
@@ -1096,6 +1102,15 @@ Some esc-keys weren't mapped with shell use in mind. Here's a bandaid.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'haskell-mode-hook 'haskell-indent-mode)
 #+END_SRC
+** Pretty lambdada mode hook
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (mapc (lambda (prettify-this-mode)
+          (add-hook prettify-this-mode 'pretty-lambda))
+        '(emacs-lisp-mode-hook
+          org-mode-hook ;to include source blocks :\
+          enh-ruby-mode-hook
+          ruby-mode-hook))
+#+END_SRC
 ** Kill emacs hook
 
 Summon the magical cookies.
@@ -1208,7 +1223,7 @@ TODO: reduce this kludge
 
   Lay the color-theme-stack api
 
-  #+BEGIN_SRC emacs-lisp :tangle esc-lisp/colors/color-theme-stack.el
+  #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/color-theme-stack.el
     ;;;###autoload
     (defun color-theme-push ()
       "Switch to a theme, saving the old one."
@@ -1536,7 +1551,7 @@ As a convention, esc functions are prefixed with `esc/' while esc
 variables are prefixed with `esc-'
 
 #+NAME: define customizable variables
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (defcustom esc-line-shift-amount 6
       "The number of lines to shift in `esc-mode-map'."
       :type    'integer
@@ -1544,19 +1559,19 @@ variables are prefixed with `esc-'
       :group   'esc-mode)
 #+END_SRC
 #+NAME: define internal variables
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (defvar esc-mode-map (make-keymap)
       "The keymap for \\[esc-mode].")
 #+END_SRC
 #+NAME: define minor mode
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (define-minor-mode esc-mode
       "Toggle esc-keys mode.
                    A minor mode so that my key settings override annoying major modes."
       t " esc" 'esc-mode-map)
 #+END_SRC
 #+NAME: define minor mode hook
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   ;; TODO: devise method of keeping these options in sync with the entire current implementation of esc/accompanying-mode-hook
   (defcustom esc/accompanying-mode-hook nil
     "Hook that is appended to esc-mode-hook."
@@ -1594,14 +1609,14 @@ variables are prefixed with `esc-'
 
 ** esc macros
 #+NAME: self inflection
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (defmacro esc-mode-enabledp ()
       "A macro to determine if \\[esc-mode] is currently enabled."
       `(progn (and (boundp 'esc-mode) esc-mode)))
 #+END_SRC
 Wait, is this even being used??
 #+NAME: add-or-remove-hook
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
     (defmacro add-or-remove-hook (hook function)
       "A macro to add a HOOK to FUNCTION, if `esc-mode' is being enabled;
               or remove a HOOK from FUNCTION, if `esc-mode' is being disabled."
@@ -1610,7 +1625,7 @@ Wait, is this even being used??
                 (remove-hook ,hook ,function))))
 #+END_SRC
 #+NAME: diminish-or-restore
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
     (after 'diminish-autoloads
       (defmacro diminish-or-restore (mode)
         "A macro to diminish a MODE, if `esc-mode' is being enabled;
@@ -1622,7 +1637,7 @@ Wait, is this even being used??
                (diminish-undo ,mode))))))
 #+END_SRC
 #+NAME: never you mind these macros
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (defmacro dont (operand)
     "A macro to avoid awkward, unintuitive code in \\[esc-accompanying-mode-hook].
             OPERAND is an integer to de/activate a given mode."
@@ -1632,7 +1647,7 @@ Wait, is this even being used??
          (if ,operand nil t))))
 #+END_SRC
 #+NAME: macros to insert bindings in esc-mode-map
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
     (defmacro esc-key (sequence action)
       "A macro to bind SEQUENCE to ACTION in `esc-mode-map'."
       `(define-key esc-mode-map (kbd ,sequence) ,action))
@@ -1648,7 +1663,7 @@ Wait, is this even being used??
 #+END_SRC
 ** esc bindings
 #+NAME: keybindings defined here
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   ;; Enhanced buffer movement (not point movement)
   (esc-keys
     ("C-," . esc/scroll-up-slight)
@@ -1936,7 +1951,7 @@ TODO: determine how to integrate these into esc-mode-map
 
 ** esc hook
 #+NAME: esc-mode-hook
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   ;; The proper definition of `esc-mode-hook'
   (defun esc/accompanying-mode-hook ()
     "esc's customizations added to \\[esc-mode-hook]."
@@ -2030,16 +2045,16 @@ TODO: determine how to integrate these into esc-mode-map
       ))
 #+END_SRC
 #+NAME: activate esc-mode-hook
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (add-hook 'esc-mode-hook 'esc/accompanying-mode-hook)
 #+END_SRC
 #+NAME: activate esc-mode
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (esc-mode 1)
   ;(diminish-or-restore 'esc-mode) ;in the background
 #+END_SRC
 #+NAME: esc provides
-#+BEGIN_SRC emacs-lisp :tangle esc-lisp/esc-mode/esc-mode.el
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (provide 'esc-mode)
 #+END_SRC
 
