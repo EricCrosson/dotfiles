@@ -1668,13 +1668,6 @@ Wait, is this even being used??
     ("C-M-c [" . esc/should-have-opened-this-in-other-window)
     ("C-M-c ]" . esc/toggle-window-selectability))
 
-  (after 'windmove ; from home row (position)
-    (esc-keys
-      ("C-S-N"   . windmove-left)
-      ("C-S-P"   . windmove-right)
-      ("C-S-M-N" . windmove-down)
-      ("C-S-M-P" . windmove-up)))
-
   ;; Org mode keybindings
   (after 'org
     (define-key org-mode-map (kbd "C-c n") 'esc/org-next-source-code-block)
