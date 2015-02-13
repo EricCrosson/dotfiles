@@ -30,3 +30,4 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/esc-lisp/update-autoloads/update-autoloads.el
 /emacs/.emacs.d/init.el
 /emacs/.emacs.d/esc-lisp/multiple-cursors-config/mc-config.el
+/emacs/.emacs.d/meta/savehist

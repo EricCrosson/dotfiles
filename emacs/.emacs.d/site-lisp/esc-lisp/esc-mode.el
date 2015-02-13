@@ -264,6 +264,9 @@ This macro runs conses through \\[esc-key] for convenience."
   ("C-c C-o" . ff-find-other-file)
   ("C-o"     . ace-window))
 
+;; Git-messenger, a handy little fella
+(esc-key "C-c p" 'git-messenger:popup-message)
+
 (after 'expand-region-autoloads      ;Three guesses [[https://github.com/magnars/expand-region.el][who]]
   (esc-key "C-=" 'er/expand-region)) ;wrote this package
 
