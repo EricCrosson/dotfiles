@@ -1,5 +1,5 @@
 
-(defvar big-fringe-mode nil "State of big-fringe-mode")
+(defvar big-fringe-mode nil "State of \\[big-fringe-mode].")
 
 ;;:###autoload
 (define-minor-mode big-fringe-mode

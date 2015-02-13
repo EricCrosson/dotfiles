@@ -53,8 +53,7 @@
   (interactive)
   (beginning-of-buffer)
   (when (not (search-forward ".." nil 'noerror))
-    (beginning-of-buffer)
-    (dired-next-line 1))          ;likely dired-omit-mode is enabled
+    (beginning-of-buffer))          ;likely dired-omit-mode is enabled
   (dired-next-line 1))
 
 ;;;###autoload

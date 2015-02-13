@@ -3,8 +3,8 @@
   "esc's code to \\[multiple-cursors-mode-enabled-hook]."
   :type         'hook
   :options      '((autopair-mode -1)
-		  (define-key mc/keymap (kbd "C-s") 'mc/search-forward)
-		  (define-key mc/keymap (kbd "C-r") 'mc/search-backward))
+                  (define-key mc/keymap (kbd "C-s") 'mc/search-forward)
+                  (define-key mc/keymap (kbd "C-r") 'mc/search-backward))
   :group        'multiple-cursors)
 
 ;;;###autoload
@@ -27,8 +27,6 @@
   "esc's code to \\[multiple-cursors-mode-disabled-hook]."
   (autopair-mode 1))
 
-;; Thanks, Jeff!
-;; http://www.jeffchu.com/posts/2013/01/2013-01-29-multiple-cursors-mode.html
 ;;;###autoload
 (defun mc/search (search-command)
   "Iterate through each active cursor and search for the designated string.
@@ -43,7 +41,6 @@ Helper defun for \\[mc/search-forward] and \\[mc/search-backward]."
     (setq mc/search--last-term (read-from-minibuffer "Search: ")))
   (funcall search-command mc/search--last-term))
 
-;; TODO: allow for regexp's
 ;;;###autoload
 (defun mc/search-forward ()
   "Simplified version of forward search that supports multiple cursors."

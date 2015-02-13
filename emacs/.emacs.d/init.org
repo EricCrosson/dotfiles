@@ -233,7 +233,7 @@ lisp; we use lists. Get used to it, they're pretty great.
 #+NAME: package-manager-initialization
 #+BEGIN_SRC emacs-lisp :tangle yes
   (when (require 'package nil 'noerror)
-    (setq package-user-dir "~/.emacs.d/elpa/")
+    (setq package-user-dir (concat site-lisp-path "elpa/"))
     (mapc (lambda (source)
               (add-to-list 'package-archives source) t)
           '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -609,7 +609,8 @@ TODO: add hook
       (autoload-from-package "expand-region" '(er/expand-region))
       (autoload-from-package "autopair"      '(autopair-global-mode)) ;autopair characters
       (autoload-from-package "auto-complete" '(global-auto-complete-mode)) ;autocomplete syntax
-#+END_SRC
+      (autoload-from-package "clean-mode-line" '(clean-mode-line))
+    #+END_SRC
 ** esc's custom package autoloads
 
 #+BEGIN_SRC emacs-lisp :tangle yes
