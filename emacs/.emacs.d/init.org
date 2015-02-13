@@ -1215,27 +1215,32 @@ TODO: reduce this kludge
 
 * Colors
 
-  Initialize the color-theme-stack
+Initialize the color-theme-stack
 
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (defvar color-theme-stack nil "Stack of color themes.")
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defvar color-theme-stack nil "Stack of color themes.")
+#+END_SRC
 
-  Lay the color-theme-stack api
+Lay the color-theme-stack api
 
-  #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/color-theme-stack.el
-    ;;;###autoload
-    (defun color-theme-push ()
-      "Switch to a theme, saving the old one."
-      (push (color-theme-make-snapshot) color-theme-stack)
-      (message "Color theme pushed"))
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/color-theme-stack.el
+  ;;;###autoload
+  (defun color-theme-push ()
+    "Switch to a theme, saving the old one."
+    (push (color-theme-make-snapshot) color-theme-stack)
+    (message "Color theme pushed"))
+ ;;;###autoload
+  (defun color-theme-pop ()
+    "Restore the previous theme in use."
+    (funcall (pop color-theme-stack))
+    (message "Color theme popped"))
+#+END_SRC
 
-    ;;;###autoload
-    (defun color-theme-pop ()
-      "Restore the previous theme in use."
-      (funcall (pop color-theme-stack))
-      (message "Color theme popped"))
-  #+END_SRC
+[[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee-d77b-45da-ac5c-b9bbb562.gif][Power⚡Line]]
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (powerline-default-theme)
+#+END_SRC
 
 ** Color theme tweaks
 *** Wombat
