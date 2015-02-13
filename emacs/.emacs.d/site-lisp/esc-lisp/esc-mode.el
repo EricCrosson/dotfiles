@@ -412,6 +412,8 @@ This macro runs conses through \\[esc-key] for convenience."
 
     ;; less clutter on the mode line
     (diminish 'auto-fill-function)
+    (diminish 'visual-line-mode)
+    (diminish 'global-visual-line-mode)
     (after 'autopair  (diminish 'autopair-mode))
     (after 'abbrev    (diminish 'abbrev-mode))
     (after 'undo-tree (diminish 'undo-tree-mode))

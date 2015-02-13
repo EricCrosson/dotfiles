@@ -1255,7 +1255,7 @@ Lay the color-theme-stack api
     "Switch to a theme, saving the old one."
     (push (color-theme-make-snapshot) color-theme-stack)
     (message "Color theme pushed"))
- ;;;###autoload
+  ;;;###autoload
   (defun color-theme-pop ()
     "Restore the previous theme in use."
     (funcall (pop color-theme-stack))
@@ -2062,6 +2062,8 @@ TODO: determine how to integrate these into esc-mode-map
 
       ;; less clutter on the mode line
       (diminish 'auto-fill-function)
+      (diminish 'visual-line-mode)
+      (diminish 'global-visual-line-mode)
       (after 'autopair  (diminish 'autopair-mode))
       (after 'abbrev    (diminish 'abbrev-mode))
       (after 'undo-tree (diminish 'undo-tree-mode))
