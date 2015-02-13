@@ -44,7 +44,7 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (load-theme 'wombat)
 #+END_SRC
-* [5/13] TODOs
+* [6/13] TODOs
 :PROPERTIES:
 :COOKIE_DATA: recursive
 :END:
@@ -54,9 +54,8 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 - [X] allow tabs in makefile-mode
   works with tabify
 - [X] byte-compile-directory
-  (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
-  mirror byte-compile-file's method of querying file to compile
-- [ ] diminish stuff
+- [X] diminish stuff
+- [ ] make powerline part of esc-mode
 - [ ] scratch buffer as consistent config file
   only emacs-lisp source blocks from the org file are loaded,
   naturally
@@ -2036,7 +2035,7 @@ TODO: determine how to integrate these into esc-mode-map
       (after 'fic-mode (diminish 'fic-mode))
       (after 'smerge-mode (diminish 'smerge-mode))
       (after 'auto-complete (diminish 'auto-complete-mode))))
-
+      (after 'esc-mode (diminish 'esc-mode))
 #+END_SRC
 #+NAME: activate esc-mode-hook
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
