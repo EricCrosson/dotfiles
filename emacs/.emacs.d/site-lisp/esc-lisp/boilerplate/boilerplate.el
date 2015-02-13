@@ -146,7 +146,7 @@ CLEAR-COMMAND        is an optional command to run when reverting back to the
 (defcustom esc/emacs-lisp-mode-hook nil
   "esc's code to \\[emacs-lisp-mode-hook]."
   :type         'hook
-  :options      '((setq mode-name "elisp")
+  :options      '(;(setq mode-name "elisp")
                   ;(idle-highlight t)
                   )
   :group        'boil)
@@ -154,7 +154,7 @@ CLEAR-COMMAND        is an optional command to run when reverting back to the
 ;;;###autoload
 (defun esc/emacs-lisp-mode-hook ()
   "esc's code to \\[emacs-lisp-mode-hook]."
-  (setq mode-name "elisp")
+  ;(setq mode-name "elisp")
   ;(idle-highlight t)
   )
 
@@ -930,7 +930,19 @@ Completion is available for the keymap name."
       (with-current-buffer "*Help*"
         (insert (substitute-command-keys (concat "\\{" name "}")))))))
 
+(defun esc/unkillable-scratch-buffer ()
+  (if (equal (buffer-name (current-buffer)) "*scratch*")
+      (progn
+        (delete-region (point-min) (point-max))
+        (insert initial-scratch-message)
+        nil)
+    t))
 
+;;;###autoload
+(defun byte-compile-directory(dir)
+  "Compile an .elc file for every .el file contained under
+DIR (recursive)."
+  (byte-recompile-directory (expand-file-name dir) 0))
 
 ;;;###autoload
 (defun esc/dictionary-search ()

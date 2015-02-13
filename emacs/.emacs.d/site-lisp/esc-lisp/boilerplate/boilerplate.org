@@ -186,7 +186,7 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
   (defcustom esc/emacs-lisp-mode-hook nil
     "esc's code to \\[emacs-lisp-mode-hook]."
     :type         'hook
-    :options      '((setq mode-name "elisp")
+    :options      '(;(setq mode-name "elisp")
                     ;(idle-highlight t)
                     )
     :group        'boil)
@@ -194,7 +194,7 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
   ;;;###autoload
   (defun esc/emacs-lisp-mode-hook ()
     "esc's code to \\[emacs-lisp-mode-hook]."
-    (setq mode-name "elisp")
+    ;(setq mode-name "elisp")
     ;(idle-highlight t)
     )
 #+END_SRC
@@ -1099,6 +1099,16 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
 #+END_SRC
 
 ** core functionality
+[[http://emacswiki.org/emacs/RecreateScratchBuffer][EmacsWiki: Recreate Scratch Buffer]]
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defun esc/unkillable-scratch-buffer ()
+    (if (equal (buffer-name (current-buffer)) "*scratch*")
+        (progn
+          (delete-region (point-min) (point-max))
+          (insert initial-scratch-message)
+          nil)
+      t))
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;;;###autoload

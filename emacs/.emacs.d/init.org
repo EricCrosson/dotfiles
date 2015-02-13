@@ -67,8 +67,7 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
   First have to determine how to unhide information on demand
   for definitions, not spell check
 - [ ] naming standard for org babel files sectioning
-- [ ] gcov output parsed by emacs to hgihlight covered code in gdb
-  mode
+- [ ] gcov output parsed by emacs to hilight gdb code coverage
 - [ ] shift to use-package
 ** [0/2] advice to implement
 - [ ] C-h C-k takes you to org instead of .el
@@ -1101,6 +1100,19 @@ Some esc-keys weren't mapped with shell use in mind. Here's a bandaid.
           org-mode-hook ;to include source blocks :\
           enh-ruby-mode-hook
           ruby-mode-hook))
+#+END_SRC
+** Change major mode hook
+
+Take this opportunity to refresh the mode line. Inspiration from
+[[http://www.masteringemacs.org/article/hiding-replacing-modeline-strings][Hiding and replacing modeline strings with clean-mode-line - Mastering
+Emacs]].
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'after-change-major-mode-hook 'clean-mode-line)
+#+END_SRC
+** Kill buffer hook
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'kill-buffer-query-functions 'esc/unkillable-scratch-buffer)
 #+END_SRC
 ** Kill emacs hook
 
