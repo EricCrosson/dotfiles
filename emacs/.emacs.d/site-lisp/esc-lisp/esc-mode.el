@@ -409,22 +409,16 @@ This macro runs conses through \\[esc-key] for convenience."
             undo-tree-visualizer-relative-timestamps t))
 
     ;; less clutter on the mode line
-    ;; TODO - why the fuck did this stop working???? time to bisect
-    ;; (mapc (lambda (dim) (after (car dim) (diminish-or-restore (cdr dim))))
-    ;;    '((abbrev           . abbrev-mode)
-    ;;      (autopair         . autopair-mode)
-    ;;      (auto-complete    . auto-complete-mode)
-    ;;      (fic-mode         . fic-mode)
-    ;;      (enh-ruby-mode    . enh-ruby-mode)
-    ;;      (smerge-mode      . smerge-mode)
-    ;;      (git-gutter+-mode . git-gutter+-mode)
-    ;;      (org-indent       . org-indent-mode)
+    (diminish 'auto-fill-function)
     (after 'autopair  (diminish 'autopair-mode))
     (after 'abbrev    (diminish 'abbrev-mode))
     (after 'undo-tree (diminish 'undo-tree-mode))
-    (diminish 'auto-fill-function)
     (after 'org-indent (diminish 'org-indent-mode))
-   ))
+    (after 'magit (diminish 'magit-auto-revert-mode))
+    (after 'fic-mode (diminish 'fic-mode))
+    (after 'smerge-mode (diminish 'smerge-mode))
+    (after 'auto-complete (diminish 'auto-complete-mode))))
+    (after 'esc-mode (diminish 'esc-mode))
 
 (add-hook 'esc-mode-hook 'esc/accompanying-mode-hook)
 
