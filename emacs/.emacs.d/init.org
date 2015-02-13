@@ -282,7 +282,7 @@ like the long setq syntax for now.
         auto-save-default nil
         inhibit-startup-screen t
         large-file-warning-threshold nil
-        compile-command "make"
+        compile-command "make -k -j32"
         compilation-ask-about-save nil
         compilation-save-buffers-predicate '(lambda () nil) ;never ask to save
         ff-search-directories '("." "../inc" "../src")
