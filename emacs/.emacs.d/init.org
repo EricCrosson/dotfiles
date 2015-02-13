@@ -40,8 +40,6 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
           scroll-bar-mode))
 #+END_SRC
 
-- [ ] TODO: load this with color-stack
-
 #+NAME: mood lighting
 #+BEGIN_SRC emacs-lisp :tangle yes
   (load-theme 'wombat)
@@ -1214,6 +1212,8 @@ TODO: reduce this kludge
 #+END_SRC
 
 * Colors
+
+- [ ] TODO: load this with color-stack
 
 Initialize the color-theme-stack
 
