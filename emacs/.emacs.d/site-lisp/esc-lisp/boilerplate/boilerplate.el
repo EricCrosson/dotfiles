@@ -216,6 +216,11 @@ CLEAR-COMMAND        is an optional command to run when reverting back to the
   (define-key iedit-mode-keymap (kbd "C-'") 'execute-extended-command))
 
 ;;;###autoload
+(defun esc/big-fringe-mode-hook ()
+  ;; TODO: copy from ecrosson-mobl
+  )
+
+;;;###autoload
 (defun esc/insert-short-gpl ()
   "Insert the short version of the GNU GPL v3."
   (interactive)

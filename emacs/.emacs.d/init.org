@@ -452,8 +452,6 @@ include to the require-package macro
       ; is there a way to get these autoloads loaded implicitly, like
       ; elpa does?
       esc-mode                             ;The Power Glove
-      cnsim-mode-autoloads
-      big-fringe-mode ;; why is this here again? how to auto-load by nature of being in esc-lisp?
       ))
 #+END_SRC
 

@@ -270,6 +270,13 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
     (define-key iedit-mode-keymap (kbd "C-'") 'execute-extended-command))
 #+END_SRC
 
+** big-fringe-mode-hook
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;;;###autoload
+  (defun esc/big-fringe-mode-hook ()
+    ;; TODO: copy from ecrosson-mobl
+    )
+#+END_SRC
 * Licenses
 #+NAME: insert-short-gpl
 #+BEGIN_SRC emacs-lisp :tangle yes
