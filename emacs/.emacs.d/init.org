@@ -1265,7 +1265,6 @@ My favorite mode. This was the reason I started using Emacs, didja know?
         org-checkbox-hierarchical-statistics nil
         org-src-fontify-natively t
         org-directory "~/org"
-        org-plantuml-jar-path "~/classes/ee460n/res/plantuml.jar"
         org-agenda-files (append '("~/org/todo.org")))
 
   (after 'org
