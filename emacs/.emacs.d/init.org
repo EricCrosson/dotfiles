@@ -1244,14 +1244,12 @@ Lay the color-theme-stack api
 
 ** Color theme tweaks
 *** Wombat
+Properly colorize wombat.
 
-    - [ ] TODO fix wombat with multiple cursors
-
-    #+NAME: properly colorize wombat
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (set-face-attribute 'highlight nil :foreground 'unspecified :underline nil)
-      (set-face-attribute 'region nil :foreground 'unspecified :underline nil :background "#666")
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (set-face-attribute 'highlight nil :foreground 'unspecified :underline nil)
+  (set-face-attribute 'region nil :foreground 'unspecified :underline nil :background "#666")
+#+END_SRC
 
 * Organize mode configuration
 ** org config
