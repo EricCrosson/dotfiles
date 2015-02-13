@@ -1,7 +1,7 @@
 Thanks to [[http://bzg.fr/emacs-strip-tease.html][#Emacs, naked]].
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (defvar big-fringe-mode nil "State of big-fringe-mode")
+  (defvar big-fringe-mode nil "State of \\[big-fringe-mode].")
 
   ;;:###autoload
   (define-minor-mode big-fringe-mode
