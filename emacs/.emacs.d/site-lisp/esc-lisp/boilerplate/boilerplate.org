@@ -1100,6 +1100,33 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
 
 ** core functionality
 
+Many thanks to [[http://www.emacswiki.org/emacs/DictMode][EmacsWiki]].
+
+#+BEGIN_SRC emacs-lisp
+  ;;;###autoload
+  (defun esc/dictionary-search ()
+    (interactive)
+    (require 'dictionary)
+    (let ((word (current-word))
+          (enable-recursive-minibuffers t)
+          (val))
+      (setq val (read-from-minibuffer
+                 (concat "Word"
+                         (when word
+                           (concat " (" word ")"))
+                         ": ")))
+      (dictionary-new-search
+       (cons (cond
+              ((and (equal val "") word)
+               word)
+              ((> (length val) 0)
+               val)
+              (t
+               (error "No word to lookup")))
+             dictionary-default-dictionary))))
+#+END_SRC
+
+
 Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
 
 #+NAME: occur-dwim
@@ -1472,3 +1499,7 @@ file corresponding to the current buffer file, then recompile the file."
     (search-backward " \\")
     (forward-char 1))
 #+END_SRC
+* [0/1] TODOs
+** TODO logically separate commands
+- "when one autoload is called the entire file is loaded"
+- this is too big of a chunk, break it down

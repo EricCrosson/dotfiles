@@ -44,21 +44,14 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (load-theme 'wombat)
 #+END_SRC
-* [1/15] TODOs
+* [2/15] TODOs
 :PROPERTIES:
 :COOKIE_DATA: recursive
 :END:
-- [ ] fix load path
-  #+BEGIN_SRC fundamental
-    Warning (initialization): Your `load-path' seems to contain
-    your `.emacs.d' directory: /home/eric/.emacs.d
-    This is likely to cause problems...
-    Consider using a subdirectory instead, e.g.: /home/eric/.emacs.d/lisp
-  #+END_SRC
+- [X] fix load path
 - [ ] scratch buffer as consistent config file
   only emacs-lisp source blocks from the org file are loaded,
   naturally
-- [ ] convert to use-package
 - [X] remove tangles files from git, provide makefile
 - [ ] tangling scripts adds execute permission
   (write-region "" nil custom-file)
@@ -78,6 +71,7 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 - [ ] byte-compile-directory
   (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
   mirror byte-compile-file's method of querying file to compile
+- [ ] convert to use-package
 ** [0/1] advice to implement
 - [ ] C-h C-k takes you to org instead of .el
 ** [0/2] ibuffer upgrades
