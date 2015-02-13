@@ -44,15 +44,16 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (load-theme 'wombat)
 #+END_SRC
-* [2/15] TODOs
+* [3/14] TODOs
 :PROPERTIES:
 :COOKIE_DATA: recursive
 :END:
 - [X] fix load path
+- [X] quick dict(ionary)
+- [X] remove tangles files from git, provide makefile
 - [ ] scratch buffer as consistent config file
   only emacs-lisp source blocks from the org file are loaded,
   naturally
-- [X] remove tangles files from git, provide makefile
 - [ ] tangling scripts adds execute permission
   (write-region "" nil custom-file)
 - [ ] allow tabs in makefile-mode
@@ -62,8 +63,6 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 - [ ] smooth esc scrolling
 - [ ] human readable sizes in dired
   First have to determine how to unhide information on demand
-- [ ] windmove in org buffers
-- [ ] quick dict(ionary)
   for definitions, not spell check
 - [ ] naming standard for org babel files sectioning
 - [ ] gcov output parsed by emacs to hgihlight covered code in gdb
