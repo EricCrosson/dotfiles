@@ -419,8 +419,12 @@ This macro runs conses through \\[esc-key] for convenience."
     ;;      (smerge-mode      . smerge-mode)
     ;;      (git-gutter+-mode . git-gutter+-mode)
     ;;      (org-indent       . org-indent-mode)
-    ;;      (undo-tree        . undo-tree-mode)))
-    ))
+    (after 'autopair  (diminish 'autopair-mode))
+    (after 'abbrev    (diminish 'abbrev-mode))
+    (after 'undo-tree (diminish 'undo-tree-mode))
+    (diminish 'auto-fill-function)
+    (after 'org-indent (diminish 'org-indent-mode))
+   ))
 
 (add-hook 'esc-mode-hook 'esc/accompanying-mode-hook)
 

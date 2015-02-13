@@ -1016,7 +1016,7 @@ already there, the beginning of text on the current line."
 (defun esc/edit-configs ()
   "Open a dired buffer in my root .emacs.d for quick edits."
   (interactive)
-  (dired "~/.emacs.d/esc-lisp/"))
+  (dired esc-lisp-path))
 #+END_SRC
 #+NAME: scroll-up-slight
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1100,9 +1100,17 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
 
 ** core functionality
 
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;;;###autoload
+  (defun byte-compile-directory(dir)
+    "Compile an .elc file for every .el file contained under
+  DIR (recursive)."
+    (byte-recompile-directory (expand-file-name dir) 0))
+#+END_SRC
+
 Many thanks to [[http://www.emacswiki.org/emacs/DictMode][EmacsWiki]].
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
   ;;;###autoload
   (defun esc/dictionary-search ()
     (interactive)

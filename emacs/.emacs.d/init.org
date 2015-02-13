@@ -44,35 +44,36 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (load-theme 'wombat)
 #+END_SRC
-* [3/14] TODOs
+* [5/13] TODOs
 :PROPERTIES:
 :COOKIE_DATA: recursive
 :END:
 - [X] fix load path
 - [X] quick dict(ionary)
 - [X] remove tangles files from git, provide makefile
+- [X] allow tabs in makefile-mode
+  works with tabify
+- [X] byte-compile-directory
+  (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
+  mirror byte-compile-file's method of querying file to compile
+- [ ] diminish stuff
 - [ ] scratch buffer as consistent config file
   only emacs-lisp source blocks from the org file are loaded,
   naturally
 - [ ] tangling scripts adds execute permission
   (write-region "" nil custom-file)
-- [ ] allow tabs in makefile-mode
-- [ ] advise (kbd "C-x M-r") like you did revert-buffer
-  Is this necessary?
-- [ ] 'jump to aligned column'
 - [ ] smooth esc scrolling
+  best definition so far: scrolling that increases over time
 - [ ] human readable sizes in dired
   First have to determine how to unhide information on demand
   for definitions, not spell check
 - [ ] naming standard for org babel files sectioning
 - [ ] gcov output parsed by emacs to hgihlight covered code in gdb
   mode
-- [ ] byte-compile-directory
-  (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
-  mirror byte-compile-file's method of querying file to compile
-- [ ] convert to use-package
-** [0/1] advice to implement
+- [ ] shift to use-package
+** [0/2] advice to implement
 - [ ] C-h C-k takes you to org instead of .el
+- [ ] advise (kbd "C-x M-r") to save undo information
 ** [0/2] ibuffer upgrades
 - [ ] ibuffer, create mode to replace sort-by -mode with -ssh host
 - [ ] ibuffer-vc, make it group files over tramp
@@ -2026,18 +2027,16 @@ TODO: determine how to integrate these into esc-mode-map
               undo-tree-visualizer-relative-timestamps t))
 
       ;; less clutter on the mode line
-      ;; TODO - why the fuck did this stop working???? time to bisect
-      ;; (mapc (lambda (dim) (after (car dim) (diminish-or-restore (cdr dim))))
-      ;;    '((abbrev           . abbrev-mode)
-      ;;      (autopair         . autopair-mode)
-      ;;      (auto-complete    . auto-complete-mode)
-      ;;      (fic-mode         . fic-mode)
-      ;;      (enh-ruby-mode    . enh-ruby-mode)
-      ;;      (smerge-mode      . smerge-mode)
-      ;;      (git-gutter+-mode . git-gutter+-mode)
-      ;;      (org-indent       . org-indent-mode)
-      ;;      (undo-tree        . undo-tree-mode)))
-      ))
+      (diminish 'auto-fill-function)
+      (after 'autopair  (diminish 'autopair-mode))
+      (after 'abbrev    (diminish 'abbrev-mode))
+      (after 'undo-tree (diminish 'undo-tree-mode))
+      (after 'org-indent (diminish 'org-indent-mode))
+      (after 'magit (diminish 'magit-auto-revert-mode))
+      (after 'fic-mode (diminish 'fic-mode))
+      (after 'smerge-mode (diminish 'smerge-mode))
+      (after 'auto-complete (diminish 'auto-complete-mode))))
+
 #+END_SRC
 #+NAME: activate esc-mode-hook
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el

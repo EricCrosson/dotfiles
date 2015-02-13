@@ -1,6 +1,6 @@
 ;;; -*- coding: utf-8 -*-
-(("/home/eric/dotfiles/emacs/.emacs.d/esc-lisp/single-mode/loaddefs.el" . 1942)
- ("/home/eric/dotfiles/emacs/.emacs.d/esc-lisp/loaddefs.el" . 16846)
+(("/home/eric/.emacs.d/ido.last" . 23760)
+ ("/home/eric/.emacs.d/recentf" . 1511)
  ("/home/eric/org/todo.org" . 260)
  ("/home/eric/org/"
   (dired-filename . "/home/eric/org/todo.org"))
@@ -23,8 +23,6 @@
  ("/home/eric/workspace/ee445m-labs/doc/ideas/"
   (dired-filename . "/home/eric/workspace/ee445m-labs/doc/ideas/main.c"))
  ("/home/eric/workspace/ee445m-labs/doc/ideas/main.c" . 385)
- ("/home/eric/.emacs.d/ido.last" . 11466)
- ("/home/eric/.emacs.d/recentf" . 1518)
  ("/home/eric/workspace/ee445m-labs/driverlib/"
   (dired-filename . "/home/eric/workspace/ee445m-labs/driverlib/adc.c"))
  ("/home/eric/workspace/ee445m-labs/lib/"
@@ -61,6 +59,4 @@
  ("/home/eric/.emacs.d/elpa/archives/marmalade/archive-contents" . 107308)
  ("/home/eric/.emacs.d/elpa/archives/melpa-stable/archive-contents" . 99647)
  ("/home/eric/.emacs.d/elpa/archives/melpa/archive-contents" . 313080)
- ("/home/eric/.emacs.d/elpa/langdoc-20140120.1845/langdoc-autoloads.el" . 2137)
- ("/home/eric/.emacs.d/elpa/web-mode-20140921.2301/web-mode-autoloads.el" . 416)
  ("/home/eric/.ssh/config" . 351))

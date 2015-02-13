@@ -864,7 +864,7 @@ result would not be very useful for a language like Lisp."
 (defun esc/edit-configs ()
   "Open a dired buffer in my root .emacs.d for quick edits."
   (interactive)
-  (dired "~/.emacs.d/esc-lisp/"))
+  (dired esc-lisp-path))
 
 ;; TODO: move to esc-mode
   ;;;###autoload
@@ -929,6 +929,30 @@ Completion is available for the keymap name."
       ;; Use `insert' instead of `princ', so control chars (e.g. \377) insert correctly.
       (with-current-buffer "*Help*"
         (insert (substitute-command-keys (concat "\\{" name "}")))))))
+
+
+
+;;;###autoload
+(defun esc/dictionary-search ()
+  (interactive)
+  (require 'dictionary)
+  (let ((word (current-word))
+        (enable-recursive-minibuffers t)
+        (val))
+    (setq val (read-from-minibuffer
+               (concat "Word"
+                       (when word
+                         (concat " (" word ")"))
+                       ": ")))
+    (dictionary-new-search
+     (cons (cond
+            ((and (equal val "") word)
+             word)
+            ((> (length val) 0)
+             val)
+            (t
+             (error "No word to lookup")))
+           dictionary-default-dictionary))))
 
 ;;;###autoload
 (defun occur-dwim ()
