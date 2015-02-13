@@ -333,6 +333,18 @@ It is my belief that backup files should not be so obtrusive as to tempt users t
         backup-by-copying-when-mismatch t)
 #+END_SRC
 
+Keep a history of =M-x= across sessions.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq savehist-file (concat user-emacs-directory "meta/savehist"))
+  (savehist-mode 1)
+  (setq savehist-save-minibuffer-history 1)
+  (setq savehist-additional-variables
+        '(kill-ring
+          search-ring
+          regexp-search-ring))
+#+END_SRC
+
 * Aliases
 
 I did not grow up in an era where this is a straightforward mnemonic.
