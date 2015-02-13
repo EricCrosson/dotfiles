@@ -316,7 +316,6 @@ This macro runs conses through \\[esc-key] for convenience."
   ("C-M-k" . esc/insert-surrounding-braces)
   ("C-M-|" . esc/insert-surrounding-pipes)
   ("C-M-l" . esc/insert-surrounding-brackets)
-  ("C-M-;" . esc/insert-surrounding-brackets-with-colon)
   ("C-M-," . esc/insert-surrounding-chevrons)
   ("C-M-'" . esc/insert-surrounding-quotes)
   ("C-M-*" . esc/insert-surrounding-stars)

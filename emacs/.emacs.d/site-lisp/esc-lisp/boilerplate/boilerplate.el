@@ -115,6 +115,7 @@ CLEAR-COMMAND        is an optional command to run when reverting back to the
              (autoload 'disaster "disaster")
              (local-set-key (kbd "C-c C-d") 'disaster)
              (local-set-key (kbd "C-c o") 'ff-find-other-file)
+             (local-set-key (kbd "C-M-;") 'esc/insert-doxygen-comment)
              (local-set-key (kbd "C-c d") 'esc/c-insert-ifdef-ndebug-printf))
   :group 'boil)
 
@@ -126,6 +127,7 @@ CLEAR-COMMAND        is an optional command to run when reverting back to the
   (local-set-key (kbd "C-c C-d") 'disaster)
   (local-set-key (kbd "C-c o") 'ff-find-other-file)
   (local-set-key (kbd "C-c d") 'esc/c-insert-ifdef-ndebug-printf)
+  (local-set-key (kbd "C-M-;") 'esc/insert-doxygen-comment)
   (local-set-key (kbd "C-M-S-u") 'esc/unroll-cc-arguments)
   (setq ff-always-in-other-window t
         ff-always-try-to-create nil))
@@ -934,6 +936,19 @@ Completion is available for the keymap name."
       ;; Use `insert' instead of `princ', so control chars (e.g. \377) insert correctly.
       (with-current-buffer "*Help*"
         (insert (substitute-command-keys (concat "\\{" name "}")))))))
+
+;;;###autoload
+(defun esc/insert-doxygen-comment()
+  (interactive)
+  "Insert a C doxygen comment at point."
+  ;; TODO: if prefix, insert newline (perhaps like C-M-o split-line)
+  (insert "/**  */")
+  (backward-char 3))
+
+(defun comint-clear-buffer ()
+  (interactive)
+  (let ((comint-buffer-maximum-size 0))
+    (comint-truncate-buffer)))
 
 (defun esc/unkillable-scratch-buffer ()
   (if (equal (buffer-name (current-buffer)) "*scratch*")

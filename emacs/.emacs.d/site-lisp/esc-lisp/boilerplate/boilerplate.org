@@ -149,6 +149,7 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
                (autoload 'disaster "disaster")
                (local-set-key (kbd "C-c C-d") 'disaster)
                (local-set-key (kbd "C-c o") 'ff-find-other-file)
+               (local-set-key (kbd "C-M-;") 'esc/insert-doxygen-comment)
                (local-set-key (kbd "C-c d") 'esc/c-insert-ifdef-ndebug-printf))
     :group 'boil)
 
@@ -160,6 +161,7 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
     (local-set-key (kbd "C-c C-d") 'disaster)
     (local-set-key (kbd "C-c o") 'ff-find-other-file)
     (local-set-key (kbd "C-c d") 'esc/c-insert-ifdef-ndebug-printf)
+    (local-set-key (kbd "C-M-;") 'esc/insert-doxygen-comment)
     (local-set-key (kbd "C-M-S-u") 'esc/unroll-cc-arguments)
     (setq ff-always-in-other-window t
           ff-always-try-to-create nil))
@@ -1106,6 +1108,16 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
 #+END_SRC
 
 ** core functionality
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;;;###autoload
+  (defun esc/insert-doxygen-comment()
+    (interactive)
+    "Insert a C doxygen comment at point."
+    ;; TODO: if prefix, insert newline (perhaps like C-M-o split-line)
+    (insert "/**  */")
+    (backward-char 3))
+#+END_SRC
+
 [[http://emacsredux.com/blog/2015/01/18/clear-comint-buffers/][Clear Comint Buffers - Emacs Redux]]
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defun comint-clear-buffer ()
