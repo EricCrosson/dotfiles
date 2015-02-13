@@ -44,7 +44,7 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (load-theme 'wombat)
 #+END_SRC
-* [6/13] TODOs
+* [6/15] TODOs
 :PROPERTIES:
 :COOKIE_DATA: recursive
 :END:
@@ -55,6 +55,7 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
   works with tabify
 - [X] byte-compile-directory
 - [X] diminish stuff
+- [ ] activate =size-indication-mode= with =power-line-mode=
 - [ ] make powerline part of esc-mode
 - [ ] scratch buffer as consistent config file
   only emacs-lisp source blocks from the org file are loaded,
