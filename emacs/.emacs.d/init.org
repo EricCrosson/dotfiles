@@ -1132,6 +1132,18 @@ Emacs]].
   (add-hook 'after-change-major-mode-hook 'clean-mode-line)
 #+END_SRC
 ** Kill buffer hook
+
+[[http://emacswiki.org/emacs/RecreateScratchBuffer][EmacsWiki: Recreate Scratch Buffer]]
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defun esc/unkillable-scratch-buffer ()
+    (if (equal (buffer-name (current-buffer)) "*scratch*")
+        (progn
+          (delete-region (point-min) (point-max))
+          (insert initial-scratch-message)
+          nil)
+      t))
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'kill-buffer-query-functions 'esc/unkillable-scratch-buffer)
 #+END_SRC
@@ -2063,7 +2075,7 @@ TODO: determine how to integrate these into esc-mode-map
       ;; less clutter on the mode line
       (diminish 'auto-fill-function)
       (diminish 'visual-line-mode)
-      (diminish 'global-visual-line-mode)
+      ;;(diminish 'global-visual-line-mode)
       (after 'autopair  (diminish 'autopair-mode))
       (after 'abbrev    (diminish 'abbrev-mode))
       (after 'undo-tree (diminish 'undo-tree-mode))
