@@ -30,6 +30,7 @@
 (defvar single-mode-map (make-keymap)
   "The keymap for \\[single-mode].")
 
+;;;###autoload
 (define-minor-mode single-mode
   "Toggle single-mode.
   A minor mode for quick navigation- reinventing the vim wheel."
