@@ -33,3 +33,4 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/meta/savehist
 /emacs/.emacs.d/site-lisp/esc-lisp/color-theme-stack.el
 /emacs/.emacs.d/site-lisp/esc-lisp/esc-mode.el
+/emacs/.emacs.d/site-lisp/esc-lisp/single-mode/single-mode.el
