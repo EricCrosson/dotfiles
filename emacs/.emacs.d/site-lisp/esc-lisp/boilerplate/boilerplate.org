@@ -147,7 +147,7 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
                (setq ff-always-try-to-create nil)
                ;(idle-highlight t)
                (autoload 'disaster "disaster")
-               (local-set-key (kbd "C-c C-d") 'disaster)
+               (local-set-key (kbd "C-c d") 'disaster)
                (local-set-key (kbd "C-c o") 'ff-find-other-file)
                (local-set-key (kbd "C-M-;") 'esc/insert-doxygen-comment)
                (local-set-key (kbd "C-c d") 'esc/c-insert-ifdef-ndebug-printf))
@@ -158,7 +158,7 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
     "esc's code to \\[c-mode-common-hook]."
     ;(idle-highlight t)
     (autoload 'disaster "disaster")
-    (local-set-key (kbd "C-c C-d") 'disaster)
+    (local-set-key (kbd "C-c d") 'disaster)
     (local-set-key (kbd "C-c o") 'ff-find-other-file)
     (local-set-key (kbd "C-c d") 'esc/c-insert-ifdef-ndebug-printf)
     (local-set-key (kbd "C-M-;") 'esc/insert-doxygen-comment)
