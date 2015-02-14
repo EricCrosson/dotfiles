@@ -35,3 +35,4 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/site-lisp/esc-lisp/esc-mode.el
 /emacs/.emacs.d/site-lisp/esc-lisp/single-mode/single-mode.el
 /emacs/.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el
+/emacs/.emacs.d/meta/places
