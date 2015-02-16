@@ -150,7 +150,8 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
                (local-set-key (kbd "C-c d") 'disaster)
                (local-set-key (kbd "C-c o") 'ff-find-other-file)
                (local-set-key (kbd "C-M-;") 'esc/insert-doxygen-comment)
-               (local-set-key (kbd "C-c d") 'esc/c-insert-ifdef-ndebug-printf))
+               (local-set-key (kbd "C-c d") 'esc/c-insert-ifdef-ndebug-printf)
+               (c-turn-on-eldoc-mode))
     :group 'boil)
 
   ;;;###autoload
@@ -163,6 +164,7 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
     (local-set-key (kbd "C-c d") 'esc/c-insert-ifdef-ndebug-printf)
     (local-set-key (kbd "C-M-;") 'esc/insert-doxygen-comment)
     (local-set-key (kbd "C-M-S-u") 'esc/unroll-cc-arguments)
+    (c-turn-on-eldoc-mode)
     (setq ff-always-in-other-window t
           ff-always-try-to-create nil))
 #+END_SRC

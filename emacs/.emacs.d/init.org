@@ -1,5 +1,6 @@
-#+AUTHOR: Eric Crosson
-#+EMAIL: esc@ericcrosson.com
+#+author: Eric Crosson
+#+email: esc@ericcrosson.com
+#+todo: TODO(t) VERIFY(v) PRINT(r) | OPTIONAL(o) HIATUS(h) DONE(d) CANCELED(c)
 #+STARTUP: content
 * Introduction
 #+NAME: program-license
@@ -1908,6 +1909,7 @@ Wait, is this even being used??
   (esc-key "<f7>" 'scroll-all-mode)
   (esc-key "<f8>" 'follow-delete-other-windows-and-split)
   (esc-key "<f9>" 'flyspell-buffer)
+  (esc-key "<f10>" 'golden-ratio-mode) ;; TODO: create a defun to save win configuration first
 
   ;; Helm
   (after 'helm-autoloads
