@@ -20,7 +20,7 @@ xset r rate 200 60
 [[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
 
 ### Begin the applications that should begin with Xorg
-delay_to_stable_xorg=2
+delay_to_stable_xorg=3
 
 # axe caps lock
 ((sleep $delay_to_stable_xorg; /home/eric/bin/linux/xmap-ctrl-nocaps.sh)) &
@@ -37,6 +37,9 @@ delay_to_stable_xorg=2
 
 # begin synergy server
 # ((sleep $delay_to_stable_xorg); synergys) &
+
+# begin synergy server
+((sleep $delay_to_stable_xorg); synergyc --daemon --restart oblongoblin.local) &
 
 # exec dwm
 exec gnome-session
