@@ -29,6 +29,7 @@
 	end-of-visual-line
 	esc/back-to-indentation-or-beginning
 	esc/eval-and-replace
+	esc/insert-doxygen-comment
 	esc/insert-little-arrow
 	esc/insert-surrounding-braces
 	esc/insert-surrounding-brackets
@@ -47,6 +48,7 @@
 	kill-visual-line
 	mc/search-backward
 	mc/search-forward
+	org-ctrl-c-ctrl-c
 	org-ctrl-c-minus
 	org-cycle
 	org-delete-char
@@ -58,6 +60,7 @@
 	ruby-end-space
 	sgml-slash
 	sh-assignment
+	split-line
 	wdired-next-line
 	wdired-previous-line
 	zap-up-to-char
@@ -68,6 +71,8 @@
 	beginning-of-buffer
 	compile
 	describe-key-briefly
+	esc/scroll-down-slight
+	esc/scroll-up-slight
 	eval-expression
 	handle-switch-frame
 	ido-find-file

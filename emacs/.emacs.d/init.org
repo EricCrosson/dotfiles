@@ -624,7 +624,7 @@ TODO: add hook
   (add-hook 'erc-mode-hook 'esc/erc-mode-hook)
 #+END_SRC
 
-** Minibuffer setup hook
+** Mini-buffer setup hook
 
 Keep the minibuffer sane.
 
@@ -1291,6 +1291,30 @@ Properly colorize wombat.
 #+END_SRC
 
 * Organize mode configuration
+** org advice
+[[http://emacs.stackexchange.com/a/9347][org mode - How does one use flyspell in org buffers without flyspell
+triggeri...]]
+
+As of <2015-02-18 Wed> this advice did not work for me.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  ;; NO spell check for embedded snippets
+  (defadvice org-mode-flyspell-verify (after org-mode-flyspell-verify-hack activate)
+    (let ((rlt ad-return-value)
+          (begin-regexp "^[ \t]*#\\+begin_\\(src\\|html\\|latex\\)")
+          (end-regexp "^[ \t]*#\\+end_\\(src\\|html\\|latex\\)")
+          old-flag
+          b e)
+      (when ad-return-value
+        (save-excursion
+          (setq old-flag case-fold-search)
+          (setq case-fold-search t)
+          (setq b (re-search-backward begin-regexp nil t))
+          (if b (setq e (re-search-forward end-regexp nil t)))
+          (setq case-fold-search old-flag))
+        (if (and b e (< (point) e)) (setq rlt nil)))
+      (setq ad-return-value rlt)))
+#+END_SRC
 ** org config
 My favorite mode. This was the reason I started using Emacs, didja know?
 #+NAME: org mode configuration
@@ -1578,7 +1602,7 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
                         (org-agenda-files            :maxlevel . 4)))
 #+END_SRC
 
-* Personal keybinding mode
+* Personal key-binding mode
 ** summary
 Here lies my personal minor mode, where I confine all of my custom
 keybindings. I also hook all of my preferred major and minor modes
@@ -1763,6 +1787,7 @@ Wait, is this even being used??
     ("M-P"     . align-regexp)
     ("C-c e"   . esc/eval-and-replace)
     ("C-c C-b" . mode-line-other-buffer)
+    ("C-M-_"   . esc/toggle-window-dedicated)
     ;; TODO: change sexp wrapping (i.e. {}[]()) from Xah Lee
     )
 
@@ -1781,7 +1806,8 @@ Wait, is this even being used??
   (esc-keys
     ("M-i"       . ido-goto-symbol)
     ("C-x C-r"   . ido-recentf-open)
-    ("C-x C-S-r" . find-file-read-only))
+    ("C-x C-S-r" . find-file-read-only)
+    ("C-x C-z"   . helm-find-files))
 
   ;; Programming bindings
   (esc-keys
