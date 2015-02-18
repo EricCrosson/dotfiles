@@ -151,7 +151,7 @@
 
 (defun disaster-arm-project-root-build-directory ()
   "Return either esc's or hershal's root dir to the ee445m-labs repo."
-  (if (string-eq (user-login-name) "eric")
+  (if (string-equal (user-login-name) "eric")
       "~/workspace/ee445m-labs/build"
     "/ee445m-labs/build"))
 
