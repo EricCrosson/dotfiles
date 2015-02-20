@@ -1253,6 +1253,19 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
 #+END_SRC
 
 ** buffer management
+#+NAME: buffers-matching-regexp
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;;;###autoload
+  (defun buffers-matching-regexp (regexp)
+    "Return a list of buffers matching REGEXP."
+    (remq nil
+          (mapcar (lambda (buf)
+                    (let ((name (buffer-name buf)))
+                      (when (string-match regexp name)
+                        buf)))
+                  (buffer-list))))
+#+END_SRC
+
 #+NAME: bury-buffer-delete-window
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;;;###autoload
