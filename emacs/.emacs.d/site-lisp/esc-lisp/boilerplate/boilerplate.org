@@ -301,7 +301,9 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
           (char (car data))
           (back (or (cadr data) 1)))
       `(defun ,funsymbol (&optional ARG)
-         "See displaced-yank.el for more documentation."
+         "This defun was generated pragmatically. Docstrings have
+  not been ironed out yet. See the defun-generating code for more
+  information."
          (interactive "p")
          (dotimes (i ARG)
            (insert ,char)
