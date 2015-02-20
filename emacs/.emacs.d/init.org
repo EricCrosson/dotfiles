@@ -1995,28 +1995,31 @@ haven't had to look at it yet.
 #+END_SRC
 
 ** esc hydras
-TODO: determine how to integrate these into esc-mode-map
 
 #+NAME: Change buffer text size
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (hydra-create "<f2>"
-    '(("k" text-scale-increase)
-      ("j" text-scale-decrease)))
+  (defhydra hydra-text-scale (esc-mode-map  "<f2>")
+    "text-scale"
+    ("k" text-scale-increase)
+    ("j" text-scale-decrease))
 #+END_SRC
 
 #+NAME: Change global text size
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (hydra-create "C-M-<"
-    '(("," esc/zoom-out)
-      ("." esc/zoom-in)))
+  (defhydra hydra-zoom (esc-mode-map  "C-M-<")
+    "esc/zoom"
+    ("," esc/zoom-out)
+    ("." esc/zoom-in))
 #+END_SRC
 
 #+NAME: Navigate compile warnings
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (hydra-create "C-`"
-    '(("h" first-error "first")
-      ("j" next-error "next")
-      ("k" previous-error "prev")))
+  (defhydra hydra-error (esc-mode-map "M-g")
+    "goto-error"
+    ("h" first-error "first")
+    ("j" next-error "next")
+    ("k" previous-error "prev")
+    ("l" esc/goto-line-with-feedback "goto-line" :color blue))
 #+END_SRC
 
 ** esc hook

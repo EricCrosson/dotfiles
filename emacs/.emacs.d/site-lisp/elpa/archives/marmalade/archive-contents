@@ -1136,7 +1136,7 @@
 		  (0 0 5)))
 		"robots based on rcirc irc" single])
  (rcirc-notify .
-	       [(0 9)
+	       [(1 0 0)
 		nil "libnotify popups" single])
  (rcirc-color .
 	      [(0 2)
