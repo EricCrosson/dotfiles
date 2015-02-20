@@ -113,7 +113,7 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
                (autoload 'disaster "disaster")
                (local-set-key (kbd "C-c d") 'disaster)
                (local-set-key (kbd "C-c o") 'ff-find-other-file)
-               (local-set-key (kbd "C-M-;") 'esc/insert-doxygen-comment)
+               (local-set-key (kbd "C-M-;") 'esc/yank-displaced-doxygen-comment)
                (local-set-key (kbd "C-c d") 'esc/c-insert-ifdef-ndebug-printf)
                (c-turn-on-eldoc-mode))
     :group 'boil)
@@ -126,7 +126,7 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
     (local-set-key (kbd "C-c d") 'disaster)
     (local-set-key (kbd "C-c o") 'ff-find-other-file)
     (local-set-key (kbd "C-c d") 'esc/c-insert-ifdef-ndebug-printf)
-    (local-set-key (kbd "C-M-;") 'esc/insert-doxygen-comment)
+    (local-set-key (kbd "C-M-;") 'esc/yank-displaced-doxygen-comment)
     (local-set-key (kbd "C-M-S-u") 'esc/unroll-cc-arguments)
     (c-turn-on-eldoc-mode)
     (setq ff-always-in-other-window t
@@ -295,99 +295,41 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
 #+END_SRC
 
 * Paired insertion
-#+NAME: yank-and-move
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;;;###autoload
-  (defmacro esc/yank-and-move (ins back)
-    "This macro is a helper function to the keys in `esc-mode-map' that
-  insert duplicates of characters."
-    `(progn
-       (dotimes (i ARG)
-         (insert ,ins)
-         (backward-char ,back))))
-#+END_SRC
-#+NAME: uses of yank-and-move
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; TODO: redefine as defun
-  ;;;###autoload
-  (fset 'bang-word-at-point "$\C-s \C-m\C-b$")
+  (defmacro esc/displaced-yank (char back)
+    "Charert character CHAR ARG times and then move backward BACK
+  characters.
 
+  Note that ARG may only be supplied by an interactive prefix if the
+  defun wrapping this macro names its (interactive 'p') argument ARG."
+    `(dotimes (i ARG) (insert ,char) (backward-char ,back)))
 
-(let ((filename (if (equal major-mode 'dired-mode)
-		      default-directory
-		    (buffer-file-name))))
-    (when filename
-      (message (concat "Filename is : " (file-name-sans-extension filename)))))
+  (defmacro esc/define-displaced-yank (funcname data)
+    (let ((funsymbol (intern (format "esc/yank-displaced-%s" funcname)))
+          (char (car data))
+          (back (or (cadr data) 1)))
+      `(defun ,funsymbol (&optional ARG)
+         "See displaced-yank.el for more documentation."
+         (interactive "p")
+         (esc/displaced-yank ,char ,back))))
 
+  (mapcar* (lambda (function)
+             (let ((funcname (car function))
+                   (data     (cdr function)))
+               (eval `(esc/define-displaced-yank ,funcname ,data))))
+           '((parens "()")
+             (braces "{}")
+             (brackets "[]")
+             (brackets-with-colon "[:]")
+             (chevrons "<>")
+             (quotes "\"\"")
+             (stars "**")
+             (dollars "$$")
 
-
-  ;; TODO: create a macro to reduce boilerplate
-  ;;;###autoload
-  (defun esc/insert-surrounding-ticks (&optional ARG)
-    "Insert a backtick and fronttick at point. This command can be
-  prefixed with a numerical argument."
-    (interactive "p") (esc/yank-and-move "`'" 1))
-
-  ;;;###autoload
-  (defun esc/insert-little-arrow (&optional ARG)
-    "Insert an arrow at point. This command can be prefixed with a
-    numeric argument."
-    (interactive "p") (esc/yank-and-move "->" 0))
-
-  ;;;###autoload
-  (defun esc/insert-surrounding-parens (&optional ARG)
-    "Insert parenthesis, and center point between them. This command
-    can be prefixed with a numeric argument."
-    (interactive "p") (esc/yank-and-move "()" 1))
-
-  ;;;###autoload
-  (defun esc/insert-surrounding-braces (&optional ARG)
-    "Insert a pair of braces, and center point between them. This
-    command can be prefixed with a numeric argument."
-    (interactive "p") (esc/yank-and-move "{}" 1))
-
-  ;;;###autoload
-  (defun esc/insert-surrounding-pipes (&optional ARG)
-    "Insert a pair of pipes, and center point between them. This
-    command can be prefixed with a numeric argument."
-    (interactive "p") (esc/yank-and-move "||" 1))
-
-  ;;;###autoload
-  (defun esc/insert-surrounding-brackets (&optional ARG)
-    "Insert a pair of square brackets, and center point between
-    them. This command can be prefixed with a numeric argument."
-    (interactive "p") (esc/yank-and-move "[]" 1))
-
-  ;;;###autoload
-  (defun esc/insert-surrounding-brackets-with-colon (&optional ARG)
-    "Insert a pair of square brackets around a colon, and center
-    point between them (after the colon). This command can be
-    prefixed with a numeric argument."
-    (interactive "p") (esc/yank-and-move "[:]" 1))
-
-  ;;;###autoload
-  (defun esc/insert-surrounding-chevrons (&optional ARG)
-    "Insert a pair of chevrons, and center point between them. This
-    command can be prefixed with a numeric argument."
-    (interactive "p") (esc/yank-and-move "<>" 1))
-
-  ;;;###autoload
-  (defun esc/insert-surrounding-quotes (&optional ARG)
-    "Insert double quotes, and center point between them. This command
-    can be prefixed with a numeric argument."
-    (interactive "p") (esc/yank-and-move "\"\"" 1))
-
-  ;;;###autoload
-  (defun esc/insert-surrounding-stars (&optional ARG)
-    "Insert dual stars, and center point between them. This command
-    can be prefixed with a numeric argument."
-    (interactive "p") (esc/yank-and-move "**" 1))
-
-  ;;;###autoload
-  (defun esc/insert-surrounding-dollars (&optional ARG)
-    "Insert dual stars, and center point between them. This command
-    can be prefixed with a numeric argument."
-    (interactive "p") (esc/yank-and-move "$$" 1))
+             ;; a good example of code reuse
+             (ticks "`'")
+             (little-arrow "->" 0)
+             (doxygen-comment "/*!  */" 3)))
 #+END_SRC
 
 * Extending Emacs
@@ -1031,15 +973,6 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
 #+END_SRC
 
 ** core functionality
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;;###autoload
-  (defun esc/insert-doxygen-comment()
-    (interactive)
-    "Insert a C doxygen comment at point."
-    ;; TODO: if prefix, insert newline (perhaps like C-M-o split-line)
-    (insert "/*!  */")
-    (backward-char 3))
-#+END_SRC
 
 [[http://emacsredux.com/blog/2015/01/18/clear-comint-buffers/][Clear Comint Buffers - Emacs Redux]]
 #+BEGIN_SRC emacs-lisp :tangle yes
