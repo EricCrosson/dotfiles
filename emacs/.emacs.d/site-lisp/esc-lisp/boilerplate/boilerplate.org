@@ -1037,7 +1037,7 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
     (interactive)
     "Insert a C doxygen comment at point."
     ;; TODO: if prefix, insert newline (perhaps like C-M-o split-line)
-    (insert "/**  */")
+    (insert "/*!  */")
     (backward-char 3))
 #+END_SRC
 
