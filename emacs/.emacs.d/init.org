@@ -1731,11 +1731,7 @@ Wait, is this even being used??
 ** esc bindings
 #+NAME: keybindings defined here
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  ;; Enhanced buffer movement (not point movement)
-  (esc-keys
-    ("C-," . esc/scroll-up-slight)
-    ("C-." . esc/scroll-down-slight))
-
+  ;; todo: pull buffer management into anothe rhydra
   ;; Enhanced keybindings
   (esc-keys
     ("C-'"     . execute-extended-command)
@@ -1764,21 +1760,6 @@ Wait, is this even being used??
   (when (fboundp 'windmove-default-keybindings)
     (windmove-default-keybindings))
 
-  ;; Window adjustment
-  (esc-keys
-    ("C-c ["   . esc/rotate-window-split)
-    ("C-c ]"   . esc/swap-buffer-locations)
-    ;; TODO; find another binding; this interferes with recursive edits
-    ;; TODO: rename defun
-    ;("C-M-c [" . esc/should-have-opened-this-in-other-window)
-    ;("C-M-c ]" . esc/toggle-window-selectability)
-   )
-
-  ;; Org mode keybindings
-  (after 'org
-    (define-key org-mode-map (kbd "C-c n") 'esc/org-next-source-code-block)
-    (define-key org-mode-map (kbd "C-c p") 'esc/org-prev-source-code-block))
-
   ;; Miscellaneous keybindings
   (esc-keys
     ("C-c a"   . org-agenda)
@@ -1791,10 +1772,12 @@ Wait, is this even being used??
     ("M-P"     . align-regexp)
     ("C-c e"   . esc/eval-and-replace)
     ("C-c C-b" . mode-line-other-buffer)
-    ("C-M-_"   . esc/toggle-window-dedicated)
     ;; TODO: change sexp wrapping (i.e. {}[]()) from Xah Lee
     )
 
+  ;; todo: paxedit in a hydra
+
+  ;; todo: single mode should be one hydra
   ;; f-related-keybindings
   (esc-keys
     ("C-x F"   . recentf-open-files)
@@ -1810,8 +1793,7 @@ Wait, is this even being used??
   (esc-keys
     ("M-i"       . ido-goto-symbol)
     ("C-x C-r"   . ido-recentf-open)
-    ("C-x C-S-r" . find-file-read-only)
-    ("C-x C-z"   . helm-find-files))
+    ("C-x C-S-r" . find-file-read-only))
 
   ;; Programming bindings
   (esc-keys
@@ -1835,6 +1817,7 @@ Wait, is this even being used??
   ;; Text movement
   (after 'move-text-autoloads
     (esc-keys
+      ;; ripe for hydra
       ("<C-S-up>"     . move-text-up)
       ("<C-S-down>"   . move-text-down)
       ("<C-return>"   . esc/open-line-below)
@@ -1873,30 +1856,14 @@ Wait, is this even being used??
 
   (esc-key "C-;" 'comment-dwim)
 
-  (after 'multiple-cursors-autoloads
-    (esc-keys
-      ("C-S-c C-S-c" . mc/edit-lines)
-      ("C->" . mc/mark-next-like-this)
-      ("C-<" . mc/mark-previous-like-this)
-      ("C-c !" . mc/sort-regions)    ;1
-      ("C-c @" . mc/reverse-regions) ;2
-      ("C-c #" . mc/insert-numbers)  ;3
-      ("C-c *" . mc/mark-all-like-this)
-      ("C-c C-*" . mc/mark-all-like-this-dwim)))
-
   ;; Lisp/sexp movement
-  (esc-keys
-    ("C-S-k"    . kill-sexp)
-    ("C-c l \\" . li/indent-entire-defun)
-    ("C-s-e"    . li/eval-current-defun)
-    ("C-c l e"  . li/eval-current-sexp))
+  (esc-key "C-S-k" 'kill-sexp)
+
   ;; Preserving stock org functionality
   (esc-key "C-c l l" 'org-store-link)
 
   ;; single-mode != vi
-  (esc-keys
-    ("C-c l s"  . single-mode)
-    ("<escape>" . single-mode))
+  (esc-key "<escape>" 'single-mode)
 
   ;; Buffer control
   (esc-keys
@@ -1939,35 +1906,33 @@ Wait, is this even being used??
   (esc-key "<f7>" 'scroll-all-mode)
   (esc-key "<f8>" 'follow-delete-other-windows-and-split)
   (esc-key "<f9>" 'flyspell-buffer)
-  (esc-key "<f10>" 'golden-ratio-mode) ;; TODO: create a defun to save win configuration first
+  (esc-key "<f10>" 'golden-ratio-mode)
+  ;; TODO: create a defun to save win configuration first
+  ;; see stack on zebulon
 
   ;; Helm
   (after 'helm-autoloads
     (esc-keys
-      ("M-s-x"   . helm-M-x)
       ("C-c i"   . helm-imenu)
       ("C-x C-j" . helm-for-files)))
 
   ;; Sysadmin bindings
-  (esc-keys
-    ("C-M-+"     . esc/search-my-lisp-dir)
-    ("C-c C-i"   . esc/edit-my-emacs)
-    ("C-c C-M-i" . esc/edit-my-bash))
+  ;; TODO: bookmarks to dotfiles and esc-lisp
 
   ;; esc delimeter and line hacks
   (esc-keys
     ("C-<backspace>" . esc/backward-kill-line)
     ("M-k"   . esc/pull-up-line)
-    ("C-M--" . esc/insert-little-arrow)
-    ("C-M-j" . esc/insert-surrounding-parens)
-    ("C-M-k" . esc/insert-surrounding-braces)
-    ("C-M-|" . esc/insert-surrounding-pipes)
-    ("C-M-l" . esc/insert-surrounding-brackets)
-    ("C-M-," . esc/insert-surrounding-chevrons)
-    ("C-M-'" . esc/insert-surrounding-quotes)
-    ("C-M-*" . esc/insert-surrounding-stars)
-    ("C-M-g" . esc/insert-surrounding-dollars)
-    ("C-M-`" . esc/insert-surrounding-ticks))
+    ("C-M--" . esc/yank-displaced-little-arrow)
+    ("C-M-j" . esc/yank-displaced-parens)
+    ("C-M-k" . esc/yank-displaced-braces)
+    ("C-M-|" . esc/yank-displaced-pipes)
+    ("C-M-l" . esc/yank-displaced-brackets)
+    ("C-M-," . esc/yank-displaced-chevrons)
+    ("C-M-'" . esc/yank-displaced-quotes)
+    ("C-M-*" . esc/yank-displaced-stars)
+    ("C-M-g" . esc/yank-displaced-dollars)
+    ("C-M-`" . esc/yank-displaced-ticks))
 
   ;; programming delimeter and line hacks
   (esc-keys
@@ -1976,7 +1941,7 @@ Wait, is this even being used??
   ;; Buffer-overlay hacks: super useful!
   (esc-keys
    ("s-e" . esc/raise-eshell)
-   ("s-s" . esc/raise-ansi-term)
+   ;("s-s" . esc/raise-ansi-term)
    ("s-q" . esc/raise-magit-status))
 #+END_SRC
 
@@ -1999,32 +1964,58 @@ haven't had to look at it yet.
 #+END_SRC
 
 ** esc hydras
-
-#+NAME: Change buffer text size
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+NAME: esc-mode hydras
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (defhydra hydra-text-scale (esc-mode-map  "<f2>")
     "text-scale"
     ("k" text-scale-increase)
     ("j" text-scale-decrease))
-#+END_SRC
 
-#+NAME: Change global text size
-#+BEGIN_SRC emacs-lisp :tangle yes
   (defhydra hydra-zoom (esc-mode-map  "C-M-<")
     "esc/zoom"
     ("," esc/zoom-out)
     ("." esc/zoom-in))
-#+END_SRC
 
-#+NAME: Navigate compile warnings
-#+BEGIN_SRC emacs-lisp :tangle yes
   (defhydra hydra-error (esc-mode-map "M-g")
     "goto-error"
     ("h" first-error "first")
     ("j" next-error "next")
     ("k" previous-error "prev")
     ("l" esc/goto-line-with-feedback "goto-line" :color blue))
+
+  (defhydra hydra-multiple-cursors (esc-mode-map "M-a")
+    "multiple-cursors"
+    ("l" mc/edit-lines "edit")
+    ("n" mc/mark-next-like-this "mark next")
+    ("p" mc/mark-previous-like-this "mark prev")
+    ("s" mc/sort-regions "sort")
+    ("r" mc/reverse-regions "reverse")
+    ("e" mc/insert-numbers "enumerate")
+    ("*" mc/mark-all-like-this "mark all")
+    ("o" mc/mark-all-like-this-dwim "mark all dwim"))
+
+  (defhydra hydra-scroll-buffer (esc-mode-map "C-,")
+    "esc/scroll-buffer"
+    ("j" esc/scroll-up-slight "up")
+    ("k" esc/scroll-down-slight "down"))
+
+  (defhydra hydra-window-adjustment (esc-mode-map "C-c w")
+    "window adjustment"
+    ("r" esc/rotate-window-split "rotate")
+    ("p" esc/swap-buffer-locations "swap")
+    ("o" esc/should-have-opened-this-in-other-window "other window")
+    ("s" esc/toggle-window-selectability "toggle selectability")
+    ;; TODO; include the amaranth hydras
+    ("d" esc/toggle-window-dedicated "toggle dedicated")
+    ("b" mode-line-other-buffer "mode-line-other-buffer"))
+
+  (after 'org
+    (defhydra hydra-org-nav-source-block (esc-mode-map "C-c n")
+      ("n" esc/org-next-source-code-block "next")
+      ("p" esc/org-prev-source-code-block "prev")))
 #+END_SRC
+
+
 
 ** esc hook
 #+NAME: esc-mode-hook

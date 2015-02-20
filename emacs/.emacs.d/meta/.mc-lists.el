@@ -39,6 +39,7 @@
 	esc/open-line-below
 	esc/pull-up-line
 	esc/toggle-letter-case
+	esc/toggle-window-dedicated
 	forward-sexp
 	ignore
 	indent-for-tab-command
@@ -75,6 +76,8 @@
 	esc/scroll-up-slight
 	eval-expression
 	handle-switch-frame
+	hydra-multiple-cursors/mc/edit-lines
+	hydra-multiple-cursors/mc/mark-next-like-this
 	ido-find-file
 	kmacro-end-or-call-macro
 	kmacro-start-macro-or-insert-counter
