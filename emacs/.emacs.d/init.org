@@ -163,7 +163,7 @@ need to keep the list updated, just load all subdirectories and go.
     :group 'esc-mode)
   (setq esc-loaddefs-path (concat esc-lisp-path "loaddefs.el"))
 
-  (let ((default-directory site-lisp-path))       ;for easy
+  (let ((default-directory site-lisp-path))      ;for easy
     (normal-top-level-add-to-load-path '("."))   ;recursive
     (normal-top-level-add-subdirs-to-load-path)) ;loading
 
@@ -1610,6 +1610,8 @@ onto this mode's activation hook. Though all of my customizations are
 active by default for new emacs sessions, one can get back to the
 default settings by running =M-x esc-mode=.
 
+TODO: consider using `define-globalized-minor-mode'.
+
 ** esc variables
 
 As a convention, esc functions are prefixed with `esc/' while esc
@@ -1626,7 +1628,7 @@ variables are prefixed with `esc-'
 #+NAME: define internal variables
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (defvar esc-mode-map (make-keymap)
-      "The keymap for \\[esc-mode].")
+      "The keymap for `esc-mode'.")
 #+END_SRC
 #+NAME: define minor mode
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
@@ -1766,9 +1768,11 @@ Wait, is this even being used??
   (esc-keys
     ("C-c ["   . esc/rotate-window-split)
     ("C-c ]"   . esc/swap-buffer-locations)
+    ;; TODO; find another binding; this interferes with recursive edits
     ;; TODO: rename defun
-    ("C-M-c [" . esc/should-have-opened-this-in-other-window)
-    ("C-M-c ]" . esc/toggle-window-selectability))
+    ;("C-M-c [" . esc/should-have-opened-this-in-other-window)
+    ;("C-M-c ]" . esc/toggle-window-selectability)
+   )
 
   ;; Org mode keybindings
   (after 'org
