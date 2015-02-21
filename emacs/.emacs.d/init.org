@@ -3552,7 +3552,7 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
   (provide 'update-autoloads)
 #+END_SRC
 
-* [9/19] TODOs
+* [9/20] TODOs
 ** DONE fix load path
 ** DONE quick dictionary
 ** DONE remove tangles files from git, provide makefile
@@ -3570,6 +3570,9 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
   (write-region "" nil custom-file)
 ** TODO gcov output parsed by emacs to hilight gdb code coverage
 ** TODO use package use-package
+** [0/1] make process
+*** TODO generate loaddefs
+*** TODO ensure dir structure is populated in esc-lisp before attempted make
 ** [1/2] Powerline
 *** DONE make powerline part of esc-mode
 *** TODO activate =size-indication-mode= with =power-line-mode=
