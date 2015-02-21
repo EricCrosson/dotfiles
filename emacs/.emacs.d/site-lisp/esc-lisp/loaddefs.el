@@ -1,7 +1,7 @@
 ;;
 
 ;;;### (autoloads nil "boilerplate/boilerplate" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21736 2428 609483 875000))
+;;;;;;  (21736 2513 429488 242000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el
 
 (autoload 'esc/prog-mode-hook "boilerplate/boilerplate" "\
@@ -258,7 +258,7 @@ Compile an .elc file for every .el file contained under
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/emacs+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el"
-;;;;;;  (21736 2428 476150 535000))
+;;;;;;  (21736 2513 302821 569000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el
 
 (autoload 'esc/pull-up-line "boilerplate/emacs+" "\
@@ -453,7 +453,7 @@ Delete characters backward until encountering the end of a word.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/help+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el"
-;;;;;;  (21736 2428 522817 204000))
+;;;;;;  (21736 2513 346154 905000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el
 
 (autoload 'esc/insert-defun-at-point "boilerplate/help+" "\
@@ -527,7 +527,7 @@ See `mode-line-cleaner-alist' for more documentation.
 ;;;***
 
 ;;;### (autoloads nil "color-theme-stack" "../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el"
-;;;;;;  (21736 317 126041 828000))
+;;;;;;  (21736 2802 532836 461000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el
 
 (autoload 'color-theme-push "color-theme-stack" "\
@@ -619,6 +619,18 @@ If EVENT is a filewatch event, call its callback.
 Otherwise, signal a `file-notify-error'.
 
 \(fn EVENT)" t nil)
+
+;;;***
+
+;;;### (autoloads nil "esc-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el"
+;;;;;;  (21736 2803 212836 496000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el
+
+(autoload 'esc-mode "esc-mode" "\
+Toggle esc-keys mode.
+                 A minor mode so that my key settings override annoying major modes.
+
+\(fn &optional ARG)" t nil)
 
 ;;;***
 

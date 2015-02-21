@@ -167,6 +167,10 @@ restore previous window configuration."
   "Bring up a full-screen magit-status or restore previous
 window configuration."
   (interactive)
+  (save-excursion
+    (beginning-of-buffer)
+    (when (re-search-forward "^<<<<<<< variant" nil 'noerror)
+      (error "Resolve merge conflicts first.")))
   (esc/toggle-fullscreen-buffer
     :magit-fullscreen
     (string= "magit-status-mode" major-mode)

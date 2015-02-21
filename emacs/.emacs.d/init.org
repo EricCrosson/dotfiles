@@ -407,13 +407,13 @@ Make zipped files obvious.
       notifications
       dired-x
       pretty-lambdada
+      vc-hooks
 
       ;; custom packages
       ; is there a way to get these autoloads loaded implicitly, like
       ; elpa does?
       esc-mode                             ;The Power Glove
-      displaced-yank
-      ))
+      displaced-yank))
 #+END_SRC
 
 * Configuration
@@ -783,8 +783,7 @@ Attach =esc-mode= hooks
 #+BEGIN_SRC emacs-lisp :tangle yes
   (mapc (lambda (hook)
           (let ((attach (intern (format "esc/%s" hook))))
-            (add-hook hook attach)
-            ))
+            (add-hook hook attach)))
         '(erc-mode-hook
           prog-mode-hook
           fundamental-mode-hook
@@ -803,17 +802,6 @@ Attach =esc-mode= hooks
           multiple-cursors-mode-disabled-hook))
 #+END_SRC
 
-<<<<<<< variant A
->>>>>>> variant B
-** Mini-buffer setup hook
-
-Keep the minibuffer sane.
-
-#+NAME: minibuffer setup hook
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'minibuffer-setup-hook 'esc/minibuffer-setup-hook)
-#+END_SRC
-======= end
 ** Text mode hook
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
@@ -1302,6 +1290,7 @@ variables are prefixed with `esc-'
 #+END_SRC
 #+NAME: define minor mode
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
+  ;;;###autoload
   (define-minor-mode esc-mode
       "Toggle esc-keys mode.
                    A minor mode so that my key settings override annoying major modes."
@@ -1414,25 +1403,25 @@ Below is the forge, boilerplate functions are churned out en-masse.
            (insert ,str)
            (backward-char ,back))))))
 
-  (mapcar* (lambda (function)
-             (let ((funcname (car function))
-                   (data     (cdr function)))
-               (eval `(esc/define-displaced-yank ,funcname ,data))))
-           '((parens              "()")
-             (braces              "{}")
-             (brackets            "[]")
-             (brackets-with-colon "[:]")
-             (pipes               "||")
-             (chevrons            "<>")
-             (quotes              "\"\"")
-             (single-quotes       "''")
-             (stars               "**")
-             (dollars             "$$")
-             (equals              "==")
-             ;; a good example of code reuse
-             (ticks               "`'")
-             (little-arrow        "->" 0)
-             (doxygen-comment     "/*!  */" 3))) ;; todo: implement with yasnippet
+  (mapcar (lambda (function)
+            (let ((funcname (car function))
+                  (data     (cdr function)))
+              (eval `(esc/define-displaced-yank ,funcname ,data))))
+          '((parens              "()")
+            (braces              "{}")
+            (brackets            "[]")
+            (brackets-with-colon "[:]")
+            (pipes               "||")
+            (chevrons            "<>")
+            (quotes              "\"\"")
+            (single-quotes       "''")
+            (stars               "**")
+            (dollars             "$$")
+            (equals              "==")
+            ;; a good example of code reuse
+            (ticks               "`'")
+            (little-arrow        "->" 0)
+            (doxygen-comment     "/*!  */" 3))) ;; todo: implement with yasnippet
 
   ;; todo: use current line in absence of region
   (defmacro esc/define-org-header-indentation(funcname callback)
