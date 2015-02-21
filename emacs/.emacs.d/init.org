@@ -1393,6 +1393,7 @@ Wait, is this even being used??
              '(,@binding-list)))
 #+END_SRC
 
+Below is the forge, boilerplate functions are churned out en-masse.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defmacro esc/define-displaced-yank (funcname data)
     "This macro generates functions for `esc-mode-map'."
@@ -1426,6 +1427,33 @@ Wait, is this even being used??
              (ticks "`'")
              (little-arrow "->" 0)
              (doxygen-comment "/*!  */" 3))) ;; todo: implement with yasnippet
+
+  ;; todo: use current line in absence of region
+  (defmacro esc/org-define-header-indentation-defuns(funsymbol callback)
+    "Define functions to manipulate the header level of selected
+  region in `org-mode'."
+    (let ((funsymbol (intern (format "esc/org-%s-headers-in-region" funsymbol)))
+          (docstring (format "%s `org-mode' headers ARG times in currently selected region."
+                             funsymbol)))
+    `(defun ,funsymbol (&optional ARG)
+       ,docstring
+       (interactive "p")
+       (save-excursion
+         (let ((beg (save-excursion (goto-char (region-beginning)) (beginning-of-line) (point)))
+               (end (save-excursion (goto-char (region-end)) (end-of-line) (point))))
+           (goto-char end)
+           (while (and (< beg (point))
+                       (re-search-backward "^\*" beg 'noerror))
+             (dotimes (i ARG) ,callback)
+             (previous-line)
+             (end-of-line)))))))
+
+  (mapcar (lambda (data)
+            (let ((funsymbol (car data))
+                  (callback (cadr data)))
+              (esc/org-define-header-indentation-defuns funsymbol callback)))
+          '((indent (insert "*"))
+            (unindent (kill-forward-chars 1))))
 #+END_SRC
 
 ** esc bindings
@@ -1594,8 +1622,6 @@ Wait, is this even being used??
     ("s-q" . esc/raise-magit-status))
 #+END_SRC
 
-#+RESULTS: keybindings
-
 I don't know where smartrep defines keys but this worked for me and I
 haven't had to look at it yet.
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -1614,13 +1640,9 @@ haven't had to look at it yet.
 #+END_SRC
 
 ** esc hydras
-Hydra package configuration
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (setq hydra-lv nil)
-#+END_SRC
 
-#+NAME: esc-mode hydras
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (defhydra hydra-text-scale (esc-mode-map  "<f2>")
     "text-scale"
     ("k" text-scale-increase)
