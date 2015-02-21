@@ -99,7 +99,7 @@ depending on the value of ARG.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/buffer+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/buffer+.el"
-;;;;;;  (21734 44050 301544 993000))
+;;;;;;  (21736 3046 9515 664000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/buffer+.el
 
 (autoload 'esc/toggle-fullscreen-buffer "boilerplate/buffer+" "\
@@ -527,7 +527,7 @@ See `mode-line-cleaner-alist' for more documentation.
 ;;;***
 
 ;;;### (autoloads nil "color-theme-stack" "../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el"
-;;;;;;  (21736 2802 532836 461000))
+;;;;;;  (21736 4118 99570 862000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el
 
 (autoload 'color-theme-push "color-theme-stack" "\
@@ -623,7 +623,7 @@ Otherwise, signal a `file-notify-error'.
 ;;;***
 
 ;;;### (autoloads nil "esc-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el"
-;;;;;;  (21736 2803 212836 496000))
+;;;;;;  (21736 4118 906237 571000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el
 
 (autoload 'esc-mode "esc-mode" "\

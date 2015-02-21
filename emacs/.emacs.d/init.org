@@ -1389,7 +1389,7 @@ Wait, is this even being used??
 #+END_SRC
 
 Below is the forge, boilerplate functions are churned out en-masse.
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (defmacro esc/define-displaced-yank (funcname data)
     "This macro generates functions for `esc-mode-map'."
     (let ((funcname (intern (format "esc/yank-displaced-%s" funcname)))
