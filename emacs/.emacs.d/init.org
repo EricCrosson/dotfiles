@@ -32,7 +32,7 @@
     ;;; Code:
 #+END_SRC
 
-* Load path creation
+* Load path
 This is a neat trick I found to take away 99.9% of the headache when
 dealing with Emacs' load path. Assuming the user has placed every
 file, script and dependency in his or her =~/.emacs.d/= directory,
@@ -70,6 +70,15 @@ need to keep the list updated, just load all subdirectories and go.
   (mapc (lambda (loaddef) (load-file loaddef))
         (list-files-in-subtree-matching-regexp-recursive
          esc-lisp-path "loaddefs.el"))
+#+END_SRC
+
+Set up [[https://github.com/tarsius/auto-compile][auto-compile mode]] to compile source files before loading iff
+source is newer than the presently compiled file. A good tradeoff
+with proper distributed version control.
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq load-prefer-newer t)
+  (require-package '(auto-compile))
+  (auto-compile-on-load-mode 1)
 #+END_SRC
 
 * UI
@@ -185,16 +194,6 @@ Facilitate normal initialization processes.
     (declare (indent defun))
     `(mapc (lambda (package) (require package nil 'noerror))
            ,packages))
-#+END_SRC
-
-* Auto-compile configuration
-Set up [[https://github.com/tarsius/auto-compile][auto-compile mode]] to compile source files before loading iff
-source is newer than the presently compiled file. A good tradeoff
-with proper distributed version control.
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (setq load-prefer-newer t)
-  (require-package '(auto-compile))
-  (auto-compile-on-load-mode 1)
 #+END_SRC
 
 * Package configuration
