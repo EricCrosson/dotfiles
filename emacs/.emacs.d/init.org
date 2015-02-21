@@ -2794,7 +2794,8 @@ haven't had to look at it yet.
     ("a" beginning-of-line "beg-of-line")
     ("d" scroll-up "page up")
     ("u" scroll-down "page down")
-    ("q" kill-buffer))
+    ("q" read-only-mode "read-only")
+    ("/" kill-buffer "kill-buffer" :color blue))
 
   (defhydra hydra-window-adjustment (esc-mode-map "C-z")
     "window adjustment"
@@ -2813,6 +2814,7 @@ haven't had to look at it yet.
       ("n" esc/org-next-source-code-block "next")
       ("p" esc/org-prev-source-code-block "prev")))
 
+  ;; todo: move-text-page,slight-up
   (defhydra hydra-move-text (esc-mode-map "M-RET")
     "move text"
     ("j" move-text-down "down")
