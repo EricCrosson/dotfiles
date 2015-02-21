@@ -1,7 +1,7 @@
 ;;
 
 ;;;### (autoloads nil "boilerplate/boilerplate" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21735 60005 155740 732000))
+;;;;;;  (21735 60129 775747 148000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el
 
 (autoload 'esc/prog-mode-hook "boilerplate/boilerplate" "\
@@ -56,6 +56,11 @@ esc's code to \\[comint-mode-hook].
 
 (autoload 'esc/iedit-mode-hook "boilerplate/boilerplate" "\
 esc's hook to \\[iedit-mode-hook].
+
+\(fn)" nil nil)
+
+(autoload 'esc/org-mode-hook "boilerplate/boilerplate" "\
+
 
 \(fn)" nil nil)
 
@@ -450,7 +455,7 @@ Compile an .elc file for every .el file contained under
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/emacs+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el"
-;;;;;;  (21735 60004 932407 387000))
+;;;;;;  (21735 60129 632413 807000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el
 
 (autoload 'esc/unkillable-scratch-buffer "boilerplate/emacs+" "\
@@ -490,7 +495,7 @@ Completion is available for the keymap name.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/help+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el"
-;;;;;;  (21735 60003 939074 3000))
+;;;;;;  (21735 60128 539080 418000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el
 
 (autoload 'esc/insert-defun-at-point "boilerplate/help+" "\
@@ -558,7 +563,7 @@ See `mode-line-cleaner-alist' for more documentation.
 ;;;***
 
 ;;;### (autoloads nil "color-theme-stack" "../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el"
-;;;;;;  (21735 59481 829047 120000))
+;;;;;;  (21735 60859 702451 397000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el
 
 (autoload 'color-theme-push "color-theme-stack" "\

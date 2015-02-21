@@ -77,7 +77,7 @@ source is newer than the presently compiled file. A good tradeoff
 with proper distributed version control.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq load-prefer-newer t)
-  (require-package '(auto-compile))
+  (require 'auto-compile)
   (auto-compile-on-load-mode 1)
 #+END_SRC
 
@@ -935,7 +935,7 @@ Begin Mac OS configuration
 
 * Dired configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (require 'dired-details)
+  (require-package '(dired-details))
   (dired-details-install)
 
   ;; auto-dired-reload
@@ -1145,7 +1145,7 @@ My favorite mode. This was the reason I started using Emacs, didja know?
 #+NAME: org latex export syntax highlighting
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Include the latex-exporter
-  (require 'ox-latex nil 'noerror)
+  (require-package '(ox-latex))
   ;; Add minted to the defaults packages to include when exporting.
   (add-to-list 'org-latex-packages-alist '("" "minted"))
   ;; Tell the latex export to use the minted package for source
