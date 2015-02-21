@@ -690,7 +690,7 @@ Simplified version of backward search that supports multiple cursors.
 ;;;***
 
 ;;;### (autoloads nil "rtos/disaster-arm" "../../../../../.emacs.d/site-lisp/esc-lisp/rtos/disaster-arm.el"
-;;;;;;  (21731 51453 320025 84000))
+;;;;;;  (21735 15125 456763 333000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/rtos/disaster-arm.el
 
 (autoload 'disaster-arm "rtos/disaster-arm" "\
@@ -714,7 +714,7 @@ is used.
 ;;;***
 
 ;;;### (autoloads nil "rtos/rtos-dev-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/rtos/rtos-dev-mode.el"
-;;;;;;  (21736 15356 46816 140000))
+;;;;;;  (21736 18447 673641 986000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/rtos/rtos-dev-mode.el
 
 (autoload 'rtos-dev-mode "rtos/rtos-dev-mode" "\
@@ -722,6 +722,8 @@ A minor mode to augment the development of
 https://github.com/hershic/ee445m-labs.
 
 \(fn &optional ARG)" t nil)
+
+(defhydra rtos/hydra-gdb (rtos-dev-mode-map "M-e" :color red) "gdb" ("o" rtos/ocd-debugger "ocd -d") ("g" gdb "gdb") ("l" rtos/gdb-load "load") ("r" rtos/gdb-reset "reset") ("t" rtos/gdb-target "target") ("s" rtos/gdb-step "step") ("n" rtos/gdb-next "next") ("c" rtos/gdb-continue "continue"))
 
 ;;;***
 
