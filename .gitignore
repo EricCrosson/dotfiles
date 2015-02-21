@@ -37,3 +37,12 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el
 /emacs/.emacs.d/meta/places
 /emacs/.emacs.d/places
+/emacs/.emacs.d/site-lisp/esc-lisp/scroll-all-config.el
+/emacs/.emacs.d/site-lisp/esc-lisp/update-autoloads.el
+/emacs/.emacs.d/site-lisp/esc-lisp/big-fringe-mode.el
+/emacs/.emacs.d/site-lisp/esc-lisp/clean-mode-line.el
+/emacs/.emacs.d/site-lisp/esc-lisp/dired-config.el
+/emacs/.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode.el
+/emacs/.emacs.d/site-lisp/esc-lisp/ido-extras.el
+/emacs/.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el
+/emacs/.emacs.d/site-lisp/esc-lisp/rtos/rtos-dev-mode.el

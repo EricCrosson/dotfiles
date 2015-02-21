@@ -1,4 +1,7 @@
+;;; loaddefs.el --- automatically extracted autoloads
 ;;
+;;; Code:
+
 
 ;;;### (autoloads nil "boilerplate/boilerplate" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el"
 ;;;;;;  (21736 2513 429488 242000))
@@ -502,7 +505,7 @@ Copy the current buffer file name to the clipboard.
 ;;;***
 
 ;;;### (autoloads nil "browse-cliplink" "../../../../../.emacs.d/site-lisp/esc-lisp/browse-cliplink.el"
-;;;;;;  (21727 59419 637096 841000))
+;;;;;;  (21736 15161 560139 460000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/browse-cliplink.el
 
 (autoload 'browse-cliplink "browse-cliplink" "\
@@ -512,11 +515,11 @@ Copy the current buffer file name to the clipboard.
 
 ;;;***
 
-;;;### (autoloads nil "clear-mode-line/clean-mode-line" "../../../../../.emacs.d/site-lisp/esc-lisp/clear-mode-line/clean-mode-line.el"
-;;;;;;  (21725 33444 983599 545000))
-;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/clear-mode-line/clean-mode-line.el
+;;;### (autoloads nil "clean-mode-line" "../../../../../.emacs.d/site-lisp/esc-lisp/clean-mode-line.el"
+;;;;;;  (21736 15161 583472 794000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/clean-mode-line.el
 
-(autoload 'clean-mode-line "clear-mode-line/clean-mode-line" "\
+(autoload 'clean-mode-line "clean-mode-line" "\
 Clean the mode line by transforming symbols into
 custom-defined strings.
 
@@ -527,7 +530,7 @@ See `mode-line-cleaner-alist' for more documentation.
 ;;;***
 
 ;;;### (autoloads nil "color-theme-stack" "../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el"
-;;;;;;  (21736 10838 429916 874000))
+;;;;;;  (21736 15161 603472 795000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el
 
 (autoload 'color-theme-push "color-theme-stack" "\
@@ -542,88 +545,59 @@ Restore the previous theme in use.
 
 ;;;***
 
-;;;### (autoloads nil "colors/color-theme-stack" "../../../../.emacs.d/esc-lisp/colors/color-theme-stack.el"
-;;;;;;  (21724 64931 226454 333000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/colors/color-theme-stack.el
+;;;### (autoloads nil "dired-config" "../../../../../.emacs.d/site-lisp/esc-lisp/dired-config.el"
+;;;;;;  (21736 15161 813472 806000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/dired-config.el
 
-(autoload 'color-theme-push "colors/color-theme-stack" "\
-Switch to a theme, saving the old one.
-
-\(fn)" nil nil)
-
-(autoload 'color-theme-pop "colors/color-theme-stack" "\
-Restore the previous theme in use.
-
-\(fn)" nil nil)
-
-;;;***
-
-;;;### (autoloads nil "dired-config/dired-config" "../../../../../.emacs.d/site-lisp/esc-lisp/dired-config/dired-config.el"
-;;;;;;  (21726 19616 941308 484000))
-;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/dired-config/dired-config.el
-
-(autoload 'esc/dired-mode-hook "dired-config/dired-config" "\
+(autoload 'esc/dired-mode-hook "dired-config" "\
 esc's hook to \\[dired-mode-hook].
 
 \(fn)" nil nil)
 
-(autoload 'esc/dired-load-hook "dired-config/dired-config" "\
+(autoload 'esc/dired-load-hook "dired-config" "\
 esc's hook to \\[dired-load-hook].
 
 \(fn)" nil nil)
 
-(autoload 'esc/dired-load-hook-omit-files "dired-config/dired-config" "\
+(autoload 'esc/dired-load-hook-omit-files "dired-config" "\
 
 
 \(fn)" nil nil)
 
-(autoload 'esc/dired-back-to-top "dired-config/dired-config" "\
+(autoload 'esc/dired-back-to-top "dired-config" "\
 Goes to the first line in dired, not the top of the buffer.
 
 \(fn)" t nil)
 
-(autoload 'esc/dired-jump-to-bottom "dired-config/dired-config" "\
+(autoload 'esc/dired-jump-to-bottom "dired-config" "\
 Goes to the last line in dired, not the bottom of the buffer.
 
 \(fn)" t nil)
 
-(autoload 'esc/dired-find-file-single-mode "dired-config/dired-config" "\
+(autoload 'esc/dired-find-file-single-mode "dired-config" "\
 This defun will invoke `dired-find-file` and open the file(s) at point in `single-mode'.
 
 \(fn)" t nil)
 
-(autoload 'esc/dired-up-level-reuse-buffer "dired-config/dired-config" "\
+(autoload 'esc/dired-up-level-reuse-buffer "dired-config" "\
 This defun will go to the parent directory in dired while reusing the current buffer.
 
 \(fn)" t nil)
 
-(autoload 'esc/search-my-lisp-dir "dired-config/dired-config" "\
+(autoload 'esc/search-my-lisp-dir "dired-config" "\
 Open esc-lisp in `dired' for easy editing of configs.
 
 \(fn)" t nil)
 
-(autoload 'esc/dired-back-to-start-of-files "dired-config/dired-config" "\
+(autoload 'esc/dired-back-to-start-of-files "dired-config" "\
 
 
 \(fn)" t nil)
 
 ;;;***
 
-;;;### (autoloads (file-notify-handle-event) "emacs-wiki/filenotify"
-;;;;;;  "emacs-wiki/filenotify.el" (21421 36514 493444 365000))
-;;; Generated autoloads from emacs-wiki/filenotify.el
-
-(autoload 'file-notify-handle-event "emacs-wiki/filenotify" "\
-Handle file system monitoring event.
-If EVENT is a filewatch event, call its callback.
-Otherwise, signal a `file-notify-error'.
-
-\(fn EVENT)" t nil)
-
-;;;***
-
 ;;;### (autoloads nil "esc-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el"
-;;;;;;  (21736 10839 66583 574000))
+;;;;;;  (21736 15162 170139 491000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el
 
 (autoload 'esc-mode "esc-mode" "\
@@ -635,7 +609,7 @@ Toggle esc-keys mode.
 ;;;***
 
 ;;;### (autoloads nil "gntp" "../../../../../.emacs.d/site-lisp/esc-lisp/gntp.el"
-;;;;;;  (21729 24160 64656 197000))
+;;;;;;  (21736 15162 276806 164000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/gntp.el
 
 (autoload 'gntp-notify "gntp" "\
@@ -646,50 +620,32 @@ PORT defaults to `gntp-server-port'
 
 ;;;***
 
-;;;### (autoloads nil "hidden-mode-line-mode/hidden-mode-line-mode"
-;;;;;;  "../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode/hidden-mode-line-mode.el"
-;;;;;;  (21725 34156 213613 881000))
-;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode/hidden-mode-line-mode.el
+;;;### (autoloads nil "hidden-mode-line-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode.el"
+;;;;;;  (21736 15162 320139 499000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode.el
 
-(autoload 'hidden-mode-line-mode "hidden-mode-line-mode/hidden-mode-line-mode" "\
+(autoload 'hidden-mode-line-mode "hidden-mode-line-mode" "\
 Minor mode to hide the mode-line in the current buffer.
 
 \(fn &optional ARG)" t nil)
 
-(autoload 'mode-line-in-header "hidden-mode-line-mode/hidden-mode-line-mode" "\
+(autoload 'mode-line-in-header "hidden-mode-line-mode" "\
 
 
 \(fn)" t nil)
 
 ;;;***
 
-;;;### (autoloads nil "ido-config/ido-config" "../../../../.emacs.d/esc-lisp/ido-config/ido-config.el"
-;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/ido-config/ido-config.el
+;;;### (autoloads nil "ido-extras" "../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras.el"
+;;;;;;  (21736 15162 346806 167000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras.el
 
-(autoload 'ido-recentf-open "ido-config/ido-config" "\
-Use `ido-completing-read' to \\[find-file] a recent file
-
-\(fn)" t nil)
-
-(autoload 'ido-goto-symbol "ido-config/ido-config" "\
-Refresh imenu and jump to a function in the buffer using
-   ido. Functions are defined by the active minor mode.
-
-\(fn &optional SYMBOL-LIST)" t nil)
-
-;;;***
-
-;;;### (autoloads nil "ido-extras/ido-extras" "../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras/ido-extras.el"
-;;;;;;  (21724 64935 793120 736000))
-;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras/ido-extras.el
-
-(autoload 'ido-recentf-open "ido-extras/ido-extras" "\
+(autoload 'ido-recentf-open "ido-extras" "\
 Use `ido-completing-read' to \\[find-file] a recent file.
 
 \(fn)" t nil)
 
-(autoload 'ido-goto-symbol "ido-extras/ido-extras" "\
+(autoload 'ido-goto-symbol "ido-extras" "\
 Use `ido-completing-read` to query a function in the current
 buffer and jump to it. Functions are defined by the active minor
 mode.
@@ -698,72 +654,21 @@ mode.
 
 ;;;***
 
-;;;### (autoloads nil "lisp-infection/lisp-infection" "../../../../.emacs.d/esc-lisp/lisp-infection/lisp-infection.el"
-;;;;;;  (21705 16240 864682 627000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/lisp-infection/lisp-infection.el
+;;;### (autoloads nil "multiple-cursors-config" "../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el"
+;;;;;;  (21736 15162 400139 504000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el
 
-(autoload 'li/mark-current-defun "lisp-infection/lisp-infection" "\
-Mark the current defun.
-
-\(fn)" t nil)
-
-(autoload 'li/mark-current-sexp "lisp-infection/lisp-infection" "\
-Mark the current sexp.
-
-\(fn)" t nil)
-
-(autoload 'li/copy-sexp "lisp-infection/lisp-infection" "\
-Save a sexp to the kill ring without killing it.
-
-\(fn)" t nil)
-
-(autoload 'li/end-of-sexp "lisp-infection/lisp-infection" "\
-Return the end of the current sexp.
-
-\(fn)" nil nil)
-
-(autoload 'li/beginning-of-sexp "lisp-infection/lisp-infection" "\
-Return the beginning of the current sexp.
-
-\(fn)" nil nil)
-
-(autoload 'li/delete-sexp "lisp-infection/lisp-infection" "\
-Delete sexp without saving to the kill ring.
-
-\(fn)" t nil)
-
-(autoload 'li/eval-current-sexp "lisp-infection/lisp-infection" "\
-Evaluate the current sexp.
-
-\(fn)" t nil)
-
-(autoload 'li/indent-entire-defun "lisp-infection/lisp-infection" "\
-Re-indent the entire defun for ease of editing.
-
-\(fn)" t nil)
-
-(autoload 'li/eval-and-replace "lisp-infection/lisp-infection" "\
-Replace the preceding sexp with its value.
-
-\(fn)" t nil)
-
-;;;***
-
-;;;### (autoloads nil "multiple-cursors-config/mc-config" "../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config/mc-config.el"
-;;;;;;  (21726 19616 941308 484000))
-;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config/mc-config.el
-
-(autoload 'esc/multiple-cursors-mode-enabled-hook "multiple-cursors-config/mc-config" "\
+(autoload 'esc/multiple-cursors-mode-enabled-hook "multiple-cursors-config" "\
 esc's code to \\[multiple-cursors-mode-enabled-hook].
 
 \(fn)" nil nil)
 
-(autoload 'esc/multiple-cursors-mode-disabled-hook "multiple-cursors-config/mc-config" "\
+(autoload 'esc/multiple-cursors-mode-disabled-hook "multiple-cursors-config" "\
 esc's code to \\[multiple-cursors-mode-disabled-hook].
 
 \(fn)" nil nil)
 
-(autoload 'mc/search "multiple-cursors-config/mc-config" "\
+(autoload 'mc/search "multiple-cursors-config" "\
 Iterate through each active cursor and search for the designated string.
 SEARCH-COMMAND is the command to use for movement- either
 \\[search-forward] or \\[search-backward].
@@ -772,12 +677,12 @@ Helper defun for \\[mc/search-forward] and \\[mc/search-backward].
 
 \(fn SEARCH-COMMAND)" nil nil)
 
-(autoload 'mc/search-forward "multiple-cursors-config/mc-config" "\
+(autoload 'mc/search-forward "multiple-cursors-config" "\
 Simplified version of forward search that supports multiple cursors.
 
 \(fn)" t nil)
 
-(autoload 'mc/search-backward "multiple-cursors-config/mc-config" "\
+(autoload 'mc/search-backward "multiple-cursors-config" "\
 Simplified version of backward search that supports multiple cursors.
 
 \(fn)" t nil)
@@ -808,176 +713,46 @@ is used.
 
 ;;;***
 
-;;;### (autoloads nil "scroll-all-mode-config/scroll-all" "../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all.el"
-;;;;;;  (21724 64935 923120 729000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all.el
+;;;### (autoloads nil "rtos/rtos-dev-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/rtos/rtos-dev-mode.el"
+;;;;;;  (21736 15356 46816 140000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/rtos/rtos-dev-mode.el
 
-(autoload 'mwheel-scroll-all-function-all "scroll-all-mode-config/scroll-all" "\
+(autoload 'rtos-dev-mode "rtos/rtos-dev-mode" "\
+A minor mode to augment the development of
+https://github.com/hershic/ee445m-labs.
+
+\(fn &optional ARG)" t nil)
+
+;;;***
+
+;;;### (autoloads nil "scroll-all-config" "../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-config.el"
+;;;;;;  (21736 15162 423472 837000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-config.el
+
+(autoload 'mwheel-scroll-all-function-all "scroll-all-config" "\
 
 
 \(fn FUNC ARG)" nil nil)
 
-(autoload 'mwheel-scroll-all-scroll-up-all "scroll-all-mode-config/scroll-all" "\
+(autoload 'mwheel-scroll-all-scroll-up-all "scroll-all-config" "\
 
 
 \(fn &optional ARG)" nil nil)
 
-(autoload 'mwheel-scroll-all-scroll-down-all "scroll-all-mode-config/scroll-all" "\
-
-
-\(fn &optional ARG)" nil nil)
-
-;;;***
-
-;;;### (autoloads nil "scroll-all-mode-config/scroll-all-config"
-;;;;;;  "../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-mode-config/scroll-all-config.el"
-;;;;;;  (21724 64935 923120 729000))
-;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-mode-config/scroll-all-config.el
-
-(autoload 'mwheel-scroll-all-function-all "scroll-all-mode-config/scroll-all-config" "\
-
-
-\(fn FUNC ARG)" nil nil)
-
-(autoload 'mwheel-scroll-all-scroll-up-all "scroll-all-mode-config/scroll-all-config" "\
-
-
-\(fn &optional ARG)" nil nil)
-
-(autoload 'mwheel-scroll-all-scroll-down-all "scroll-all-mode-config/scroll-all-config" "\
+(autoload 'mwheel-scroll-all-scroll-down-all "scroll-all-config" "\
 
 
 \(fn &optional ARG)" nil nil)
 
 ;;;***
 
-;;;### (autoloads (single/single-mode-hook single/kill-current-buffer
-;;;;;;  single/iedit-mode single/read-only-mode single/undo single/query-replace
-;;;;;;  single/scroll-down single/scroll-up single/quit-single-mode
-;;;;;;  single-wrap-around-read-only-mode single-mode-enabled) "single-mode/single-mode"
-;;;;;;  "single-mode/single-mode.el" (21420 35608 792359 142000))
-;;; Generated autoloads from single-mode/single-mode.el
+;;;### (autoloads nil "update-autoloads" "../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads.el"
+;;;;;;  (21736 15162 600139 513000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads.el
 
-(autoload 'single-mode-enabled "single-mode/single-mode" "\
-A macro to determine if \\[single-mode] is currently enabled.
+(let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads" loads))))
 
-\(fn)" nil t)
-
-(autoload 'single-wrap-around-read-only-mode "single-mode/single-mode" "\
-Wrap a BLOCK around read-only mode.
-
-\(fn &rest BLOCK)" nil t)
-
-(autoload 'single/quit-single-mode "single-mode/single-mode" "\
-Exit \\[single-mode].
-
-\(fn)" t nil)
-
-(autoload 'single/scroll-up "single-mode/single-mode" "\
-Scroll up the page without moving point.
-
-The number of lines to scroll is determined by the variable
-`single-line-shift-amount'.
-
-ARG determines the number of times to scroll.
-
-This command can be prefixed.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'single/scroll-down "single-mode/single-mode" "\
-Scroll down the page without moving point.
-
-The number of lines to scroll is determined by the variable
-`single-line-shift-amount'.
-
-ARG determines the number of times to scroll.
-
-This command can be prefixed.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'single/query-replace "single-mode/single-mode" "\
-Invoke `query-replace' on the entire buffer.
-
-This means, starting from `beginning-of-buffer'.
-
-\(fn)" t nil)
-
-(autoload 'single/undo "single-mode/single-mode" "\
-Undo, circumnavigating the `read-only-mode'.
-
-\(fn)" t nil)
-
-(autoload 'single/read-only-mode "single-mode/single-mode" "\
-Toggle read-only mode.
-
-\(fn)" t nil)
-
-(autoload 'single/iedit-mode "single-mode/single-mode" "\
-Invokes `iedit-mode', circumnavigating `read-only-mode'.
-
-\(fn)" t nil)
-
-(autoload 'single/kill-current-buffer "single-mode/single-mode" "\
-Kill the current buffer.
-
-\(fn)" t nil)
-
-(autoload 'single/single-mode-hook "single-mode/single-mode" "\
-Hook for function `single-mode'.
-
-\(fn)" nil nil)
-
-;;;***
-
-
-;;;### (autoloads (tf/capture-command-loop tf/capture-command tf/backspace
-;;;;;;  tf/return tf/twinkle-fingers-quit tf/newline) "twinkle-fingers/twinkle-fingers"
-;;;;;;  "twinkle-fingers/twinkle-fingers.el" (21420 36357 369000
-;;;;;;  481000))
-;;; Generated autoloads from twinkle-fingers/twinkle-fingers.el
-
-(autoload 'tf/newline "twinkle-fingers/twinkle-fingers" "\
-RET for `twinkle-fingers'.
-
-\(fn)" t nil)
-
-(autoload 'tf/twinkle-fingers-quit "twinkle-fingers/twinkle-fingers" "\
-Quit `twinkle-fingers'.
-
-\(fn)" t nil)
-
-(autoload 'tf/return "twinkle-fingers/twinkle-fingers" "\
-
-
-\(fn)" t nil)
-
-(autoload 'tf/backspace "twinkle-fingers/twinkle-fingers" "\
-
-
-\(fn)" t nil)
-
-(autoload 'tf/capture-command "twinkle-fingers/twinkle-fingers" "\
-Return a nicely formatted string containing the last executed
-command.
-
-\(fn)" nil nil)
-
-(autoload 'tf/capture-command-loop "twinkle-fingers/twinkle-fingers" "\
-Loop to capture and insert commands for `twinkle-fingers'.
-
-\(fn)" t nil)
-
-;;;***
-
-;;;### (autoloads nil "update-autoloads/update-autoloads" "../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads/update-autoloads.el"
-;;;;;;  (21735 37385 504576 108000))
-;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads/update-autoloads.el
-
-(let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads/update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads/update-autoloads" loads))))
-
-(autoload 'list-files-in-subtree-matching-regexp-recursive "update-autoloads/update-autoloads" "\
+(autoload 'list-files-in-subtree-matching-regexp-recursive "update-autoloads" "\
 List the `.el' files in DIRECTORY and in its sub-directories.
 
 If REGEXP is non-nil, compile a list of files matching REGEXP
@@ -985,14 +760,31 @@ instead of `.el'.
 
 \(fn DIRECTORY &optional REGEXP)" t nil)
 
-(autoload 'get-project-loaddefs-path "update-autoloads/update-autoloads" "\
+(autoload 'get-project-loaddefs-path "update-autoloads" "\
 Return the path to the closest loaddefs.el file relative to BASE.
 
 Only query this defun with BASE as a subdir of ~/.emacs.d/esc-lisp.
 
 \(fn BASE)" t nil)
 
-(autoload 'update-esc-lisp-autoloads "update-autoloads/update-autoloads" "\
+(let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads" loads))))
+
+(autoload 'list-files-in-subtree-matching-regexp-recursive "update-autoloads" "\
+List the `.el' files in DIRECTORY and in its sub-directories.
+
+If REGEXP is non-nil, compile a list of files matching REGEXP
+instead of `.el'.
+
+\(fn DIRECTORY &optional REGEXP)" t nil)
+
+(autoload 'get-project-loaddefs-path "update-autoloads" "\
+Return the path to the closest loaddefs.el file relative to BASE.
+
+Only query this defun with BASE as a subdir of ~/.emacs.d/site-lisp/esc-lisp.
+
+\(fn BASE)" t nil)
+
+(autoload 'update-esc-lisp-autoloads "update-autoloads" "\
 Update autoload definitions for Lisp files in the directories DIRS.
 In an interactive call, you must give one argument, the name of a
 single directory.  In a call from Lisp, you can supply multiple
@@ -1006,3 +798,12 @@ Note: this docstring was copied from \\[update-directory-autoloads].
 \(fn &optional BASE)" t nil)
 
 ;;;***
+
+(provide 'loaddefs)
+;; Local Variables:
+;; version-control: never
+;; no-byte-compile: t
+;; no-update-autoloads: t
+;; coding: utf-8
+;; End:
+;;; loaddefs.el ends here

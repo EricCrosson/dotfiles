@@ -2,7 +2,8 @@
 #+email: esc@ericcrosson.com
 #+todo: TODO(t) VERIFY(v) IN-PROGRESS(p) PRINT(r) | OPTIONAL(o) HIATUS(h) DONE(d) DISCARDED(c)
 #+startup: content
-* Introduction
+* init.el
+** Introduction
 #+BEGIN_SRC emacs-lisp :tangle yes
     ;;; .emacs.el
 
@@ -32,7 +33,7 @@
     ;;; Code:
 #+END_SRC
 
-* Load path
+** Load path
 This is a neat trick I found to take away 99.9% of the headache when
 dealing with Emacs' load path. Assuming the user has placed every
 file, script and dependency in his or her =~/.emacs.d/= directory,
@@ -65,7 +66,7 @@ need to keep the list updated, just load all subdirectories and go.
     (normal-top-level-add-subdirs-to-load-path)) ;loading
 
   (autoload 'list-files-in-subtree-matching-regexp-recursive
-    (concat esc-lisp-path "update-autoloads/update-autoloads.el"))
+    (concat esc-lisp-path "update-autoloads.el"))
   ;; Load all project's loaddefs.el (automatically managed)
   (mapc (lambda (loaddef) (load-file loaddef))
         (list-files-in-subtree-matching-regexp-recursive
@@ -81,7 +82,7 @@ with proper distributed version control.
   (auto-compile-on-load-mode 1)
 #+END_SRC
 
-* UI
+** UI
 Now that the legal stuff is out of the way, let's get out the rat poison.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (mapc (lambda (mode) (when (fboundp mode) (funcall mode -1)))
@@ -90,6 +91,7 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
           scroll-bar-mode))
 #+END_SRC
 
+TODO: load this with color-stack
 Fire up the mood lighting
 #+BEGIN_SRC emacs-lisp :tangle yes
   (load-theme 'wombat)
@@ -100,7 +102,7 @@ Fire up the mood lighting
           '((highlight "#444")
             (region    "#666")))
 #+END_SRC
-* Free variables
+** Free variables
 Free as in free of compiler warnings.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (eval-when-compile
@@ -152,7 +154,7 @@ Free as in free of compiler warnings.
     (defvar auto-revert-verbose))
 #+END_SRC
 
-* Macros
+** Macros
 I took the macro below from [[http://milkbox.net/note/single-file-master-emacs-configuration/][milkypostman]]. His article is really worth
 a read; stop what you're doing and go take a look if you haven't.
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -190,7 +192,7 @@ Facilitate normal initialization processes.
            ,packages))
 #+END_SRC
 
-* Package configuration
+** Package configuration
 #+NAME: package-manager-initialization
 #+BEGIN_SRC emacs-lisp :tangle yes
   (when (require 'package nil 'noerror)
@@ -203,14 +205,14 @@ Facilitate normal initialization processes.
     (package-initialize))
 #+END_SRC
 
-* User metadata
+** User metadata
 Hello, My Name Is
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq user-full-name "Eric Crosson"
         user-mail-address "esc@ericcrosson.com")
 #+END_SRC
 
-* Behavioral modifications
+** Behavioral modifications
 #+NAME: behavioral-modifications
 #+BEGIN_SRC emacs-lisp :tangle yes
   (put 'overwrite-mode 'disabled t)       ;There shall be no 'insert'
@@ -291,15 +293,15 @@ Keep a history of =M-x= across sessions.
           regexp-search-ring))
 #+END_SRC
 
-* Aliases
+** Aliases
 I did not grow up in an era where this is a straightforward mnemonic.
 #+NAME: alias fmakunbound => undefun
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defalias 'undefun 'fmakunbound)
 #+END_SRC
 
-* Advice
-** org advice
+** Advice
+*** org advice
 Shrink the agenda buffer as small as we can and keep it that way
 #+NAME: Shrink agenda buffer
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -315,7 +317,7 @@ Shrink the agenda buffer as small as we can and keep it that way
     (shrink-window-if-larger-than-buffer))
 #+END_SRC
 
-** advising built-in commands
+*** advising built-in commands
 The following macro is to prevent the user from manually having to
 create directories (=M-x make-directory RET RET=) after using
 =find-file= on a nonexistent file.
@@ -339,7 +341,7 @@ create directories (=M-x make-directory RET RET=) after using
       ad-do-it))
 #+END_SRC
 
-*** comment-dwim
+**** comment-dwim
 I wrote a post about my path to this advice somewhere. I'll find a link when it's stable.
 #+NAME: One Commenter to Rule Them All (TM)
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -377,7 +379,7 @@ Prefix '0' to comment-dwim to kill comments entirely.
 TODO: write about how cool this is! (not related to above comment
 about a post)
 
-** undo tree advice
+*** undo tree advice
 Make zipped files obvious.
 #+BEGIN_SRC emacs-lisp :tangle no
   (after 'undo-tree
@@ -386,7 +388,7 @@ Make zipped files obvious.
     (setq ad-return-value (concat ad-return-value ".gz"))))
 #+END_SRC
 
-* Package initialization
+** Package initialization
 #+NAME: require-packages
 #+BEGIN_SRC emacs-lisp :tangle yes
   (require-package
@@ -413,8 +415,8 @@ Make zipped files obvious.
 
 [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee-d77b-45da-ac5c-b9bbb562.gif][Power⚡Line]]
 
-* Configuration
-** Lua mode config
+** Configuration
+*** Lua mode config
 Lua: necessary for Awesome WM.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'lua-mode-autoloads
@@ -422,7 +424,7 @@ Lua: necessary for Awesome WM.
     (add-to-list 'interpreter-mode-alist '("lua" . lua-mode)))
 #+END_SRC
 
-** Undo tree config
+*** Undo tree config
 Thanks to [[http://whattheemacsd.com/my-misc.el-02.html][Magnar]] for the advice.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defadvice undo-tree-undo (around keep-region activate)
@@ -437,18 +439,18 @@ Thanks to [[http://whattheemacsd.com/my-misc.el-02.html][Magnar]] for the advice
       ad-do-it))
 #+END_SRC
 
-** Spray config
+*** Spray config
 This mode is based on openspritz, a speedreading tutor.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (autoload-from-package "spray" '(spray-mode))
 #+END_SRC
 
-** Enhanced ruby mode config
+*** Enhanced ruby mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
 #+END_SRC
 
-** ibuffer config
+*** ibuffer config
 Modify ibuffer view to include human readable size information.
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Use human readable Size column instead of original one
@@ -469,7 +471,7 @@ Modify ibuffer view to include human readable size information.
                   filename-and-process))))
 #+END_SRC
 
-*** elpa packages
+**** elpa packages
 ibuffer-vc is great; make it automatic.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'ibuffer-vc-autoloads
@@ -493,7 +495,7 @@ Mabye I'll include this one day, for now it can live in hibernation.
                   filename-and-process))))
 #+END_SRC
 
-** Minimap config
+*** Minimap config
   #+BEGIN_SRC emacs-lisp :tangle yes
   (autoload-from-package "minimap"
     '(minimap-kill
@@ -501,18 +503,18 @@ Mabye I'll include this one day, for now it can live in hibernation.
       minimap-mode))
 #+END_SRC
 
-** Tea-time config
+*** Tea-time config
 #+BEGIN_SRC emacs-lisp :tangle no
   (autoload-from-package "tea-time" '(tea-time))
 #+END_SRC
 
-** Scroll all mode config
+*** Scroll all mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq mwheel-scroll-up-function   'mwheel-scroll-all-scroll-up-all
         mwheel-scroll-down-function 'mwheel-scroll-all-scroll-down-all)
 #+END_SRC
 
-** Very Large File mode config
+*** Very Large File mode config
 Configure options for transparent handling of very large files.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'vlf-integrate
@@ -520,26 +522,26 @@ Configure options for transparent handling of very large files.
     (custom-set-variables
      '(vlf-application 'dont-ask)))
 #+END_SRC
-** Conf mode config
+*** Conf mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
     (add-to-list
      'auto-mode-alist
      '("\\.\\(screenrc\\)\\'" . conf-mode))
 #+END_SRC
-** Web mode config
+*** Web mode config
 TODO: disable autopair-mode for web-mode
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-to-list 'auto-mode-alist '("\\.jsp$" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
 #+END_SRC
 
-** C config
+*** C config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq ff-search-directories '("." "../inc" "../src"))
   (add-to-list 'auto-mode-alist '("\\.tcc$" . c++-mode))
   (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ ")
 #+END_SRC
-** Ruby mode config
+*** Ruby mode config
 Verbatim from the [[http://www.emacswiki.org/emacs/RubyMode][emacswiki]].
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
@@ -551,11 +553,11 @@ Verbatim from the [[http://www.emacswiki.org/emacs/RubyMode][emacswiki]].
   (add-hook 'enh-ruby-mode-hook 'esc/enh-ruby-mode-hook)
 #+END_SRC
 
-** FIC-mode config
+*** FIC-mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'prog-mode-hook 'turn-on-fic-mode)
 #+END_SRC
-** Saveplace config
+*** Saveplace config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq save-place-file (expand-file-name "meta/places" user-emacs-directory))
   (after 'saveplace
@@ -563,26 +565,26 @@ Verbatim from the [[http://www.emacswiki.org/emacs/RubyMode][emacswiki]].
       (setq-default save-place t))
 #+END_SRC
 
-** Xorg yank config
+*** Xorg yank config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq x-select-enable-clipboard t       ;global clipboard
         mouse-yank-at-point t)
 #+END_SRC
-** Compilation config
+*** Compilation config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq compile-command "make -k -j32"
           compilation-ask-about-save nil
           compilation-save-buffers-predicate '(lambda () nil)) ;never ask to save
 #+END_SRC
 
-** Byte compilation config
+*** Byte compilation config
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Diminish compiler warnings
   (setq byte-compile-warnings '(not interactive-only free-vars))
   (add-hook 'after-save-hook 'esc/auto-byte-recompile)
 #+END_SRC
 
-** Recentf config
+*** Recentf config
 #+NAME: recentf configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq recentf-auto-cleanup 'never)  ;must be set before recentf loaded
@@ -592,7 +594,7 @@ Verbatim from the [[http://www.emacswiki.org/emacs/RubyMode][emacswiki]].
           recentf-keep '(file-remote-p file-readable-p)))
 #+END_SRC
 
-** Tea-time config
+*** Tea-time config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'notifications
     (defun esc/notify-tea-steeped ()
@@ -602,7 +604,7 @@ Verbatim from the [[http://www.emacswiki.org/emacs/RubyMode][emacswiki]].
                             :sound-name "alarm-clock-elapsed"))
     (add-hook 'tea-time-notification-hook 'esc/notify-tea-steeped))
 #+END_SRC
-** LaTeX config
+*** LaTeX config
 Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-latex-export.html][orgmode.com]].
 #+NAME: LaTeX configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -627,20 +629,20 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
   ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 #+END_SRC
 
-** Flyspell mode config
+*** Flyspell mode config
 #+NAME: Flyspell mode configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'flyspell-mode
     (setq flyspell-issue-message-flag nil))
 #+END_SRC
 
-** Doc view mode config
+*** Doc view mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'doc-view-mode
     (setq doc-view-continuous t))
 #+END_SRC
 
-** Auto-complete mode config
+*** Auto-complete mode config
 #+NAME: auto-complete mode
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'auto-complete-mode
@@ -649,7 +651,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
                  "~/.emacs.d/auto-complete/ac-dict"))
 #+END_SRC
 
-** Abbrev mode config
+*** Abbrev mode config
 #+NAME: abbrev-mode configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'abbrev-mode
@@ -659,19 +661,19 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
         (quietly-read-abbrev-file)))
 #+END_SRC
 
-** Idle highlight config
+*** Idle highlight config
 #+NAME: idle highlight configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'idle-highlight
     (setq-default idle-highlight-idle-time 10.0))
 #+END_SRC
-** Uniquify config
+*** Uniquify config
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; needs to be set before uniquify is loaded
   (setq uniquify-separator ":"
         uniquify-buffer-name-style 'post-forward)
 #+END_SRC
-** Ido config
+*** Ido config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'ido
     (setq ido-everywhere t                             ;always Ido
@@ -684,7 +686,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
       ido-goto-symbol))
 #+END_SRC
 
-** Git gutter+ config
+*** Git gutter+ config
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;(global-git-gutter+-mode t)
   (after 'git-gutter+
@@ -700,18 +702,18 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
     (define-key git-gutter+-mode-map (kbd "C-x C") 'git-gutter+-stage-and-commit))
 #+END_SRC
 
-** Multiple cursors config
+*** Multiple cursors config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'multiple-cursors-autoloads
     (setq mc/list-file "~/.emacs.d/meta/.mc-lists.el"))
 #+END_SRC
-** Ace config
+*** Ace config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'ace-jump-mode (ace-jump-mode-enable-mark-sync))
   (after 'ace-window (setq aw-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i)))
 #+END_SRC
 
-** Which func config
+*** Which func config
 #+NAME: which-func configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'which-func
@@ -725,13 +727,13 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
             enh-ruby-mode)))
 #+END_SRC
 
-** Midnight mode config
+*** Midnight mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'midnight                        ;clean stale buffers
     (midnight-delay-set 'midnight-delay "5:00am"))
     #+END_SRC
 
-** Keyfreq mode config
+*** Keyfreq mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'keyfreq                               ;let's take some stats
     (keyfreq-autosave-mode 1)
@@ -739,7 +741,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
     (setq keyfreq-file "~/.emacs.d/meta/keyfreq"))
 #+END_SRC
 
-** Browse kill ring config
+*** Browse kill ring config
 #+NAME: browse-kill-ring configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq kill-ring-max 80)
@@ -747,22 +749,22 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
     (browse-kill-ring-default-keybindings))
 #+END_SRC
 
-** Clipmon config
+*** Clipmon config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defvar clipmon--autoinsert " clipmon--autoinserted-this")
 #+END_SRC
-** Mouse avoidance config
+*** Mouse avoidance config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (mouse-avoidance-mode 'exile)
 #+END_SRC
 
-** Bitly config
+*** Bitly config
 #+NAME: bitly oauth token
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'bitly
     (setq bitly-access-token "b4a5cd4e51df442ab97012cfc2764c599d6eabf8"))
 #+END_SRC
-** Paradox config
+*** Paradox config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq paradox-github-token "37204ef66b6566274616d130ec61a0cd4f98e066")
 #+END_SRC
@@ -779,7 +781,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
       (autoload-from-package "auto-complete" '(global-auto-complete-mode)) ;autocomplete syntax
     #+END_SRC
 
-* Hooks
+** Hooks
 Attach =esc-mode= hooks
 #+BEGIN_SRC emacs-lisp :tangle yes
   (mapc (lambda (hook)
@@ -803,44 +805,44 @@ Attach =esc-mode= hooks
           multiple-cursors-mode-disabled-hook))
 #+END_SRC
 
-** Text mode hook
+*** Text mode hook
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
 #+END_SRC
-** Find-file hook
+*** Find-file hook
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'find-file-hook 'esc/remove-dos-eol)
 #+END_SRC
-** Lexbind mode
+*** Lexbind mode
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'lexbind-mode
     (add-hook 'emacs-lisp-mode-hook 'lexbind-mode))
 #+END_SRC
 
-** Eshell hook
+*** Eshell hook
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'eshell-named-command-hook 'esc/eshell-exec-perl)
 #+END_SRC
 
-** Save hooks
+*** Save hooks
 Handy little hooks to nudge new files in the right direction.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 #+END_SRC
 
-** Compilation buffer hook
+*** Compilation buffer hook
 #+NAME: Burying the Compilation buffer if successful
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'compilation-finish-functions
             'esc/bury-compilation-buffer-if-successful)
   (add-to-list 'same-window-buffer-names "*compilation*")
 #+END_SRC
-** Haskell mode hook
+*** Haskell mode hook
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'haskell-mode-hook 'haskell-indent-mode)
 #+END_SRC
-** Pretty lambdada mode hook
+*** Pretty lambdada mode hook
 #+BEGIN_SRC emacs-lisp :tangle yes
   (mapc (lambda (prettify-this-mode)
           (add-hook prettify-this-mode 'pretty-lambda))
@@ -849,20 +851,20 @@ Handy little hooks to nudge new files in the right direction.
           enh-ruby-mode-hook
           ruby-mode-hook))
 #+END_SRC
-** Change major mode hook
+*** Change major mode hook
 Take this opportunity to refresh the mode line. Inspiration from
 [[http://www.masteringemacs.org/article/hiding-replacing-modeline-strings][Hiding and replacing modeline strings with clean-mode-line - Mastering
 Emacs]].
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'after-change-major-mode-hook 'clean-mode-line)
 #+END_SRC
-** Kill buffer hook
+*** Kill buffer hook
 [[http://emacswiki.org/emacs/RecreateScratchBuffer][EmacsWiki: Recreate Scratch Buffer]]
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'kill-buffer-query-functions 'esc/unkillable-scratch-buffer)
 #+END_SRC
 
-** Kill emacs hook
+*** Kill emacs hook
 Summon the magical cookies.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'kill-emacs-hook 'update-esc-lisp-autoloads)
@@ -873,7 +875,7 @@ Override the kill function.
   (fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
 #+END_SRC
 
-* OS configuration
+** OS configuration
 Operating system-specific configurations take place here, within this
 massive =cond=.
 #+NAME: Operating System specific configurations
@@ -922,7 +924,7 @@ Begin Mac OS configuration
             (setq ns-function-modifier 'hyper))))
 #+END_SRC
 
-* Dired configuration
+** Dired configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (require-package '(dired-details))
   (dired-details-install)
@@ -938,7 +940,7 @@ Begin Mac OS configuration
                      (revert-buffer)))))
 #+END_SRC
 
-** Wdired
+*** Wdired
 #+BEGIN_SRC emacs-lisp :tangle yes
   (eval-after-load "wdired"
     '(progn
@@ -949,30 +951,8 @@ Begin Mac OS configuration
          (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)))
 #+END_SRC
 
-* Colors
-- [ ] TODO: load this with color-stack
-Initialize the color-theme-stack
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defvar color-theme-stack nil "Stack of color themes.")
-#+END_SRC
-
-Lay the color-theme-stack api
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/color-theme-stack.el
-  ;;;###autoload
-  (defun color-theme-push ()
-    "Switch to a theme, saving the old one."
-    (push (color-theme-make-snapshot) color-theme-stack)
-    (message "Color theme pushed"))
-
-  ;;;###autoload
-  (defun color-theme-pop ()
-    "Restore the previous theme in use."
-    (funcall (pop color-theme-stack))
-    (message "Color theme popped"))
-#+END_SRC
-
-* Organize mode configuration
-** org advice
+** Organize mode configuration
+*** org advice
 [[http://emacs.stackexchange.com/a/9347][org mode - How does one use flyspell in org buffers without flyspell
 triggeri...]]
 
@@ -996,7 +976,7 @@ As of <2015-02-18 Wed> this advice did not work for me.
       (setq ad-return-value rlt)))
 #+END_SRC
 
-** org config
+*** org config
 My favorite mode. This was the reason I started using Emacs, didja know?
 #+NAME: org mode configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1026,7 +1006,7 @@ My favorite mode. This was the reason I started using Emacs, didja know?
 
 #+END_SRC
 
-** org babel
+*** org babel
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'org-mode-hook
             (lambda ()
@@ -1147,7 +1127,7 @@ My favorite mode. This was the reason I started using Emacs, didja know?
         '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 #+END_SRC
 
-** org beamer
+*** org beamer
 Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-mode-and.html][emacs-fu]]!
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; allow for export=>beamer by placing
@@ -1204,7 +1184,7 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
        ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
 #+END_SRC
-** org capture
+*** org capture
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq org-default-notes-file (concat org-directory "/capture.org"))
   (after 'org
@@ -1235,7 +1215,7 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
            "* %?\n")))
 #+END_SRC
 
-*** org refile
+**** org refile
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq ;; Work refile locations
    esc-refile-targets-centtech
@@ -1255,17 +1235,1107 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
                         (org-agenda-files            :maxlevel . 4)))
 #+END_SRC
 
-* Personal key-binding mode
-** summary
+** Fin
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (message "All done, %s%s" (user-login-name) ".")
+  ;;; .emacs.el ends here
+#+END_SRC
+* esc-lisp
+** big-fringe-mode
+Thanks to [[http://bzg.fr/emacs-strip-tease.html][#Emacs, naked]].
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/big-fringe-mode.el
+  (defvar big-fringe-mode nil "State of \\[big-fringe-mode].")
+
+  ;;:###autoload
+  (define-minor-mode big-fringe-mode
+    "Minor mode to use big fringe in the current buffer."
+    :init-value nil
+    :global t
+    :variable big-fringe-mode
+    :group 'editing-basics
+    (if (not big-fringe-mode)
+        (set-fringe-style nil)
+      (set-fringe-mode
+       (/ (- (frame-pixel-width)
+             (* 100 (frame-char-width)))
+          2))))
+
+  (provide 'big-fringe-mode)
+#+END_SRC
+** browse-cliplink
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/browse-cliplink.el
+  ;;; browse-cliplink.el --- invoke browse-web at the url in your clipboard
+
+  ;;; Commentary:
+  ;;
+
+  ;;; Code:
+
+  ;;;###autoload
+  (defun browse-cliplink ()
+    "\\[browse-web] at the url in your clipboard."
+    (interactive)
+    (let ((url (substring-no-properties (current-kill 0))))
+      (browse-web url)))
+
+  (provide 'browse-cliplink)
+
+  ;;; browse-cliplink.el ends here
+#+END_SRC
+** clear-mode-line
+[[http://www.masteringemacs.org/article/hiding-replacing-modeline-strings][Hiding and replacing modeline strings with clean-mode-line - Mastering
+Emacs]]
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/clean-mode-line.el
+  (defvar mode-line-cleaner-alist
+    `(;; Major modes
+      (enh-ruby-mode . "enh-Rb")
+      (ruby-mode   . "Rb")
+      (python-mode . "Py")
+      (lisp-interaction-mode . "λ")
+      (emacs-lisp-mode . "eλ")
+      (lisp-mode . "λ"))
+    "Alist for `clean-mode-line'.
+
+  When adding a new element to the alist, keep in mind that you
+  must pass the correct minor/major mode symbol and a string you
+  want to use in the modeline *in lieu of* the original.")
+
+  ;;;###autoload
+  (defun clean-mode-line ()
+    "Clean the mode line by transforming symbols into
+  custom-defined strings.
+
+  See `mode-line-cleaner-alist' for more documentation."
+    (interactive)
+    (loop for cleaner in mode-line-cleaner-alist
+          do (let* ((mode (car cleaner))
+                   (mode-str (cdr cleaner))
+                   (old-mode-str (cdr (assq mode minor-mode-alist))))
+               (when old-mode-str
+                   (setcar old-mode-str mode-str))
+                 ;; major mode
+               (when (eq mode major-mode)
+                 (setq mode-name mode-str)))))
+#+END_SRC
+
+** color-theme-stack
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/color-theme-stack.el
+  (defvar color-theme-stack nil "Stack of color themes.")
+
+  ;;;###autoload
+  (defun color-theme-push ()
+    "Switch to a theme, saving the old one."
+    (push (color-theme-make-snapshot) color-theme-stack)
+    (message "Color theme pushed"))
+
+  ;;;###autoload
+  (defun color-theme-pop ()
+    "Restore the previous theme in use."
+    (funcall (pop color-theme-stack))
+    (message "Color theme popped"))
+
+  (provide 'color-theme-stack)
+#+END_SRC
+
+** cygwin
+*** readme
+#+BEGIN_SRC org :tangle site-lisp/esc-lisp/cygwin/README.org
+  This dir contains definitions that make breathing in a Microsoft
+  environment less of a disaster.
+
+  Less of. Nobody can paddle up shit creek without a shit paddle and not
+  get hosed with at least a [[https://s-media-cache-ak0.pinimg.com/236x/98/8b/33/988b33667f50dd8ac7b30705fd50be4f.jpg][little bit of shit]].
+#+END_SRC
+*** w32-symlinks
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/cygwin/w32-symlinks.el
+  ;;; w32-symlinks.el --- MS Windows symbolic link (shortcut) support
+
+  ;; Copyright (C) 2002, 2003 Francis J. Wright, 2005 Lars Hansen
+
+  ;; Author: Francis J. Wright <F.J.Wright at qmul.ac.uk>
+  ;; Last-Updated: 22-11-2005 18:00 UTC
+  ;; By: Lars Hansen <larsh at soem dot dk>
+  ;; URL: http://www.emacswiki.org/emacs/w32-symlinks.el
+  ;; Keywords: convenience, files, unix
+
+  ;; This file is not part of GNU Emacs.
+
+  ;; w32-symlinks is free software; you can redistribute it and/or modify
+  ;; it under the terms of the GNU General Public License as published by
+  ;; the Free Software Foundation; either version 2, or (at your option)
+  ;; any later version.
+
+  ;; w32-symlinks is distributed in the hope that it will be useful,
+  ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ;; GNU General Public License for more details.
+
+  ;; You should have received a copy of the GNU General Public License
+  ;; along with GNU Emacs; see the file COPYING.  If not, write to the
+  ;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  ;; Boston, MA 02110-1301, USA.
+
+  ;;; Commentary:
+
+  ;; This file is intended to be used with NTEmacs 21, i.e. GNU Emacs 21
+  ;; compiled as a native Microsoft Windows application and running on
+  ;; Windows.  It should cause no harm on other platforms and might be
+  ;; useful when accessing a Windows file system from another OS, but I
+  ;; have not tested such use.  It provides support for symbolic links
+  ;; on Microsoft Windows platforms by allowing Emacs to handle Windows
+  ;; shortcut files transparently as symbolic links in the same way that
+  ;; Windows itself does, by making .lnk files names "magic".
+
+  ;; It contains functions to parse Windows .lnk "shortcut" (and also
+  ;; obsolete Cygwin-style "symlink") files, entirely in Lisp.  It allows
+  ;; `dired' to follow symbolic links when using either ls-lisp (the
+  ;; default) or an external Cygwin ls program.  When run on Windows, it
+  ;; also implements the missing `dired-do-symlink' command to make
+  ;; symbolic links.
+
+  ;; INSTALLATION ======================================================
+
+  ;; Put this file (w32-symlinks.el) somewhere in your load-path and
+  ;; byte-compile it.  Then choose one of the following options to load
+  ;; w32-symlinks.  Note that, by default, w32-symlinks supports dired
+  ;; only; see option 3 below.
+
+  ;; 1. To provide symlink support for dired only, using the STANDARD
+  ;;    preloaded version of the NTEmacs 21 or later ls-lisp library,
+  ;;    put this in your .emacs:
+
+  ;;    (add-hook 'dired-load-hook
+  ;;              (lambda () (require 'w32-symlinks)))
+
+  ;; 2. To provide symlink support for dired only, using a version of
+  ;;    GNU Emacs other than NTEmacs, or using the latest version of the
+  ;;    ls-lisp library from my web site (which must first be installed
+  ;;    as per its instructions), put this in your .emacs:
+
+  ;;    (add-hook 'dired-load-hook
+  ;;              (lambda ()
+  ;;               (load "ls-lisp")
+  ;;               (require 'w32-symlinks)))
+
+  ;; 3. To provide symlink support for GNU Emacs 21 in general
+  ;;    (including dired), put this in your .emacs:
+
+  ;;    (require 'w32-symlinks)
+
+  ;;    Also execute both the above sexp (by putting point at the end of
+  ;;    the sexp and pressing C-x C-e, which runs the command
+  ;;    eval-last-sexp) and the following sexp
+
+  ;;    (customize-option 'w32-symlinks-handle-shortcuts)
+
+  ;;    Turn the option on and save the setting for future sessions.
+
+  ;;; History:
+
+  ;; Originally written in April 2000 as part of an enhanced version of
+  ;; ls-lisp for Emacs 21, but separated and not distributed with Emacs.
+  ;; The "magic" file name handler code was added in September 2002.
+
+  ;; Changes by Lars Hansen <larsh at soem dot dk> on 2005-11-22 to
+  ;; file marked "Time-stamp: <04 May 2003>" found on
+  ;; http://centaur.maths.qmw.ac.uk/Emacs/:
+
+  ;; 1. Use `w32-symlinks-operate-on-target' as handler for `file-regular-p'.
+  ;; 2. Add handler for `file-symlink-p'.
+  ;; 3. Add handler for `file-attributes' that updates file-modes.
+  ;; 4. Add handler for `directory-files-and-attributes'.
+  ;; 5. Rename `w32-symlinks-parse-symlink' from `ls-lisp-parse-symlink'.
+  ;; 6. Return value from `file-symlink-p' in advice `file-symlink-p-advice'.
+
+  ;;; Code:
+
+  (defgroup w32-symlinks nil
+    "Handling of Windows symbolic links (both Microsoft and Cygwin)."
+    :group 'dired
+    :group 'ls-lisp)
+
+  (defcustom w32-symlinks-dired-support '(parse-shortcuts)
+    "*A list of Windows symbolic link types that `dired' should support.
+  It should contain none or more of the following symbols:
+     parse-shortcuts, parse-old-symlinks, make-old-symlinks.
+
+  They indicate respectively standard Microsoft Windows shortcut (.lnk)
+  and obsolete Cygwin-style symlink files.  Current versions of Cygwin
+  use standard .lnk files by default, so the default is to include only
+  the option parse-shortcuts.
+
+  Parsing obsolete symlink files is slow because NTEmacs cannot access
+  the system attribute, so all files must be checked.  Include the
+  option parse-old-symlinks only if you use either obsolete symlinks
+  with Cygwin or the `dired-do-symlink' command without WSH or Cygwin.
+
+  The option make-old-symlinks affects only the `dired-do-symlink'
+  command\; include it only if either your ln command makes obsolete
+  Cygwin-style symlinks or you do not have an ln command.  It is used
+  only to ensure that `dired-do-symlink' updates the buffer correctly.
+
+  NB: Support for Windows shortcuts outside `dired' is controlled by
+  `w32-symlinks-handle-shortcuts'.
+
+  ----------------------------------------------------------------------
+
+  The following is copied from \"The Cygwin FAQ\", available in a Cygwin
+  installation in the directory /usr/doc/cygwin-doc-1.1 or on the web at
+  http://cygwin.com/faq/ under the following section heading:
+
+  How do symbolic links work?
+
+  Cygwin knows of two ways to create symlinks.
+
+  The old method is the only valid one up to but not including version
+  1.3.0.  If it's enabled (from 1.3.0 on by setting `nowinsymlinks' in
+  the environment variable CYGWIN) Cygwin generates link files with a
+  magic header.  When you open a file or directory that is a link to
+  somewhere else, it opens the file or directory listed in the magic
+  header.  Because we don't want to have to open every referenced file
+  to check symlink status, Cygwin marks symlinks with the system
+  attribute.  Files without the system attribute are not checked.
+  Because remote samba filesystems do not enable the system attribute by
+  default, symlinks do not work on network drives unless you explicitly
+  enable this attribute.
+
+  The new method which is introduced with Cygwin version 1.3.0 is
+  enabled by default or if `winsymlinks' is set in the environment
+  variable CYGWIN.  Using this method, Cygwin generates symlinks by
+  creating Windows shortcuts.  Cygwin created shortcuts have a special
+  header (which is in that way never created by Explorer) and the R/O
+  attribute set.  A DOS path is stored in the shortcut as usual and the
+  description entry is used to store the POSIX path.  While the POSIX
+  path is stored as is, the DOS path has perhaps to be rearranged to
+  result in a valid path.  This may result in a divergence between the
+  DOS and the POSIX path when symlinks are moved crossing mount points.
+  When a user changes the shortcut, this will be detected by Cygwin and
+  it will only use the DOS path then.  While Cygwin shortcuts are shown
+  without the \".lnk\" suffix in `ls' output, non-Cygwin shortcuts are
+  shown with the suffix.  However, both are treated as symlinks.
+
+  Both, the old and the new symlinks can live peacefully together since
+  Cygwin treats both as symlinks regardless of the setting of
+  `(no)winsymlinks' in the environment variable CYGWIN."
+    :type '(set (const :tag "Parse shortcuts (.lnk files)" parse-shortcuts)
+                (const :tag "Parse obsolete Cygwin symlinks" parse-old-symlinks)
+                (const :tag "Make obsolete Cygwin symlinks" make-old-symlinks))
+    :group 'w32-symlinks)
+
+  (defcustom w32-symlinks-shortcut-target 'expand
+    "*Determine how to return Windows shortcut target filenames.
+  This applies only to ls-lisp and hence `dired', not more generally.
+  Value must be a symbol.  The options are:
+     'expand -- expand to an absolute canonical filename
+     non-nil -- just convert \\ to /
+     nil     -- do not change"
+    :type '(choice (const :tag "Expand to absolute" expand)
+                   (const :tag "Convert \\ to /" t)
+                   (const :tag "Leave unchanged" nil))
+    :group 'w32-symlinks)
+
+  (defconst w32-symlinks-to-follow
+    '((                                   ; Simple commands:
+       dired-advertised-find-file
+       dired-backup-diff
+       dired-diff
+       dired-display-file
+       dired-do-byte-compile
+       dired-do-chgrp
+       dired-do-chmod
+       dired-do-chown
+       dired-do-compress
+       dired-do-copy
+       dired-do-copy-regexp
+       dired-do-hardlink
+       dired-do-hardlink-regexp
+       dired-do-load
+       dired-do-print
+       dired-do-shell-command
+       dired-do-symlink
+       dired-do-symlink-regexp
+       dired-find-file
+       dired-find-file-other-window
+       dired-maybe-insert-subdir
+       dired-mouse-find-file
+       dired-mouse-find-file-other-window
+       dired-view-file
+       woman-dired-find-file
+       )
+      .
+      (                                   ; Complex commands:
+       dired-do-query-replace
+       dired-do-search
+       ))
+    "Cons of lists of `dired-mode' commands that need target of a symlink.
+  The `car' consists of simple commands and the `cdr' of complex commands.
+  Complex commands are those that go into the variable `command-history'.
+  All other `dired-mode' commands receive the symlink itself, as per default.
+  Does not include w32-shellex commands, which are handled specially.")
+
+  (defun w32-symlinks-parse-symlink (file-name)
+    "Optionally parse FILE-NAME as a MS Windows symlink file, if possible."
+    ;; This function redefines a stub in ls-lisp.
+    (and
+     w32-symlinks-dired-support
+     (condition-case nil
+         (or (and (memq 'parse-shortcuts w32-symlinks-dired-support)
+                  (string-match "\\.lnk\\'" file-name)
+                  (w32-symlinks-parse-shortcut file-name))
+             (and (memq 'parse-old-symlinks w32-symlinks-dired-support)
+                  (w32-symlinks-parse-old-Cygwin file-name)))
+       (error nil))))
+
+  
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ;; Parse Microsoft Windows shortcut (.lnk) and obsolete Cygwin-style
+  ;; symbolic link files, and make dired follow symlinks when
+  ;; appropriate.
+
+  (defun w32-symlinks-buffer-substring-as-int (start length)
+    "Return contents of part of the current buffer as an unsigned integer.
+  START is a character position\; LENGTH specifies the length of the
+  integer in bytes and should be 1, 2 or 4.
+  Assumes byte order is low to high (little-endian)."
+    (let ((idx (+ start length))
+          (int 0))
+      ;; Base (radix) using unsigned char digits is 2^8 = 256.
+      (while (>= (setq idx (1- idx)) start)
+        (setq int (+ (* 256 int) (char-after idx))))
+      int))
+
+  (defun w32-symlinks-parse-shortcut (file)
+    "Return file or directory referenced by MS Windows shortcut (.lnk) FILE.
+  Return nil if the file cannot be parsed."
+    ;; Based on "The Windows Shortcut File Format" as
+    ;; reverse-engineered by Jesse Hager <jessehager at iname.com>
+    ;; available from http://www.wotsit.org/download.asp?f=shortcut.
+    (with-temp-buffer
+      (let ((inhibit-file-name-handlers
+             (cons 'w32-symlinks-file-name-handler
+                   (and (eq inhibit-file-name-operation 'insert-file-contents)
+                        inhibit-file-name-handlers))))
+        (insert-file-contents-literally file)) ; Eli Zaretskii
+      (and
+       ;; Parse the File Header Table.
+       ;; Check for Shell Link identifier (4 bytes)
+       ;; followed by Shell Link GUID (16 bytes):
+       (string= (buffer-substring 1 21)  ; otherwise not a shortcut file
+                "L\0\0\0\ \x01\x14\x02\0\0\0\0\0\xC0\0\0\0\0\0\0\x46")
+       ;; Get the main flags dword at offset 14h.
+       (let ((flags (w32-symlinks-buffer-substring-as-int (+ (point) ?\x14) 4))
+             target)
+         ;; Skip to end of Header:
+         (forward-char ?\x4C)
+         (if (= (logand flags 1) 1)
+             ;; Flag 0 (2^0=1) set means Shell Item Id List present, so
+             ;; skip it.  The list length is the first word, which must
+             ;; also be skipped:
+             (forward-char
+              (+ 2 (w32-symlinks-buffer-substring-as-int (point) 2))))
+         (if (= (logand flags 2) 2)
+             ;; Flag 1 (2^1=2) set means File Location Info Table
+             ;; present, so parse it.
+             (progn
+               ;; The full file pathname is (generally) stored in two
+               ;; pieces: a head depending on whether the file is on a
+               ;; local or network volume and a remaining pathname tail.
+               ;; Get and check the volume flags dword at offset 8h:
+               (setq flags (w32-symlinks-buffer-substring-as-int
+                            (+ (point) ?\x8) 4))
+               (if (/= (logand flags 3) 0) ; Must have bit 0 or 1 set.
+                   (let ((head            ; Get local or network
+                          (save-excursion ; pathname head.
+                            ;; If bit 0 then local else network:
+                            (if (setq flags (= (logand flags 1) 1))
+                                ;; Go to the base pathname on the local
+                                ;; system at the offset specified as a
+                                ;; dword at offset 10h:
+                                (forward-char
+                                 (w32-symlinks-buffer-substring-as-int
+                                  (+ (point) ?\x10) 4))
+                              ;; Go to the network volume table at the
+                              ;; offset specified as a dword at offset 14h:
+                              (forward-char
+                               (w32-symlinks-buffer-substring-as-int
+                                (+ (point) ?\x14) 4))
+                              ;; Go to the network share name at offset 14h:
+                              (forward-char ?\x14))
+                            (buffer-substring (point)
+                                              (1- (search-forward "\0")))))
+                         (tail         ; Get the remaining pathname tail
+                          (progn          ; specified as a dword at
+                            (forward-char ; offset 18h.
+                             (w32-symlinks-buffer-substring-as-int
+                              (+ (point) ?\x18) 4))
+                            (buffer-substring (point)
+                                              (1- (search-forward "\0"))))))
+                     (setq target
+                           ;; Network share name needs trailing \ added:
+                           (concat head
+                                   (unless (or flags (string= tail "")) "\\")
+                                   tail)))))
+           ;; Otherwise, continue parsing...
+           ;; NB: Shortcuts generated using WSH seem to use Unicode.
+           ;; May be flag bit 7 indicates use of Unicode (other than in
+           ;; the Shell Item Id List), but I have no confirmation of
+           ;; that, so for now I use the hack below to detect Unicode.
+           (if (= (logand flags 4) 4)
+               ;; Flag 2 (2^2=4) set means Description String present,
+               ;; so skip it.  The string length is the first word,
+               ;; which must also be skipped.
+               (let ((len (w32-symlinks-buffer-substring-as-int (point) 2)))
+                 (forward-char 2)         ; skip length word
+                 (forward-char
+                  (if (eq (char-after (1+ (point))) 0) ; assume unicode
+                      (* len 2)
+                    len))))
+           (if (= (logand flags 8) 8)
+               ;; Flag 3 (2^3=8) set means Relative Path String present,
+               ;; so parse it.  The string length is the first word.
+               (let ((len (w32-symlinks-buffer-substring-as-int (point) 2)))
+                 (forward-char 2)         ; skip length word
+                 (setq target
+                       (if (eq (char-after (1+ (point))) 0) ; assume unicode
+                           (w32-symlinks-unicode-to-ascii
+                            (buffer-substring (point) (+ (point) (* len 2))))
+                         (buffer-substring (point) (+ (point) len)))))))
+         (when target
+           (setq target (decode-coding-string
+                         target file-name-coding-system)) ; Eli Zaretskii
+           (cond ((eq w32-symlinks-shortcut-target 'expand) ; Canonicalize
+                  ;; Full expansion RELATIVE TO THE SHORTCUT DIRECTORY
+                  ;; is NECESSARY in magic filename handlers!
+                  (let ((inhibit-file-name-handlers
+                         (cons 'w32-symlinks-file-name-handler
+                               (and (eq inhibit-file-name-operation
+                                        'expand-file-name)
+                                    inhibit-file-name-handlers)))
+                        (inhibit-file-name-operation 'expand-file-name))
+                    (expand-file-name target (file-name-directory file))))
+                 (w32-symlinks-shortcut-target ; Just convert \ to /
+                  (let ((i (length target)))
+                    (while (>= (setq i (1- i)) 0)
+                      (if (eq (aref target i) ?\\) (aset target i ?/))))
+                  target)
+                 (t target)))
+         ))))
+
+  (defsubst w32-symlinks-unicode-to-ascii-error (cond)
+    "If COND then report input string format error."
+    (if cond
+        (error "Input string to w32-symlinks-unicode-to-ascii not UTF16 ASCII")))
+
+  (defun w32-symlinks-unicode-to-ascii (in)
+    "Convert Windows Unicode 8-bit ASCII unibyte string IN to 8-bit ASCII.
+  \"Windows Unicode\" means UTF-16LE, since x86 processors are Little Endian.
+  Hence the bytes of IN are char, NULL, char, NULL, ... and this
+  function removes all the NULL bytes.
+  Temporary hack (for Emacs 21.2) until a better method is available."
+    (let ((len (length in)) (i 0) out)
+      (w32-symlinks-unicode-to-ascii-error (= (% len 2) 1))
+      (setq out (make-string (/ len 2) ?\0))
+      (while (< i len)
+        (aset out (/ i 2) (aref in i))
+        (w32-symlinks-unicode-to-ascii-error (not (eq (aref in (1+ i)) ?\0)))
+        (setq i (+ i 2)))
+      out))
+
+  (defun w32-symlinks-parse-old-Cygwin (file)
+    "Return file or directory referenced by obsolete Cygwin symbolic link FILE.
+  Return nil if the file cannot be parsed."
+    (with-temp-buffer
+      ;; Read at most the first 512 bytes for efficiency:
+      (insert-file-contents-literally file nil 0 511) ; Eli Zaretskii
+      (when (looking-at "!<symlink>\\(.+\\)\0")
+        (setq file (match-string-no-properties 1))
+        (decode-coding-string file file-name-coding-system) ; Eli Zaretskii
+        )))
+
+  (defun w32-symlinks-Cyg-to-Win (file)
+    "Convert an absolute filename FILE from Cygwin to Windows form."
+    (if (eq (aref file 0) ?/)
+        ;; Try to use Cygwin mount table via `cygpath.exe'.
+        (condition-case nil
+            (with-temp-buffer
+              ;; cygpath -w file
+              (call-process "cygpath" nil t nil "-w" file)
+              (buffer-substring 1 (buffer-size)))
+          (error
+           ;; Assume no `cygpath' program available.
+           ;; Hack /cygdrive/x/ or /x/ or (obsolete) //x/ to x:/
+           (when (string-match "\\`\\(/cygdrive\\|/\\)?/./" file)
+             (if (match-string 1)         ; /cygdrive/x/ or //x/ -> /x/
+                 (setq file (substring file (match-end 1))))
+             (aset file 0 (aref file 1))  ; /x/ -> xx/
+             (aset file 1 ?:))            ; xx/ -> x:/
+           file))
+      file))
+
+  (defadvice dired-get-filename
+    (around dired-get-filename-advice activate compile)
+    "Return source or target of symlink as appropriate.
+  Always return source if calling command had prefix argument.
+  Return target for dired commands in `w32-symlinks-to-follow' unless
+  called by shellex\; otherwise return source."
+    ;; `dired-get-filename' always returns the symlink itself
+    ;; but most Windows commands cannot follow symlinks!
+    ;; Easy to find target, but not source so let original function do it.
+    (if (and (not current-prefix-arg)
+             (save-excursion              ; symbolic link?
+               (beginning-of-line)
+               (looking-at ".+\\(\\.lnk\\)? -> \\(.+\\)"))
+             ;; Symbolic link -- return target?
+             (or
+              ;; Always apply these simple commands to the target file:
+              (memq this-command (car w32-symlinks-to-follow))
+              ;; Always apply these complex commands to the target file:
+              (memq (caar command-history) (cdr w32-symlinks-to-follow))
+              ;; But shellex handles MS Windows shortcuts directly:
+              (and (eq this-command 'w32-shellex-dired-on-objects)
+                   (not (or (match-beginning 1) ; .lnk
+                            ;; if using Cygwin ls then `->' => .lnk
+                            ls-lisp-use-insert-directory-program)))
+              ))
+        ;; Return target:
+        (setq ad-return-value
+              (w32-symlinks-Cyg-to-Win (match-string-no-properties 2)))
+      ;; Not symbolic link or source required:
+      ad-do-it))
+
+  
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ;; Make symlinks on NTEmacs (Microsoft Windows only).
+
+  ;; The function `make-symbolic-link' does not exist in NTEmacs so
+  ;; emulate it in ELisp; it is implemented in the kernel on other
+  ;; platforms that provide suitable system calls.  Instead, use either
+  ;; Windows Script Host, the Cygwin ln program or simply generate
+  ;; obsolete Cygwin-style symlink files.
+
+  ;; This code must not be run on any other platform!
+  (eval-and-compile
+    (when (eq system-type 'windows-nt)
+
+      (defcustom w32-symlinks-make-using nil
+        "*Determine how `make-symbolic-link' should make symbolic links.
+  Value must be a symbol.  The options are:
+     'wsh -- use Windows Script Host (which was not included in
+  versions of Windows before 98, but is available free from
+  msdn.microsoft.com/scripting.)  See also `w32-symlinks-ln-script'.
+     'ln  -- use the Cygwin (cygwin.com) port of the GNU ln program.
+  See also `w32-symlinks-ln-program'.
+     'old -- generate obsolete Cygwin-style symlink files.
+      nil -- the default -- try in succession each of wsh, ln and old."
+        :link '(url-link :tag "Microsoft Scripting Website"
+                         "http://msdn.microsoft.com/scripting/")
+        :link '(url-link :tag "Cygwin Website" "http://cygwin.com/")
+        :type '(choice (const :tag "Windows Script Host" wsh)
+                       (const :tag "Cygwin ln" ln)
+                       (const :tag "Obsolete Cygwin Symlinks" old)
+                       (const :tag "Automatic" nil))
+        :group 'w32-symlinks)
+
+      (defcustom w32-symlinks-ln-script
+        (substitute-in-file-name "$EMACSPATH/w32-symlinks-ln-s.js")
+        "*Absolute filename for the ln script used by `make-symbolic-link'.
+  There are no constraints on the filename.  The script is automatically
+  created if necessary and then executed by Windows Script Host.
+  You can do completion with \\<widget-field-keymap>\\[widget-complete]."
+        :type 'file
+        :group 'w32-symlinks)
+
+      (defcustom w32-symlinks-ln-program "ln"
+        "*Absolute or relative name of the ln program used by `make-symbolic-link'.
+  Absolute filename is necessary if the program directory is not in `exec-path'.
+  You can do completion with \\<widget-field-keymap>\\[widget-complete]."
+        :type 'file
+        :group 'w32-symlinks)
+
+      (defvar w32-symlinks-check-ln-script nil
+        "True if `w32-symlinks-ln-script' written this Emacs session.")
+
+      (defun w32-symlinks-check-ln-script ()
+        "Write a new copy of `w32-symlinks-ln-script' if necessary.
+  Normally this happens at most once per Emacs session, when it is first
+  used, to ensure that it is current."
+        (or
+         (and
+          (file-exists-p w32-symlinks-ln-script)
+          w32-symlinks-check-ln-script)
+         (with-temp-file w32-symlinks-ln-script
+           (insert "\
+  // \"ln -s\" implemented in JScript for Microsoft Windows.
+  // Usage: ln-s oldname newname
+  //   oldname *MUST* be an ABSOLUTE pathname
+  //   newname must explicitly end with .lnk
+  //   (pathnames can be in UNIX format)
+  // Constructs newname.lnk as a shortcut to oldname.
+
+  // Author: Francis J. Wright <F.J.Wright at qmul.ac.uk>
+  // URL: http://centaur.maths.qmul.ac.uk/Emacs/
+
+  // This file was written and is primarily intended to be called
+  // automatically by the NTEmacs package w32-symlinks.el.
+  // It can be run explicitly from a command prompt, but it is
+  // INFLEXIBLE and has NO ERROR CHECKING!
+
+  // Requires Windows Script Host, which was not included in versions
+  // of Windows before 98, but is available free from
+  // http://msdn.microsoft.com/scripting/.
+
+  args = WScript.Arguments;
+  shell = WScript.CreateObject(\"WScript.Shell\");
+  link = shell.CreateShortcut(args(1));  // newname
+  link.Description = \"Generated by NTEmacs w32-symlinks\";
+  link.TargetPath = args(0);  // oldname
+  link.Save();")
+           (setq w32-symlinks-check-ln-script t))))
+
+      (eval-when-compile
+        (require 'dired-aux))
+
+      (defun make-symbolic-link (file newname &optional ok-if-already-exists)
+        "Give FILE symbolic link NEWNAME.  Both args strings.
+  Signals a `file-already-exists' error if a file NEWNAME already exists
+  unless optional third argument OK-IF-ALREADY-EXISTS is non-nil.
+  A number as third arg means request confirmation if NEWNAME already exists.
+  This is what happens in interactive use with \\[execute-extended-command].
+  Depending on the value of `w32-symlinks-make-using', use WSH, an
+  external ln program, or generate an obsolete Cygwin-style symlink.
+  The latter will not have the system attribute set and so will only be
+  parsed by w32-symlinks.el."
+        ;; Modelled on `add-name-to-file'
+        (interactive "fMake symbolic link to file: \nFName for link to %s: \np")
+        (if (or (not (file-exists-p newname))
+                (if (numberp ok-if-already-exists)
+                    (yes-or-no-p
+                     (format
+                      "File %s already exists; make it a symlink anyway? "
+                      newname))
+                  ok-if-already-exists)
+                (signal 'file-already-exists
+                        (list "File already exists" newname)))
+            (cond ((eq w32-symlinks-make-using 'wsh)
+                   (w32-symlinks-make-using-wsh file newname))
+                  ((eq w32-symlinks-make-using 'ln)
+                   (w32-symlinks-make-using-wsh file newname))
+                  ((eq w32-symlinks-make-using 'old)
+                   (w32-symlinks-make-using-old file newname))
+                  (t                      ; default: try each in turn...
+                   (condition-case nil
+                       (w32-symlinks-make-using-wsh file newname)
+                     (error
+                      (condition-case nil
+                          (w32-symlinks-make-using-ln file newname)
+                        (error
+                         (w32-symlinks-make-using-old file newname)))))))))
+
+      (defun w32-symlinks-make-using-wsh (file newname)
+        "Use Windows Script Host to construct a shortcut to FILE called NEWNAME."
+        ;; ln -s file newname; newname *MUST* end with .lnk!
+        (w32-symlinks-check-ln-script)
+        (dired-check-process
+         "Making symlink" "CScript" "//E:JScript"
+         w32-symlinks-ln-script file newname))
+
+      (defun w32-symlinks-make-using-ln (file newname)
+        "Use Cygwin ln to construct a shortcut to FILE called NEWNAME."
+        ;; ln -s file newname
+        ;; (call-process "ln" nil nil nil "-s" file newname)
+        (dired-check-process
+         "Making symlink" w32-symlinks-ln-program "-s" "-f" file
+         ;; Strip newname of trailing .lnk appended by `dired-create-files'
+         ;; advice, since Cygwin ln appends the .lnk automatically:
+         (if (and (not (memq 'make-old-symlinks w32-symlinks-dired-support))
+                  (string= (substring newname -4) ".lnk"))
+             (substring newname 0 -4)
+           newname)))
+
+      (defun w32-symlinks-make-using-old (file newname)
+        "Generate obsolete Cygwin-style symlink to FILE called NEWNAME."
+        ;; This works, but cannot set system attribute.
+        (with-temp-file newname (insert "!<symlink>" file "\0")))
+
+      (defadvice dired-create-files
+        (before dired-create-files-advice activate compile)
+        "Ensure that actual Windows shortcut symlink target ends in .lnk.
+  But not if it is an obsolete Cygwin-style symlink file."
+        ;; 4th arg, name-constructor, is a function that creates the target
+        ;; from the source filename.
+        (if (eq file-creator 'make-symbolic-link)
+            (setq name-constructor
+                  `(lambda (targ)
+                     (setq targ (funcall ,name-constructor targ))
+                     ;; Add trailing .lnk if absent:
+                     (if (or (memq 'make-old-symlinks w32-symlinks-dired-support)
+                             ;; (Might be better to deactivate the advice.)
+                             (string= (substring targ -4) ".lnk"))
+                         targ
+                       (concat targ ".lnk"))))))
+
+      ))
+  
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ;; File name handler for Windows shortcuts on NTEmacs.
+  ;; See (elisp) Magic File Names.
+
+  (defcustom w32-symlinks-handle-shortcuts nil
+    "If non-nil then Emacs handles Windows shortcut files as symlinks.
+  \(This includes Cygwin-generated shortcut files.)
+  Setting this variable directly does not take effect\; it must be customized.
+
+  NB: Symlink support in `dired' is controlled by `w32-symlinks-dired-support'."
+    :type 'boolean
+    :set (lambda (variable value)
+           (let ((elt '("\\.lnk\\'" . w32-symlinks-file-name-handler)))
+             (if value
+                 (add-to-list 'file-name-handler-alist elt)
+               (setq file-name-handler-alist
+                     (delete elt file-name-handler-alist))))
+           (custom-set-default variable value))
+    :initialize 'custom-initialize-reset ; always call the :set function
+    :group 'w32-symlinks)
+
+  ;; Table of handler function names or constant return values
+  ;; =========================================================
+
+  ;; The correct behaviour in all cases in not immediately obvious to
+  ;; me, and so may well be wrong!
+
+  (mapc
+   (lambda (x) (put (car x) 'w32-symlinks (cadr x)))
+   '(
+     ;; Apply operation directly to the shortcut file:
+     ;; (These could be omitted since this is the default action!)
+     (add-name-to-file                    w32-symlinks-operate-on-source)
+     (copy-file                           w32-symlinks-operate-on-source)
+     (delete-directory                    w32-symlinks-operate-on-source)
+     (delete-file                         w32-symlinks-operate-on-source)
+     (directory-file-name                 w32-symlinks-operate-on-source)
+     (expand-file-name                    w32-symlinks-operate-on-source)
+     (file-exists-p                       w32-symlinks-operate-on-source)
+     (file-name-directory                 w32-symlinks-operate-on-source)
+     (file-name-nondirectory              w32-symlinks-operate-on-source)
+     (file-name-sans-versions             w32-symlinks-operate-on-source)
+     (file-name-all-completions           w32-symlinks-operate-on-source)
+     (file-name-as-directory              w32-symlinks-operate-on-source)
+     (file-name-completion                w32-symlinks-operate-on-source)
+     (insert-directory                    w32-symlinks-operate-on-source)
+     (rename-file                         w32-symlinks-operate-on-source)
+
+     ;; Apply operation to symlink target:
+     (diff-latest-backup-file             w32-symlinks-operate-on-target)
+     (directory-files                     w32-symlinks-operate-on-target)
+     (file-accessible-directory-p         w32-symlinks-operate-on-target)
+     (file-directory-p                    w32-symlinks-operate-on-target)
+     (file-executable-p                   w32-symlinks-operate-on-target)
+     (file-local-copy                     w32-symlinks-operate-on-target)
+     (file-modes                          w32-symlinks-operate-on-target)
+     (file-newer-than-file-p              w32-symlinks-operate-on-target)
+     (file-ownership-preserved-p          w32-symlinks-operate-on-target)
+     (file-readable-p                     w32-symlinks-operate-on-target)
+     (file-regular-p                      w32-symlinks-operate-on-target)
+     (file-truename                       w32-symlinks-operate-on-target)
+     (file-writable-p                     w32-symlinks-operate-on-target)
+     (find-backup-file-name               w32-symlinks-operate-on-target)
+     (get-file-buffer                     w32-symlinks-operate-on-target)
+     (load                                w32-symlinks-operate-on-target)
+     (make-directory                      w32-symlinks-operate-on-target)
+     (make-symbolic-link                  w32-symlinks-operate-on-target)
+     (set-file-modes                      w32-symlinks-operate-on-target)
+     (set-visited-file-modtime            w32-symlinks-operate-on-target)
+     (shell-command                       w32-symlinks-operate-on-target)
+     (unhandled-file-name-directory       w32-symlinks-operate-on-target)
+     (vc-registered                       w32-symlinks-operate-on-target)
+     (verify-visited-file-modtime         w32-symlinks-operate-on-target)
+     (write-region                        w32-symlinks-operate-on-target)
+
+     ;; Special cases:
+     (directory-files-and-attributes      w32-symlinks-directory-files-and-attributes)
+     (file-attributes                     w32-symlinks-file-attributes)
+     (file-symlink-p                      w32-symlinks-file-symlink-p)
+     (insert-file-contents                w32-symlinks-insert-file-contents)))
+
+  ;; Currently unhandled cases:
+  ;;   dired-call-process, dired-compress-file, dired-uncache
+  ;;   (Dired operations on symlinks are currently handled elsewhere.)
+
+  ;; Handler functions
+  ;; =================
+
+  (defun w32-symlinks-file-name-handler (operation &rest args)
+    "Apply OPERATION to list ARGS, handling Windows shortcuts \(.lnk files)."
+    (let ((handler (get operation 'w32-symlinks)))
+      (if handler
+          (if (symbolp handler)
+              (funcall handler operation args)
+            (car handler))                ; constant value
+        ;; Default for cases that are currently unhandled:
+        (w32-symlinks-operate-on-source operation args))))
+
+  (defun w32-symlinks-operate-on-source (operation args)
+    "Apply OPERATION to list ARGS, without handling Windows shortcuts."
+    (let ((inhibit-file-name-handlers
+           (cons 'w32-symlinks-file-name-handler
+                 (and (eq inhibit-file-name-operation operation)
+                      inhibit-file-name-handlers)))
+          (inhibit-file-name-operation operation))
+      (apply operation args)))
+
+  (defun w32-symlinks-operate-on-target
+    (operation args &optional insert-file-contents)
+    "Apply OPERATION to target of symlink given by first element of list ARGS.
+  Provides special handling when INSERT-FILE-CONTENTS is non-nil.
+  Called indirectly by `w32-symlinks-file-name-handler'."
+    (let* ((w32-symlinks-shortcut-target 'expand)
+           ;; w32-symlinks-parse-shortcut is internally protected.
+           (filename (w32-symlinks-parse-shortcut (car args))))
+      (if filename
+          (progn
+            (if insert-file-contents
+                (rename-buffer (file-name-nondirectory filename)))
+            (apply operation (cons filename (cdr args))))
+        (w32-symlinks-operate-on-source operation args))))
+
+  (defun w32-symlinks-insert-file-contents (operation args)
+    "Apply OPERATION to target of symlink given by first element of list ARGS.
+  Provides special handling for `insert-file-contents'.
+  Called indirectly by `w32-symlinks-file-name-handler'."
+    (w32-symlinks-operate-on-target operation args t))
+
+  (defun w32-symlinks-file-symlink-p (operation args)
+    (w32-symlinks-parse-symlink (car args)))
+
+  (defun set-attr-symlink (file-and-attr function)
+    (when (and (cdr file-and-attr)
+               (not (cadr file-and-attr))
+               (setcar (cdr file-and-attr) (w32-symlinks-parse-symlink (car file-and-attr))))
+      (aset (nth 9 file-and-attr) 0 ?l)))
+
+  (defun w32-symlinks-file-attributes (operation args)
+    (let* ((inhibit-file-name-handlers (cons 'w32-symlinks-file-name-handler
+                                             (and (eq inhibit-file-name-operation operation)
+                                                  inhibit-file-name-handlers)))
+           (inhibit-file-name-operation operation)
+           (attr (apply operation args)))
+      (set-attr-symlink (cons (car args) attr) 'w32-symlinks-parse-symlink)
+      attr))
+
+  (defun w32-symlinks-directory-files-and-attributes (operation args)
+    (let* ((inhibit-file-name-handlers (cons 'w32-symlinks-file-name-handler
+                                             (and (eq inhibit-file-name-operation operation)
+                                                  inhibit-file-name-handlers)))
+           (inhibit-file-name-operation operation)
+           (attr-alist (apply operation args)))
+      (mapc (lambda (file-and-attr)
+              (set-attr-symlink file-and-attr 'w32-symlinks-parse-symlink))
+            attr-alist)
+      attr-alist))
+
+  
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ;; Provide a more convenient way to access shortcut (and other) files
+  ;; literally, by giving find-file, or any function that calls it, a
+  ;; prefix arg.
+
+  (defun find-file (filename &optional wildcards)
+    "Edit file FILENAME.
+  Switch to a buffer visiting file FILENAME,
+  creating one if none already exists.
+  Interactively, or if WILDCARDS is non-nil in a call from Lisp,
+  expand wildcards (if any) and visit multiple files.  Wildcard expansion
+  can be suppressed by setting `find-file-wildcards'.
+  With prefix arg tries to finds files literally, with no conversions."
+    (interactive "FFind file: \np")
+    (let* ((inhibit-file-name-handlers
+            (cons 'w32-symlinks-file-name-handler
+                  inhibit-file-name-handlers))
+           (value
+            (find-file-noselect filename nil current-prefix-arg wildcards)))
+      (if (listp value)
+          (mapcar 'switch-to-buffer (nreverse value))
+        (switch-to-buffer value))))
+
+  
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ;; BUG FIXES included here temporarily; they need to be merged into
+  ;; the standard code base once I am convinced they work.
+
+  ;; Revised `insert-file-contents-literally' to allow it to be called
+  ;; within a magic file name handler.
+
+  (defun insert-file-contents-literally
+    (filename &optional visit beg end replace)
+    "Like `insert-file-contents', but only reads in the file literally.
+  A buffer may be modified in several ways after reading into the buffer,
+  to Emacs features such as format decoding, character code
+  conversion, `find-file-hooks', automatic uncompression, etc.
+
+  This function ensures that none of these modifications will take place."
+    (let ((format-alist nil)
+          (after-insert-file-functions nil)
+          (coding-system-for-read 'no-conversion)
+          (coding-system-for-write 'no-conversion)
+          (find-buffer-file-type-function
+           (if (fboundp 'find-buffer-file-type)
+               (symbol-function 'find-buffer-file-type)
+             nil))
+          (inhibit-file-name-handlers     ; FJW
+           (append '(jka-compr-handler image-file-handler)
+                   inhibit-file-name-handlers))
+          (inhibit-file-name-operation 'insert-file-contents))
+      (unwind-protect
+          (progn
+            (fset 'find-buffer-file-type (lambda (filename) t))
+            (insert-file-contents filename visit beg end replace))
+        (if find-buffer-file-type-function
+            (fset 'find-buffer-file-type find-buffer-file-type-function)
+          (fmakunbound 'find-buffer-file-type)))))
+
+  (eval-and-compile
+    (when (and (< emacs-major-version 22) ; Bug fixed in Emacs 22.
+               (eq system-type 'windows-nt))
+      (defadvice file-symlink-p (around file-symlink-p-advice activate compile)
+        ;; The original version is a built-in function.
+        ;; According to (elisp) Magic File Names, it should support magic
+        ;; file name handlers, but it does not.
+        ;; (I suspect that it always returns nil in NTEmacs.)
+        (let ((handler (find-file-name-handler filename 'file-symlink-p)))
+          (if handler
+              (setq ad-return-value (funcall handler 'file-symlink-p filename))
+            ad-do-it)))
+      ))
+
+  ;; Elisp Manual Error (fixed in Emacs 22):
+
+  ;; According to (elisp) Magic File Names, `substitute-in-file-name'
+  ;; does not support magic file name handlers, but it appears that it does.
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  (provide 'w32-symlinks)
+
+  ;;; w32-symlinks.el ends here
+#+END_SRC
+** dired-config
+#+NAME: defcustom esc's dired hooks
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/dired-config.el
+  (defcustom esc/dired-mode-hook nil
+    "esc's hook to add to \\[dired-mode-hook]."
+    :type    'hook
+    :options '((define-key dired-mode-map (kbd "M-RET") 'esc/dired-find-file-single-mode)
+               (define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
+               (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)
+               (define-key dired-mode-map (kbd "^") 'esc/dired-up-level-reuse-buffer))
+    :group   'esc-dired)
+
+  ;;;###autoload
+  (defun esc/dired-mode-hook ()
+    "esc's hook to \\[dired-mode-hook]."
+    (let ((activate (if (eq major-mode 'dired-mode) 1 -1)))
+      (hl-line-mode activate)
+      (after 'dired-x (dired-omit-mode activate)))
+    (setq-default dired-details-hidden-string "--- "
+                  dired-recursive-copies 'always
+                  dired-recursive-deletes 'top
+                  dired-omit-verbose nil)
+    (define-key dired-mode-map (kbd "C-a") 'esc/dired-back-to-start-of-files)
+    (define-key dired-mode-map (kbd "M-RET") 'esc/dired-find-file-single-mode)
+    (define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
+    (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)
+    (define-key dired-mode-map (kbd "^") 'esc/dired-up-level-reuse-buffer))
+
+  (defcustom esc/dired-load-hook nil
+    "esc's hook to add to \\[dired-mode-hook]."
+    :type    'hook
+    :options '((load "dired-x" nil t)
+               (setq dired-listing-switches "-alh") ; todo: make friendly
+               (esc/dired-load-hook-omit-files))
+    :group   'esc-dired)
+
+  ;;;###autoload
+  (defun esc/dired-load-hook ()
+    "esc's hook to \\[dired-load-hook]."
+    (load "dired-x" nil t) ; todo: make friendly
+    (setq-default dired-listing-switches "-alh")
+    (setq-default dired-recursive-copies 'always)
+    (esc/dired-load-hook-omit-files))
+#+END_SRC
+#+NAME: dired-lib
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/dired-config.el
+  ;;;###autoload
+  (defun esc/dired-load-hook-omit-files ()
+    (setq dired-omit-verbose nil)
+    (setq dired-omit-files (concat dired-omit-files "\\|^\\.dropbox$"))
+    (after 'undo-tree
+      (setq dired-omit-files (concat dired-omit-files "\\|^\\.*~undo-tree~$"))))
+#+END_SRC
+
+Thanks [[http://whattheemacsd.com/setup-dired.el-02.html][Magnar]] for all the good ideas.
+
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/dired-config.el
+  ;;;###autoload
+  (defun esc/dired-back-to-top ()
+    "Goes to the first line in dired, not the top of the buffer."
+    (interactive)
+    (beginning-of-buffer)
+    (when (not (search-forward ".." nil 'noerror))
+      (beginning-of-buffer))          ;likely dired-omit-mode is enabled
+    (dired-next-line 1))
+
+  ;;;###autoload
+  (defun esc/dired-jump-to-bottom ()
+    "Goes to the last line in dired, not the bottom of the buffer."
+    (interactive)
+    (end-of-buffer)
+    (dired-previous-line 1))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/dired-config.el
+  ;;;###autoload
+  (defun esc/dired-find-file-single-mode ()
+    "This defun will invoke `dired-find-file` and open the file(s) at point in `single-mode'."
+    (interactive)
+    (dired-find-file)
+    (single-mode 1))
+
+  ;;;###autoload
+  (defun esc/dired-up-level-reuse-buffer ()
+    "This defun will go to the parent directory in dired while reusing the current buffer."
+    (interactive)
+    (find-alternate-file ".."))
+
+  ;;;###autoload
+  (defun esc/search-my-lisp-dir ()
+    "Open esc-lisp in `dired' for easy editing of configs."
+    (interactive)
+    (esc/edit-configs)
+    (esc/dired-back-to-top)
+    (call-interactively 'isearch-forward))
+
+  ;;;###autoload
+  (defun esc/dired-back-to-start-of-files ()
+    (interactive)
+    (backward-char (- (current-column) 2)))
+#+END_SRC
+** esc-mode
+*** summary
 Here lies my personal minor mode, where I confine all of my custom
 keybindings. I also hook all of my preferred major and minor modes
 onto this mode's activation hook. Though all of my customizations are
 active by default for new emacs sessions, one can get back to the
 default settings by running =M-x esc-mode=.
 
-TODO: consider using `define-globalized-minor-mode'.
+What is the difference between my current setup and using
+`define-globalized-minor-mode'?
 
-** esc variables
+*** esc variables
 
 As a convention, esc functions are prefixed with `esc/' while esc
 variables are prefixed with `esc-'
@@ -1331,7 +2401,7 @@ variables are prefixed with `esc-'
     :group        'esc-mode)
 #+END_SRC
 
-** esc macros
+*** esc macros
 #+NAME: self inflection
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (defmacro esc-mode-enabledp ()
@@ -1485,7 +2555,7 @@ Below is the forge, boilerplate functions are churned out en-masse.
             (out -)))
 #+END_SRC
 
-** esc bindings
+*** esc bindings
 #+NAME: keybindings defined here
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   ;; Windmove from shift keys
@@ -1668,7 +2738,7 @@ haven't had to look at it yet.
       ("'" . operate-on-number-at-point)))
 #+END_SRC
 
-** esc hydras
+*** esc hydras
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (setq hydra-lv nil)
 
@@ -1754,7 +2824,7 @@ haven't had to look at it yet.
     ("r" esc/reveal-all-hidden-lines "reveal all"))
 #+END_SRC
 
-** esc hook
+*** esc hook
 #+NAME: esc-mode-hook
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   ;; The proper definition of `esc-mode-hook'
@@ -1852,17 +2922,636 @@ haven't had to look at it yet.
         (after 'esc-mode (diminish 'esc-mode))))
 
   (add-hook 'esc-mode-hook 'esc/accompanying-mode-hook)
+#+END_SRC
 
+*** esc fin
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (esc-mode 1)
-
   (provide 'esc-mode)
 #+END_SRC
 
-* Fin
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (message "All done, %s%s" (user-login-name) ".")
-  ;;; .emacs.el ends here
+** gntp
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/gntp.el
+  ;;; gntp.el --- Growl Notification Protocol for Emacs -*- lexical-binding: t -*-
+
+  ;; Author: Engelke Eschner <tekai@gmx.li>
+  ;; Version: 0.1
+  ;; Created: 2013-03-21
+
+  ;; LICENSE
+  ;; Copyright (c) 2013 Engelke Eschner
+  ;; All rights reserved.
+
+  ;; Redistribution and use in source and binary forms, with or without
+  ;; modification, are permitted provided that the following conditions
+  ;; are met:
+  ;;     * Redistributions of source code must retain the above copyright
+  ;;       notice, this list of conditions and the following disclaimer.
+  ;;     * Redistributions in binary form must reproduce the above
+  ;;       copyright notice, this list of conditions and the following
+  ;;       disclaimer in the documentation and/or other materials provided
+  ;;       with the distribution.
+  ;;     * Neither the name of the gntp.el nor the names of its
+  ;;       contributors may be used to endorse or promote products derived
+  ;;       from this software without specific prior written permission.
+
+  ;; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ;; "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ;; LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ;; A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT
+  ;; HOLDER> BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+  ;; EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+  ;; PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+  ;; PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+  ;; OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ;; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ;; OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+  ;;; Commentary:
+  ;; This package implements the Growl Notification Protocol GNTP
+  ;; described at http://www.growlforwindows.com/gfw/help/gntp.aspx
+  ;; It is incomplete as it only lets you send but not receive
+  ;; notifications.
+
+  ;;; Code:
+
+  (defgroup gntp nil
+    "GNTP, send/register growl notifications via GNTP from within emacs."
+    :group 'external)
+
+  (defcustom gntp-application-name "Emacs/gntp.el"
+    "Name of the application gntp registers itself."
+    :type '(string))
+
+  (defcustom gntp-application-icon nil
+    "Icon to display as the application icon.
+  Either a URL or a path to a file."
+    :type '(string))
+
+  (defcustom gntp-server "localhost"
+    "Default port of the server.
+  Standard says can't be changed, but port-forwarding etc."
+    :type '(string))
+
+  (defcustom gntp-server-port 23053
+    "Default port of the server.
+  Standard says can't be changed, but port-forwarding etc."
+    :type '(integer))
+
+  (defcustom gntp-register-alist nil
+    "Registration item list."
+    :type '(choice string (const nil)))
+
+  (defun gntp-register (&optional notifications server  port)
+    (interactive)
+    "Register NOTIFICATIONS at SERVER:PORT.
+  PORT defaults to `gntp-server-port'."
+    (let ((message (gntp-build-message-register (if notifications notifications gntp-register-alist))))
+      (gntp-send message (if server server gntp-server) port)))
+
+  ;;;###autoload
+  (defun gntp-notify (name title text server &optional port priority icon)
+    "Send notification NAME with TITLE, TEXT, PRIORITY and ICON to SERVER:PORT.
+  PORT defaults to `gntp-server-port'"
+    (let ((message (gntp-build-message-notify name title text priority icon)))
+      (gntp-send message server port)))
+
+  (defun gntp-build-message-register (notifications)
+    "Build the message to register NOTIFICATIONS types."
+    (let ((lines (list "GNTP/1.0 REGISTER NONE"
+                       (format "Application-Name: %s"
+                               gntp-application-name)
+                       (format "Notifications-Count: %d"
+                               (length notifications))))
+          (icon-uri (gntp-app-icon-uri))
+          (icon-data (gntp-app-icon-data))
+          (icons (list)))
+
+      ;; append icon uri
+      (when icon-uri
+        (nconc lines (list (format "Application-Icon: %s" icon-uri)))
+        ;; and data when it exists
+        (when icon-data
+          (setq icons (cons icon-data icons))))
+
+      (dolist (notice notifications)
+        ;; "For each notification being registered:
+        ;; Each notification being registered should be seperated by a
+        ;; blank line, including the first notification
+        (nconc lines (cons "" (gntp-notification-lines notice)))
+        ;; c
+        (let ((icon (gntp-notice-icon-data notice)))
+          (when icon
+            (nconc icons (list "" icon)))))
+
+      ;; icon data must come last
+      (when icons
+        (nconc lines (cons "" icons)))
+
+      (mapconcat 'identity (remove nil lines) "\r\n")))
+
+  (defun gntp-notification-lines (notice)
+    "Transform NOTICE into a list of strings."
+    (let ((display-name (gntp-notice-get notice :display))
+          (enabled (gntp-notice-get notice :enabled))
+          (icon-uri (gntp-notice-icon-uri notice)))
+    (list
+     ;; Required - The name (type) of the notification being registered
+     (concat "Notification-Name: " (gntp-notice-name notice))
+     ;; Optional - The name of the notification that is displayed to
+     ;; the user (defaults to the same value as Notification-Name)
+     (when display-name
+       (concat "Notification-Display-Name: " display-name))
+     ;; Optional - Indicates if the notification should be enabled by
+     ;; default (defaults to False)
+     (when enabled
+       "Notification-Enabled: True")
+     ;; Optional - The default icon to use for notifications of this type
+     (when icon-uri
+       (concat "Notification-Icon: " icon-uri)))))
+
+  (defun gntp-build-message-notify (name title text &optional priority icon)
+    "Build a message of type NAME with TITLE and TEXT."
+
+    (format
+     "GNTP/1.0 NOTIFY NONE\r\n\
+  Application-Name: %s\r\n\
+  Notification-Name: %s\r\n\
+  Notification-Title: %s\r\n\
+  Notification-Text: %s\r\n\
+  Notification-Priority: %s\r\n\
+  Notification-Icon: %s\r\n\
+  \r\n"
+            gntp-application-name
+            (if (symbolp name) (symbol-name name) name)
+            title
+            ;; no CRLF in the text to avoid accidentel msg end
+            (replace-regexp-in-string "\r\n" "\n" text)
+            (if priority priority "0")
+            (if icon (gntp-icon-uri icon) "")))
+
+  ;; notice
+  ;;(list name ; everthing else is optional
+  ;;      :display "name to display"
+  ;;      :enabled nil
+  ;;      :icon "url or file")
+
+
+  (defun gntp-notice-icon-uri (notice)
+    "Get the icon URI from NOTICE."
+    (gntp-icon-uri (gntp-notice-get notice :icon)))
+
+  (defun gntp-notice-icon-data (notice)
+    "Get icon data from NOTICE."
+    (gntp-icon-data (gntp-notice-get notice :icon)))
+
+  (defun gntp-app-icon-uri ()
+    "Return the value to be used in the Application-Icon header."
+    (gntp-icon-uri gntp-application-icon))
+
+  (defun gntp-app-icon-data ()
+    "Return the value to be used in the Application-Icon header."
+    (gntp-icon-data gntp-application-icon))
+
+  (defun gntp-icon-uri (icon)
+    "Get the URI of ICON."
+    (when icon
+      (cond ((string-equal (substring icon 0 7) "http://") icon)
+            ((and (file-exists-p icon) (file-readable-p icon))
+             (concat "x-growl-resource://" (md5 icon))))))
+
+  (defun gntp-icon-data (icon)
+    "Get the URI of ICON."
+    (when (and icon (not (string-equal (substring icon 0 7) "http://"))
+               (file-exists-p icon) (file-readable-p icon))
+      (let ((id (md5 icon))
+            (data (gntp-file-string icon)))
+        (format "Identifier: %s\r\nLength: %d\r\n\r\n%s"
+                id (length data) data))))
+
+  (defun gntp-notice-name (notice)
+    "Get the name of NOTICE.  The name must be either a symbol or string."
+    (let ((name (car notice)))
+      (if (symbolp name)
+          (symbol-name name)
+        name)))
+
+  (defun gntp-notice-get (notice property)
+    "Get PROPERTY from NOTICE."
+    (plist-get (cdr notice) property))
+
+  (defun gntp-send (message server &optional port)
+    "Send MESSAGE to SERVER:PORT.  PORT defaults to `gntp-server-port'."
+    (let ((proc (make-network-process
+                 :name "gntp"
+                 :host server
+                 :server nil
+                 :service (if port port gntp-server-port)
+                 ;;:sentinel 'gntp-sentinel
+                 :filter 'gntp-filter)))
+      ;; hmm one CRLF too much?
+      (process-send-string proc (concat message "\r\n\r\n\r\n"))))
+
+  (defun gntp-filter (proc string)
+    "Filter for PROC started by `gntp-send'.
+  Argument STRING reply from the server."
+    (when (string-equal "GNTP/1.0 -ERROR" (substring string 0 15))
+      (error "GNTP: Something went wrong take a look at the reply:\n %s"
+             string)))
+
+  ;; (defun gntp-sentinel (proc msg)
+  ;;   (when (string= msg "connection broken by remote peer\n")
+  ;;     (message (format "client %s has quit" proc))))
+
+
+  (defun gntp-file-string (file)
+    "Read the contents of a FILE and return as a string."
+    (with-temp-buffer
+      (insert-file-contents-literally file)
+      (buffer-string)))
+
+  (provide 'gntp)
+
+  ;;; gntp.el ends here
 #+END_SRC
+** hidden-mode-line-mode
+Thanks to [[http://bzg.fr/emacs-hide-mode-line.html][Emacs mode for hiding the mode-line]].
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/hidden-mode-line-mode.el
+  (defvar-local hidden-mode-line-mode nil "Current state of \\[hidden-mode-line-mode].")
+
+  ;;;###autoload
+  (define-minor-mode hidden-mode-line-mode
+    "Minor mode to hide the mode-line in the current buffer."
+    :init-value nil
+    :global t
+    :variable hidden-mode-line-mode
+    :group 'editing-basics
+    (if hidden-mode-line-mode
+        (setq hide-mode-line mode-line-format
+              mode-line-format nil)
+      (setq mode-line-format hide-mode-line
+            hide-mode-line nil))
+    (force-mode-line-update)
+    ;; Apparently force-mode-line-update is not always enough to
+    ;; redisplay the mode-line
+    (redraw-display)
+    (when (and (called-interactively-p 'interactive)
+               hidden-mode-line-mode)
+      (run-with-idle-timer
+       0 nil 'message
+       (concat "Hidden Mode Line Mode enabled.  "
+               "Use M-x hidden-mode-line-mode to make the mode-line appear."))))
+#+END_SRC
+
+This command is particularly useful when used in conjunction with
+=hidden-mode-line-mode=.
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/hidden-mode-line-mode.el
+  (defvar-local header-line-format nil "Current state of header-line-format")
+
+  ;;;###autoload
+  (defun mode-line-in-header ()
+    (interactive)
+    (if (not header-line-format)
+        (setq header-line-format mode-line-format
+              mode-line-format nil)
+      (setq mode-line-format header-line-format
+            header-line-format nil))
+    (set-window-buffer nil (current-buffer)))
+#+END_SRC
+** ido-config
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/ido-extras.el
+  ;;; ido-config.el --- Miscellaneous defuns shining with ido
+  ;; Configuration functions for using interactive-do.
+
+  ;;; Commentary:
+  ;; Each function pretty much stands on its own. See each defun's
+  ;; docstring for more details.
+
+  ;;; Code:
+
+  ;;;###autoload
+  (defun ido-recentf-open ()
+    "Use `ido-completing-read' to \\[find-file] a recent file."
+    (interactive)
+    (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+        (message "Opening file...")
+      (message "Aborting")))
+
+  ;;;###autoload
+  (defun ido-goto-symbol (&optional symbol-list)
+    "Use `ido-completing-read` to query a function in the current
+  buffer and jump to it. Functions are defined by the active minor
+  mode."
+    (interactive)
+    (defvar symbol-names)
+    (defvar name-and-pos)
+    (unless (featurep 'imenu)
+      (require 'imenu nil t))
+    (cond
+     ((not symbol-list)
+      (let ((ido-mode ido-mode)
+            name-and-pos symbol-names position)
+        (while (progn
+                 (imenu--cleanup)
+                 (setq imenu--index-alist nil)
+                 (ido-goto-symbol (imenu--make-index-alist))
+                 (setq selected-symbol
+                       (ido-completing-read "Symbol: " symbol-names))
+                 (string= (car imenu--rescan-item) selected-symbol)))
+        (push-mark nil t nil)             ;set the mark
+        (setq position (cdr (assoc selected-symbol name-and-pos)))
+        (cond
+         ((overlayp position)
+          (goto-char (overlay-start position)))
+         (t
+          (goto-char position)))))
+     ((listp symbol-list)
+      (dolist (symbol symbol-list)
+        (let (name position)
+          (cond
+           ((and (listp symbol) (imenu--subalist-p symbol))
+            (ido-goto-symbol symbol))
+           ((listp symbol)
+            (setq name (car symbol))
+            (setq position (cdr symbol)))
+           ((stringp symbol)
+            (setq name symbol)
+            (setq position
+                  (get-text-property 1 'org-imenu-marker symbol))))
+          (unless (or (null position) (null name)
+                      (string= (car imenu--rescan-item) name))
+            (add-to-list 'symbol-names name)
+            (add-to-list 'name-and-pos (cons name position))))))))
+
+  (provide 'ido-config)
+
+  ;;; ido-config.el ends here
+#+END_SRC
+** multiple-cursors-config
+Configuration for [[https://github.com/magnars/multiple-cursors.el][magnars/multiple-cursors.el · GitHub]].
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/multiple-cursors-config.el
+(defcustom esc/multiple-cursors-mode-enabled-hook nil
+  "esc's code to \\[multiple-cursors-mode-enabled-hook]."
+  :type         'hook
+  :options      '((autopair-mode -1)
+		  (define-key mc/keymap (kbd "C-s") 'mc/search-forward)
+		  (define-key mc/keymap (kbd "C-r") 'mc/search-backward))
+  :group        'multiple-cursors)
+
+;;;###autoload
+(defun esc/multiple-cursors-mode-enabled-hook ()
+  "esc's code to \\[multiple-cursors-mode-enabled-hook]."
+  (autopair-mode -1)
+  ;; mc/keymap isn't created until this point
+  (defvar mc/search--last-term nil)
+  (define-key mc/keymap (kbd "C-s") 'mc/search-forward)
+  (define-key mc/keymap (kbd "C-r") 'mc/search-backward))
+
+(defcustom esc/multiple-cursors-mode-disabled-hook nil
+  "esc's code to \\[multiple-cursors-mode-disabled-hook]."
+  :type         'hook
+  :options      '((autopair-mode 1))
+  :group        'multiple-cursors)
+
+;;;###autoload
+(defun esc/multiple-cursors-mode-disabled-hook ()
+  "esc's code to \\[multiple-cursors-mode-disabled-hook]."
+  (autopair-mode 1))
+
+#+END_SRC
+
+Thanks, Jeff Chu! [[http://www.jeffchu.com/posts/2013/01/2013-01-29-multiple-cursors-mode.html][
+Jeff Chu - Emacs Multiple Cursors Mode and Search]]
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/multiple-cursors-config.el
+;;;###autoload
+(defun mc/search (search-command)
+  "Iterate through each active cursor and search for the designated string.
+SEARCH-COMMAND is the command to use for movement- either
+\\[search-forward] or \\[search-backward].
+
+Helper defun for \\[mc/search-forward] and \\[mc/search-backward]."
+  ;; Read new search term when not repeated command or applying to fake cursors
+  (when (and (not mc--executing-command-for-fake-cursor)
+             (not (eq last-command 'mc/search-forward))
+             (not (eq last-command 'mc/search-backward)))
+    (setq mc/search--last-term (read-from-minibuffer "Search: ")))
+  (funcall search-command mc/search--last-term))
+
+;;;###autoload
+(defun mc/search-forward ()
+  "Simplified version of forward search that supports multiple cursors."
+  (interactive)
+  (mc/search 'search-forward))
+
+;;;###autoload
+(defun mc/search-backward ()
+  "Simplified version of backward search that supports multiple cursors."
+  (interactive)
+  (mc/search 'search-backward))
+#+END_SRC
+
+*** [0/1] TODOs
+**** TODO allow for regexp's in isearch
+
+** scroll-all-config
+As always, the [[http://www.emacswiki.org/emacs/ScrollAllMode][EmacsWiki]] is a magnificent resource.
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/scroll-all-config.el
+  ;;;###autoload
+  (defun mwheel-scroll-all-function-all (func arg)
+    (if scroll-all-mode
+        (save-selected-window
+          (walk-windows
+           (lambda (win)
+             (select-window win)
+             (condition-case nil
+                 (funcall func arg)
+               (error nil)))))
+      (funcall func arg)))
+
+  ;;;###autoload
+  (defun mwheel-scroll-all-scroll-up-all (&optional arg)
+    (mwheel-scroll-all-function-all 'scroll-up arg))
+
+  ;;;###autoload
+  (defun mwheel-scroll-all-scroll-down-all (&optional arg)
+    (mwheel-scroll-all-function-all 'scroll-down arg))
+#+END_SRC
+
+** update-autoloads
+*** Book of Autoload Spells
+Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-elisp-how-to-properly-autoload-this-library/4189794#4189794][(where else?) Stack Overflow]].
+#+NAME: variable declared with defcustom
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/update-autoloads.el
+  ;;;###autoload
+  (defgroup autoloads nil
+    "Simplified maintenance of magic-cookie autoloads."
+    :version "0.1.0")
+#+END_SRC
+
+#+NAME: recursively find .el files
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/update-autoloads.el
+  ;;;###autoload
+  (defun list-files-in-subtree-matching-regexp-recursive (directory &optional regexp)
+    "List the `.el' files in DIRECTORY and in its sub-directories.
+
+  If REGEXP is non-nil, compile a list of files matching REGEXP
+  instead of `.el'."
+    (interactive "Directory: ")
+    (let (el-files-list
+          (current-directory-list
+           (directory-files-and-attributes directory t)))
+      (let ((file-regexp (or regexp ".el")))
+        ;; while we are in the current directory
+        (while current-directory-list
+          (cond
+           ;; check to see whether filename ends in `.el'
+           ;; and if so, append its name to a list.
+           ((string-match file-regexp (car (car current-directory-list)))
+            (setq el-files-list
+                  (cons (car (car current-directory-list)) el-files-list)))
+           ;; check whether filename is that of a directory
+           ((eq t (car (cdr (car current-directory-list))))
+            ;; decide whether to skip or recurse
+            (if
+                (equal "."
+                       (substring (car (car current-directory-list)) -1))
+                ;; then do nothing since filename is that of
+                ;;   current directory or parent, "." or ".."
+                ()
+              ;; else descend into the directory and repeat the process
+              (setq el-files-list
+                    (append
+                     (list-files-in-subtree-matching-regexp-recursive
+                      (car (car current-directory-list)) file-regexp)
+                     el-files-list)))))
+          ;; move to the next filename in the list; this also
+          ;; shortens the list so the while loop eventually comes to an end
+          (setq current-directory-list (cdr current-directory-list)))
+        el-files-list)))
+#+END_SRC
+
+#+NAME: find the nearest loaddefs.el file to pwd
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/update-autoloads.el
+  ;;;###autoload
+  (defun get-project-loaddefs-path (base)
+    "Return the path to the closest loaddefs.el file relative to BASE.
+
+  Only query this defun with BASE as a subdir of ~/.emacs.d/esc-lisp."
+    (interactive)
+    (catch 'found
+      (let ((loaddefs "loaddefs.el")
+            (base     (replace-regexp-in-string "/$" "" (expand-file-name base)))
+            (top-dir  (expand-file-name "~/.emacs.d/site-lisp")))
+        (unless (file-exists-p    base) (throw 'found nil))
+        (unless (file-directory-p base)
+          (setq base (replace-regexp-in-string
+                      "/$" "" (file-name-directory base))))
+        (while (string-match top-dir base) ;base is a subdir of home
+          (when (member loaddefs (directory-files base))
+            (throw 'found (concat base "/" loaddefs)))
+          (setq base (file-name-directory ;remove trailing slash
+                      (replace-regexp-in-string "/$" "" base)))))
+      (throw 'found nil)))
+#+END_SRC
+
+#+NAME: Verse of autoload Black Magic
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/update-autoloads.el
+  ;;;###autoload
+  (defgroup autoloads nil
+    "Simplified maintenance of magic-cookie autoloads."
+    :version "0.1.0")
+
+  ;;;###autoload
+  (defun list-files-in-subtree-matching-regexp-recursive (directory &optional regexp)
+    "List the `.el' files in DIRECTORY and in its sub-directories.
+
+  If REGEXP is non-nil, compile a list of files matching REGEXP
+  instead of `.el'."
+    (interactive "Directory: ")
+    (let (el-files-list
+          (current-directory-list
+           (directory-files-and-attributes directory t)))
+      (let ((file-regexp (or regexp ".el")))
+        ;; while we are in the current directory
+        (while current-directory-list
+          (cond
+           ;; check to see whether filename ends in `.el'
+           ;; and if so, append its name to a list.
+           ((string-match file-regexp (car (car current-directory-list)))
+            (setq el-files-list
+                  (cons (car (car current-directory-list)) el-files-list)))
+           ;; check whether filename is that of a directory
+           ((eq t (car (cdr (car current-directory-list))))
+            ;; decide whether to skip or recurse
+            (if
+                (equal "."
+                       (substring (car (car current-directory-list)) -1))
+                ;; then do nothing since filename is that of
+                ;;   current directory or parent, "." or ".."
+                ()
+              ;; else descend into the directory and repeat the process
+              (setq el-files-list
+                    (append
+                     (list-files-in-subtree-matching-regexp-recursive
+                      (car (car current-directory-list)) file-regexp)
+                     el-files-list)))))
+          ;; move to the next filename in the list; this also
+          ;; shortens the list so the while loop eventually comes to an end
+          (setq current-directory-list (cdr current-directory-list)))
+        el-files-list)))
+
+  ;;;###autoload
+  (defun get-project-loaddefs-path (base)
+    "Return the path to the closest loaddefs.el file relative to BASE.
+
+  Only query this defun with BASE as a subdir of ~/.emacs.d/site-lisp/esc-lisp."
+    (interactive)
+    (catch 'found
+      (let ((loaddefs "loaddefs.el")
+            (base     (replace-regexp-in-string "/$" "" (expand-file-name base)))
+            (top-dir  (expand-file-name "~/.emacs.d/site-lisp/esc-lisp")))
+        (unless (file-exists-p    base) (throw 'found nil))
+        (unless (file-directory-p base)
+          (setq base (replace-regexp-in-string
+                      "/$" "" (file-name-directory base))))
+        (while (string-match top-dir base) ;base is a subdir of home
+          (when (member loaddefs (directory-files base))
+            (throw 'found (concat base "/" loaddefs)))
+          (setq base (file-name-directory ;remove trailing slash
+                      (replace-regexp-in-string "/$" "" base)))))
+      (throw 'found nil)))
+
+  ;;;###autoload
+  (defun update-esc-lisp-autoloads (&optional base)
+    "Update autoload definitions for Lisp files in the directories DIRS.
+  In an interactive call, you must give one argument, the name of a
+  single directory.  In a call from Lisp, you can supply multiple
+  directories as separate arguments, but this usage is discouraged.
+
+  The function DOES recursively descend into subdirectories of the
+  directory or directories specified.
+
+  Note: this docstring was copied from \\[update-directory-autoloads]."
+    (interactive
+     (let ((file buffer-file-name))
+       (list
+        (read-file-name "Update autoloads (recursively) in which dir: "
+                        esc-lisp-path esc-lisp-path))))
+    (unless base (setq base esc-lisp-path))
+    (setq base (replace-regexp-in-string "/$" "" (expand-file-name base)))
+    (let ((el-files (list-files-in-subtree-matching-regexp-recursive
+                     (expand-file-name base))))
+      (dolist (el el-files)
+        (ignore-errors
+          (unless (string-match "loaddefs.el" el)
+            (message (format "%s" el))
+            (update-file-autoloads el t (get-project-loaddefs-path el)))))
+      (message (concat "Generating autoloads for " base "...done"))))
+
+  (provide 'update-autoloads)
+#+END_SRC
+
 * [9/19] TODOs
 ** DONE fix load path
 ** DONE quick dictionary
