@@ -59,6 +59,7 @@
 	org-force-self-insert
 	org-kill-line
 	org-self-insert-command
+	org-todo
 	org-yank
 	ruby-end-space
 	sgml-slash
@@ -79,6 +80,7 @@
 	eval-expression
 	handle-switch-frame
 	hydra-multiple-cursors/mc/edit-lines
+	hydra-multiple-cursors/mc/mark-all-like-this
 	hydra-multiple-cursors/mc/mark-next-like-this
 	hydra-multiple-cursors/mc/mark-previous-like-this
 	ido-find-file

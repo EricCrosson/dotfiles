@@ -1,7 +1,7 @@
 ;;
 
 ;;;### (autoloads nil "boilerplate/boilerplate" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21735 60129 775747 148000))
+;;;;;;  (21736 2428 609483 875000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el
 
 (autoload 'esc/prog-mode-hook "boilerplate/boilerplate" "\
@@ -71,203 +71,6 @@ esc's hook to \\[iedit-mode-hook].
 
 (autoload 'esc/insert-short-gpl "boilerplate/boilerplate" "\
 Insert the short version of the GNU GPL v3.
-
-\(fn)" t nil)
-
-(autoload 'esc/delete-whole-word "boilerplate/boilerplate" "\
-This defun will delete the entire word at point. This function
-relies on `esc/kill-whole-word'.
-
-\(fn)" t nil)
-
-(autoload 'esc/kill-whole-word "boilerplate/boilerplate" "\
-This defun will kill the entire word at point (on both sides
-of point). DELETE, if non-nil, will prevent the word from being
-appended to the kill-ring.
-
-\(fn &optional DELETE)" t nil)
-
-(autoload 'esc/eval-and-replace "boilerplate/boilerplate" "\
-Replace the preceding sexp with its value.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/save-buffers-kill-emacs "boilerplate/boilerplate" "\
-Offer to save each buffer(once only), then kill this Emacs process.
-   With prefix ARG, silently save all file-visiting buffers, then kill.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/toggle-letter-case "boilerplate/boilerplate" "\
-Toggle the letter case of current word or text selection.
-Toggles between: “all lower”, “Init Caps”, “ALL CAPS”.
-
-\(fn)" t nil)
-
-(autoload 'esc/insert-numeric-sequence "boilerplate/boilerplate" "\
-Insert a sequence of numbers at point, separated by spaces. Inclusive.
-
-\(fn)" t nil)
-
-(autoload 'esc/copy-line "boilerplate/boilerplate" "\
-Copy current line in the kill ring.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/remove-dos-eol "boilerplate/boilerplate" "\
-Do not show ^M in files containing mixed UNIX and DOS line endings.
-
-\(fn)" t nil)
-
-(autoload 'esc/word-count "boilerplate/boilerplate" "\
-Count words bounded by mark and cursor; if no region defined, use buffer.
-
-\(fn &optional BEGIN END)" t nil)
-
-(autoload 'esc/time "boilerplate/boilerplate" "\
-Insert string for the current esc/time formatted as '2:34 PM'.
-
-\(fn)" t nil)
-
-(autoload 'esc/date "boilerplate/boilerplate" "\
-Insert string for today's esc/date nicely formatted in American style,
-   e.g. Sunday September 17, 2000.
-
-\(fn)" t nil)
-
-(autoload 'esc/insert-date "boilerplate/boilerplate" "\
-Insert the current date. With prefix-argument, use ISO format. With
-   two prefix arguments, write out the day and month name.
-
-\(fn PREFIX)" t nil)
-
-(autoload 'esc/back-to-indentation-or-beginning "boilerplate/boilerplate" "\
-Returns the point to the beginning of the current line, or if
-already there, the beginning of text on the current line.
-
-\(fn)" t nil)
-
-(autoload 'esc/increment-number-at-point "boilerplate/boilerplate" "\
-Increment the number at point. Can be prefaced with a multiplier.
-
-\(fn ARG)" t nil)
-
-(autoload 'esc/delete-current-buffer-file "boilerplate/boilerplate" "\
-Removes file connected to current buffer and kills buffer.
-
-\(fn)" t nil)
-
-(autoload 'esc/rename-current-buffer-file "boilerplate/boilerplate" "\
-Renames current buffer and file it is visiting.
-
-\(fn)" t nil)
-
-(autoload 'esc/get-buffers-matching-mode "boilerplate/boilerplate" "\
-Returns a list of buffers where their major-mode is equal to MODE.
-
-\(fn MODE)" nil nil)
-
-(autoload 'esc/multi-occur-in-this-mode "boilerplate/boilerplate" "\
-Show all lines matching REGEXP in buffers with this major mode.
-
-\(fn)" t nil)
-
-(autoload 'esc/toggle-selective-display "boilerplate/boilerplate" "\
-Enable code folding in current buffer.
-
-\(fn COLUMN)" t nil)
-
-(autoload 'esc/toggle-fullscreen "boilerplate/boilerplate" "\
-Toggles whether the currently selected frame consumes the entire display
-   or is decorated with a window border
-
-\(fn)" t nil)
-
-(autoload 'esc/unroll-cc-arguments "boilerplate/boilerplate" "\
-Unroll a function's arguments into a more readable
-one-per-line format. Be sure to invoke this defun from before the
-opening paren of the function's arguments.
-
-This function has delimeters based on cc-mode dialects, and as a
-result would not be very useful for a language like Lisp.
-
-\(fn)" t nil)
-
-(autoload 'esc/swap-buffer-locations "boilerplate/boilerplate" "\
-Rotate your windows around and around.
-
-\(fn)" t nil)
-
-(autoload 'esc/open-line-below "boilerplate/boilerplate" "\
-Create a new line above the current line. Can be used with point
-   anywhere on the line.
-
-\(fn)" t nil)
-
-(autoload 'esc/open-line-above "boilerplate/boilerplate" "\
-Create a new line below the current line. Can be used with point
-   anywhere on the line.
-
-\(fn)" t nil)
-
-(autoload 'esc/goto-line-with-feedback "boilerplate/boilerplate" "\
-Show line numbers temporarily, while prompting for the line number input.
-
-\(fn)" t nil)
-
-(autoload 'esc/display-emacs-init-time "boilerplate/boilerplate" "\
-
-
-\(fn)" nil nil)
-
-(autoload 'esc/minimap-toggle "boilerplate/boilerplate" "\
-Toggle minimap for current buffer.
-
-\(fn)" t nil)
-
-(autoload 'esc/zoom-in "boilerplate/boilerplate" "\
-Increase font size by 10 points
-
-\(fn)" t nil)
-
-(autoload 'esc/zoom-out "boilerplate/boilerplate" "\
-Decrease font size by 10 points
-
-\(fn)" t nil)
-
-(autoload 'esc/proced-in-this-frame "boilerplate/boilerplate" "\
-Open proced in the current window.
-
-\(fn)" t nil)
-
-(autoload 'esc/edit-configs "boilerplate/boilerplate" "\
-Open a dired buffer in my root .emacs.d for quick edits.
-
-\(fn)" t nil)
-
-(autoload 'esc/scroll-up-slight "boilerplate/boilerplate" "\
-Scroll up the page without moving point. The number of lines to
-scroll is determined by the variable `esc-line-shift-amount'.
-
-This command can be prefixed.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/scroll-down-slight "boilerplate/boilerplate" "\
-Scroll down the page without moving point. The number of lines to
-scroll is determined by the variable `esc-line-shift-amount'.
-
-This command can be prefixed.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'occur-dwim "boilerplate/boilerplate" "\
-Call `occur' with a sane default.
-
-\\[occur-dwim] will offer as the default candidate:
-
-- the current region, if it's active
-- the current symbol, otherwise
 
 \(fn)" t nil)
 
@@ -455,11 +258,177 @@ Compile an .elc file for every .el file contained under
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/emacs+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el"
-;;;;;;  (21735 60129 632413 807000))
+;;;;;;  (21736 2428 476150 535000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el
 
-(autoload 'esc/unkillable-scratch-buffer "boilerplate/emacs+" "\
+(autoload 'esc/pull-up-line "boilerplate/emacs+" "\
+Pull up ARG lines.
 
+\(fn &optional ARG)" t nil)
+
+(autoload 'esc/toggle-letter-case "boilerplate/emacs+" "\
+Toggle the letter case of current word or text selection.
+  Toggles between: “all lower”, “Init Caps”, “ALL CAPS”.
+
+\(fn)" t nil)
+
+(autoload 'esc/dictionary-search "boilerplate/emacs+" "\
+
+
+\(fn)" t nil)
+
+(autoload 'occur-dwim "boilerplate/emacs+" "\
+Call `occur' with a sane default.
+
+\\[occur-dwim] will offer as the default candidate:
+
+- the current region, if it's active
+- the current symbol, otherwise
+
+\(fn)" t nil)
+
+(autoload 'esc/insert-numeric-sequence "boilerplate/emacs+" "\
+Insert a sequence of numbers at point, separated by spaces. Inclusive.
+
+\(fn)" t nil)
+
+(autoload 'esc/copy-line "boilerplate/emacs+" "\
+Copy current line in the kill ring.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'esc/remove-dos-eol "boilerplate/emacs+" "\
+Do not show ^M in files containing mixed UNIX and DOS line endings.
+
+\(fn)" t nil)
+
+(autoload 'esc/word-count "boilerplate/emacs+" "\
+Count words bounded by mark and cursor; if no region defined, use buffer.
+
+\(fn &optional BEGIN END)" t nil)
+
+(autoload 'esc/time "boilerplate/emacs+" "\
+Insert string for the current esc/time formatted as '2:34 PM'.
+
+\(fn)" t nil)
+
+(autoload 'esc/date "boilerplate/emacs+" "\
+Insert string for today's esc/date nicely formatted in American style,
+   e.g. Sunday September 17, 2000.
+
+\(fn)" t nil)
+
+(autoload 'esc/insert-date "boilerplate/emacs+" "\
+Insert the current date. With prefix-argument, use ISO format. With
+   two prefix arguments, write out the day and month name.
+
+\(fn PREFIX)" t nil)
+
+(autoload 'esc/back-to-indentation-or-beginning "boilerplate/emacs+" "\
+Returns the point to the beginning of the current line, or if
+already there, the beginning of text on the current line.
+
+\(fn)" t nil)
+
+(autoload 'esc/increment-number-at-point "boilerplate/emacs+" "\
+Increment the number at point. Can be prefaced with a multiplier.
+
+\(fn ARG)" t nil)
+
+(autoload 'esc/delete-current-buffer-file "boilerplate/emacs+" "\
+Removes file connected to current buffer and kills buffer.
+
+\(fn)" t nil)
+
+(autoload 'esc/rename-current-buffer-file "boilerplate/emacs+" "\
+Renames current buffer and file it is visiting.
+
+\(fn)" t nil)
+
+(autoload 'esc/get-buffers-matching-mode "boilerplate/emacs+" "\
+Returns a list of buffers where their major-mode is equal to MODE.
+
+\(fn MODE)" nil nil)
+
+(autoload 'esc/multi-occur-in-this-mode "boilerplate/emacs+" "\
+Show all lines matching REGEXP in buffers with this major mode.
+
+\(fn)" t nil)
+
+(autoload 'esc/toggle-selective-display "boilerplate/emacs+" "\
+Enable code folding in current buffer.
+
+\(fn COLUMN)" t nil)
+
+(autoload 'esc/toggle-fullscreen "boilerplate/emacs+" "\
+Toggles whether the currently selected frame consumes the entire display
+   or is decorated with a window border
+
+\(fn)" t nil)
+
+(autoload 'esc/unroll-cc-arguments "boilerplate/emacs+" "\
+Unroll a function's arguments into a more readable
+  one-per-line format. Be sure to invoke this defun from before the
+  opening paren of the function's arguments.
+
+  This function has delimeters based on cc-mode dialects, and as a
+  result would not be very useful for a language like Lisp.
+
+\(fn)" t nil)
+
+(autoload 'esc/swap-buffer-locations "boilerplate/emacs+" "\
+Rotate your windows around and around.
+
+\(fn)" t nil)
+
+(autoload 'esc/open-line-below "boilerplate/emacs+" "\
+Create a new line above the current line. Can be used with point
+   anywhere on the line.
+
+\(fn)" t nil)
+
+(autoload 'esc/open-line-above "boilerplate/emacs+" "\
+Create a new line below the current line. Can be used with point
+   anywhere on the line.
+
+\(fn)" t nil)
+
+(autoload 'esc/goto-line-with-feedback "boilerplate/emacs+" "\
+Show line numbers temporarily, while prompting for the line number input.
+
+\(fn)" t nil)
+
+(autoload 'esc/minimap-toggle "boilerplate/emacs+" "\
+Toggle minimap for current buffer.
+
+\(fn)" t nil)
+
+(autoload 'esc/delete-whole-word "boilerplate/emacs+" "\
+This defun will delete the entire word at point. This function
+relies on `esc/kill-whole-word'.
+
+\(fn)" t nil)
+
+(autoload 'esc/kill-whole-word "boilerplate/emacs+" "\
+This defun will kill the entire word at point (on both sides
+of point). DELETE, if non-nil, will prevent the word from being
+appended to the kill-ring.
+
+\(fn &optional DELETE)" t nil)
+
+(autoload 'esc/eval-and-replace "boilerplate/emacs+" "\
+Replace the preceding sexp with its value.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'esc/save-buffers-kill-emacs "boilerplate/emacs+" "\
+Offer to save each buffer(once only), then kill this Emacs process.
+   With prefix ARG, silently save all file-visiting buffers, then kill.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'esc/unkillable-scratch-buffer "boilerplate/emacs+" "\
+Prevent the *scratch* buffer from ever being killed.
 
 \(fn)" nil nil)
 
@@ -471,31 +440,20 @@ Switch to `other-window', use `mode-line-other-buffer', and
 
 (autoload 'delete-word "boilerplate/emacs+" "\
 Delete characters forward until encountering the end of a word.
-With argument, do this that many times.
+  With argument, do this that many times.
 
 \(fn ARG)" t nil)
 
 (autoload 'backward-delete-word "boilerplate/emacs+" "\
 Delete characters backward until encountering the end of a word.
-With argument, do this that many times.
+  With argument, do this that many times.
 
 \(fn ARG)" t nil)
-
-(autoload 'esc/pull-up-line "boilerplate/emacs+" "\
-Pull up ARG lines.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'describe-keymap "boilerplate/emacs+" "\
-Describe bindings in KEYMAP, a variable whose value is a keymap.
-Completion is available for the keymap name.
-
-\(fn KEYMAP)" t nil)
 
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/help+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el"
-;;;;;;  (21735 60128 539080 418000))
+;;;;;;  (21736 2428 522817 204000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el
 
 (autoload 'esc/insert-defun-at-point "boilerplate/help+" "\
@@ -509,6 +467,12 @@ Insert at point the name of the function KEY invokes.  KEY is a string.
   temporarily enables it to allow getting help on disabled items and buttons.
 
 \(fn &optional KEY INSERT UNTRANSLATED STRING)" t nil)
+
+(autoload 'describe-keymap "boilerplate/help+" "\
+Describe bindings in KEYMAP, a variable whose value is a keymap.
+Completion is available for the keymap name.
+
+\(fn KEYMAP)" t nil)
 
 ;;;***
 
@@ -563,7 +527,7 @@ See `mode-line-cleaner-alist' for more documentation.
 ;;;***
 
 ;;;### (autoloads nil "color-theme-stack" "../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el"
-;;;;;;  (21735 64618 919311 615000))
+;;;;;;  (21736 317 126041 828000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el
 
 (autoload 'color-theme-push "color-theme-stack" "\

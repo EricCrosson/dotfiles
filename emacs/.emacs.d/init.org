@@ -1288,6 +1288,12 @@ variables are prefixed with `esc-'
       :type    'integer
       :options '(5 6)
       :group   'esc-mode)
+
+  (defcustom esc-zoom-amount 10
+      "The number of points to zoom in `esc-zoom-in' and `esc-zoom-out'."
+      :type    'integer
+      :options '(10)
+      :group   'esc-mode)
 #+END_SRC
 #+NAME: define internal variables
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
@@ -1397,11 +1403,11 @@ Below is the forge, boilerplate functions are churned out en-masse.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defmacro esc/define-displaced-yank (funcname data)
     "This macro generates functions for `esc-mode-map'."
-    (let ((funsymbol (intern (format "esc/yank-displaced-%s" funcname)))
+    (let ((funcname (intern (format "esc/yank-displaced-%s" funcname)))
           (str (car data))
           (back (or (cadr data) 1)))
       (let ((docstring (format "Insert %s ARG times." str)))
-      `(defun ,funsymbol (&optional ARG)
+      `(defun ,funcname (&optional ARG)
          ,docstring
          (interactive "p")
          (dotimes (i ARG)
@@ -1412,30 +1418,30 @@ Below is the forge, boilerplate functions are churned out en-masse.
              (let ((funcname (car function))
                    (data     (cdr function)))
                (eval `(esc/define-displaced-yank ,funcname ,data))))
-           '((parens "()")
-             (braces "{}")
-             (brackets "[]")
+           '((parens              "()")
+             (braces              "{}")
+             (brackets            "[]")
              (brackets-with-colon "[:]")
-             (pipes "||")
-             (chevrons "<>")
-             (quotes "\"\"")
-             (single-quotes "''")
-             (stars "**")
-             (dollars "$$")
-             (equals "==")
+             (pipes               "||")
+             (chevrons            "<>")
+             (quotes              "\"\"")
+             (single-quotes       "''")
+             (stars               "**")
+             (dollars             "$$")
+             (equals              "==")
              ;; a good example of code reuse
-             (ticks "`'")
-             (little-arrow "->" 0)
-             (doxygen-comment "/*!  */" 3))) ;; todo: implement with yasnippet
+             (ticks               "`'")
+             (little-arrow        "->" 0)
+             (doxygen-comment     "/*!  */" 3))) ;; todo: implement with yasnippet
 
   ;; todo: use current line in absence of region
-  (defmacro esc/org-define-header-indentation-defuns(funsymbol callback)
+  (defmacro esc/define-org-header-indentation(funcname callback)
     "Define functions to manipulate the header level of selected
   region in `org-mode'."
-    (let ((funsymbol (intern (format "esc/org-%s-headers-in-region" funsymbol)))
-          (docstring (format "%s `org-mode' headers ARG times in currently selected region."
-                             funsymbol)))
-    `(defun ,funsymbol (&optional ARG)
+    (let ((funcname (intern (format "esc/org-%s-headers-in-region" funcname)))
+          (docstring (format "%s `org-mode' headers arg times in currently selected region."
+                             funcname)))
+    `(defun ,funcname (&optional arg)
        ,docstring
        (interactive "p")
        (save-excursion
@@ -1444,16 +1450,51 @@ Below is the forge, boilerplate functions are churned out en-masse.
            (goto-char end)
            (while (and (< beg (point))
                        (re-search-backward "^\*" beg 'noerror))
-             (dotimes (i ARG) ,callback)
+             (dotimes (i arg) ,callback)
              (previous-line)
              (end-of-line)))))))
 
   (mapcar (lambda (data)
-            (let ((funsymbol (car data))
+            (let ((funcname (car data))
                   (callback (cadr data)))
-              (esc/org-define-header-indentation-defuns funsymbol callback)))
+              (esc/define-org-header-indentation funcname callback)))
           '((indent (insert "*"))
             (unindent (kill-forward-chars 1))))
+
+  (defmacro esc/define-scroll-slight(funcname)
+    "Define functions to scroll the buffer slightly without moving point."
+    (let ((funcname (format "esc/scroll-%s-slight" funcname))
+          (docstring (format "Scroll %s the page ARG times without moving point. The number of lines to scroll is determined by the variable `esc-line-shift-amount'.
+
+  This command can be prefixed." funcname))
+          (command (intern (format "scroll-%s" funcname))))
+      `(defun ,funcname(i arg)
+         ,docstring
+         (interactive "p")
+         (dotimes (i arg)
+           (,command esc-line-shift-amount)))))
+
+  (mapcar (lambda (data) `(esc/define-scroll-slight ,data))
+          '(up down))
+
+  (defmacro esc/define-zoom(funcname command)
+    "Define functions to zoom into and out of a buffer."
+    (let ((funcname (format "esc/zoom-%s" funcname))
+          (docstring (format "Zoom %s on the font in all buffers by `esc-zoom-amount' points.
+
+  This command can be prefixed." funcname)))
+      `(defun ,funcname(arg)
+         ,docstring
+         (interactive "p")
+         (dotimes (i arg)
+           (,command esc-zoom-amount)))))
+
+  (mapcar (lambda (data)
+            (let ((funcname (car data))
+                  (command (cadr data)))
+              `(esc/define-zoom ,funcname ,command)))
+          '((in +)
+            (out -)))
 #+END_SRC
 
 ** esc bindings
@@ -1687,6 +1728,8 @@ haven't had to look at it yet.
     "cursor-movement"
     ("j" esc/scroll-up-slight "scroll up")
     ("k" esc/scroll-down-slight "scroll down")
+    ("s" isearch-forward "isearch-f" :color blue)
+    ("r" isearch-backward "isearch-r" :color blue)
     ("n" next-line "next-line")
     ("p" previous-line "prev-line")
     ("e" end-of-line "end-of-line")

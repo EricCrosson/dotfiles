@@ -76,3 +76,26 @@
         (insert (format "%S" defn))))))
 
 (provide 'help+)
+
+;;;###autoload
+(defun describe-keymap (keymap)
+  "Describe bindings in KEYMAP, a variable whose value is a keymap.
+Completion is available for the keymap name."
+  (interactive
+   (list (intern
+          (completing-read
+           "Keymap: " obarray
+           (lambda (m) (and (boundp m) (keymapp (symbol-value m))))
+           t nil 'variable-name-history))))
+  (unless (and (symbolp keymap) (boundp keymap) (keymapp (symbol-value keymap)))
+    (error "`%S' is not a keymapp" keymap))
+  (let ((name  (symbol-name keymap))
+        (doc   (documentation-property keymap 'variable-documentation)))
+    (help-setup-xref (list #'describe-keymap keymap) (interactive-p))
+    (with-output-to-temp-buffer "*Help*"
+      (princ name) (terpri)
+      (princ (make-string (length name) ?-)) (terpri) (terpri)
+      (when doc (princ doc) (terpri) (terpri))
+      ;; Use `insert' instead of `princ', so control chars (e.g. \377) insert correctly.
+      (with-current-buffer "*Help*"
+        (insert (substitute-command-keys (concat "\\{" name "}")))))))
