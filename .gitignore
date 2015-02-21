@@ -46,3 +46,7 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/site-lisp/esc-lisp/ido-extras.el
 /emacs/.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el
 /emacs/.emacs.d/site-lisp/esc-lisp/rtos/rtos-dev-mode.el
+/emacs/.emacs.d/site-lisp/esc-lisp/browse-cliplink.el
+/emacs/.emacs.d/site-lisp/esc-lisp/cygwin/README.org
+/emacs/.emacs.d/site-lisp/esc-lisp/cygwin/w32-symlinks.el
+/emacs/.emacs.d/site-lisp/esc-lisp/gntp.el
