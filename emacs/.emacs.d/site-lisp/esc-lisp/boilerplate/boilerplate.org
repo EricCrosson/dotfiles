@@ -1,4 +1,5 @@
-#+STARTUP: content
+#+todo: TODO(t) VERIFY(v) PRINT(r) | OPTIONAL(o) HIATUS(h) DONE(d) CANCELED(c)
+#+startup: content
 * Introduction
 #+NAME: license
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -23,34 +24,9 @@
   ;; belong in my .emacs. Only tried-and-tested programs make it into
   ;; this vault.
 #+END_SRC
-
-* Customize variables
-
-Here variables are exposed to Emacs' customize function.
-
-#+NAME: esc-file-locations
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defcustom esc/emacs-init-org-path nil
-    "The path to esc's init.org configuration file."
-    :type         'file
-    :options      '("~/.emacs.d/init.org"
-                    "~/dotfiles/emacs/.emacs.d/init.org")
-    :group        'boil)
-  (setq esc/emacs-init-org-path "~/dotfiles/emacs/.emacs.d/init.org")
-
-  (defcustom esc/bash-org-path nil
-    "The path to esc's bash.org configuration file."
-    :type         'file
-    :options      '("~/dotfiles/bash/bash.org")
-    :group        'boil)
-  (setq esc/bash-org-path "~/dotfiles/bash/bash.org")
-#+END_SRC
-
 * Hooks
-
 Here are custom hooks esc appends to common exposed hooks.
 Captain Hook. Hooks are great. Everybody should expose more hooks.
-
 ** prog-mode-hook
 #+NAME: prog-mode-hook
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -154,17 +130,13 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
   (defcustom esc/emacs-lisp-mode-hook nil
     "esc's code to \\[emacs-lisp-mode-hook]."
     :type         'hook
-    :options      '(;(setq mode-name "elisp")
-                    ;(idle-highlight t)
-                    )
+    :options      '((turn-on-eldoc-mode))
     :group        'boil)
 
   ;;;###autoload
   (defun esc/emacs-lisp-mode-hook ()
     "esc's code to \\[emacs-lisp-mode-hook]."
-    ;(setq mode-name "elisp")
-    ;(idle-highlight t)
-    )
+    (turn-on-eldoc-mode))
 #+END_SRC
 ** fundamental-mode-hook
 #+NAME: fundamental-mode-hook
@@ -181,6 +153,16 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
     "esc's code to \\[fundamental-mode-hook]."
     (autopair-mode -1)
     (flyspell-mode 1))
+#+END_SRC
+** eshell-mode-hook
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defun esc/eshell-mode-hook ()
+    (define-key eshell-mode-map (kbd "C-x C-p") 'eshell-previous-matching-input-from-input)
+    (define-key eshell-mode-map (kbd "C-x C-n") 'eshell-next-matching-input-from-input)
+    (when (require 'em-smart nil 'noerror)
+      (setq eshell-where-to-jump 'begin
+            eshell-review-quick-commands nil
+            eshell-smart-space-goes-to-end t)))
 #+END_SRC
 ** enh-ruby-mode-hook
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -238,6 +220,16 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
     (define-key iedit-mode-keymap (kbd "C-'") 'execute-extended-command))
 #+END_SRC
 
+** org-mode-hook
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;;;###autoload
+  (defun esc/org-mode-hook()
+    (org-indent-mode)
+    (imenu-add-to-menubar "Imenu")
+    (local-set-key (kbd "C-M-n") 'outline-next-visible-heading)
+    (local-set-key (kbd "C-M-p") 'outline-previous-visible-heading)
+    (local-set-key (kbd "C-c C-a") 'org-todo))
+#+END_SRC
 ** big-fringe-mode-hook
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;;;###autoload
@@ -246,7 +238,6 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
     )
 #+END_SRC
 * Licenses
-#+NAME: insert-short-gpl
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;;;###autoload
   (defun esc/insert-short-gpl ()
@@ -271,173 +262,40 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
   "))
 #+END_SRC
 
-* Comments
-#+NAME: javadoc-method-comment
-#+BEGIN_SRC emacs-lisp :tangle yes
+* Emacs+
+#+BEGIN_SRC emacs-lisp :tangle emacs+.el
   ;;;###autoload
-  (defun esc/javadoc-method-comment ()
-    "Insert a javadoc method comment at point."
-    (interactive)
-    (insert
-     "/**
-   ,*
-   ,*
-   ,*
-   ,*
-   ,* @param
-   ,* @return
-   ,* @exeption
-   ,* @see
-   ,*/
-  ")
-    (previous-line 8)
-    (end-of-line))
-#+END_SRC
+  (defun esc/unkillable-scratch-buffer ()
+    (if (equal (buffer-name (current-buffer)) "*scratch*")
+        (progn
+          (delete-region (point-min) (point-max))
+          (insert initial-scratch-message)
+          nil)
+      t))
 
-* Paired insertion
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defmacro esc/define-displaced-yank (funcname data)
-    (let ((funsymbol (intern (format "esc/yank-displaced-%s" funcname)))
-          (char (car data))
-          (back (or (cadr data) 1)))
-      `(defun ,funsymbol (&optional ARG)
-         "This defun was generated pragmatically. Docstrings have
-  not been ironed out yet. See the defun-generating code for more
-  information."
-         (interactive "p")
-         (dotimes (i ARG)
-           (insert ,char)
-           (backward-char ,back)))))
-
-  (mapcar* (lambda (function)
-             (let ((funcname (car function))
-                   (data     (cdr function)))
-               (eval `(esc/define-displaced-yank ,funcname ,data))))
-           '((parens "()")
-             (braces "{}")
-             (brackets "[]")
-             (brackets-with-colon "[:]")
-             (chevrons "<>")
-             (quotes "\"\"")
-             (stars "**")
-             (dollars "$$")
-
-             ;; a good example of code reuse
-             (ticks "`'")
-             (little-arrow "->" 0)
-             (doxygen-comment "/*!  */" 3)))
-#+END_SRC
-
-* Extending Emacs
-#+NAME: autoload management
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;;###autoload
-  (defun esc/magic-autoload-next-defun-or-macro ()
-    "Prefix the next defun or macro after point with a line
-  identifying the sexp as a magically autoloaded cookie."
-    (interactive)
-    (let ((autoloadable "(def[um][na]c?r?o?"))
-      (when (re-search-forward autoloadable)
-        (search-backward "(")
-        (split-line)
-        (insert ";;;###autoload")
-        ;; move point past this match
-        (re-search-forward autoloadable))))
-#+END_SRC
-
-#+NAME: mode-line-other-buffer-other-window
-#+BEGIN_SRC emacs-lisp :tangle yes
   ;;;###autoload
   (defun esc/mode-line-other-buffer-other-window ()
     "Switch to `other-window', use `mode-line-other-buffer', and
-  switch back to the original window."
+      switch back to the original window."
     (interactive)
     (other-window 1)
     (mode-line-other-buffer)
     (other-window -1))
 #+END_SRC
-#+NAME: editing common configs
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; TODO also check that the register to restore the window
-  ;; configuration to exists and has content before attempting to
-  ;; restore. Maybe this todo belongs somewhere else
-  ;;;###autoload
-  (defun esc/edit-my-emacs()
-    (interactive)
-    (esc/toggle-fullscreen-buffer
-      :edit-my-config
-      (and (string= "org-mode" major-mode)
-           (string= ".emacs.org" (file-name-nondirectory (buffer-file-name))))
-      (progn (find-file-existing esc/emacs-init-org-path)
-             (helm-imenu)
-             (org-cycle))))
-
-  ;;;###autoload
-  (defun esc/edit-my-bash()
-    (interactive)
-    (esc/toggle-fullscreen-buffer
-      :edit-my-config
-      (and (string= "org-mode" major-mode)
-           (string= "bash.org" (file-name-nondirectory (buffer-file-name))))
-      (progn (find-file-existing esc/bash-org-path)
-             (helm-imenu)
-             (org-cycle))))
-#+END_SRC
-#+NAME: whole word management
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;;###autoload
-  (defun esc/delete-whole-word ()
-    "This defun will delete the entire word at point. This function
-  relies on `esc/kill-whole-word'."
-    (interactive)
-    (esc/kill-whole-word t))
-
-  ;; TODO: accept a prefix arg
-  ;;;###autoload
-  (defun esc/kill-whole-word (&optional delete)
-    "This defun will kill the entire word at point (on both sides of
-  point).
-
-  DELETE, if non-nil, will prevent the word from being appended to the
-  kill-ring."
-    (interactive)
-    (let ((bounds (bounds-of-thing-at-point 'word)))
-      (save-excursion
-        (goto-char (car bounds))
-        (if (not delete)
-            (kill-word 1)
-          (delete-region (car bounds) (cdr bounds))))))
-#+END_SRC
-#+NAME: eval-and-replace
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;;###autoload
-  (defun esc/eval-and-replace (&optional arg)
-    "Replace the preceding sexp with its value."
-    (interactive "P")
-    (backward-kill-sexp)
-    (let ((expression (current-kill 0)))
-      (condition-case nil
-          (progn
-            (when arg (insert (concat expression " = ")))
-            (prin1 (eval (read expression))
-                   (current-buffer)))
-        (error (message "Invalid expression")
-               (insert expression)))))
-#+END_SRC
-#+NAME: insert-defun-at-point
-#+BEGIN_SRC emacs-lisp :tangle yes
+* Help+
+#+BEGIN_SRC emacs-lisp :tangle help+.el
   ;; TODO make this insert parens, and the appropriate spaces for
   ;; arguments. I'm envisioning a clean, cdlatex-mode type thing
   ;;;###autoload
   (defun esc/insert-defun-at-point (&optional key insert untranslated string)
     "Insert at point the name of the function KEY invokes.  KEY is a string.
-  If INSERT (the prefix arg) is non-nil, insert the message in the
-  buffer.  If non-nil, UNTRANSLATED is a vector of the untranslated
-  events.  It can also be a number in which case the untranslated
-  events from the last key hit are used.
+    If INSERT (the prefix arg) is non-nil, insert the message in the
+    buffer.  If non-nil, UNTRANSLATED is a vector of the untranslated
+    events.  It can also be a number in which case the untranslated
+    events from the last key hit are used.
 
-  If KEY is a menu item or a tool-bar button that is disabled, this command
-  temporarily enables it to allow getting help on disabled items and buttons."
+    If KEY is a menu item or a tool-bar button that is disabled, this command
+    temporarily enables it to allow getting help on disabled items and buttons."
     (interactive
      (let ((enable-disabled-menus-and-buttons t)
            (cursor-in-echo-area t)
@@ -501,6 +359,49 @@ Captain Hook. Hooks are great. Everybody should expose more hooks.
         (if string
             defn
           (insert (format "%S" defn))))))
+
+  (provide 'help+)
+#+END_SRC
+* Extending Emacs
+
+#+NAME: whole word management
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;;;###autoload
+  (defun esc/delete-whole-word ()
+    "This defun will delete the entire word at point. This function
+  relies on `esc/kill-whole-word'."
+    (interactive)
+    (esc/kill-whole-word t))
+
+  ;; TODO: accept a prefix arg
+  ;;;###autoload
+  (defun esc/kill-whole-word (&optional delete)
+    "This defun will kill the entire word at point (on both sides
+  of point). DELETE, if non-nil, will prevent the word from being
+  appended to the kill-ring."
+    (interactive)
+    (let ((bounds (bounds-of-thing-at-point 'word)))
+      (save-excursion
+        (goto-char (car bounds))
+        (if (not delete)
+            (kill-word 1)
+          (delete-region (car bounds) (cdr bounds))))))
+#+END_SRC
+#+NAME: eval-and-replace
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;;;###autoload
+  (defun esc/eval-and-replace (&optional arg)
+    "Replace the preceding sexp with its value."
+    (interactive "P")
+    (backward-kill-sexp)
+    (let ((expression (current-kill 0)))
+      (condition-case nil
+          (progn
+            (when arg (insert (concat expression " = ")))
+            (prin1 (eval (read expression))
+                   (current-buffer)))
+        (error (message "Invalid expression")
+               (insert expression)))))
 #+END_SRC
 #+NAME: save-buffers-kill-emacs
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -913,28 +814,27 @@ This command can be prefixed."
   (dotimes (i arg)
     (scroll-down esc-line-shift-amount)))
 #+END_SRC
-#+NAME: backward-kill-line
-#+BEGIN_SRC emacs-lisp :tangle yes
+[[http://www.emacswiki.org/emacs/BackwardDeleteWord][EmacsWiki: Backward Delete Word]]
+#+NAME: delete-word
+#+BEGIN_SRC emacs-lisp :tangle emacs+.el
   ;;;###autoload
-(defun esc/backward-kill-line (&optional arg)
-  "Kill up to `beginning-of-line', and kill ARG lines above point.
-Everything will be appended to the kill ring."
-  (interactive "p")
-  (dotimes (i arg)
-    (if (not (eq (point) (line-beginning-position)))
-	(kill-line 0)
-      (if (eq i 1)
-	  (append-next-kill))
-      (kill-line -1)))
-  (indent-according-to-mode))
+  (defun delete-word (arg)
+    "Delete characters forward until encountering the end of a word.
+  With argument, do this that many times."
+    (interactive "p")
+    (delete-region (point) (progn (forward-word arg) (point))))
+
+  ;;;###autoload
+  (defun backward-delete-word (arg)
+    "Delete characters backward until encountering the end of a word.
+  With argument, do this that many times."
+    (interactive "p")
+    (delete-word (- arg)))
 #+END_SRC
-
 [[http://whattheemacsd.com/key-bindings.el-03.html][Magnar]] said it best, here's one command I could not live without.
-
-#+NAME: pull-up-line
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle emacs+.el
   ;;;###autoload
-(defun esc/pull-up-line (&optional arg)		;thanks magnar
+(defun esc/pull-up-line (&optional arg)
   "Pull up ARG lines."
   (interactive "p")
   (dotimes (i arg)
@@ -942,8 +842,7 @@ Everything will be appended to the kill ring."
 #+END_SRC
 
 Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-modes/help-fns%252B.el%0A][help-fns+]].
-#+NAME: describe-keymap
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle emacs+.el
   ;;;###autoload
   (defun describe-keymap (keymap)
     "Describe bindings in KEYMAP, a variable whose value is a keymap.
@@ -966,6 +865,8 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
         ;; Use `insert' instead of `princ', so control chars (e.g. \377) insert correctly.
         (with-current-buffer "*Help*"
           (insert (substitute-command-keys (concat "\\{" name "}")))))))
+
+  (provide 'emacs+)
 #+END_SRC
 
 ** core functionality
@@ -976,20 +877,11 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
     (interactive)
     (let ((comint-buffer-maximum-size 0))
       (comint-truncate-buffer)))
-
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;;###autoload
-  (defun byte-compile-directory(dir)
-    "Compile an .elc file for every .el file contained under
-  DIR (recursive)."
-    (byte-recompile-directory (expand-file-name dir) 0))
 #+END_SRC
 
 Many thanks to [[http://www.emacswiki.org/emacs/DictMode][EmacsWiki]].
 
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle
   ;;;###autoload
   (defun esc/dictionary-search ()
     (interactive)
@@ -1040,7 +932,7 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;;;###autoload
   (defun rename-defun (function)
-    "Rename FUNCTION to a new name. Makfunbound FUNCTION after
+    "Rename loaded FUNCTION to a new name. Makfunbound FUNCTION after
   evaling the newly named defun."
     (interactive (find-function-read))
     (if (null function)
@@ -1085,23 +977,6 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
                     (t                 str)))))
 #+END_SRC
 
-#+NAME: org source code block movement commands
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;;###autoload
-  (defun esc/org-next-source-code-block ()
-    (interactive)
-    (re-search-forward "#\\+begin_src" nil t)
-    (next-line)
-    (beginning-of-line))
-
-  ;;;###autoload
-  (defun esc/org-prev-source-code-block ()
-    (interactive)
-    (previous-line)
-    (beginning-of-line)
-    (re-search-backward "#\\+begin_src" nil t))
-#+END_SRC
-
 #+NAME: Searching for word at point up or down
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defun esc/search-word-backward ()
@@ -1125,20 +1000,12 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
          cur))))
 #+END_SRC
 
-** Programming extensions
-*** C
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defun esc/c-insert-ifdef-ndebug-printf ()
-    "Insert a printf template wrapped in #ifdefs for easy debugging."
-    (interactive)
-    (beginning-of-line)
-    (insert (concat "#ifndef NDEBUG\n  "
-                    esc/c-insert-ifdef-ndebug-printf-string
-                    "\n#endif\n"))
-    (search-backward " \\")
-    (forward-char 1))
-#+END_SRC
-* [0/1] TODOs
-** TODO logically separate commands
+* [0/3] TODOs
+** [0/0] logically separate commands
 - "when one autoload is called the entire file is loaded"
 - this is too big of a chunk, break it down
+- re-incorporate them back into org
+** [0/1] org
+*** TODO C-. to bury until current-buffer isn't in org-agenda-files
+** [0/1] displaced yank
+*** TODO autoload

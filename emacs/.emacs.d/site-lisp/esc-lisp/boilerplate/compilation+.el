@@ -35,6 +35,26 @@ Argument STRING provided by compilation hooks."
     ;; TODO: winner-undo if compile created a new buffer
     (message "Compilation successful.")))
 
+;;;###autoload
+(defun esc/org-next-source-code-block ()
+  (interactive)
+  (re-search-forward "#\\+begin_src" nil t)
+  (next-line)
+  (beginning-of-line))
+
+;;;###autoload
+(defun esc/org-prev-source-code-block ()
+  (interactive)
+  (previous-line)
+  (beginning-of-line)
+  (re-search-backward "#\\+begin_src" nil t))
+
+;;;###autoload
+(defun byte-compile-directory(dir)
+  "Compile an .elc file for every .el file contained under
+  DIR (recursive)."
+  (byte-recompile-directory (expand-file-name dir) 0))
+
 (provide 'compilation+)
 
 ;;; compilation+.el ends here

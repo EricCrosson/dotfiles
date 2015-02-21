@@ -1,9 +1,8 @@
 #+author: Eric Crosson
 #+email: esc@ericcrosson.com
-#+todo: TODO(t) VERIFY(v) PRINT(r) | OPTIONAL(o) HIATUS(h) DONE(d) CANCELED(c)
-#+STARTUP: content
+#+todo: TODO(t) VERIFY(v) IN-PROGRESS(p) PRINT(r) | OPTIONAL(o) HIATUS(h) DONE(d) DISCARDED(c)
+#+startup: content
 * Introduction
-#+NAME: program-license
 #+BEGIN_SRC emacs-lisp :tangle yes
     ;;; .emacs.el
 
@@ -32,8 +31,49 @@
 
     ;;; Code:
 #+END_SRC
+
+* Load path creation
+This is a neat trick I found to take away 99.9% of the headache when
+dealing with Emacs' load path. Assuming the user has placed every
+file, script and dependency in his or her =~/.emacs.d/= directory,
+this block will ensure Emacs can find each file come load time. No
+need to keep the list updated, just load all subdirectories and go.
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defcustom site-lisp-path nil
+    "Path to esc's lisp library."
+    :type 'path
+    :options '("~/.emacs.d/site-lisp/")
+    :group 'esc-mode)
+  (setq site-lisp-path "~/.emacs.d/site-lisp/")
+
+  (defcustom esc-lisp-path nil
+    "Path to esc's lisp library."
+    :type 'path
+    :options '("~/.emacs.d/site-lisp/esc-lisp/")
+    :group 'esc-mode)
+  (setq esc-lisp-path (concat site-lisp-path "esc-lisp/"))
+
+  (defcustom esc-loaddefs-path nil
+    "Path to `loaddefs.el' file used by esc's Emacs sessions."
+    :type 'path
+    :options '("~/.emacs.d/site-lisp/esc-lisp/loaddefs.el")
+    :group 'esc-mode)
+  (setq esc-loaddefs-path (concat esc-lisp-path "loaddefs.el"))
+
+  (let ((default-directory site-lisp-path))      ;for easy
+    (normal-top-level-add-to-load-path '("."))   ;recursive
+    (normal-top-level-add-subdirs-to-load-path)) ;loading
+
+  (autoload 'list-files-in-subtree-matching-regexp-recursive
+    (concat esc-lisp-path "update-autoloads/update-autoloads.el"))
+  ;; Load all project's loaddefs.el (automatically managed)
+  (mapc (lambda (loaddef) (load-file loaddef))
+        (list-files-in-subtree-matching-regexp-recursive
+         esc-lisp-path "loaddefs.el"))
+#+END_SRC
+
+* UI
 Now that the legal stuff is out of the way, let's get out the rat poison.
-#+NAME: ratpoison
 #+BEGIN_SRC emacs-lisp :tangle yes
   (mapc (lambda (mode) (when (fboundp mode) (funcall mode -1)))
         '(menu-bar-mode
@@ -41,47 +81,24 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
           scroll-bar-mode))
 #+END_SRC
 
-#+NAME: mood lighting
+Fire up the mood lighting
 #+BEGIN_SRC emacs-lisp :tangle yes
   (load-theme 'wombat)
+  (mapcar (lambda (data) (set-face-attribute (car data) nil
+                                        :underline  nil
+                                        :foreground 'unspecified
+                                        :background (cadr data)))
+          '((highlight "#444")
+            (region    "#666")))
 #+END_SRC
-* [6/15] TODOs
-:PROPERTIES:
-:COOKIE_DATA: recursive
-:END:
-- [X] fix load path
-- [X] quick dict(ionary)
-- [X] remove tangles files from git, provide makefile
-- [X] allow tabs in makefile-mode
-  works with tabify
-- [X] byte-compile-directory
-- [X] diminish stuff
-- [ ] activate =size-indication-mode= with =power-line-mode=
-- [ ] make powerline part of esc-mode
-- [ ] scratch buffer as consistent config file
-  only emacs-lisp source blocks from the org file are loaded,
-  naturally
-- [ ] tangling scripts adds execute permission
-  (write-region "" nil custom-file)
-- [ ] smooth esc scrolling
-  best definition so far: scrolling that increases over time
-- [ ] human readable sizes in dired
-  First have to determine how to unhide information on demand
-  for definitions, not spell check
-- [ ] naming standard for org babel files sectioning
-- [ ] gcov output parsed by emacs to hilight gdb code coverage
-- [ ] shift to use-package
-** [0/2] advice to implement
-- [ ] C-h C-k takes you to org instead of .el
-- [ ] advise (kbd "C-x M-r") to save undo information
-** [0/2] ibuffer upgrades
-- [ ] ibuffer, create mode to replace sort-by -mode with -ssh host
-- [ ] ibuffer-vc, make it group files over tramp
+
+[[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee-d77b-45da-ac5c-b9bbb562.gif][Power⚡Line]]
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (require 'powerline)
+  (powerline-default-theme)
+#+END_SRC
 * Free variables
-
-This section declares variables to prevent compiler warnings.
-
-#+NAME: free as in free of compiler warnings
+Free as in free of compiler warnings.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (eval-when-compile
     (defvar package-user-dir)
@@ -130,56 +147,11 @@ This section declares variables to prevent compiler warnings.
     (defvar display-time-24hr-format)
     (defvar global-auto-revert-non-file-buffers)
     (defvar auto-revert-verbose))
-
-#+END_SRC
-* Load path creation
-
-This is a neat trick I found to take away 99.9% of the headache when
-dealing with Emacs' load path. Assuming the user has placed every
-file, script and dependency in his or her =~/.emacs.d/= directory,
-this block will ensure Emacs can find each file come load time. No
-need to keep the list updated, just load all subdirectories and go.
-
-#+NAME: load-path-creation
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defcustom site-lisp-path nil
-    "Path to esc's lisp library."
-    :type 'path
-    :options '("~/.emacs.d/site-lisp/")
-    :group 'esc-mode)
-  (setq site-lisp-path "~/.emacs.d/site-lisp/")
-
-  (defcustom esc-lisp-path nil
-    "Path to esc's lisp library."
-    :type 'path
-    :options '("~/.emacs.d/site-lisp/esc-lisp/")
-    :group 'esc-mode)
-  (setq esc-lisp-path (concat site-lisp-path "esc-lisp/"))
-
-  (defcustom esc-loaddefs-path nil
-    "Path to `loaddefs.el' file used by esc's Emacs sessions."
-    :type 'path
-    :options '("~/.emacs.d/site-lisp/esc-lisp/loaddefs.el")
-    :group 'esc-mode)
-  (setq esc-loaddefs-path (concat esc-lisp-path "loaddefs.el"))
-
-  (let ((default-directory site-lisp-path))      ;for easy
-    (normal-top-level-add-to-load-path '("."))   ;recursive
-    (normal-top-level-add-subdirs-to-load-path)) ;loading
-
-  (autoload 'list-files-in-subtree-matching-regexp-recursive
-    (concat esc-lisp-path "update-autoloads/update-autoloads.el"))
-  ;; Load all project's loaddefs.el (automatically managed)
-  (mapc (lambda (loaddef) (load-file loaddef))
-        (list-files-in-subtree-matching-regexp-recursive
-         esc-lisp-path "loaddefs.el"))
 #+END_SRC
 
 * Macros
-
 I took the macro below from [[http://milkbox.net/note/single-file-master-emacs-configuration/][milkypostman]]. His article is really worth
 a read; stop what you're doing and go take a look if you haven't.
-
 #+BEGIN_SRC emacs-lisp :tangle yes
 (defmacro after (mode &rest body)
   "`eval-after-load' MODE evaluate BODY."
@@ -188,9 +160,8 @@ a read; stop what you're doing and go take a look if you haven't.
      '(progn ,@body)))
 #+END_SRC
 
-A macro to wrap code execution in those handy \*Messages\* style
+A macro to wrap code execution in those handy =*Messages*= style
 notifications.
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defmacro message-progress (message &rest body)
     "Message MESSAGE and run BODY. Then message MESSSAGE...done."
@@ -201,9 +172,7 @@ notifications.
        (message (concat ,message "...done"))))
 #+END_SRC
 
-The macros below are to facilitate loading with minimal code. This is
-lisp; we use lists. Get used to it, they're pretty great.
-
+Facilitate normal initialization processes.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defmacro autoload-from-package (package functions)
     "From PACKAGE (string), autoload FUNCTIONS (list)."
@@ -219,24 +188,21 @@ lisp; we use lists. Get used to it, they're pretty great.
 #+END_SRC
 
 * Auto-compile configuration
-
-  Set up [[https://github.com/tarsius/auto-compile][auto-compile mode]] to compile source files before loading iff
-  source is newer than the presently compiled file. A good tradeoff
-  with proper distributed version control.
-
-  #+BEGIN_SRC emacs-lisp :tangle yes
-    (setq load-prefer-newer t)
-    (require-package '(auto-compile))
-    (auto-compile-on-load-mode 1)
-  #+END_SRC
+Set up [[https://github.com/tarsius/auto-compile][auto-compile mode]] to compile source files before loading iff
+source is newer than the presently compiled file. A good tradeoff
+with proper distributed version control.
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq load-prefer-newer t)
+  (require-package '(auto-compile))
+  (auto-compile-on-load-mode 1)
+#+END_SRC
 
 * Package configuration
 #+NAME: package-manager-initialization
 #+BEGIN_SRC emacs-lisp :tangle yes
   (when (require 'package nil 'noerror)
     (setq package-user-dir (concat site-lisp-path "elpa/"))
-    (mapc (lambda (source)
-              (add-to-list 'package-archives source) t)
+    (mapc (lambda (source) (add-to-list 'package-archives source) t)
           '(("gnu" . "http://elpa.gnu.org/packages/")
             ("marmalade" . "http://marmalade-repo.org/packages/")
             ("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")
@@ -245,78 +211,55 @@ lisp; we use lists. Get used to it, they're pretty great.
 #+END_SRC
 
 * User metadata
-
 Hello, My Name Is
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq user-full-name "Eric Crosson"
         user-mail-address "esc@ericcrosson.com")
 #+END_SRC
 
 * Behavioral modifications
-
-This code is pretty dense. It should probably be broken up, but I
-like the long setq syntax for now.
-
 #+NAME: behavioral-modifications
 #+BEGIN_SRC emacs-lisp :tangle yes
   (put 'overwrite-mode 'disabled t)       ;There shall be no 'insert'
   (fset 'yes-or-no-p 'y-or-n-p)           ;change yes-no to y-n
   (setq-default size-indication-mode t)
   (setq debug-on-error t
+        inhibit-startup-screen t
         initial-scratch-message nil
         ring-bell-function 'ignore        ;turn off alarms completely
-        uniquify-separator ":"            ;needs to be set before uniquify
-        uniquify-buffer-name-style 'post-forward ;is loaded
         disabled-command-function 'beep   ;alert me when accessing disabled funcs
-        x-select-enable-clipboard t       ;global clipboard
-        kill-ring-max 80                  ;kill ring entries
         redisplay-dont-pause t            ;don't pause refreshes
         frame-title-format '("emacs@" system-name ": %f") ;include path of frame
-        save-place-file (expand-file-name "meta/places" user-emacs-directory)
         display-time-load-average-threshold 0.6
         dabbrev-case-replace nil
-        ; begin deprecation: TODO fix
         display-buffer-reuse-frames t     ;raise buffers, not spawn
-        ; end deprecation
         remote-file-name-inhibit-cache t  ;don't resolve remote file attrubutes
         auto-save-default nil
-        inhibit-startup-screen t
         large-file-warning-threshold nil
-        compile-command "make -k -j32"
-        compilation-ask-about-save nil
-        compilation-save-buffers-predicate '(lambda () nil) ;never ask to save
-        ff-search-directories '("." "../inc" "../src")
         set-mark-command-repeat-pop t
         starttls-use-gnutls t
-        recentf-auto-cleanup 'never   ;must be set before recentf loaded
-        mouse-yank-at-point t
-        browse-url-browser-function 'w3m-browse-url
-        kill-buffer-query-functions (remq 'process-kill-buffer-query-function kill-buffer-query-functions)
-        minibuffer-prompt-properties '(read-only t point-entered
+        browse-url-browser-function 'browse-web
+        kill-buffer-query-functions (remq 'process-kill-buffer-query-function
+                                           kill-buffer-query-functions))
+#+END_SRC
+
+Now everybody agrees that the =*Minibuffer*= is unreadable, right?
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq minibuffer-prompt-properties '(read-only t point-entered
                                                  minibuffer-avoid-prompt face
                                                  minibuffer-prompt))
 #+END_SRC
 
 Line numbers, when visible, should be loaded after a short delay and
-not loaded eagerly. They're candy, and who needs to expend system
-resources acquiring candy?
-
+not loaded eagerly. They're candy, and who spends resources acquiring
+candy?
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq linum-delay t
         linum-eager nil)
 #+END_SRC
 
-Let's reduce information generated by compiling. Your code builds, right?
-
-#+NAME: diminish-compiler-warnings
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Diminish compiler warnings
-  (setq byte-compile-warnings '(not interactive-only free-vars))
-#+END_SRC
-
-These settings keep the text soup that is GNU/Linux as happy as GNU/Linux files can be.
-
+These settings keep the text soup that is GNU/Linux as happy as
+GNU/Linux files can be.
 #+NAME: char-and-font-encoding
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Char and font encoding
@@ -329,8 +272,8 @@ These settings keep the text soup that is GNU/Linux as happy as GNU/Linux files 
         comment-style 'indent)
 #+END_SRC
 
-It is my belief that backup files should not be so obtrusive as to tempt users to disable them.
-
+It is my belief that backup files should not be so obtrusive as to
+tempt users to disable them.
 #+NAME: stash-backups
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Backup settings
@@ -345,7 +288,6 @@ It is my belief that backup files should not be so obtrusive as to tempt users t
 #+END_SRC
 
 Keep a history of =M-x= across sessions.
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq savehist-file (concat user-emacs-directory "meta/savehist"))
   (savehist-mode 1)
@@ -357,9 +299,7 @@ Keep a history of =M-x= across sessions.
 #+END_SRC
 
 * Aliases
-
 I did not grow up in an era where this is a straightforward mnemonic.
-
 #+NAME: alias fmakunbound => undefun
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defalias 'undefun 'fmakunbound)
@@ -367,9 +307,7 @@ I did not grow up in an era where this is a straightforward mnemonic.
 
 * Advice
 ** org advice
-
-Shrink the agenda buffer as small as we can.
-
+Shrink the agenda buffer as small as we can and keep it that way
 #+NAME: Shrink agenda buffer
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defadvice org-agenda (around shrink-agenda-buffer activate)
@@ -377,7 +315,7 @@ Shrink the agenda buffer as small as we can.
     ad-do-it
     (shrink-window-if-larger-than-buffer))
 
-  ;; Also, keep it shrunken upon refresh
+  ;; keep it shrunken upon refresh
   (defadvice org-agenda-redo (around shrink-agenda-buffer-after-refresh activate)
     "Shrink the agenda after refreshing the display."
     ad-do-it
@@ -385,12 +323,9 @@ Shrink the agenda buffer as small as we can.
 #+END_SRC
 
 ** advising built-in commands
-
 The following macro is to prevent the user from manually having to
 create directories (=M-x make-directory RET RET=) after using
 =find-file= on a nonexistent file.
-
-#+NAME: ensure-parent-dir-exists
 #+BEGIN_SRC emacs-lisp :tangle yes
 (defadvice find-file (before make-directory-maybe
 			     (filename &optional wildcards) activate)
@@ -401,9 +336,18 @@ create directories (=M-x make-directory RET RET=) after using
         (make-directory dir)))))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
+    "Kill `term-mode' buffers when an exit signal is received."
+    (if (memq (process-status proc) '(signal exit))
+        (let ((buffer (process-buffer proc)))
+          ad-do-it
+          (kill-buffer buffer))
+      ad-do-it))
+#+END_SRC
+
 *** comment-dwim
 I wrote a post about my path to this advice somewhere. I'll find a link when it's stable.
-
 #+NAME: One Commenter to Rule Them All (TM)
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defadvice comment-dwim (around comment-line-maybe activate)
@@ -422,7 +366,6 @@ I wrote a post about my path to this advice somewhere. I'll find a link when it'
 #+END_SRC
 
 Prefix '0' to comment-dwim to kill comments entirely.
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defadvice comment-dwim (around delete-comment-if-prefixed activate)
     "If the universal prefix to \\[comment-dwim] is 0, delete the
@@ -443,7 +386,6 @@ about a post)
 
 ** undo tree advice
 Make zipped files obvious.
-
 #+BEGIN_SRC emacs-lisp :tangle no
   (after 'undo-tree
     (defadvice undo-tree-make-history-save-file-name
@@ -452,10 +394,6 @@ Make zipped files obvious.
 #+END_SRC
 
 * Package initialization
-
-TODO: add optional minimum required emacs version for attempted
-include to the require-package macro
-
 #+NAME: require-packages
 #+BEGIN_SRC emacs-lisp :tangle yes
   (require-package
@@ -475,29 +413,22 @@ include to the require-package macro
       ; is there a way to get these autoloads loaded implicitly, like
       ; elpa does?
       esc-mode                             ;The Power Glove
+      displaced-yank
       ))
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'after-save-hook 'esc/auto-byte-recompile)
-#+END_SRC
-
-* Autoloads
+* Configuration
 ** Lua mode config
 Lua: necessary for Awesome WM.
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "lua-mode" '(lua-mode))
   (after 'lua-mode-autoloads
     (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
     (add-to-list 'interpreter-mode-alist '("lua" . lua-mode)))
 #+END_SRC
-** Undo tree autoloads
+
+** Undo tree config
 Thanks to [[http://whattheemacsd.com/my-misc.el-02.html][Magnar]] for the advice.
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "undo-tree"
-    '(undo-tree-undo
-      undo-tree-redo))
-
   (defadvice undo-tree-undo (around keep-region activate)
     (if (use-region-p)
         (let ((m (set-marker (make-marker) (mark)))
@@ -510,132 +441,19 @@ Thanks to [[http://whattheemacsd.com/my-misc.el-02.html][Magnar]] for the advice
       ad-do-it))
 #+END_SRC
 
-** Spray autoloads
+** Spray config
 This mode is based on openspritz, a speedreading tutor.
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (autoload-from-package "spray" '(spray-mode))
 #+END_SRC
 
-** Move text autoloads
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "move-text"
-    '(move-text-up
-      move-text-down))
-#+END_SRC
-
-** Multi term autoloads
-  #+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "multi-term"
-    '(multi-term
-      multi-term-mext))
-#+END_SRC
-
-** Ace jump autoloads
-
-Autoloads for ace-jump-mode proper.
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "ace-jump-mode"
-    '(ace-jump-mode
-      ace-jump-mode-pop-mark))
-#+END_SRC
-
-Autoloads for ace-jump-buffer.
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "ace-jump-buffer"
-    '(ace-jump-buffer))
-#+END_SRC
-
-Autoloads for the king, ace-window.
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "ace-window"
-    '(ace-window))
-#+END_SRC
-
-** Htmlize autoloads
-  #+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "htmlize"
-    '(htmlize-region
-      htmlize-buffer
-      htmlize-ile))
-#+END_SRC
-
-** Enhanced ruby mode
-#+NAME: autoload enhanced-ruby-mode
+** Enhanced ruby mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
 #+END_SRC
-** Iedit autoloads
-  #+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "iedit"
-    '(iedit-mode-toggle-on-function
-      iedit-prev-occurrance
-      iedit-next-occurrance
-      iedit-mode))
-#+END_SRC
 
-** Minimap autoloads
-  #+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "minimap"
-    '(minimap-kill
-      minimap-create
-      minimap-mode))
-#+END_SRC
-
-** Tea-time autoloads
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "tea-time"
-    '(tea-time
-      tea-timer-cancel))
-#+END_SRC
-
-** Scroll all mode autoloads
-TODO: add hook
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (setq mwheel-scroll-up-function 'mwheel-scroll-all-scroll-up-all
-        mwheel-scroll-down-function 'mwheel-scroll-all-scroll-down-all)
-#+END_SRC
-** Miscellaneous autoloads
-#+NAME: Miscellaneous autoloads
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (autoload-from-package "iedit"         '(iedit)) ;multi-replace
-      (autoload-from-package "hide-lines"    '(hide-lines))
-      (autoload-from-package "magit"         '(magit-status))
-      (autoload-from-package "markdown-mode" '(markdown-mode))
-      (autoload-from-package "misc"          '(zap-up-to-char))
-      (autoload-from-package "misc-cmds"     '(revert-buffer-no-confirm))
-      (autoload-from-package "expand-region" '(er/expand-region))
-      (autoload-from-package "autopair"      '(autopair-global-mode)) ;autopair characters
-      (autoload-from-package "auto-complete" '(global-auto-complete-mode)) ;autocomplete syntax
-      (autoload-from-package "clean-mode-line" '(clean-mode-line))
-    #+END_SRC
-** esc's custom package autoloads
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "single-mode"   '(single-mode)) ;an esc-package
-#+END_SRC
-
-* Hooks
-** erc
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'erc-mode-hook 'esc/erc-mode-hook)
-#+END_SRC
-
-** Mini-buffer setup hook
-
-Keep the minibuffer sane.
-
-#+NAME: minibuffer setup hook
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'minibuffer-setup-hook 'esc/minibuffer-setup-hook)
-#+END_SRC
-** ibuffer hook
-
+** ibuffer config
 Modify ibuffer view to include human readable size information.
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Use human readable Size column instead of original one
   (after 'ibuffer
@@ -656,9 +474,7 @@ Modify ibuffer view to include human readable size information.
 #+END_SRC
 
 *** elpa packages
-
 ibuffer-vc is great; make it automatic.
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'ibuffer-vc-autoloads
     (defun esc/ibuffer-vc-refresh ()
@@ -670,7 +486,6 @@ ibuffer-vc is great; make it automatic.
 
 Include vc status info in the buffer list.
 Mabye I'll include this one day, for now it can live in hibernation.
-
 #+BEGIN_SRC emacs-lisp :tangle no
   (after 'ibuffer-vc-autoloads
     (setq ibuffer-formats
@@ -682,31 +497,26 @@ Mabye I'll include this one day, for now it can live in hibernation.
                   filename-and-process))))
 #+END_SRC
 
-** Prog mode
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'prog-mode-hook 'esc/prog-mode-hook)
+** Minimap config
+  #+BEGIN_SRC emacs-lisp :tangle yes
+  (autoload-from-package "minimap"
+    '(minimap-kill
+      minimap-create
+      minimap-mode))
 #+END_SRC
-** FIC-mode config
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'prog-mode-hook 'turn-on-fic-mode)
+
+** Tea-time config
+#+BEGIN_SRC emacs-lisp :tangle no
+  (autoload-from-package "tea-time" '(tea-time))
 #+END_SRC
-** Tea-time hook
+
+** Scroll all mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (after 'notifications
-    (defun esc/notify-tea-steeped ()
-      (notifications-notify :title "Tea time"
-                            :body "Rip out that sac, because your tea bag is done"
-                            :app-name "Tea Time"
-                            :sound-name "alarm-clock-elapsed"))
-    (add-hook 'tea-time-notification-hook 'esc/notify-tea-steeped))
+  (setq mwheel-scroll-up-function   'mwheel-scroll-all-scroll-up-all
+        mwheel-scroll-down-function 'mwheel-scroll-all-scroll-down-all)
 #+END_SRC
-** Fundamental mode
-#+NAME: Fundamental mode configuration
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (after 'fundamental
-    (add-hook 'fundamental-mode-hook 'esc/fundamental-mode-hook))
-#+END_SRC
-** Very Large File mode
+
+** Very Large File mode config
 Configure options for transparent handling of very large files.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'vlf-integrate
@@ -714,39 +524,27 @@ Configure options for transparent handling of very large files.
     (custom-set-variables
      '(vlf-application 'dont-ask)))
 #+END_SRC
-** Text mode
-#+NAME: Text mode configuration
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'text-mode-hook 'turn-on-auto-fill)
-#+END_SRC
-** Conf mode
-#+NAME: auto conf-mode for text soup
+** Conf mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
     (add-to-list
      'auto-mode-alist
      '("\\.\\(screenrc\\)\\'" . conf-mode))
 #+END_SRC
-** YAML mode
-#+NAME: auto yaml-mode for esc's strange filenaming conventions
-#+BEGIN_SRC emacs-lisp :tangle yes
-    (add-to-list
-     'auto-mode-alist
-     '("\\.\\(taml\\)\\'" . yaml-mode))
-#+END_SRC
-** Web mode
-
+** Web mode config
 TODO: disable autopair-mode for web-mode
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-to-list 'auto-mode-alist '("\\.jsp$" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
 #+END_SRC
 
-** Ruby mode
-
+** C config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq ff-search-directories '("." "../inc" "../src"))
+  (add-to-list 'auto-mode-alist '("\\.tcc$" . c++-mode))
+  (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ ")
+#+END_SRC
+** Ruby mode config
 Verbatim from the [[http://www.emacswiki.org/emacs/RubyMode][emacswiki]].
-
-#+NAME: configure-enhance-ruby-mode
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
   (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
@@ -756,77 +554,60 @@ Verbatim from the [[http://www.emacswiki.org/emacs/RubyMode][emacswiki]].
      . enh-ruby-mode))
   (add-hook 'enh-ruby-mode-hook 'esc/enh-ruby-mode-hook)
 #+END_SRC
-** Saveplace
-#+NAME: saveplace configuration
+
+** FIC-mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
-(after 'saveplace
-    (setq save-place-file (concat user-emacs-directory "meta/saveplace.el"))
-    (setq-default save-place t))
+  (add-hook 'prog-mode-hook 'turn-on-fic-mode)
+#+END_SRC
+** Saveplace config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq save-place-file (expand-file-name "meta/places" user-emacs-directory))
+  (after 'saveplace
+      (setq save-place-file (concat user-emacs-directory "meta/saveplace.el"))
+      (setq-default save-place t))
 #+END_SRC
 
-** Recentf
+** Xorg yank config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq x-select-enable-clipboard t       ;global clipboard
+        mouse-yank-at-point t)
+#+END_SRC
+** Compilation config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq compile-command "make -k -j32"
+          compilation-ask-about-save nil
+          compilation-save-buffers-predicate '(lambda () nil)) ;never ask to save
+#+END_SRC
+
+** Byte compilation config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Diminish compiler warnings
+  (setq byte-compile-warnings '(not interactive-only free-vars))
+  (add-hook 'after-save-hook 'esc/auto-byte-recompile)
+#+END_SRC
+
+** Recentf config
 #+NAME: recentf configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
+  (setq recentf-auto-cleanup 'never)  ;must be set before recentf loaded
   (after 'recentf
     (setq recentf-max-menu-items 25
           recentf-max-saved-items 25
           recentf-keep '(file-remote-p file-readable-p)))
 #+END_SRC
 
-** Find-file hook
-#+NAME: never see dos line endings again
+** Tea-time config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'find-file-hook (lambda() (esc/remove-dos-eol)))
+  (after 'notifications
+    (defun esc/notify-tea-steeped ()
+      (notifications-notify :title "Tea time"
+                            :body "Rip out that sac, because your tea bag is done"
+                            :app-name "Tea Time"
+                            :sound-name "alarm-clock-elapsed"))
+    (add-hook 'tea-time-notification-hook 'esc/notify-tea-steeped))
 #+END_SRC
-** Flyspell mode
-#+NAME: Flyspell mode configuration
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (after 'flyspell-mode
-    (setq flyspell-issue-message-flag nil))
-#+END_SRC
-
-** Doc view mode
-#+NAME: doc-view configuration
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (after 'doc-view-mode
-    (setq doc-view-continuous t))
-#+END_SRC
-
-** Abbrev mode
-#+NAME: abbrev-mode configuration
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (after 'abbrev-mode
-    (setq abbrev-file-name "~/emacs.d/abbrev.lst"
-          save-abbrevs t)
-    (if (file-exists-p abbrev-file-name) ;load custom abbrevs
-        (quietly-read-abbrev-file)))
-#+END_SRC
-
-** Auto-complete mode
-#+NAME: auto-complete mode
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (after 'auto-complete-mode
-    (ac-config-default)
-    (add-to-list 'ac-dictionary-directories
-                 "~/.emacs.d/auto-complete/ac-dict"))
-#+END_SRC
-
-** Emacs lisp mode hook
-#+NAME: emacs-lisp-mode hook
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'emacs-lisp-mode-hook 'esc/emacs-lisp-mode-hook)
-#+END_SRC
-
-** Lexbind mode
-#+NAME: lexbind-mode configuration
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (after 'lexbind-mode
-    (add-hook 'emacs-lisp-mode-hook 'lexbind-mode))
-#+END_SRC
-
 ** LaTeX config
 Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-latex-export.html][orgmode.com]].
-
 #+NAME: LaTeX configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'latex-mode
@@ -850,108 +631,49 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
   ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 #+END_SRC
 
-** C mode hook
-#+NAME: c-mode-common hook
+** Flyspell mode config
+#+NAME: Flyspell mode configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'c-mode-common-hook 'esc/c-mode-common-hook)
+  (after 'flyspell-mode
+    (setq flyspell-issue-message-flag nil))
 #+END_SRC
-** C++ config
-#+NAME: recognize template files as c++
+
+** Doc view mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'c++-mode-hook 'esc/c++-mode-hook)
-  (add-to-list 'auto-mode-alist '("\\.tcc$" . c++-mode))
+  (after 'doc-view-mode
+    (setq doc-view-continuous t))
 #+END_SRC
-** Idle highlight mode
+
+** Auto-complete mode config
+#+NAME: auto-complete mode
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (after 'auto-complete-mode
+    (ac-config-default)
+    (add-to-list 'ac-dictionary-directories
+                 "~/.emacs.d/auto-complete/ac-dict"))
+#+END_SRC
+
+** Abbrev mode config
+#+NAME: abbrev-mode configuration
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (after 'abbrev-mode
+    (setq abbrev-file-name "~/emacs.d/abbrev.lst"
+          save-abbrevs t)
+    (if (file-exists-p abbrev-file-name) ;load custom abbrevs
+        (quietly-read-abbrev-file)))
+#+END_SRC
+
+** Idle highlight config
 #+NAME: idle highlight configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'idle-highlight
     (setq-default idle-highlight-idle-time 10.0))
 #+END_SRC
-** Ansi-term config
-
+** Uniquify config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
-    "Kill `term-mode' buffers when an exit signal is received."
-    (if (memq (process-status proc) '(signal exit))
-        (let ((buffer (process-buffer proc)))
-          ad-do-it
-          (kill-buffer buffer))
-      ad-do-it))
-
-  (defadvice ansi-term (before force-bash)
-    "Always use bash for `ansi-term'."
-    (interactive (list my-term-shell)))
-
-  (defvar my-term-shell "/bin/bash")
-
-  (after 'term
-  ;(autoload-from-package "boilerplate" 'esc/term-paste) ;;-already loaded! on TODO
-    (add-hook 'term-mode-hook
-              (lambda()
-                (autopair-mode -1)
-                (setq term-buffer-maximum-size 0 ;keep entire session
-                      autopair-dont-activate t
-                      multi-term-program "/bin/bash")
-                (define-key term-raw-map (kbd "C-y") 'esc-term-paste)
-                (define-key esc-mode-map (kbd "C-c T") 'ansi-term)
-                (define-key esc-mode-map (kbd "C-c t") 'ansi-term-next))))
-#+END_SRC
-
-** Eshell config
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'eshell-named-command-hook 'esc/eshell-exec-perl)
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (define-key eshell-mode-map (kbd "C-x C-p")
-                'eshell-previous-matching-input-from-input)
-              (define-key eshell-mode-map (kbd "C-x C-n")
-                'eshell-next-matching-input-from-input)
-              (when (require 'em-smart nil 'noerror)
-                (setq eshell-where-to-jump 'begin
-                      eshell-review-quick-commands nil
-                      eshell-smart-space-goes-to-end t))))
-#+END_SRC
-
-** w3m config
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "w3m"
-    '(w3m
-      w3m-copy-buffer))
-
-  (autoload-from-package "w3m-config"
-    '(w3m-go-to-linknum
-      w3m-first-or-subsequent-google-result
-      w3m-prev-google-result
-      w3m-find-a-google-result
-      w3m-filter-all
-      w3m-new-tab
-      w3m-browse-url-new-tab
-      w3m-wiki-new-tab
-      w3m-google-new-tab
-      w3m-browse-current-buffer))
-
-  (add-hook 'w3m-mode-hook
-            (lambda ()
-              (define-key w3m-mode-map "n" 'w3m-first-or-subsequent-google-result)
-              (define-key w3m-mode-map "p" 'w3m-prev-google-result)
-
-              (define-key w3m-mode-map "."
-                (lambda() (interactive) (scroll-down 6)))
-
-              (define-key w3m-mode-map ","
-                (lambda() (interactive) (scroll-up 6)))
-
-              (define-key w3m-mode-map "C-."
-                (lambda() (interactive) (scroll-right 3)))
-
-              (define-key w3m-mode-map "C-,"
-                (lambda() (interactive) (scroll-left 3)))
-
-              ;; Eliminate tailing whitespace for a friendlier C-e
-              (add-hook 'w3m-display-hook
-                        (lambda (url)
-                          (let ((buffer-read-only nil))
-                            (delete-trailing-whitespace))))))
+  ;; needs to be set before uniquify is loaded
+  (setq uniquify-separator ":"
+        uniquify-buffer-name-style 'post-forward)
 #+END_SRC
 ** Ido config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -966,13 +688,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
       ido-goto-symbol))
 #+END_SRC
 
-** Iedit config
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'iedit-mode-hook 'esc/iedit-mode-hook)
-#+END_SRC
-
 ** Git gutter+ config
-#+NAME: Git gutter+ config
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;(global-git-gutter+-mode t)
   (after 'git-gutter+
@@ -981,7 +697,6 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
     (define-key git-gutter+-mode-map (kbd "C-x p") 'git-gutter+-previous-hunk)
      ;;; Act on hunks
     (define-key git-gutter+-mode-map (kbd "C-x v =") 'git-gutter+-show-hunk)
-    ;; (define-key git-gutter+-mode-map (kbd "C-x r") nil) ;; stupid
     ;; Stage hunk at point.
     ;; If region is active, stage all hunk lines within the region.
     (define-key git-gutter+-mode-map (kbd "C-x s") 'git-gutter+-stage-hunks)
@@ -989,32 +704,17 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
     (define-key git-gutter+-mode-map (kbd "C-x C") 'git-gutter+-stage-and-commit))
 #+END_SRC
 
-** Multiple cursors
-#+NAME: Multiple cursors autoloads
+** Multiple cursors config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'multiple-cursors-autoloads
-    (setq mc/list-file "~/.emacs.d/meta/.mc-lists.el")
-    (add-hook 'multiple-cursors-mode-enabled-hook  'esc/multiple-cursors-mode-enabled-hook)
-    (add-hook 'multiple-cursors-mode-disabled-hook 'esc/multiple-cursors-mode-disabled-hook))
+    (setq mc/list-file "~/.emacs.d/meta/.mc-lists.el"))
 #+END_SRC
-** Ace jump config
-#+NAME: Ace-jump mode config
+** Ace config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (after 'ace-jump-mode
-      (ace-jump-mode-enable-mark-sync))
-
-  (after 'ace-window
-       (setq aw-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i)))
+  (after 'ace-jump-mode (ace-jump-mode-enable-mark-sync))
+  (after 'ace-window (setq aw-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i)))
 #+END_SRC
 
-** Save hooks
-
-Handy little hooks that nudge new files in the right direction.
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'before-save-hook 'delete-trailing-whitespace)
-  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-#+END_SRC
 ** Which func config
 #+NAME: which-func configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1029,87 +729,114 @@ Handy little hooks that nudge new files in the right direction.
             enh-ruby-mode)))
 #+END_SRC
 
-** comint-mode-hook
-
-Some esc-keys weren't mapped with shell use in mind. Here's a bandaid.
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'comint-mode-hook 'esc/comint-mode-hook)
-#+END_SRC
-
 ** Midnight mode config
-#+NAME: midnight-mode configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'midnight                        ;clean stale buffers
     (midnight-delay-set 'midnight-delay "5:00am"))
     #+END_SRC
 
 ** Keyfreq mode config
-#+NAME: keyfreq-mode configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'keyfreq                               ;let's take some stats
     (keyfreq-autosave-mode 1)
+    ;; TODO; use var for meta dir
     (setq keyfreq-file "~/.emacs.d/meta/keyfreq"))
 #+END_SRC
 
 ** Browse kill ring config
 #+NAME: browse-kill-ring configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
+  (setq kill-ring-max 80)
   (after 'browse-kill-ring
     (browse-kill-ring-default-keybindings))
 #+END_SRC
 
 ** Mouse avoidance config
-#+NAME: mouse-avoidance mode configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (mouse-avoidance-mode 'exile)
 #+END_SRC
 
-** El-Doc mode config
-#+NAME: eldoc configuration
+** Bitly config
+#+NAME: bitly oauth token
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (after 'eldoc
-    (after 'diminish (diminish 'eldoc-mode))
-    (add-hook 'emacs-lisp-mode-hook (lambda() (turn-on-eldoc-mode))))
+  (after 'bitly
+    (setq bitly-access-token "b4a5cd4e51df442ab97012cfc2764c599d6eabf8"))
+#+END_SRC
+** Paradox config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq paradox-github-token "37204ef66b6566274616d130ec61a0cd4f98e066")
 #+END_SRC
 
-#+NAME: eldoc for c configuration
-#+BEGIN_SRC emacs-lisp :tangle no
-  (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ ")
-  (load "c-eldoc")
-  (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
+** Autoloads
+#+NAME: Miscellaneous autoloads
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (autoload-from-package "iedit"         '(iedit)) ;multi-replace
+      (autoload-from-package "magit"         '(magit-status))
+      (autoload-from-package "misc"          '(zap-up-to-char))
+      (autoload-from-package "misc-cmds"     '(revert-buffer-no-confirm))
+      (autoload-from-package "expand-region" '(er/expand-region))
+      (autoload-from-package "autopair"      '(autopair-global-mode)) ;autopair characters
+      (autoload-from-package "auto-complete" '(global-auto-complete-mode)) ;autocomplete syntax
+    #+END_SRC
+
+* Hooks
+Attach =esc-mode= hooks
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (mapc (lambda (hook)
+          (let ((attach (intern (format "esc/%s" hook))))
+            (add-hook hook attach)
+            ))
+        '(erc-mode-hook
+          prog-mode-hook
+          fundamental-mode-hook
+          emacs-lisp-mode-hook
+          c-mode-common-hook
+          c++-mode-hook
+          eshell-mode-hook
+          iedit-mode-hook
+          comint-mode-hook
+          big-fringe-mode-hook
+          org-mode-hook
+          minibuffer-setup-hook
+          dired-mode-hook
+          dired-load-hook
+          multiple-cursors-mode-enabled-hook
+          multiple-cursors-mode-disabled-hook))
 #+END_SRC
 
-** Bury compilation buffer
+** Text mode hook
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
+#+END_SRC
+** Find-file hook
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'find-file-hook 'esc/remove-dos-eol)
+#+END_SRC
+** Lexbind mode
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (after 'lexbind-mode
+    (add-hook 'emacs-lisp-mode-hook 'lexbind-mode))
+#+END_SRC
+
+** Eshell hook
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'eshell-named-command-hook 'esc/eshell-exec-perl)
+#+END_SRC
+
+** Save hooks
+Handy little hooks to nudge new files in the right direction.
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+#+END_SRC
+
+** Compilation buffer hook
 #+NAME: Burying the Compilation buffer if successful
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'compilation-finish-functions
             'esc/bury-compilation-buffer-if-successful)
   (add-to-list 'same-window-buffer-names "*compilation*")
 #+END_SRC
-** Hippie expand config
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defadvice he-substitute-string (after he-paredit-fix)
-    "Remove extra paren when expanding line in paredit"
-    (when (and (fboundp 'paredit-mode)
-               paredit-mode (equal (substring str -1) ")"))
-      (backward-delete-char 1)
-      (forward-char)))
-#+END_SRC
-** Bitly configuration
-#+NAME: bitly oauth token
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (after 'bitly
-    (setq bitly-access-token "b4a5cd4e51df442ab97012cfc2764c599d6eabf8"))
-#+END_SRC
-** Paradox configuration
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (setq paradox-github-token "37204ef66b6566274616d130ec61a0cd4f98e066")
-#+END_SRC
-** Big fringe mode hook
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (add-hook 'big-fringe-mode-hook 'esc/big-fringe-mode-hook)
-   #+END_SRC
 ** Haskell mode hook
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'haskell-mode-hook 'haskell-indent-mode)
@@ -1124,50 +851,32 @@ Some esc-keys weren't mapped with shell use in mind. Here's a bandaid.
           ruby-mode-hook))
 #+END_SRC
 ** Change major mode hook
-
 Take this opportunity to refresh the mode line. Inspiration from
 [[http://www.masteringemacs.org/article/hiding-replacing-modeline-strings][Hiding and replacing modeline strings with clean-mode-line - Mastering
 Emacs]].
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'after-change-major-mode-hook 'clean-mode-line)
 #+END_SRC
 ** Kill buffer hook
-
 [[http://emacswiki.org/emacs/RecreateScratchBuffer][EmacsWiki: Recreate Scratch Buffer]]
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defun esc/unkillable-scratch-buffer ()
-    (if (equal (buffer-name (current-buffer)) "*scratch*")
-        (progn
-          (delete-region (point-min) (point-max))
-          (insert initial-scratch-message)
-          nil)
-      t))
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'kill-buffer-query-functions 'esc/unkillable-scratch-buffer)
 #+END_SRC
+
 ** Kill emacs hook
-
 Summon the magical cookies.
-
-#+NAME: black magic -- begin!
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'kill-emacs-hook 'update-esc-lisp-autoloads)
 #+END_SRC
 
 Override the kill function.
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
 #+END_SRC
 
 * OS configuration
-
 Operating system-specific configurations take place here, within this
 massive =cond=.
-
 #+NAME: Operating System specific configurations
 #+BEGIN_SRC emacs-lisp :tangle yes
   (cond ((or (eq system-type 'ms-dos)
@@ -1215,28 +924,19 @@ Begin Mac OS configuration
 #+END_SRC
 
 * Dired configuration
-
-TODO: reduce this kludge
 #+BEGIN_SRC emacs-lisp :tangle yes
   (require 'dired-details)
   (dired-details-install)
-#+END_SRC
 
-#+NAME: dired configuration
-#+BEGIN_SRC emacs-lisp :tangle yes
-    ;; auto-dired-reload
-    ;; Reload dired after making changes
-    (after 'dash
-      (put '--each 'lisp-indent-function 1)
-      (--each '(dired-do-rename
-                  dired-create-directory
-                  wdired-abort-changes)
-          (eval `(defadvice ,it (after revert-buffer activate)
-                   (revert-buffer)))))
-    ;; end auto-dired-reload- thanks Magnar
-
-  (add-hook 'dired-mode-hook 'esc/dired-mode-hook)
-  (add-hook 'dired-load-hook 'esc/dired-load-hook)
+  ;; auto-dired-reload
+  ;; Reload dired after making changes
+  (after 'dash
+    (put '--each 'lisp-indent-function 1)
+    (--each '(dired-do-rename
+              dired-create-directory
+              wdired-abort-changes)
+            (eval `(defadvice ,it (after revert-buffer activate)
+                     (revert-buffer)))))
 #+END_SRC
 
 ** Wdired
@@ -1251,43 +951,25 @@ TODO: reduce this kludge
 #+END_SRC
 
 * Colors
-
 - [ ] TODO: load this with color-stack
-
 Initialize the color-theme-stack
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defvar color-theme-stack nil "Stack of color themes.")
 #+END_SRC
 
 Lay the color-theme-stack api
-
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/color-theme-stack.el
   ;;;###autoload
   (defun color-theme-push ()
     "Switch to a theme, saving the old one."
     (push (color-theme-make-snapshot) color-theme-stack)
     (message "Color theme pushed"))
+
   ;;;###autoload
   (defun color-theme-pop ()
     "Restore the previous theme in use."
     (funcall (pop color-theme-stack))
     (message "Color theme popped"))
-#+END_SRC
-
-[[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee-d77b-45da-ac5c-b9bbb562.gif][Power⚡Line]]
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (powerline-default-theme)
-#+END_SRC
-
-** Color theme tweaks
-*** Wombat
-Properly colorize wombat.
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (set-face-attribute 'highlight nil :foreground 'unspecified :underline nil)
-  (set-face-attribute 'region nil :foreground 'unspecified :underline nil :background "#666")
 #+END_SRC
 
 * Organize mode configuration
@@ -1296,7 +978,6 @@ Properly colorize wombat.
 triggeri...]]
 
 As of <2015-02-18 Wed> this advice did not work for me.
-
 #+BEGIN_SRC emacs-lisp :tangle no
   ;; NO spell check for embedded snippets
   (defadvice org-mode-flyspell-verify (after org-mode-flyspell-verify-hack activate)
@@ -1315,10 +996,12 @@ As of <2015-02-18 Wed> this advice did not work for me.
         (if (and b e (< (point) e)) (setq rlt nil)))
       (setq ad-return-value rlt)))
 #+END_SRC
+
 ** org config
 My favorite mode. This was the reason I started using Emacs, didja know?
 #+NAME: org mode configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
+  (add-to-list 'org-modules 'org-habit)
   (setq-default major-mode 'org-mode)  ;default mode for new buffers
   (setq org-replace-disputed-keys t    ;must be set before org is loaded
         org-clock-persist 'history
@@ -1326,37 +1009,25 @@ My favorite mode. This was the reason I started using Emacs, didja know?
         org-hide-emphasis-markers t
         org-hierarchical-todo-statistics     nil
         org-checkbox-hierarchical-statistics nil
+        org-habit-graph-column 55
         org-src-fontify-natively t
         org-directory "~/org"
-        org-agenda-files (append '("~/org/todo.org")))
-
-  (after 'org
-    ;; TODO: maybe put these defuns somewhere
-    (defun esc/add-imenu-to-menubar ()
-      (imenu-add-to-menubar "Imenu"))
-    (add-hook 'org-mode-hook 'esc/add-imenu-to-menubar)
-
-    (add-to-list 'org-modules 'org-habit)
-    (setq org-habit-graph-column 55)
-    (defun esc/after-org-mode-hook ()
-      (org-indent-mode)
-      (local-set-key (kbd "C-M-n") 'outline-next-visible-heading)
-      (local-set-key (kbd "C-M-p") 'outline-previous-visible-heading)
-      (local-set-key (kbd "C-c C-a") 'org-todo))
-    (add-hook 'org-mode-hook 'esc/after-org-mode-hook))
+        org-agenda-files (append '("~/workspace/ee445m-labs/doc/todo.org"
+                                   "~/org/intel.org"
+                                   "~/org/todo.org")))
 #+END_SRC
 
-#+NAME: adding comments to org
+[[http://lists.gnu.org/archive/html/emacs-orgmode/2012-05/msg00708.html][More information on defining your own Easy Templates]].
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (after 'org
-         (add-to-list 'org-structure-template-alist
-                      '("E"
-                        "#+BEGIN_SRC emacs-lisp ?\n\n#+END_SRC"
-                        "<emacs-lisp>\n?\n</emacs-lisp>")))
+    (after 'org
+           (add-to-list 'org-structure-template-alist
+                        '("E"
+                          "#+BEGIN_SRC emacs-lisp ?\n\n#+END_SRC"
+                          "<emacs-lisp>\n?\n</emacs-lisp>")))
+
 #+END_SRC
 
 ** org babel
-#+NAME: whitelist org-babel execute permission
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'org-mode-hook
             (lambda ()
@@ -1387,17 +1058,6 @@ My favorite mode. This was the reason I started using Emacs, didja know?
                  (sql             .       nil)))))
 #+END_SRC
 
-[[http://lists.gnu.org/archive/html/emacs-orgmode/2012-05/msg00708.html][More information on defining your own Easy Templates]].
-
-#+NAME: custom babel Easy Templates
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-to-list 'org-structure-template-alist
-          '("E"
-            "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"
-            "<src lang=\"emacs-lisp\">\n\n</src>"))
-#+END_SRC
-
-#+NAME: org support for plantuml
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;;; org-export-blocks-format-plantuml.el Export UML using plantuml
   ;;
@@ -1489,12 +1149,9 @@ My favorite mode. This was the reason I started using Emacs, didja know?
 #+END_SRC
 
 ** org beamer
-
 Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-mode-and.html][emacs-fu]]!
-
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; allow for export=>beamer by placing
-
   ;; #+LaTeX_CLASS: beamer in org files
   (unless (boundp 'org-export-latex-classes)
     (setq org-export-latex-classes nil))
@@ -1549,7 +1206,6 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
 
 #+END_SRC
 ** org capture
-#+NAME: set org capture path
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq org-default-notes-file (concat org-directory "/capture.org"))
   (after 'org
@@ -1557,7 +1213,6 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
       (esc-key "C-c C-p" 'org-capture)))
 #+END_SRC
 
-#+NAME org capture templates
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq org-capture-templates
         '(;; General tasks go here
@@ -1582,7 +1237,6 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
 #+END_SRC
 
 *** org refile
-#+NAME: org refile locations
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq ;; Work refile locations
    esc-refile-targets-centtech
@@ -1728,6 +1382,42 @@ Wait, is this even being used??
       `(mapc (lambda (binding) (esc-key (car binding) (cdr binding)))
              '(,@binding-list)))
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defmacro esc/define-displaced-yank (funcname data)
+    "This macro generates functions for `esc-mode-map'."
+    (let ((funsymbol (intern (format "esc/yank-displaced-%s" funcname)))
+          (str (car data))
+          (back (or (cadr data) 1)))
+      (let ((docstring (format "Insert %s ARG times." str)))
+      `(defun ,funsymbol (&optional ARG)
+         ,docstring
+         (interactive "p")
+         (dotimes (i ARG)
+           (insert ,str)
+           (backward-char ,back))))))
+
+  (mapcar* (lambda (function)
+             (let ((funcname (car function))
+                   (data     (cdr function)))
+               (eval `(esc/define-displaced-yank ,funcname ,data))))
+           '((parens "()")
+             (braces "{}")
+             (brackets "[]")
+             (brackets-with-colon "[:]")
+             (pipes "||")
+             (chevrons "<>")
+             (quotes "\"\"")
+             (single-quotes "''")
+             (stars "**")
+             (dollars "$$")
+             (equals "==")
+             ;; a good example of code reuse
+             (ticks "`'")
+             (little-arrow "->" 0)
+             (doxygen-comment "/*!  */" 3))) ;; todo: implement with yasnippet
+#+END_SRC
+
 ** esc bindings
 #+NAME: keybindings defined here
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
@@ -1748,11 +1438,6 @@ Wait, is this even being used??
     ("C-x 3"   . esc/hsplit-last-buffer)
     ("M-s o"   . occur-dwim))
 
-  ;; Search for current word up or down from point
-  (esc-keys
-    ("<M-down>" . esc/search-word-forward)
-    ("<M-up>" . esc/search-word-backward))
-
   ;; Equivalent to middle-click yank on mouse
   (esc-key "C-c y" 'esc/middle-click-yank)
 
@@ -1764,11 +1449,10 @@ Wait, is this even being used??
   (esc-keys
     ("C-c a"   . org-agenda)
     ("M-K"     . kill-sentence)
-    ("M-Z"     . zap-up-to-char) ; up-to, life saver
+    ("M-z"     . zap-up-to-char) ; up-to, life saver
+    ("M-Z"     . zap-to-char)
     ("M-j"     . just-one-space) ; conflicts with spotlight
     ("C-c k"   . esc/copy-line)
-    ("<f6>"    . spray-mode)
-    ("C-S-l"   . esc/toggle-letter-case)
     ("M-P"     . align-regexp)
     ("C-c e"   . esc/eval-and-replace)
     ("C-c C-b" . mode-line-other-buffer)
@@ -1903,6 +1587,7 @@ Wait, is this even being used??
     ("C-M->" . esc/zoom-in))
 
   ;;; Function keys
+  (esc-key "<f6>" 'spray-mode)
   (esc-key "<f7>" 'scroll-all-mode)
   (esc-key "<f8>" 'follow-delete-other-windows-and-split)
   (esc-key "<f9>" 'flyspell-buffer)
@@ -1921,18 +1606,20 @@ Wait, is this even being used??
 
   ;; esc delimeter and line hacks
   (esc-keys
-    ("C-<backspace>" . esc/backward-kill-line)
-    ("M-k"   . esc/pull-up-line)
-    ("C-M--" . esc/yank-displaced-little-arrow)
-    ("C-M-j" . esc/yank-displaced-parens)
-    ("C-M-k" . esc/yank-displaced-braces)
-    ("C-M-|" . esc/yank-displaced-pipes)
-    ("C-M-l" . esc/yank-displaced-brackets)
-    ("C-M-," . esc/yank-displaced-chevrons)
-    ("C-M-'" . esc/yank-displaced-quotes)
-    ("C-M-*" . esc/yank-displaced-stars)
-    ("C-M-g" . esc/yank-displaced-dollars)
-    ("C-M-`" . esc/yank-displaced-ticks))
+    ("C-<backspace>" . esc/backward-delete-word)
+    ("M-k"    . esc/pull-up-line)
+    ("C-M--"  . esc/yank-displaced-little-arrow)
+    ("C-M-j"  . esc/yank-displaced-parens)
+    ("C-M-k"  . esc/yank-displaced-braces)
+    ("C-M-|"  . esc/yank-displaced-pipes)
+    ("C-M-l"  . esc/yank-displaced-brackets)
+    ("C-M-,"  . esc/yank-displaced-chevrons)
+    ("C-M-'"  . esc/yank-displaced-single-quotes)
+    ("C-M-\"" . esc/yank-displaced-quotes)
+    ("C-M-*"  . esc/yank-displaced-stars)
+    ("C-M-g"  . esc/yank-displaced-dollars)
+    ("C-M-="  . esc/yank-displaced-equals)
+    ("C-M-`"  . esc/yank-displaced-ticks))
 
   ;; programming delimeter and line hacks
   (esc-keys
@@ -1944,6 +1631,8 @@ Wait, is this even being used??
    ;("s-s" . esc/raise-ansi-term)
    ("s-q" . esc/raise-magit-status))
 #+END_SRC
+
+#+RESULTS: keybindings
 
 I don't know where smartrep defines keys but this worked for me and I
 haven't had to look at it yet.
@@ -1964,6 +1653,11 @@ haven't had to look at it yet.
 #+END_SRC
 
 ** esc hydras
+Hydra package configuration
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
+  (setq hydra-lv nil)
+#+END_SRC
+
 #+NAME: esc-mode hydras
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (defhydra hydra-text-scale (esc-mode-map  "<f2>")
@@ -1971,7 +1665,7 @@ haven't had to look at it yet.
     ("k" text-scale-increase)
     ("j" text-scale-decrease))
 
-  (defhydra hydra-zoom (esc-mode-map  "C-M-<")
+  (defhydra hydra-zoom (esc-mode-map  "C-<f2>")
     "esc/zoom"
     ("," esc/zoom-out)
     ("." esc/zoom-in))
@@ -1994,18 +1688,37 @@ haven't had to look at it yet.
     ("*" mc/mark-all-like-this "mark all")
     ("o" mc/mark-all-like-this-dwim "mark all dwim"))
 
-  (defhydra hydra-scroll-buffer (esc-mode-map "C-,")
-    "esc/scroll-buffer"
-    ("j" esc/scroll-up-slight "up")
-    ("k" esc/scroll-down-slight "down"))
+  (defhydra hydra-word-at-point (esc-mode-map "C-S-s")
+    "word at point"
+    ("r" esc/search-word-backward "search-backward")
+    ("s" esc/search-word-forward "search-forward"))
 
-  (defhydra hydra-window-adjustment (esc-mode-map "C-c w")
+  ;; todo: move to beginning of word in pre hook
+  (defhydra hydra-case-word-at-point (esc-mode-map "C-S-l")
+    "case word at point"
+    ("c" capitalize-word "capitalize")
+    ("u" upcase-word "upcase")
+    ("l" downcase-word "lowercase"))
+
+  (defhydra hydra-scroll-buffer (esc-mode-map "M-n")
+    "cursor-movement"
+    ("j" esc/scroll-up-slight "scroll up")
+    ("k" esc/scroll-down-slight "scroll down")
+    ("n" next-line "next-line")
+    ("p" previous-line "prev-line")
+    ("e" end-of-line "end-of-line")
+    ("a" beginning-of-line "beg-of-line")
+    ("d" scroll-up "page up")
+    ("u" scroll-down "page down")
+    ("q" kill-buffer))
+
+  (defhydra hydra-window-adjustment (esc-mode-map "C-z")
     "window adjustment"
     ("r" esc/rotate-window-split "rotate")
     ("p" esc/swap-buffer-locations "swap")
     ("o" esc/should-have-opened-this-in-other-window "other window")
     ("s" esc/toggle-window-selectability "toggle selectability")
-    ;; TODO; include the amaranth hydras
+    ("w" ace-window "ace-window")
     ("d" esc/toggle-window-dedicated "toggle dedicated")
     ("b" mode-line-other-buffer "mode-line-other-buffer"))
 
@@ -2014,8 +1727,6 @@ haven't had to look at it yet.
       ("n" esc/org-next-source-code-block "next")
       ("p" esc/org-prev-source-code-block "prev")))
 #+END_SRC
-
-
 
 ** esc hook
 #+NAME: esc-mode-hook
@@ -2108,6 +1819,7 @@ haven't had to look at it yet.
       (after 'org-indent (diminish 'org-indent-mode))
       (after 'magit (diminish 'magit-auto-revert-mode))
       (after 'fic-mode (diminish 'fic-mode))
+      (after 'eldoc (diminish 'eldoc-mode))
       (after 'smerge-mode (diminish 'smerge-mode))
       (after 'auto-complete (diminish 'auto-complete-mode))))
       (after 'esc-mode (diminish 'esc-mode))
@@ -2131,3 +1843,33 @@ haven't had to look at it yet.
   (message "All done, %s%s" (user-login-name) ".")
   ;;; .emacs.el ends here
 #+END_SRC
+* [6/19] TODOs
+** DONE fix load path
+** DONE quick dictionary
+** DONE remove tangles files from git, provide makefile
+** DONE allow tabs in makefile-mode
+  works with tabify
+** DONE byte-compile-directory
+** DONE diminish stuff
+** TODO activate =size-indication-mode= with =power-line-mode=
+** TODO make powerline part of esc-mode
+** TODO scratch buffer as consistent config file
+  only emacs-lisp source blocks from the org file are loaded,
+  naturally
+** TODO tangling scripts adds execute permission
+  (write-region "" nil custom-file)
+** TODO smooth esc scrolling
+  best definition so far: scrolling that increases over time
+** TODO naming standard for org babel files sectioning
+** TODO gcov output parsed by emacs to hilight gdb code coverage
+** TODO use package use-package
+** [0/1] Dired
+*** TODO human readable sizes in dired
+  First have to determine how to unhide information on demand
+  for definitions, not spell check
+** [0/2] advice
+*** TODO C-h C-k takes you to org instead of .el
+*** TODO C-x M-r to save undo information
+** [0/2] ibuffer-vc
+*** TODO create mode to replace sort-by -mode with -ssh host
+*** TODO make it group files over tramp

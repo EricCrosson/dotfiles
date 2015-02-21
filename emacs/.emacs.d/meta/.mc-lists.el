@@ -40,7 +40,9 @@
 	esc/pull-up-line
 	esc/toggle-letter-case
 	esc/toggle-window-dedicated
+	fill-paragraph
 	forward-sexp
+	hydra--negative-argument
 	ignore
 	indent-for-tab-command
 	insert-register
@@ -78,6 +80,7 @@
 	handle-switch-frame
 	hydra-multiple-cursors/mc/edit-lines
 	hydra-multiple-cursors/mc/mark-next-like-this
+	hydra-multiple-cursors/mc/mark-previous-like-this
 	ido-find-file
 	kmacro-end-or-call-macro
 	kmacro-start-macro-or-insert-counter
