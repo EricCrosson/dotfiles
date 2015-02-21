@@ -1620,7 +1620,7 @@ Below is the forge, boilerplate functions are churned out en-masse.
     ("C-M-<" . esc/zoom-out)
     ("C-M->" . esc/zoom-in)
 
-  ;;; Function keys
+    ;;; Function keys
     ("<f6>" . spray-mode)
     ("<f7>" . scroll-all-mode)
     ("<f8>" . follow-delete-other-windows-and-split)
