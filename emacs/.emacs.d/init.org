@@ -1463,7 +1463,8 @@ Below is the forge, boilerplate functions are churned out en-masse.
   (defmacro esc/define-zoom(funcname operation)
     "Define functions to zoom into and out of a buffer."
     (let ((command (intern (format "esc/zoom-%s" funcname)))
-          (docstring (format "Zoom %s on the font in all buffers by `esc-zoom-amount' points.
+          (docstring (format "Zoom %s on the font in all buffers by
+  `esc-zoom-amount' points.
 
   This command can be prefixed." funcname)))
       `(defun ,command(arg)
@@ -1479,7 +1480,7 @@ Below is the forge, boilerplate functions are churned out en-masse.
             (let ((funcname (car data))
                   (command (cadr data)))
               (eval `(esc/define-zoom ,funcname ,command))))
-          '((in +)
+          '((in  +)
             (out -)))
 #+END_SRC
 
