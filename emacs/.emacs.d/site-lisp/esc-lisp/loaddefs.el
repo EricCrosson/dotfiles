@@ -1,27 +1,8 @@
 ;;
 
-;;;### (autoloads nil "boilerplate/boilerplate" "../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21724 64935 609787 414000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/boilerplate/boilerplate.el
-
-(autoload 'esc/toggle-fullscreen-buffer "boilerplate/boilerplate" "\
-Bring up a temporary buffer in fullscreen mode, or restore the
-previous window configuration.
-
-WIN-REGISTER         is the register to store the old window configuration in.
-
-TOGGLED-MODE-TEST    is the major mode of the toggled state, in other words a
-                     test to determine which way to toggle the buffers.
-
-TOGGLE-COMMAND       is the command to run when toggling into the temporary
-                     state.
-
-CLEAR-COMMAND        is an optional command to run when reverting back to the
-                     original state; i.e. toggle a flag
-
-\(fn WIN-REGISTER TOGGLED-MODE-TEST TOGGLE-COMMAND &optional TOGGLE-COMMAND-TEST CLEAR-COMMAND)" nil t)
-
-(put 'esc/toggle-fullscreen-buffer 'lisp-indent-function 'defun)
+;;;### (autoloads nil "boilerplate/boilerplate" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el"
+;;;;;;  (21735 60005 155740 732000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el
 
 (autoload 'esc/prog-mode-hook "boilerplate/boilerplate" "\
 esc's hook to \\[prog-mode-hook].
@@ -78,129 +59,13 @@ esc's hook to \\[iedit-mode-hook].
 
 \(fn)" nil nil)
 
+(autoload 'esc/big-fringe-mode-hook "boilerplate/boilerplate" "\
+
+
+\(fn)" nil nil)
+
 (autoload 'esc/insert-short-gpl "boilerplate/boilerplate" "\
 Insert the short version of the GNU GPL v3.
-
-\(fn)" t nil)
-
-(autoload 'esc/javadoc-method-comment "boilerplate/boilerplate" "\
-Insert a javadoc method comment at point.
-
-\(fn)" t nil)
-
-(autoload 'esc/yank-and-move "boilerplate/boilerplate" "\
-This macro is a helper function to the keys in `esc-mode-map' that
-insert duplicates of characters.
-
-\(fn INS BACK)" nil t)
-
-(fset 'bang-word-at-point "$ $")
-
-(autoload 'esc/insert-surrounding-ticks "boilerplate/boilerplate" "\
-Insert a backtick and fronttick at point. This command can be
-  prefixed with a numerical argument.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/insert-little-arrow "boilerplate/boilerplate" "\
-Insert an arrow at point. This command can be prefixed with a
-    numeric argument.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/insert-surrounding-parens "boilerplate/boilerplate" "\
-Insert parenthesis, and center point between them. This command
-    can be prefixed with a numeric argument.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/insert-surrounding-braces "boilerplate/boilerplate" "\
-Insert a pair of braces, and center point between them. This
-    command can be prefixed with a numeric argument.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/insert-surrounding-pipes "boilerplate/boilerplate" "\
-Insert a pair of pipes, and center point between them. This
-    command can be prefixed with a numeric argument.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/insert-surrounding-brackets "boilerplate/boilerplate" "\
-Insert a pair of square brackets, and center point between
-    them. This command can be prefixed with a numeric argument.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/insert-surrounding-brackets-with-colon "boilerplate/boilerplate" "\
-Insert a pair of square brackets around a colon, and center
-    point between them (after the colon). This command can be
-    prefixed with a numeric argument.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/insert-surrounding-chevrons "boilerplate/boilerplate" "\
-Insert a pair of chevrons, and center point between them. This
-    command can be prefixed with a numeric argument.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/insert-surrounding-quotes "boilerplate/boilerplate" "\
-Insert double quotes, and center point between them. This command
-    can be prefixed with a numeric argument.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/insert-surrounding-stars "boilerplate/boilerplate" "\
-Insert dual stars, and center point between them. This command
-    can be prefixed with a numeric argument.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/insert-surrounding-dollars "boilerplate/boilerplate" "\
-Insert dual stars, and center point between them. This command
-    can be prefixed with a numeric argument.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/middle-click-yank "boilerplate/boilerplate" "\
-Yank from the middle click mouse buffer.
-
-\(fn)" t nil)
-
-(autoload 'esc/insert-file-name "boilerplate/boilerplate" "\
-Inserts the name of the current file (including extension) at point.
-
-When ARG is non-nil, the filename will be printed in a different format.
-If ARG is 0, insert the full path of the filename.
-If ARG is - (or -1), insert the filename without extension.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/copy-file-name-to-clipboard "boilerplate/boilerplate" "\
-Copy the current buffer file name to the clipboard.
-
-\(fn)" t nil)
-
-(autoload 'esc/magic-autoload-next-defun-or-macro "boilerplate/boilerplate" "\
-Prefix the next defun or macro after point with a line
-identifying the sexp as a magically autoloaded cookie.
-
-\(fn)" t nil)
-
-(autoload 'esc/mode-line-other-buffer-other-window "boilerplate/boilerplate" "\
-Switch to `other-window', use `mode-line-other-buffer', and
-switch back to the original window.
-
-\(fn)" t nil)
-
-(autoload 'esc/edit-my-emacs "boilerplate/boilerplate" "\
-
-
-\(fn)" t nil)
-
-(autoload 'esc/edit-my-bash "boilerplate/boilerplate" "\
-
 
 \(fn)" t nil)
 
@@ -211,11 +76,9 @@ relies on `esc/kill-whole-word'.
 \(fn)" t nil)
 
 (autoload 'esc/kill-whole-word "boilerplate/boilerplate" "\
-This defun will kill the entire word at point (on both sides of
-point).
-
-DELETE, if non-nil, will prevent the word from being appended to the
-kill-ring.
+This defun will kill the entire word at point (on both sides
+of point). DELETE, if non-nil, will prevent the word from being
+appended to the kill-ring.
 
 \(fn &optional DELETE)" t nil)
 
@@ -223,18 +86,6 @@ kill-ring.
 Replace the preceding sexp with its value.
 
 \(fn &optional ARG)" t nil)
-
-(autoload 'esc/insert-defun-at-point "boilerplate/boilerplate" "\
-Insert at point the name of the function KEY invokes.  KEY is a string.
-If INSERT (the prefix arg) is non-nil, insert the message in the
-buffer.  If non-nil, UNTRANSLATED is a vector of the untranslated
-events.  It can also be a number in which case the untranslated
-events from the last key hit are used.
-
-If KEY is a menu item or a tool-bar button that is disabled, this command
-temporarily enables it to allow getting help on disabled items and buttons.
-
-\(fn &optional KEY INSERT UNTRANSLATED STRING)" t nil)
 
 (autoload 'esc/save-buffers-kill-emacs "boilerplate/boilerplate" "\
 Offer to save each buffer(once only), then kill this Emacs process.
@@ -405,23 +256,6 @@ This command can be prefixed.
 
 \(fn &optional ARG)" t nil)
 
-(autoload 'esc/backward-kill-line "boilerplate/boilerplate" "\
-Kill up to `beginning-of-line', and kill ARG lines above point.
-Everything will be appended to the kill ring.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'esc/pull-up-line "boilerplate/boilerplate" "\
-Pull up ARG lines.
-
-\(fn &optional ARG)" t nil)
-
-(autoload 'describe-keymap "boilerplate/boilerplate" "\
-Describe bindings in KEYMAP, a variable whose value is a keymap.
-Completion is available for the keymap name.
-
-\(fn KEYMAP)" t nil)
-
 (autoload 'occur-dwim "boilerplate/boilerplate" "\
 Call `occur' with a sane default.
 
@@ -433,7 +267,7 @@ Call `occur' with a sane default.
 \(fn)" t nil)
 
 (autoload 'rename-defun "boilerplate/boilerplate" "\
-Rename FUNCTION to a new name. Makfunbound FUNCTION after
+Rename loaded FUNCTION to a new name. Makfunbound FUNCTION after
 evaling the newly named defun.
 
 \(fn FUNCTION)" t nil)
@@ -454,85 +288,47 @@ depending on the value of ARG.
 
 \(fn KEY &optional ARG)" t nil)
 
-(autoload 'esc/org-next-source-code-block "boilerplate/boilerplate" "\
+;;;***
+
+;;;### (autoloads nil "boilerplate/buffer+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/buffer+.el"
+;;;;;;  (21734 44050 301544 993000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/buffer+.el
 
+(autoload 'esc/toggle-fullscreen-buffer "boilerplate/buffer+" "\
+Bring up a temporary buffer in fullscreen mode, or restore the
+previous window configuration.
 
-\(fn)" t nil)
+WIN-REGISTER         is the register to store the old window configuration in.
 
-(autoload 'esc/org-prev-source-code-block "boilerplate/boilerplate" "\
+TOGGLED-MODE-TEST    is the major mode of the toggled state, in other words a
+                     test to determine which way to toggle the buffers.
 
+TOGGLE-COMMAND       is the command to run when toggling into the temporary
+                     state.
 
-\(fn)" t nil)
+CLEAR-COMMAND        is an optional command to run when reverting back to the
+                     original state; i.e. toggle a flag
 
-(autoload 'esc/bury-buffer-delete-window "boilerplate/boilerplate" "\
-Kill current window and bury the current buffer to the bottom of the buffer list.
+\(fn WIN-REGISTER TOGGLED-MODE-TEST TOGGLE-COMMAND &optional TOGGLE-COMMAND-TEST CLEAR-COMMAND)" nil t)
 
-\(fn)" t nil)
+(put 'esc/toggle-fullscreen-buffer 'lisp-indent-function 'defun)
 
-(autoload 'esc/bury-other-buffer "boilerplate/boilerplate" "\
-Bury the buffer that \\[mode-line-other-buffer] will take you
-to.
-
-If SWITCH-TO-OTHER-BUFFER is non-nil (e.g. this command is
-prefixed) then after the other-buffer is buried, the command
-\\[mode-line-other-buffer] will be used to switch buffers.
-
-\(fn &optional SWITCH-TO-OTHER-BUFFER)" t nil)
-
-(autoload 'esc/raise-ansi-term "boilerplate/boilerplate" "\
-If the current buffer is:
-
-   1) a running ansi-term named *ansi-term*, rename it.
-   2) a stopped ansi-term, kill it and create a new one.
-   3) a non ansi-term, go to an already running ansi-term
-      or start a new one while killing a defunct one.
-
-\(fn)" t nil)
-
-(autoload 'esc/raise-eshell "boilerplate/boilerplate" "\
-Bring up a full-screen eshell or restore previous window
-configuration.
-
-\(fn)" t nil)
-
-(autoload 'esc/raise-eshell-in-current-dir "boilerplate/boilerplate" "\
-Bring up a full-screen eshell in the current directory or
-restore previous window configuration.
-
-\(fn)" t nil)
-
-(autoload 'esc/raise-magit-status "boilerplate/boilerplate" "\
-Bring up a full-screen magit-status or restore previous
-window configuration.
-
-\(fn)" t nil)
-
-(autoload 'esc/vsplit-last-buffer "boilerplate/boilerplate" "\
-Split the window vertically and display the previous buffer.
-
-\(fn PREFIX)" t nil)
-
-(autoload 'esc/hsplit-last-buffer "boilerplate/boilerplate" "\
-Split the window horizontally and display the previous buffer.
-
-\(fn PREFIX)" t nil)
-
-(autoload 'esc/should-have-opened-this-in-other-window "boilerplate/boilerplate" "\
+(autoload 'esc/should-have-opened-this-in-other-window "boilerplate/buffer+" "\
 Returns to the previous buffer in current window, calls
-  \\[other-window], and opens the buffer in the new window.
+`other-window', and opens the buffer in the new window.
 
-  COUNT is the number of windows to advance; the argument is
-  passed directly to \\[other-window], so see the documentation
-  for more details.
+COUNT is the number of windows to advance; the argument is passed
+directly to `other-window', so see the documentation for more
+details.
 
 \(fn &optional COUNT)" t nil)
 
-(autoload 'esc/toggle-window-selectability "boilerplate/boilerplate" "\
+(autoload 'esc/toggle-window-selectability "boilerplate/buffer+" "\
 Ignore/recognize a window from `other-window'.
 
 \(fn)" t nil)
 
-(autoload 'esc/toggle-window-dedicated "boilerplate/boilerplate" "\
+(autoload 'esc/toggle-window-dedicated "boilerplate/buffer+" "\
 Toggle whether the current active window is dedicated or not.
 
 When dedicated, `display-buffer' will refrain from displaying
@@ -540,34 +336,230 @@ another buffer in a window.
 
 \(fn)" t nil)
 
-(autoload 'esc/rotate-window-split "boilerplate/boilerplate" "\
+(autoload 'buffers-matching-regexp "boilerplate/buffer+" "\
+Return a list of buffers matching REGEXP.
+
+If NAMES is non-nil, return a list of names (strings) instead of
+buffers.
+
+\(fn REGEXP &optional NAMES)" nil nil)
+
+(autoload 'esc/rotate-window-split "boilerplate/buffer+" "\
 Transform a vertically split window to a horizontally split
-   window.
+window.
 
 \(fn)" t nil)
 
-(autoload 'esc/previous-error "boilerplate/boilerplate" "\
+(autoload 'esc/bury-buffer-delete-window "boilerplate/buffer+" "\
+Kill current window and bury the current buffer to the bottom
+of the buffer list.
+
+\(fn)" t nil)
+
+(autoload 'esc/bury-other-buffer "boilerplate/buffer+" "\
+Bury the buffer that `mode-line-other-buffer' will take you
+to.
+
+If SWITCH-TO-OTHER-BUFFER is non-nil (e.g. this command is
+prefixed) then after the other-buffer is buried, the command
+`mode-line-other-buffer' will be used to switch buffers.
+
+\(fn &optional SWITCH-TO-OTHER-BUFFER)" t nil)
+
+(autoload 'esc/raise-eshell "boilerplate/buffer+" "\
+Bring up a full-screen eshell or restore previous window
+configuration.
+
+\(fn)" t nil)
+
+(autoload 'esc/raise-eshell-in-current-dir "boilerplate/buffer+" "\
+Bring up a full-screen eshell in the current directory or
+restore previous window configuration.
+
+\(fn)" t nil)
+
+(autoload 'esc/raise-magit-status "boilerplate/buffer+" "\
+Bring up a full-screen magit-status or restore previous
+window configuration.
+
+\(fn)" t nil)
+
+(autoload 'esc/vsplit-last-buffer "boilerplate/buffer+" "\
+Split the window vertically and display the previous buffer.
+Argument PREFIX when nil switches the new buffer to the last buffer.
+
+\(fn PREFIX)" t nil)
+
+(autoload 'esc/hsplit-last-buffer "boilerplate/buffer+" "\
+Split the window horizontally and display the previous buffer.
+Argument PREFIX when nil switches the new buffer to the last buffer.
+
+\(fn PREFIX)" t nil)
+
+;;;***
+
+;;;### (autoloads nil "boilerplate/compilation+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/compilation+.el"
+;;;;;;  (21735 36608 397869 431000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/compilation+.el
+
+(autoload 'esc/previous-error "boilerplate/compilation+" "\
 Visit previous compilation error message and corresponding source code.
-Complement to \\[next-error].
+  Complement to `next-error'.
 
 \(fn N)" t nil)
 
-(autoload 'esc/auto-byte-recompile "boilerplate/boilerplate" "\
+(autoload 'esc/auto-byte-recompile "boilerplate/compilation+" "\
 If the current buffer is in emacs-lisp-mode and there already exists an .elc
 file corresponding to the current buffer file, then recompile the file.
 
 \(fn)" t nil)
 
-(autoload 'esc/bury-compilation-buffer-if-successful "boilerplate/boilerplate" "\
-Bury the compilation buffer after a successful compile.
+(autoload 'esc/bury-compilation-buffer-if-successful "boilerplate/compilation+" "\
+Bury the compilation BUFFER after a successful compile.
+Argument STRING provided by compilation hooks.
 
 \(fn BUFFER STRING)" nil nil)
 
+(autoload 'esc/org-next-source-code-block "boilerplate/compilation+" "\
+
+
+\(fn)" t nil)
+
+(autoload 'esc/org-prev-source-code-block "boilerplate/compilation+" "\
+
+
+\(fn)" t nil)
+
+(autoload 'byte-compile-directory "boilerplate/compilation+" "\
+Compile an .elc file for every .el file contained under
+  DIR (recursive).
+
+\(fn DIR)" nil nil)
+
 ;;;***
 
-;;;### (autoloads (color-theme-pop color-theme-push) "color-theme-stack"
-;;;;;;  "color-theme-stack.el" (21724 56222 0 0))
-;;; Generated autoloads from color-theme-stack.el
+;;;### (autoloads nil "boilerplate/displaced-yank" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/displaced-yank.el"
+;;;;;;  (21735 37563 587918 611000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/displaced-yank.el
+
+(autoload 'esc/define-displaced-yank "boilerplate/displaced-yank" "\
+
+
+\(fn FUNCNAME DATA)" nil t)
+
+;;;***
+
+;;;### (autoloads nil "boilerplate/emacs+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el"
+;;;;;;  (21735 60004 932407 387000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el
+
+(autoload 'esc/unkillable-scratch-buffer "boilerplate/emacs+" "\
+
+
+\(fn)" nil nil)
+
+(autoload 'esc/mode-line-other-buffer-other-window "boilerplate/emacs+" "\
+Switch to `other-window', use `mode-line-other-buffer', and
+    switch back to the original window.
+
+\(fn)" t nil)
+
+(autoload 'delete-word "boilerplate/emacs+" "\
+Delete characters forward until encountering the end of a word.
+With argument, do this that many times.
+
+\(fn ARG)" t nil)
+
+(autoload 'backward-delete-word "boilerplate/emacs+" "\
+Delete characters backward until encountering the end of a word.
+With argument, do this that many times.
+
+\(fn ARG)" t nil)
+
+(autoload 'esc/pull-up-line "boilerplate/emacs+" "\
+Pull up ARG lines.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'describe-keymap "boilerplate/emacs+" "\
+Describe bindings in KEYMAP, a variable whose value is a keymap.
+Completion is available for the keymap name.
+
+\(fn KEYMAP)" t nil)
+
+;;;***
+
+;;;### (autoloads nil "boilerplate/help+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el"
+;;;;;;  (21735 60003 939074 3000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el
+
+(autoload 'esc/insert-defun-at-point "boilerplate/help+" "\
+Insert at point the name of the function KEY invokes.  KEY is a string.
+  If INSERT (the prefix arg) is non-nil, insert the message in the
+  buffer.  If non-nil, UNTRANSLATED is a vector of the untranslated
+  events.  It can also be a number in which case the untranslated
+  events from the last key hit are used.
+
+  If KEY is a menu item or a tool-bar button that is disabled, this command
+  temporarily enables it to allow getting help on disabled items and buttons.
+
+\(fn &optional KEY INSERT UNTRANSLATED STRING)" t nil)
+
+;;;***
+
+;;;### (autoloads nil "boilerplate/os-interaction" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/os-interaction.el"
+;;;;;;  (21734 43959 918207 6000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/os-interaction.el
+
+(autoload 'esc/middle-click-yank "boilerplate/os-interaction" "\
+Yank from the middle click mouse buffer.
+
+\(fn)" t nil)
+
+(autoload 'esc/insert-file-name "boilerplate/os-interaction" "\
+Inserts the name of the current file (including extension) at point.
+
+When ARG is non-nil, the filename will be printed in a different format.
+If ARG is 0, insert the full path of the filename.
+If ARG is - (or -1), insert the filename without extension.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'esc/copy-file-name-to-clipboard "boilerplate/os-interaction" "\
+Copy the current buffer file name to the clipboard.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads nil "browse-cliplink" "../../../../../.emacs.d/site-lisp/esc-lisp/browse-cliplink.el"
+;;;;;;  (21727 59419 637096 841000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/browse-cliplink.el
+
+(autoload 'browse-cliplink "browse-cliplink" "\
+\\[browse-web] at the url in your clipboard.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads nil "clear-mode-line/clean-mode-line" "../../../../../.emacs.d/site-lisp/esc-lisp/clear-mode-line/clean-mode-line.el"
+;;;;;;  (21725 33444 983599 545000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/clear-mode-line/clean-mode-line.el
+
+(autoload 'clean-mode-line "clear-mode-line/clean-mode-line" "\
+Clean the mode line by transforming symbols into
+custom-defined strings.
+
+See `mode-line-cleaner-alist' for more documentation.
+
+\(fn)" t nil)
+
+;;;***
+
+;;;### (autoloads nil "color-theme-stack" "../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el"
+;;;;;;  (21735 59481 829047 120000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el
 
 (autoload 'color-theme-push "color-theme-stack" "\
 Switch to a theme, saving the old one.
@@ -597,9 +589,9 @@ Restore the previous theme in use.
 
 ;;;***
 
-;;;### (autoloads nil "dired-config/dired-config" "../../../../.emacs.d/esc-lisp/dired-config/dired-config.el"
-;;;;;;  (21724 64931 373120 992000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/dired-config/dired-config.el
+;;;### (autoloads nil "dired-config/dired-config" "../../../../../.emacs.d/site-lisp/esc-lisp/dired-config/dired-config.el"
+;;;;;;  (21726 19616 941308 484000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/dired-config/dired-config.el
 
 (autoload 'esc/dired-mode-hook "dired-config/dired-config" "\
 esc's hook to \\[dired-mode-hook].
@@ -661,6 +653,35 @@ Otherwise, signal a `file-notify-error'.
 
 ;;;***
 
+;;;### (autoloads nil "gntp" "../../../../../.emacs.d/site-lisp/esc-lisp/gntp.el"
+;;;;;;  (21729 24160 64656 197000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/gntp.el
+
+(autoload 'gntp-notify "gntp" "\
+Send notification NAME with TITLE, TEXT, PRIORITY and ICON to SERVER:PORT.
+PORT defaults to `gntp-server-port'
+
+\(fn NAME TITLE TEXT SERVER &optional PORT PRIORITY ICON)" nil nil)
+
+;;;***
+
+;;;### (autoloads nil "hidden-mode-line-mode/hidden-mode-line-mode"
+;;;;;;  "../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode/hidden-mode-line-mode.el"
+;;;;;;  (21725 34156 213613 881000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode/hidden-mode-line-mode.el
+
+(autoload 'hidden-mode-line-mode "hidden-mode-line-mode/hidden-mode-line-mode" "\
+Minor mode to hide the mode-line in the current buffer.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'mode-line-in-header "hidden-mode-line-mode/hidden-mode-line-mode" "\
+
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads nil "ido-config/ido-config" "../../../../.emacs.d/esc-lisp/ido-config/ido-config.el"
 ;;;;;;  (21705 16240 864682 627000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/ido-config/ido-config.el
@@ -678,9 +699,9 @@ Refresh imenu and jump to a function in the buffer using
 
 ;;;***
 
-;;;### (autoloads nil "ido-extras/ido-extras" "../../../../.emacs.d/esc-lisp/ido-extras/ido-extras.el"
+;;;### (autoloads nil "ido-extras/ido-extras" "../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras/ido-extras.el"
 ;;;;;;  (21724 64935 793120 736000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/ido-extras/ido-extras.el
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras/ido-extras.el
 
 (autoload 'ido-recentf-open "ido-extras/ido-extras" "\
 Use `ido-completing-read' to \\[find-file] a recent file.
@@ -747,9 +768,9 @@ Replace the preceding sexp with its value.
 
 ;;;***
 
-;;;### (autoloads nil "multiple-cursors-config/mc-config" "../../../../.emacs.d/esc-lisp/multiple-cursors-config/mc-config.el"
-;;;;;;  (21724 64970 513118 730000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/multiple-cursors-config/mc-config.el
+;;;### (autoloads nil "multiple-cursors-config/mc-config" "../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config/mc-config.el"
+;;;;;;  (21726 19616 941308 484000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config/mc-config.el
 
 (autoload 'esc/multiple-cursors-mode-enabled-hook "multiple-cursors-config/mc-config" "\
 esc's code to \\[multiple-cursors-mode-enabled-hook].
@@ -782,6 +803,30 @@ Simplified version of backward search that supports multiple cursors.
 
 ;;;***
 
+;;;### (autoloads nil "rtos/disaster-arm" "../../../../../.emacs.d/site-lisp/esc-lisp/rtos/disaster-arm.el"
+;;;;;;  (21731 51453 320025 84000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/rtos/disaster-arm.el
+
+(autoload 'disaster-arm "rtos/disaster-arm" "\
+Shows assembly code for current line of C/C++ file.
+
+Here's the logic path it follows:
+
+- Is there a Makefile in this directory? Run `make bufname.o`.
+- Or is there a Makefile in a parent directory? Run `make -C .. bufname.o`.
+- Or is this a C file? Run `cc -g -O3 -c -o bufname.o bufname.c`
+- Or is this a C++ file? Run `c++ -g -O3 -c -o bufname.o bufname.c`
+- If build failed, display errors in compile-mode.
+- Run objdump inside a new window while maintaining focus.
+- Jump to line matching current line.
+
+If FILE and LINE are not specified, the current editing location
+is used.
+
+\(fn &optional FILE LINE)" t nil)
+
+;;;***
+
 ;;;### (autoloads nil "scroll-all-mode-config/scroll-all" "../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all.el"
 ;;;;;;  (21724 64935 923120 729000))
 ;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all.el
@@ -804,9 +849,9 @@ Simplified version of backward search that supports multiple cursors.
 ;;;***
 
 ;;;### (autoloads nil "scroll-all-mode-config/scroll-all-config"
-;;;;;;  "../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all-config.el"
+;;;;;;  "../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-mode-config/scroll-all-config.el"
 ;;;;;;  (21724 64935 923120 729000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/scroll-all-mode-config/scroll-all-config.el
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-mode-config/scroll-all-config.el
 
 (autoload 'mwheel-scroll-all-function-all "scroll-all-mode-config/scroll-all-config" "\
 
@@ -945,9 +990,9 @@ Loop to capture and insert commands for `twinkle-fingers'.
 
 ;;;***
 
-;;;### (autoloads nil "update-autoloads/update-autoloads" "../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el"
-;;;;;;  (21724 64935 909787 396000))
-;;; Generated autoloads from ../../../../.emacs.d/esc-lisp/update-autoloads/update-autoloads.el
+;;;### (autoloads nil "update-autoloads/update-autoloads" "../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads/update-autoloads.el"
+;;;;;;  (21735 37385 504576 108000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads/update-autoloads.el
 
 (let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads/update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads/update-autoloads" loads))))
 

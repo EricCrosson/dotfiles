@@ -52,7 +52,7 @@ Only query this defun with BASE as a subdir of ~/.emacs.d/esc-lisp."
   (catch 'found
     (let ((loaddefs "loaddefs.el")
           (base     (replace-regexp-in-string "/$" "" (expand-file-name base)))
-          (top-dir  (expand-file-name "~/.emacs.d/esc-lisp")))
+          (top-dir  (expand-file-name "~/.emacs.d/site-lisp")))
       (unless (file-exists-p    base) (throw 'found nil))
       (unless (file-directory-p base)
         (setq base (replace-regexp-in-string
