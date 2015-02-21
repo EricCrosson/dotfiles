@@ -84,7 +84,7 @@
   :group 'disaster-arm
   :type 'string)
 
-(defcustom disaster-arm-objdump "arm-none-eabi-objdump -D -Sl -M att"
+(defcustom disaster-arm-objdump "arm-none-eabi-objdump -D -Sl"
   "The command name and flags for running objdump."
   :group 'disaster-arm
   :type 'string)
