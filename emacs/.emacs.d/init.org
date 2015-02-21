@@ -1760,8 +1760,8 @@ haven't had to look at it yet.
   ;; The proper definition of `esc-mode-hook'
   (defun esc/accompanying-mode-hook ()
     "esc's customizations added to `esc-mode-hook'."
-    (let ((activate-bool (esc-mode-enabledp)))
-      (let ((activate (if activate-bool 1 -1)))
+    (let* ((activate-bool (esc-mode-enabledp))
+           (activate (if activate-bool 1 -1)))
         (if activate-bool (powerline-default-theme) (powerline-revert))
 
         ;; esc-mode wouldn't be complete without these helper modes
@@ -1849,19 +1849,12 @@ haven't had to look at it yet.
         (after 'eldoc (diminish 'eldoc-mode))
         (after 'smerge-mode (diminish 'smerge-mode))
         (after 'auto-complete (diminish 'auto-complete-mode))
-        (after 'esc-mode (diminish 'esc-mode)))))
-#+END_SRC
-#+NAME: activate esc-mode-hook
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
+        (after 'esc-mode (diminish 'esc-mode))))
+
   (add-hook 'esc-mode-hook 'esc/accompanying-mode-hook)
-#+END_SRC
-#+NAME: activate esc-mode
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
+
   (esc-mode 1)
-  ;(diminish-or-restore 'esc-mode) ;in the background
-#+END_SRC
-#+NAME: esc provides
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
+
   (provide 'esc-mode)
 #+END_SRC
 
