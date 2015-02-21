@@ -1282,23 +1282,20 @@ variables are prefixed with `esc-'
       :type    'integer
       :options '(10)
       :group   'esc-mode)
-#+END_SRC
-#+NAME: define internal variables
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
+
   (defvar esc-mode-map (make-keymap)
       "The keymap for `esc-mode'.")
-#+END_SRC
-#+NAME: define minor mode
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
+
   ;;;###autoload
   (define-minor-mode esc-mode
       "Toggle esc-keys mode.
                    A minor mode so that my key settings override annoying major modes."
       t " esc" 'esc-mode-map)
 #+END_SRC
-#+NAME: define minor mode hook
+
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  ;; TODO: devise method of keeping these options in sync with the entire current implementation of esc/accompanying-mode-hook
+  ;; TODO: devise method of keeping these options in sync with the
+  ;; entire current implementation of esc/accompanying-mode-hook
   (defcustom esc/accompanying-mode-hook nil
     "Hook that is appended to esc-mode-hook."
     :type         'hook
@@ -1340,17 +1337,7 @@ variables are prefixed with `esc-'
       "A macro to determine if \\[esc-mode] is currently enabled."
       `(progn (and (boundp 'esc-mode) esc-mode)))
 #+END_SRC
-Wait, is this even being used??
-#+NAME: add-or-remove-hook
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-    (defmacro add-or-remove-hook (hook function)
-      "A macro to add a HOOK to FUNCTION, if `esc-mode' is being enabled;
-              or remove a HOOK from FUNCTION, if `esc-mode' is being disabled."
-      `(progn (if (esc-mode-enabledp)
-                  (add-hook ,hook ,function)
-                (remove-hook ,hook ,function))))
-#+END_SRC
-#+NAME: diminish-or-restore
+
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
     (after 'diminish-autoloads
       (defmacro diminish-or-restore (mode)
@@ -1362,7 +1349,8 @@ Wait, is this even being used??
                  (diminish ,mode)
                (diminish-undo ,mode))))))
 #+END_SRC
-#+NAME: never you mind these macros
+
+Never you mind this macros...
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (defmacro dont (operand)
     "A macro to avoid awkward, unintuitive code in \\[esc-accompanying-mode-hook].
@@ -1372,7 +1360,8 @@ Wait, is this even being used??
            (* (- 1) ,operand)
          (if ,operand nil t))))
 #+END_SRC
-#+NAME: macros to insert bindings in esc-mode-map
+
+Macros to insert bindings in =esc-mode-map=.
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
     (defmacro esc-key (sequence action)
       "A macro to bind SEQUENCE to ACTION in `esc-mode-map'."
@@ -1427,11 +1416,11 @@ Below is the forge, boilerplate functions are churned out en-masse.
   (defmacro esc/define-org-header-indentation(funcname callback)
     "Define functions to manipulate the header level of selected
   region in `org-mode'."
-    (let ((funcname (intern (format "esc/org-%s-headers-in-region" funcname)))
+    (let ((command-name (intern (format "esc/org-%s-headers-in-region" funcname)))
           (docstring (format "%s `org-mode' headers arg times in currently
   selected region."
                              funcname)))
-    `(defun ,funcname (&optional arg)
+    `(defun ,command-name (&optional arg)
        ,docstring
        (interactive "p")
        (save-excursion
@@ -1449,44 +1438,47 @@ Below is the forge, boilerplate functions are churned out en-masse.
   (mapcar (lambda (data)
             (let ((funcname (car data))
                   (callback (cadr data)))
-              (esc/define-org-header-indentation funcname callback)))
+              (eval `(esc/define-org-header-indentation ,funcname ,callback))))
           '((indent (insert "*"))
             (unindent (kill-forward-chars 1))))
 
   (defmacro esc/define-scroll-slight(funcname)
     "Define functions to scroll the buffer slightly without moving point."
-    (let ((funcname (format "esc/scroll-%s-slight" funcname))
-          (docstring (format "Scroll %s the page ARG times without
+    (let ((docstring (format "Scroll %s the page ARG times without
   moving point. The number of lines to scroll is determined by the
   variable `esc-line-shift-amount'.
 
   This command can be prefixed." funcname))
+          (command-name (intern (format "esc/scroll-%s-slight" funcname)))
           (command (intern (format "scroll-%s" funcname))))
-      `(defun ,funcname(i arg)
+      `(defun ,command-name(&optional arg)
          ,docstring
          (interactive "p")
          (dotimes (i arg)
            (,command esc-line-shift-amount)))))
 
-  (mapcar (lambda (data) `(esc/define-scroll-slight ,data))
+  (mapcar (lambda (data) (eval `(esc/define-scroll-slight ,data)))
           '(up down))
 
-  (defmacro esc/define-zoom(funcname command)
+  (defmacro esc/define-zoom(funcname operation)
     "Define functions to zoom into and out of a buffer."
-    (let ((funcname (format "esc/zoom-%s" funcname))
+    (let ((command (intern (format "esc/zoom-%s" funcname)))
           (docstring (format "Zoom %s on the font in all buffers by `esc-zoom-amount' points.
 
   This command can be prefixed." funcname)))
-      `(defun ,funcname(arg)
+      `(defun ,command(arg)
          ,docstring
          (interactive "p")
          (dotimes (i arg)
-           (,command esc-zoom-amount)))))
+           (set-face-attribute 'default nil
+                               :height (,operation
+                                        (face-attribute 'default :height)
+                                        esc-zoom-amount))))))
 
   (mapcar (lambda (data)
             (let ((funcname (car data))
                   (command (cadr data)))
-              `(esc/define-zoom ,funcname ,command)))
+              (eval `(esc/define-zoom ,funcname ,command))))
           '((in +)
             (out -)))
 #+END_SRC
