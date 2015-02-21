@@ -1431,7 +1431,20 @@ Wait, is this even being used??
 ** esc bindings
 #+NAME: keybindings defined here
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  ;; todo: pull buffer management into anothe rhydra
+  ;; Windmove from shift keys
+  (when (fboundp 'windmove-default-keybindings)
+    (windmove-default-keybindings))
+
+  (after 'expand-region-autoloads      ;Three guesses [[https://github.com/magnars/expand-region.el][who]]
+    (esc-key "C-=" 'er/expand-region)) ;wrote this package
+
+  ;; Helm
+  (after 'helm-autoloads
+    (esc-keys
+      ("C-c i"   . helm-imenu)
+      ("C-x C-j" . helm-for-files)))
+
+  ;; todo: pull buffer management into another hydra
   ;; Enhanced keybindings
   (esc-keys
     ("C-'"     . execute-extended-command)
@@ -1446,17 +1459,13 @@ Wait, is this even being used??
     ("C-x M-r" . revert-buffer-no-confirm)
     ("C-x 2"   . esc/vsplit-last-buffer)
     ("C-x 3"   . esc/hsplit-last-buffer)
-    ("M-s o"   . occur-dwim))
+    ("M-s o"   . occur-dwim)
 
-  ;; Equivalent to middle-click yank on mouse
-  (esc-key "C-c y" 'esc/middle-click-yank)
+    ;; Equivalent to middle-click yank on mouse
+    ("C-c y" . esc/middle-click-yank)
 
-  ;; Windmove from shift keys
-  (when (fboundp 'windmove-default-keybindings)
-    (windmove-default-keybindings))
 
-  ;; Miscellaneous keybindings
-  (esc-keys
+    ;; Miscellaneous keybindings
     ("C-c a"   . org-agenda)
     ("M-K"     . kill-sentence)
     ("M-z"     . zap-up-to-char) ; up-to, life saver
@@ -1467,155 +1476,100 @@ Wait, is this even being used??
     ("C-c e"   . esc/eval-and-replace)
     ("C-c C-b" . mode-line-other-buffer)
     ;; TODO: change sexp wrapping (i.e. {}[]()) from Xah Lee
-    )
 
-  ;; todo: paxedit in a hydra
+    ;; todo: paxedit in a hydra
 
-  ;; todo: single mode should be one hydra
-  ;; f-related-keybindings
-  (esc-keys
+    ;; todo: single mode should be one hydra
+    ;; f-related-keybindings
     ("C-x F"   . recentf-open-files)
     ("C-x f"   . esc/toggle-selective-display)
-    ("C-x M-f" . single/ff-in-single-mode))
+    ("C-x M-f" . single/ff-in-single-mode)
 
-  ;; Fold-this keybindings. Thanks again [[https://github.com/magnars/fold-this.el][Magnar]]!
-  (esc-keys
+    ;; Fold-this keybindings. Thanks again [[https://github.com/magnars/fold-this.el][Magnar]]!
     ("C-c f"   . fold-this)
-    ("C-c F"   . fold-this-unfold-all))
+    ("C-c F"   . fold-this-unfold-all)
 
-  ;; ido-extras keybindings
-  (esc-keys
+    ;; ido-extras keybindings
     ("M-i"       . ido-goto-symbol)
     ("C-x C-r"   . ido-recentf-open)
-    ("C-x C-S-r" . find-file-read-only))
+    ("C-x C-S-r" . find-file-read-only)
 
-  ;; Programming bindings
-  (esc-keys
+    ;; Programming bindings
     ("C-c m" . compile)
-    ("C-c C-m" . recompile))
+    ("C-c C-m" . recompile)
 
-  ;; C-q cluster
-  (esc-keys
+    ;; C-q cluster
     ("C-q"     . delete-region)  ;like C-w, but gone
     ("C-c q"   . auto-fill-mode) ;more frequented than
-    ("C-c C-q" . quoted-insert))   ;this command
+    ("C-c C-q" . quoted-insert)   ;this command
 
+    ;; newline creation
+    ("<C-return>"   . esc/open-line-below)
+    ("<C-S-return>" . esc/open-line-above)
 
-  ;; w3m bindings
-  (after 'w3m-autoloads
-    (esc-keys
-      ("C-x j"   . w3m-google-new-tab)
-      ("C-x J"   . w3m-wiki-new-tab)
-      ("C-x C-m" . w3m-browse-url)))
+    ;; LaTeX bindings
+    ;; todo: hydratize that block
+    ("C-c l b" . esc/insert-latex-block)
 
-  ;; Text movement
-  (after 'move-text-autoloads
-    (esc-keys
-      ;; ripe for hydra
-      ("<C-S-up>"     . move-text-up)
-      ("<C-S-down>"   . move-text-down)
-      ("<C-return>"   . esc/open-line-below)
-      ("<C-S-return>" . esc/open-line-above)))
+    ;; Minimap bindings
+    ("C-c C-/" . esc/minimap-toggle)
 
-  ;; LaTeX bindings
-  (esc-key "C-c l b" 'esc/insert-latex-block)
+    ;; Ace jump mode. Like an ace
+    ;; todo: hydratize
+    ("C-c SPC" . ace-jump-mode)
+    ("C-x SPC" . ace-jump-mode-pop-mark)
+    ("C-M-S-l" . ace-jump-buffer)
+    ("C-M-O" . split-line)
 
-  ;; Minimap bindings
-  (esc-key "C-c M-m" 'esc/minimap-toggle)
+    ;; Mark commands
+    ("C-x m" . pop-to-mark-command)
 
-  ;; Ace jump mode. Like an ace
-  (after 'ace-jump-mode-autoloads
-    (esc-keys
-      ("C-c SPC" . ace-jump-mode)
-      ("C-x SPC" . ace-jump-mode-pop-mark)))
+    ;; Lisp/sexp movement
+    ("C-S-k" . kill-sexp)
 
-  ;; Ace jump buffer, nice in a pinch
-  (after 'ace-jump-buffer
-    (esc-key "C-M-S-l" 'ace-jump-buffer))
+    ;; Preserving stock org functionality
+    ("C-c l l" . org-store-link)
 
-  ;; Ace window. Genius!
-  (after 'ace-window
-     (esc-key "C-M-o" 'ace-window)
-     ;; how unfriendly! This replaces \\[split-line].
-     (esc-key "C-M-O" 'split-line))
-
-  ;; Mark commands
-  (esc-keys
-    ("C-x m" . pop-to-mark-command))
-
-  ;; Hide-lines bindings
-  (after 'hide-lines-autoloads
-    (esc-key "C-c h" 'hide-lines)
-    (esc-key "C-c M-h" 'esc/reveal-all-hidden-lines))
-
-  (esc-key "C-;" 'comment-dwim)
-
-  ;; Lisp/sexp movement
-  (esc-key "C-S-k" 'kill-sexp)
-
-  ;; Preserving stock org functionality
-  (esc-key "C-c l l" 'org-store-link)
-
-  ;; single-mode != vi
-  (esc-key "<escape>" 'single-mode)
-
-  ;; Buffer control
-  (esc-keys
-    ;("C-x C-b" . ibuffer)              ; use font-lock with buffer lists
-    ;TODO: replace this with something ok (was just using this at the time of )
-    ; editing and didn't know what to use this key for
+    ;; Buffer control
     ("C-x C-b" . global-git-gutter+-mode) ; every invocation was accidental
     ("C-x M-b" . bury-buffer)
     ("C-x M-B" . esc/bury-other-buffer)
     ("C-c o"   . clone-indirect-buffer-other-window)
     ("C-c C-o" . ff-find-other-file)
-    ("C-o"     . ace-window))
 
-  ;; Git-messenger, a handy little fella
-  (esc-key "C-c p" 'git-messenger:popup-message)
+    ;; Git-messenger, a handy little fella
+    ("C-c p" . git-messenger:popup-message)
 
-  (after 'expand-region-autoloads      ;Three guesses [[https://github.com/magnars/expand-region.el][who]]
-    (esc-key "C-=" 'er/expand-region)) ;wrote this package
-
-  ;; Help+
-  (esc-keys
+    ;; todo: hydratize?
+    ;; Help+
     ("C-h C-f"   . find-function)
     ("C-h C-k"   . find-function-on-key)
     ("C-h C-v"   . find-variable)
     ("C-h C-l"   . find-library)
     ("C-h C-n"   . esc/insert-defun-at-point)
     ("C-h M-k"   . describe-keymap)
-    ("C-h C-M-c" . esc/insert-key-combination))
+    ("C-h C-M-c" . esc/insert-key-combination)
 
-  ;; Un- and re- doing
-  (esc-keys
-    ("C-c /"   . goto-last-change))
+    ;; Un- and re- doing
+    ("C-c /"   . goto-last-change)
 
-  ;; Font maniplation
-  (esc-keys
+    ;; Font maniplation
     ("C-M-<" . esc/zoom-out)
-    ("C-M->" . esc/zoom-in))
+    ("C-M->" . esc/zoom-in)
 
   ;;; Function keys
-  (esc-key "<f6>" 'spray-mode)
-  (esc-key "<f7>" 'scroll-all-mode)
-  (esc-key "<f8>" 'follow-delete-other-windows-and-split)
-  (esc-key "<f9>" 'flyspell-buffer)
-  (esc-key "<f10>" 'golden-ratio-mode)
-  ;; TODO: create a defun to save win configuration first
-  ;; see stack on zebulon
+    ("<f6>" . spray-mode)
+    ("<f7>" . scroll-all-mode)
+    ("<f8>" . follow-delete-other-windows-and-split)
+    ("<f9>" . flyspell-buffer)
+    ("<f10>" . golden-ratio-mode)
+    ;; TODO: create a defun to save win configuration first
+    ;; see stack on zebulon
 
-  ;; Helm
-  (after 'helm-autoloads
-    (esc-keys
-      ("C-c i"   . helm-imenu)
-      ("C-x C-j" . helm-for-files)))
+    ;; Sysadmin bindings
+    ;; TODO: bookmarks to dotfiles and esc-lisp
 
-  ;; Sysadmin bindings
-  ;; TODO: bookmarks to dotfiles and esc-lisp
-
-  ;; esc delimeter and line hacks
-  (esc-keys
+    ;; esc delimeter and line hacks
     ("C-<backspace>" . esc/backward-delete-word)
     ("M-k"    . esc/pull-up-line)
     ("C-M--"  . esc/yank-displaced-little-arrow)
@@ -1629,24 +1583,21 @@ Wait, is this even being used??
     ("C-M-*"  . esc/yank-displaced-stars)
     ("C-M-g"  . esc/yank-displaced-dollars)
     ("C-M-="  . esc/yank-displaced-equals)
-    ("C-M-`"  . esc/yank-displaced-ticks))
+    ("C-M-`"  . esc/yank-displaced-ticks)
 
-  ;; programming delimeter and line hacks
-  (esc-keys
-    ("M-'"   . toggle-quotes))
+    ("M-'"   . toggle-quotes)
 
-  ;; Buffer-overlay hacks: super useful!
-  (esc-keys
-   ("s-e" . esc/raise-eshell)
-   ;("s-s" . esc/raise-ansi-term)
-   ("s-q" . esc/raise-magit-status))
+    ;; Buffer-overlay hacks: super useful!
+    ("s-e" . esc/raise-eshell)
+    ;; todo: raise shell
+    ;; todo: smarter magit status: use zebulon's stack package
+    ("s-q" . esc/raise-magit-status))
 #+END_SRC
 
 #+RESULTS: keybindings
 
 I don't know where smartrep defines keys but this worked for me and I
 haven't had to look at it yet.
-
 #+BEGIN_SRC emacs-lisp :tangle no
   (smartrep-define-key global-map "C-c ."
     '(("+" . apply-operation-to-number-at-point)
@@ -1730,12 +1681,24 @@ Hydra package configuration
     ("s" esc/toggle-window-selectability "toggle selectability")
     ("w" ace-window "ace-window")
     ("d" esc/toggle-window-dedicated "toggle dedicated")
-    ("b" mode-line-other-buffer "mode-line-other-buffer"))
+    ("b" mode-line-other-buffer "mode-line-other-buffer")
+    ("u" bury-buffer "bury"))
 
   (after 'org
     (defhydra hydra-org-nav-source-block (esc-mode-map "C-c n")
+      "org src block nav"
       ("n" esc/org-next-source-code-block "next")
       ("p" esc/org-prev-source-code-block "prev")))
+
+  (defhydra hydra-move-text (esc-mode-map "M-RET")
+    "move text"
+    ("j" move-text-down "down")
+    ("k" move-text-up "up"))
+
+  (defhydra hydra-hide-lines (esc-mode-map "C-c h")
+    "hide lines"
+    ("h" hide-lines "hide")
+    ("r" esc/reveal-all-hidden-lines "reveal all"))
 #+END_SRC
 
 ** esc hook
