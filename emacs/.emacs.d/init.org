@@ -804,6 +804,17 @@ Attach =esc-mode= hooks
           multiple-cursors-mode-disabled-hook))
 #+END_SRC
 
+<<<<<<< variant A
+>>>>>>> variant B
+** Mini-buffer setup hook
+
+Keep the minibuffer sane.
+
+#+NAME: minibuffer setup hook
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'minibuffer-setup-hook 'esc/minibuffer-setup-hook)
+#+END_SRC
+======= end
 ** Text mode hook
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
