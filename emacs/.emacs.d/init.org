@@ -1428,14 +1428,17 @@ Below is the forge, boilerplate functions are churned out en-masse.
     "Define functions to manipulate the header level of selected
   region in `org-mode'."
     (let ((funcname (intern (format "esc/org-%s-headers-in-region" funcname)))
-          (docstring (format "%s `org-mode' headers arg times in currently selected region."
+          (docstring (format "%s `org-mode' headers arg times in currently
+  selected region."
                              funcname)))
     `(defun ,funcname (&optional arg)
        ,docstring
        (interactive "p")
        (save-excursion
-         (let ((beg (save-excursion (goto-char (region-beginning)) (beginning-of-line) (point)))
-               (end (save-excursion (goto-char (region-end)) (end-of-line) (point))))
+         (let ((beg (save-excursion
+                      (goto-char (region-beginning)) (beginning-of-line) (point)))
+               (end (save-excursion
+                      (goto-char (region-end)) (end-of-line) (point))))
            (goto-char end)
            (while (and (< beg (point))
                        (re-search-backward "^\*" beg 'noerror))
@@ -1453,7 +1456,9 @@ Below is the forge, boilerplate functions are churned out en-masse.
   (defmacro esc/define-scroll-slight(funcname)
     "Define functions to scroll the buffer slightly without moving point."
     (let ((funcname (format "esc/scroll-%s-slight" funcname))
-          (docstring (format "Scroll %s the page ARG times without moving point. The number of lines to scroll is determined by the variable `esc-line-shift-amount'.
+          (docstring (format "Scroll %s the page ARG times without
+  moving point. The number of lines to scroll is determined by the
+  variable `esc-line-shift-amount'.
 
   This command can be prefixed." funcname))
           (command (intern (format "scroll-%s" funcname))))
