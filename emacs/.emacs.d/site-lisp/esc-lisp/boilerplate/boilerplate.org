@@ -271,8 +271,8 @@ I'm feelin' a little [[http://stackoverflow.com/a/18680600][Haskelly]]
 #+BEGIN_SRC emacs-lisp :tangle emacs+.el
   ;;;###autoload
   (defun combinations (&rest lists)
-    "Return a list of all possible combinations of the elements
-  from each list of LISTS. Think applicative functors from Haskell."
+    "Return a list of all possible combinations of the elements of
+  LISTS. Think applicative functors from Haskell."
     (if (car lists)
         (mapcan (lambda (inner-val)
                   (mapcar (lambda (outer-val)
