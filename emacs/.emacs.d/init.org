@@ -3575,7 +3575,7 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
   (provide 'update-autoloads)
 #+END_SRC
 
-* [10/23] TODOs
+* [10/24] TODOs
 ** DONE fix load path
 ** DONE quick dictionary
 ** DONE remove tangles files from git, provide makefile
@@ -3606,7 +3606,9 @@ you have C-h C-M-c, make C-h C-M-k! and f, etc
 *** TODO human readable sizes in dired
   First have to determine how to unhide information on demand
   for definitions, not spell check
-** [0/3] advice
+** [0/4] advice
+*** TODO finding tags
+look in dirs above for TAGS file and suggest it
 *** TODO org C-c ' to preserve window configuration?
 *** TODO C-h C-k takes you to org instead of .el
 *** TODO C-x M-r to save undo information

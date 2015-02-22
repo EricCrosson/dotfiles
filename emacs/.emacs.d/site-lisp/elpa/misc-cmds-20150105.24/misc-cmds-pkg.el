@@ -1,0 +1,1 @@
+(define-package "misc-cmds" "20150105.24" "Miscellaneous commands (interactive functions)." 'nil :url "http://www.emacswiki.org/misc-cmds.el" :keywords '("internal" "unix" "extensions" "maint" "local"))

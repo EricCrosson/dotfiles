@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads nil "boilerplate/boilerplate" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21736 2513 429488 242000))
+;;;;;;  (21738 1967 712690 193000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el
 
 (autoload 'esc/prog-mode-hook "boilerplate/boilerplate" "\
@@ -261,8 +261,14 @@ Compile an .elc file for every .el file contained under
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/emacs+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el"
-;;;;;;  (21736 2513 302821 569000))
+;;;;;;  (21738 1967 559356 852000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el
+
+(autoload 'combinations "boilerplate/emacs+" "\
+Return a list of all possible combinations of the elements of
+LISTS. Think applicative functors from Haskell.
+
+\(fn &rest LISTS)" nil nil)
 
 (autoload 'esc/pull-up-line "boilerplate/emacs+" "\
 Pull up ARG lines.
@@ -401,11 +407,6 @@ Show line numbers temporarily, while prompting for the line number input.
 
 \(fn)" t nil)
 
-(autoload 'esc/minimap-toggle "boilerplate/emacs+" "\
-Toggle minimap for current buffer.
-
-\(fn)" t nil)
-
 (autoload 'esc/delete-whole-word "boilerplate/emacs+" "\
 This defun will delete the entire word at point. This function
 relies on `esc/kill-whole-word'.
@@ -453,10 +454,16 @@ Delete characters backward until encountering the end of a word.
 
 \(fn ARG)" t nil)
 
+(autoload 'esc/follow-mode-80-char-compliant "boilerplate/emacs+" "\
+Open the current buffer in `follow-mode' in as many 80-char
+windows as you can fit on this screen.
+
+\(fn)" t nil)
+
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/help+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el"
-;;;;;;  (21736 2513 346154 905000))
+;;;;;;  (21738 1967 609356 854000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el
 
 (autoload 'esc/insert-defun-at-point "boilerplate/help+" "\
@@ -505,7 +512,7 @@ Copy the current buffer file name to the clipboard.
 ;;;***
 
 ;;;### (autoloads nil "browse-cliplink" "../../../../../.emacs.d/site-lisp/esc-lisp/browse-cliplink.el"
-;;;;;;  (21736 15161 560139 460000))
+;;;;;;  (21738 4194 406673 843000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/browse-cliplink.el
 
 (autoload 'browse-cliplink "browse-cliplink" "\
@@ -516,7 +523,7 @@ Copy the current buffer file name to the clipboard.
 ;;;***
 
 ;;;### (autoloads nil "clean-mode-line" "../../../../../.emacs.d/site-lisp/esc-lisp/clean-mode-line.el"
-;;;;;;  (21736 15161 583472 794000))
+;;;;;;  (21738 4194 433340 511000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/clean-mode-line.el
 
 (autoload 'clean-mode-line "clean-mode-line" "\
@@ -530,7 +537,7 @@ See `mode-line-cleaner-alist' for more documentation.
 ;;;***
 
 ;;;### (autoloads nil "color-theme-stack" "../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el"
-;;;;;;  (21736 15161 603472 795000))
+;;;;;;  (21738 4194 460007 180000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el
 
 (autoload 'color-theme-push "color-theme-stack" "\
@@ -546,7 +553,7 @@ Restore the previous theme in use.
 ;;;***
 
 ;;;### (autoloads nil "dired-config" "../../../../../.emacs.d/site-lisp/esc-lisp/dired-config.el"
-;;;;;;  (21736 15161 813472 806000))
+;;;;;;  (21738 4194 840007 199000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/dired-config.el
 
 (autoload 'esc/dired-mode-hook "dired-config" "\
@@ -597,7 +604,7 @@ Open esc-lisp in `dired' for easy editing of configs.
 ;;;***
 
 ;;;### (autoloads nil "esc-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el"
-;;;;;;  (21736 15162 170139 491000))
+;;;;;;  (21738 4195 116673 880000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el
 
 (autoload 'esc-mode "esc-mode" "\
@@ -609,7 +616,7 @@ Toggle esc-keys mode.
 ;;;***
 
 ;;;### (autoloads nil "gntp" "../../../../../.emacs.d/site-lisp/esc-lisp/gntp.el"
-;;;;;;  (21736 15162 276806 164000))
+;;;;;;  (21738 4195 146673 881000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/gntp.el
 
 (autoload 'gntp-notify "gntp" "\
@@ -621,7 +628,7 @@ PORT defaults to `gntp-server-port'
 ;;;***
 
 ;;;### (autoloads nil "hidden-mode-line-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode.el"
-;;;;;;  (21736 15162 320139 499000))
+;;;;;;  (21738 4195 200007 218000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode.el
 
 (autoload 'hidden-mode-line-mode "hidden-mode-line-mode" "\
@@ -637,7 +644,7 @@ Minor mode to hide the mode-line in the current buffer.
 ;;;***
 
 ;;;### (autoloads nil "ido-extras" "../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras.el"
-;;;;;;  (21736 15162 346806 167000))
+;;;;;;  (21738 4195 223340 552000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras.el
 
 (autoload 'ido-recentf-open "ido-extras" "\
@@ -655,7 +662,7 @@ mode.
 ;;;***
 
 ;;;### (autoloads nil "multiple-cursors-config" "../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el"
-;;;;;;  (21736 15162 400139 504000))
+;;;;;;  (21738 4195 276673 888000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el
 
 (autoload 'esc/multiple-cursors-mode-enabled-hook "multiple-cursors-config" "\
@@ -714,7 +721,7 @@ is used.
 ;;;***
 
 ;;;### (autoloads nil "rtos/rtos-dev-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/rtos/rtos-dev-mode.el"
-;;;;;;  (21736 18447 673641 986000))
+;;;;;;  (21738 4228 156675 581000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/rtos/rtos-dev-mode.el
 
 (autoload 'rtos-dev-mode "rtos/rtos-dev-mode" "\
@@ -723,12 +730,10 @@ https://github.com/hershic/ee445m-labs.
 
 \(fn &optional ARG)" t nil)
 
-(defhydra rtos/hydra-gdb (rtos-dev-mode-map "M-e" :color red) "gdb" ("o" rtos/ocd-debugger "ocd -d") ("g" gdb "gdb") ("l" rtos/gdb-load "load") ("r" rtos/gdb-reset "reset") ("t" rtos/gdb-target "target") ("s" rtos/gdb-step "step") ("n" rtos/gdb-next "next") ("c" rtos/gdb-continue "continue"))
-
 ;;;***
 
 ;;;### (autoloads nil "scroll-all-config" "../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-config.el"
-;;;;;;  (21736 15162 423472 837000))
+;;;;;;  (21738 4195 563340 570000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-config.el
 
 (autoload 'mwheel-scroll-all-function-all "scroll-all-config" "\
@@ -749,7 +754,7 @@ https://github.com/hershic/ee445m-labs.
 ;;;***
 
 ;;;### (autoloads nil "update-autoloads" "../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads.el"
-;;;;;;  (21736 15162 600139 513000))
+;;;;;;  (21738 4195 666673 909000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads.el
 
 (let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads" loads))))
