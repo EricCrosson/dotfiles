@@ -1,4 +1,4 @@
-#+todo: TODO(t) VERIFY(v) IN-PROGRESS(p) PRINT(r) | OPTIONAL(o) HIATUS(h) DONE(d) DISCARDED(c)
+#+todo: TODO(t) VERIFY(v) IN-PROGRESS(p) PRINT(r) | OPTIONAL(o) HIATUS(h) DONE(d) DISCARDED(c) HACKED(k)
 #+startup: content
 * Introduction
 #+NAME: license
