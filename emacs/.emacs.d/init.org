@@ -3581,7 +3581,7 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
   (provide 'update-autoloads)
 #+END_SRC
 
-* [10/21] TODOs
+* [10/22] TODOs
 ** DONE fix load path
 ** DONE quick dictionary
 ** DONE remove tangles files from git, provide makefile
@@ -3598,6 +3598,8 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
 ** TODO tangling scripts adds execute permission
   (write-region "" nil custom-file)
 ** TODO gcov output parsed by emacs to hilight gdb code coverage
+** TODO Help+ standardization
+you have C-h C-M-c, make C-h C-M-k! and f, etc
 ** TODO use package use-package
 ** [1/2] make process
 *** TODO generate loaddefs

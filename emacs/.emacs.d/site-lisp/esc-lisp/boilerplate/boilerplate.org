@@ -726,7 +726,8 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
         (balance-windows)
         (setq width (window-total-width nil 'floor))))
     (delete-window)
-    (balance-windows))
+    (balance-windows)
+    (recenter-top-bottom))
 
   (provide 'emacs+)
 #+END_SRC
