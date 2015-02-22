@@ -518,14 +518,6 @@ Mabye I'll include this one day, for now it can live in hibernation.
                   filename-and-process))))
 #+END_SRC
 
-*** Minimap config
-  #+BEGIN_SRC emacs-lisp :tangle yes
-  (autoload-from-package "minimap"
-    '(minimap-kill
-      minimap-create
-      minimap-mode))
-#+END_SRC
-
 *** Tea-time config
 #+BEGIN_SRC emacs-lisp :tangle no
   (autoload-from-package "tea-time" '(tea-time))
@@ -2663,9 +2655,6 @@ Below is the forge, boilerplate functions are churned out en-masse.
     ;; todo: hydratize that block
     ("C-c l b" . esc/insert-latex-block)
 
-    ;; Minimap bindings
-    ("C-c C-/" . esc/minimap-toggle)
-
     ;; Ace jump mode. Like an ace
     ;; todo: hydratize
     ("C-c SPC" . ace-jump-mode)
@@ -2851,6 +2840,11 @@ haven't had to look at it yet.
     "hide lines"
     ("h" hide-lines "hide")
     ("r" esc/reveal-all-hidden-lines "reveal all"))
+
+  (defhydra hydra-mnimap (esc-mode-map "C-c M-RET")
+    "minimap"
+    ("m" minimap-toggle "toggle")
+    ("k" minimap-kill "kill" :color blue))
 #+END_SRC
 
 *** esc hook
@@ -3581,7 +3575,7 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
   (provide 'update-autoloads)
 #+END_SRC
 
-* [10/22] TODOs
+* [10/23] TODOs
 ** DONE fix load path
 ** DONE quick dictionary
 ** DONE remove tangles files from git, provide makefile
@@ -3612,7 +3606,8 @@ you have C-h C-M-c, make C-h C-M-k! and f, etc
 *** TODO human readable sizes in dired
   First have to determine how to unhide information on demand
   for definitions, not spell check
-** [0/2] advice
+** [0/3] advice
+*** TODO org C-c ' to preserve window configuration?
 *** TODO C-h C-k takes you to org instead of .el
 *** TODO C-x M-r to save undo information
 ** [0/2] backburner

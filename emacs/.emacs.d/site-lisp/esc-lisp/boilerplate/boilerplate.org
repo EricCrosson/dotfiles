@@ -610,17 +610,6 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
       (linum-mode -1)))
 
   ;;;###autoload
-  (defun esc/minimap-toggle ()
-    "Toggle minimap for current buffer."
-    (interactive)
-    (when (require 'minimap nil 'noerror)
-      (if (not (boundp 'minimap-bufname))
-          (setf minimap-bufname nil))
-      (if (null minimap-bufname)
-          (minimap-create)
-        (minimap-kill))))
-
-  ;;;###autoload
   (defun esc/delete-whole-word ()
     "This defun will delete the entire word at point. This function
   relies on `esc/kill-whole-word'."
