@@ -388,6 +388,29 @@ Make zipped files obvious.
     (setq ad-return-value (concat ad-return-value ".gz"))))
 #+END_SRC
 
+*** expand-region advice
+[[http://spw.sdf.org/blog/tech/emacs/expandregionlines.html][Notes from the Library : /blog/tech/emacs/expandregionlines.html]]
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defadvice er/expand-region (around fill-out-region activate)
+    (if (or (not (region-active-p))
+            (eq last-command 'er/expand-region))
+        ad-do-it
+      (if (< (point) (mark))
+          (let ((beg (point)))
+            (goto-char (mark))
+            (end-of-line)
+            (forward-char 1)
+            (push-mark)
+            (goto-char beg)
+            (beginning-of-line))
+        (let ((end (point)))
+          (goto-char (mark))
+          (beginning-of-line)
+          (push-mark)
+          (goto-char end)
+          (end-of-line)
+          (forward-char 1)))))
+#+END_SRC
 ** Package initialization
 #+NAME: require-packages
 #+BEGIN_SRC emacs-lisp :tangle yes
