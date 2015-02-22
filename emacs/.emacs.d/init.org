@@ -100,8 +100,8 @@ Fire up the mood lighting
                                         :underline  nil
                                         :foreground 'unspecified
                                         :background (cadr data)))
-          '((highlight "#444")
-            (region    "#666")))
+          '((highlight "#333")
+            (region    "#444")))
 #+END_SRC
 ** Free variables
 Free as in free of compiler warnings.
