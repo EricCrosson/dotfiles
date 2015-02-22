@@ -713,6 +713,8 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
       (interactive "p")
       (delete-word (- arg)))
 
+  ;; TODO: find a way to keep these window changes from being registered
+  ;; by winner-mode
   ;;;###autoload
   (defun esc/follow-mode-80-char-compliant()
     "Open the current buffer in `follow-mode' in as many 80-char
