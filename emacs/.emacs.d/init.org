@@ -1,6 +1,6 @@
 #+author: Eric Crosson
 #+email: esc@ericcrosson.com
-#+todo: TODO(t) VERIFY(v) IN-PROGRESS(p) PRINT(r) | OPTIONAL(o) HIATUS(h) DONE(d) DISCARDED(c) HACKED(k)
+#+todo: TODO(t) VERIFY(v) IN-PROGRESS(p) | OPTIONAL(o) HIATUS(h) DONE(d) DISCARDED(c) HACKED(k)
 #+startup: content
 * init.el
 ** Introduction
@@ -94,7 +94,8 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 TODO: load this with color-stack
 Fire up the mood lighting
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (load-theme 'wombat)
+  (load-theme bliss)
+  ;; TODO: hook on color change
   (mapcar (lambda (data) (set-face-attribute (car data) nil
                                         :underline  nil
                                         :foreground 'unspecified
@@ -201,7 +202,8 @@ Facilitate normal initialization processes.
           '(("gnu" . "http://elpa.gnu.org/packages/")
             ("marmalade" . "http://marmalade-repo.org/packages/")
             ("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")
-            ("melpa" . "http://melpa.milkbox.net/packages/")))
+            ("melpa" . "http://melpa.milkbox.net/packages/")
+            ("org" . "http://orgmode.org/elpa/")))
     (package-initialize))
 #+END_SRC
 
@@ -317,7 +319,7 @@ Shrink the agenda buffer as small as we can and keep it that way
     (shrink-window-if-larger-than-buffer))
 #+END_SRC
 
-*** advising built-in commands
+*** builtim command advice
 The following macro is to prevent the user from manually having to
 create directories (=M-x make-directory RET RET=) after using
 =find-file= on a nonexistent file.
@@ -341,7 +343,7 @@ create directories (=M-x make-directory RET RET=) after using
       ad-do-it))
 #+END_SRC
 
-**** comment-dwim
+*** comment-dwim
 I wrote a post about my path to this advice somewhere. I'll find a link when it's stable.
 #+NAME: One Commenter to Rule Them All (TM)
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -2339,6 +2341,33 @@ Thanks [[http://whattheemacsd.com/setup-dired.el-02.html][Magnar]] for all the g
     (interactive)
     (backward-char (- (current-column) 2)))
 #+END_SRC
+** test-mode
+The purpose of this minor mode is to provide a largely unused keymap
+for temporary bindings, that I can destroy and disable with no sweat
+off my back. I can totally wreck it without wrecking esc-mode, thereby
+avoiding emacs daemon restarts.
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/test-mode.el
+  ;;; test-mode.el --- A destructable minor mode to make restarts less frequent.
+
+
+  ;;; Commentary:
+  ;;
+
+  ;;; Code:
+
+  (defvar test-mode-map (make-keymap)
+    "The keymap for function `test-mode'.")
+
+  ;;;###autoload
+  (define-minor-mode test-mode
+    "Toggle test-keys mode.
+                     A destructable minor mode to make restarts less frequent."
+    t " test" 'test-mode-map)
+
+  (provide 'test-mode)
+
+  ;;; test-mode.el ends here
+#+END_SRC
 ** esc-mode
 *** summary
 Here lies my personal minor mode, where I confine all of my custom
@@ -2424,6 +2453,7 @@ variables are prefixed with `esc-'
       `(progn (and (boundp 'esc-mode) esc-mode)))
 #+END_SRC
 
+TODO: integrate this into =esc-mode= again
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
     (after 'diminish-autoloads
       (defmacro diminish-or-restore (mode)
@@ -2449,18 +2479,30 @@ Never you mind this macros...
 
 Macros to insert bindings in =esc-mode-map=.
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-    (defmacro esc-key (sequence action)
-      "A macro to bind SEQUENCE to ACTION in `esc-mode-map'."
-      `(define-key esc-mode-map (kbd ,sequence) ,action))
+  (defmacro esc-key (sequence action)
+    "A macro to bind SEQUENCE to ACTION in `esc-mode-map'."
+    `(define-key esc-mode-map (kbd ,sequence) ,action))
 
-    (defmacro esc-keys (&rest binding-list)
-      "A macro to bind all keybindings and functions in BINDING-LIST
-    in `esc-mode-map'.
+  (defmacro esc-keys (&rest binding-list)
+    "A macro to bind all keybindings and functions in BINDING-LIST
+  in `esc-mode-map'.
 
-    This macro runs conses through \\[esc-key] for convenience."
-      (declare (indent defun))
-      `(mapc (lambda (binding) (esc-key (car binding) (cdr binding)))
-             '(,@binding-list)))
+  This macro runs conses through \\[esc-key] for convenience."
+    (declare (indent defun))
+    `(mapc (lambda (binding) (esc-key (car binding) (cdr binding)))
+           '(,@binding-list)))
+
+
+  ;; TODO: esc-replace-key
+  (defmacro esc-replace-key (old-action new-action)
+    ""
+    `(define-key esc-mode-map (vector 'remap ,old-action) ,new-action))
+
+
+  ;; TODO: implement a vector remap analog to esc-keys
+  (defmacro esc-replace-keys (&rest binding-list)
+    ""
+    )
 #+END_SRC
 
 Below is the forge, boilerplate functions are churned out en-masse.
@@ -2577,17 +2619,13 @@ Below is the forge, boilerplate functions are churned out en-masse.
   (when (fboundp 'windmove-default-keybindings)
     (windmove-default-keybindings))
 
-  (after 'expand-region-autoloads      ;Three guesses [[https://github.com/magnars/expand-region.el][who]]
-    (esc-key "C-=" 'er/expand-region)) ;wrote this package
-
   ;; Helm
   (after 'helm-autoloads
     (esc-keys
       ("C-c i"   . helm-imenu)
       ("C-x C-j" . helm-for-files)))
 
-  (define-key esc-mode-map (vector 'remap 'goto-line)
-  'esc/goto-line-with-feedback)
+  (esc-replace-key 'goto-line 'esc/goto-line-with-feedback)
 
   ;; todo: pull buffer management into another hydra
   ;; Enhanced keybindings
@@ -2604,6 +2642,8 @@ Below is the forge, boilerplate functions are churned out en-masse.
     ("C-x 2"   . esc/vsplit-last-buffer)
     ("C-x 3"   . esc/hsplit-last-buffer)
     ("M-s o"   . occur-dwim)
+
+    (esc-key "C-;" 'er/expand-region)
 
     ;; Equivalent to middle-click yank on mouse
     ("C-c y" . esc/middle-click-yank)
@@ -2752,7 +2792,7 @@ haven't had to look at it yet.
       ("'" . operate-on-number-at-point)))
 #+END_SRC
 
-*** esc hydras
+** esc hydras
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (setq hydra-lv nil)
 
@@ -3575,7 +3615,7 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
   (provide 'update-autoloads)
 #+END_SRC
 
-* [10/24] TODOs
+* [10/26] TODOs
 ** DONE fix load path
 ** DONE quick dictionary
 ** DONE remove tangles files from git, provide makefile
@@ -3595,9 +3635,10 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
 ** TODO Help+ standardization
 you have C-h C-M-c, make C-h C-M-k! and f, etc
 ** TODO use package use-package
-** [1/2] make process
+** [1/3] make process
 *** TODO generate loaddefs
 *** HACKED ensure dir structure is populated in esc-lisp before attempted make
+xo*** TODO asynchronous tangling
 ** [1/2] Powerline
 *** DONE make powerline part of esc-mode
 *** TODO activate =size-indication-mode= with =power-line-mode=
@@ -3606,6 +3647,8 @@ you have C-h C-M-c, make C-h C-M-k! and f, etc
 *** TODO human readable sizes in dired
   First have to determine how to unhide information on demand
   for definitions, not spell check
+** TODO /meta
+move recentf, other meta files into meta
 ** [0/4] advice
 *** TODO finding tags
 look in dirs above for TAGS file and suggest it
