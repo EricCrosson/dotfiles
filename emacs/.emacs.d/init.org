@@ -3613,6 +3613,8 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
 ** [0/2] advice
 *** TODO C-h C-k takes you to org instead of .el
 *** TODO C-x M-r to save undo information
-** [0/2] ibuffer-vc
-*** TODO create mode to replace sort-by -mode with -ssh host
-*** TODO make it group files over tramp
+** [0/2] backburner
+*** [0/2] ibuffer-vc
+On the backburner because I haven't used ibuffer in some time.
+**** TODO create mode to replace sort-by -mode with -ssh host
+**** TODO make it group files over tramp
