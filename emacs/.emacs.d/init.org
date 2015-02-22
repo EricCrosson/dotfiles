@@ -2571,11 +2571,13 @@ Below is the forge, boilerplate functions are churned out en-masse.
       ("C-c i"   . helm-imenu)
       ("C-x C-j" . helm-for-files)))
 
+  (define-key esc-mode-map (vector 'remap 'goto-line)
+  'esc/goto-line-with-feedback)
+
   ;; todo: pull buffer management into another hydra
   ;; Enhanced keybindings
   (esc-keys
     ("C-'"     . execute-extended-command)
-    ("M-g"     . esc/goto-line-with-feedback)
     ("C-j"     . newline-and-indent) ;for consistency in *scratch*
     ("C-a"     . esc/back-to-indentation-or-beginning)
     ("s-z"     . other-window)
@@ -2687,7 +2689,7 @@ Below is the forge, boilerplate functions are churned out en-masse.
     ;;; Function keys
     ("<f6>" . spray-mode)
     ("<f7>" . scroll-all-mode)
-    ("<f8>" . follow-delete-other-windows-and-split)
+    ("<f8>" . esc/follow-mode-80-char-compliant)
     ("<f9>" . flyspell-buffer)
     ("<f10>" . golden-ratio-mode)
     ;; TODO: create a defun to save win configuration first
@@ -2784,18 +2786,20 @@ haven't had to look at it yet.
 
   (defhydra hydra-scroll-buffer (esc-mode-map "M-n")
     "cursor-movement"
-    ("j" esc/scroll-up-slight "scroll up")
-    ("k" esc/scroll-down-slight "scroll down")
-    ("s" isearch-forward "isearch-f" :color blue)
-    ("r" isearch-backward "isearch-r" :color blue)
-    ("n" next-line "next-line")
-    ("p" previous-line "prev-line")
-    ("e" end-of-line "end-of-line")
-    ("a" beginning-of-line "beg-of-line")
-    ("d" scroll-up "page up")
-    ("u" scroll-down "page down")
-    ("q" read-only-mode "read-only")
-    ("/" kill-buffer "kill-buffer" :color blue))
+    ("j" esc/scroll-up-slight "up")
+    ("k" esc/scroll-down-slight "down")
+    ("s" isearch-forward "i-f" :color blue)
+    ("r" isearch-backward "i-r" :color blue)
+    ("h" backward-char "back")
+    ("l" forward-char "frwd")
+    ("n" next-line "next")
+    ("p" previous-line "prev")
+    ("e" end-of-line "end-line")
+    ("a" beginning-of-line "beg-line")
+    ("d" scroll-up "pg up")
+    ("u" scroll-down "pg dn")
+    ("q" read-only-mode "read")
+    ("/" kill-buffer "kill" :color blue))
 
   (defhydra hydra-window-adjustment (esc-mode-map "C-z")
     "window adjustment"

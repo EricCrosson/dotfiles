@@ -43,6 +43,7 @@
 	fill-paragraph
 	forward-sexp
 	hydra--negative-argument
+	hydra-move-text/move-text-down
 	ignore
 	indent-for-tab-command
 	insert-register

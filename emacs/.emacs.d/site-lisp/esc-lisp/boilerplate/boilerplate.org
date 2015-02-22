@@ -713,6 +713,21 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
       (interactive "p")
       (delete-word (- arg)))
 
+  ;;;###autoload
+  (defun esc/follow-mode-80-char-compliant()
+    "Open the current buffer in `follow-mode' in as many 80-char
+  windows as you can fit on this screen."
+    (interactive)
+    (delete-other-windows)
+    (follow-mode 1)
+    (let ((width (window-total-width nil 'floor)))
+      (while (> width 80)
+        (split-window-horizontally)
+        (balance-windows)
+        (setq width (window-total-width nil 'floor))))
+    (delete-window)
+    (balance-windows))
+
   (provide 'emacs+)
 #+END_SRC
 
