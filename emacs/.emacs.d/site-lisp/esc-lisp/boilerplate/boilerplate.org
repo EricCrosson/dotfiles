@@ -267,6 +267,22 @@ TODO: defcustom
 #+END_SRC
 
 * Emacs+
+I'm feelin' a little [[http://stackoverflow.com/a/18680600][Haskelly]]
+#+BEGIN_SRC emacs-lisp :tangle emacs+.el
+  ;;;###autoload
+  (defun combinations (&rest lists)
+    "Return a list of all possible combinations of the elements
+  from each list of LISTS. Think applicative functors from Haskell."
+    (if (car lists)
+        (mapcan (lambda (inner-val)
+                  (mapcar (lambda (outer-val)
+                            (cons outer-val
+                                  inner-val))
+                          (car lists)))
+                (apply #'combinations (cdr lists)))
+      (list nil)))
+#+END_SRC
+
 [[http://whattheemacsd.com/key-bindings.el-03.html][Magnar]] said it best, here's one command I could not live without.
 #+BEGIN_SRC emacs-lisp :tangle emacs+.el
   ;;;###autoload
