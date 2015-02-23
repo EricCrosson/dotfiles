@@ -2852,7 +2852,8 @@ haven't had to look at it yet.
     ("d" scroll-up "pg up")
     ("u" scroll-down "pg dn")
     ("q" read-only-mode "read")
-    ("/" kill-buffer "kill" :color blue))
+    ("/" goto-last-change)
+    ("DEL" kill-buffer "kill" :color blue))
 
   (defhydra hydra-window-adjustment (esc-mode-map "C-z")
     "window adjustment"
