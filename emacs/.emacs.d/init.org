@@ -94,7 +94,8 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
 TODO: load this with color-stack
 Fire up the mood lighting
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (load-theme bliss)
+  (require 'bliss-theme)
+  (load-theme 'bliss t)
   ;; TODO: hook on color change
   (mapcar (lambda (data) (set-face-attribute (car data) nil
                                         :underline  nil
