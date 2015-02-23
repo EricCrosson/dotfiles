@@ -2643,8 +2643,7 @@ Below is the forge, boilerplate functions are churned out en-masse.
     ("C-x 2"   . esc/vsplit-last-buffer)
     ("C-x 3"   . esc/hsplit-last-buffer)
     ("M-s o"   . occur-dwim)
-
-    (esc-key "C-;" 'er/expand-region)
+    ("C-;"     . er/expand-region)
 
     ;; Equivalent to middle-click yank on mouse
     ("C-c y" . esc/middle-click-yank)
