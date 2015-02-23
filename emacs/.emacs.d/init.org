@@ -285,6 +285,11 @@ tempt users to disable them.
         backup-by-copying-when-mismatch t)
 #+END_SRC
 
+=i-search= is capable of spanning whitespace regions
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq search-whitespace-regexp "[ \t\r\n]+")
+#+END_SRC
+
 Keep a history of =M-x= across sessions.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq savehist-file (concat user-emacs-directory "meta/savehist"))
