@@ -2809,7 +2809,7 @@ haven't had to look at it yet.
       ("'" . operate-on-number-at-point)))
 #+END_SRC
 
-** esc hydras
+*** esc hydras
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (setq hydra-lv nil)
 
@@ -2857,19 +2857,19 @@ haven't had to look at it yet.
   (defhydra hydra-scroll-buffer (esc-mode-map "M-n")
     "cursor-movement"
     ("j" esc/scroll-up-slight "up")
-    ("k" esc/scroll-down-slight "down")
+    ("k" esc/scroll-down-slight "dw")
     ("s" isearch-forward "i-f" :color blue)
     ("r" isearch-backward "i-r" :color blue)
     ("h" backward-char "back")
     ("l" forward-char "frwd")
     ("n" next-line "next")
     ("p" previous-line "prev")
-    ("e" end-of-line "end-line")
-    ("a" beginning-of-line "beg-line")
+    ("e" end-of-line "end-ln")
+    ("a" beginning-of-line "beg-ln")
     ("d" scroll-up "pg up")
     ("u" scroll-down "pg dn")
     ("q" read-only-mode "read")
-    ("/" goto-last-change)
+    ("/" goto-last-change "last-chng")
     ("DEL" kill-buffer "kill" :color blue))
 
   (defhydra hydra-window-adjustment (esc-mode-map "C-z")
