@@ -53,3 +53,4 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el
 /emacs/.emacs.d/site-lisp/esc-lisp/rtos
 /emacs/.emacs.d/site-lisp/esc-lisp/rtos/disaster-arm.el
+/emacs/.emacs.d/site-lisp/esc-lisp/boilerplate/programming+.el

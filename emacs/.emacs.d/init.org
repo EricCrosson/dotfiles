@@ -3658,10 +3658,10 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
   (provide 'update-autoloads)
 #+END_SRC
 
-* [10/26] TODOs
-** TODO make_tags
-rename to tagsgen and make an emacs wrapper to ido-select a dir and
-tags from there into there.
+* [11/27] TODOs
+** DONE make_tags
+make an emacs wrapper to ido-select a dir and tagsgen from there
+** TODO publish esc-mode on melpa
 ** DONE fix load path
 ** DONE quick dictionary
 ** DONE remove tangles files from git, provide makefile
