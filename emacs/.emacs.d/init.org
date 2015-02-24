@@ -2766,8 +2766,8 @@ Below is the forge, boilerplate functions are churned out en-masse.
     ("C-M-,"  . esc/yank-displaced-chevrons)
     ("C-M-'"  . esc/yank-displaced-single-quotes)
     ("C-M-\"" . esc/yank-displaced-quotes)
-    ("C-M-*"  . esc/yank-displaced-stars)
     ("C-M-g"  . esc/yank-displaced-dollars)
+    ("C-M-;"  . esc/yank-displaced-stars)
     ("C-M-="  . esc/yank-displaced-equals)
     ("C-M-`"  . esc/yank-displaced-ticks)
 
