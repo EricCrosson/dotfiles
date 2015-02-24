@@ -57,3 +57,4 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/meta/ac-comphist.dat
 /emacs/.emacs.d/meta/ido.last
 /emacs/.emacs.d/meta/recentf
+/emacs/.emacs.d/.mc-lists.el
