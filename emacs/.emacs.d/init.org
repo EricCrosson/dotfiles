@@ -2696,7 +2696,7 @@ Below is the forge, boilerplate functions are churned out en-masse.
 
     ;; Programming bindings
     ("C-c m" . compile)
-    ("C-c C-m" . recompile)
+    ("C-c C-m" . esc/recompile)
 
     ;; C-q cluster
     ("C-q"     . delete-region)  ;like C-w, but gone

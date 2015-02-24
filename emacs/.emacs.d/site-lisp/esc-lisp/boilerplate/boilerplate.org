@@ -285,6 +285,27 @@ TODO: defcustom
       (start-process "tagsgen" tagsgen-buffer "tagsgen" tags-dir)
       (kill-buffer tagsgen-buffer)))
 
+  (defvar esc-precompile-window-state nil
+    "Storage for `esc/recompile' to restore window configuration
+  after a successful compilation.")
+
+  (defvar esc-precompile-window-norestore nil
+    "If non-nil, the user is attempting to recompile after a failed
+  attempt. What this means to `esc/recompile' is this is not the
+  time to save current-window configuration to
+  `esc-precompile-window-state'.")
+
+  ;;;###autoload
+  (defun esc/recompile ()
+    "Save current window configuration to
+  `esc-precompile-window-state' and execute
+  `recompile'. `esc/bury-compilation-buffer-if-successful' will
+  bury the compilation buffer if compilation succeeds."
+    (interactive)
+    (when (not esc-precompile-window-norestore)
+      (window-configuration-to-register esc-precompile-window-state))
+    (recompile))
+
   (provide 'programming+)
 
   ;;; programming+.el ends here

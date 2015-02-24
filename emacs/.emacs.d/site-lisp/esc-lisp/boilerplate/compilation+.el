@@ -26,13 +26,14 @@ file corresponding to the current buffer file, then recompile the file."
 (defun esc/bury-compilation-buffer-if-successful (buffer string)
   "Bury the compilation BUFFER after a successful compile.
 Argument STRING provided by compilation hooks."
-  (when (and
-	 (string-match "compilation" (buffer-name buffer))
-	 (string-match "finished" string)
-	 (not (search-forward "warning" nil t)))
-    (bury-buffer buffer)
-    (switch-to-prev-buffer (get-buffer-window buffer) 'kill)
-    ;; TODO: winner-undo if compile created a new buffer
+  (if (not (and
+	    (string-match "compilation" (buffer-name buffer))
+	    (string-match "finished" string)
+	    (not (search-forward "warning" nil t))))
+      (when (boundp esc-precompile-window-norestore)
+	(setq esc-precompile-window-norestore t))
+    (when (boundp esc-precompile-window-state)
+      (jump-to-register esc-precompile-window-state))
     (message "Compilation successful.")))
 
 ;;;###autoload
