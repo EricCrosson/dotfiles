@@ -355,7 +355,28 @@ Thanks to the prolific [[http://ergoemacs.org/emacs/modernization_upcase-word.ht
         (put this-command 'state "all lower")))))
 #+END_SRC
 
-[[http://emacsredux.com/blog/2015/01/18/clear-comint-buffers/][Clear comint buffers - Emacs Redux]]
+[[http://www.emacswiki.org/emacs/TrampMode#toc30][EmacsWiki: Tramp Mode]]
+#+BEGIN_SRC emacs-lisp :tangle emacs+.el
+  ;;;###autoload
+  (defun sudo-edit-current-file ()
+    "Edit the current file as sudo with tramp, without needing to
+  navigate to it or losing your place in the file. Works on local
+  or remote files."
+    (interactive)
+    (let ((position (point)))
+      (find-alternate-file
+       (if (file-remote-p (buffer-file-name))
+           (let ((vec (tramp-dissect-file-name (buffer-file-name))))
+             (tramp-make-tramp-file-name
+              "sudo"
+              (tramp-file-name-user vec)
+              (tramp-file-name-host vec)
+              (tramp-file-name-localname vec)))
+         (concat "/sudo:root@localhost:" (buffer-file-name))))
+      (goto-char position)))
+#+END_SRC
+
+[[http://emacsredux.com/blog/2015/01/18/clear-comint-buffers/][Clear Comint Buffers - Emacs Redux]]
 #+BEGIN_SRC emacs-lisp :tangle emacs+.el
   (defun comint-clear-buffer ()
     (interactive)
