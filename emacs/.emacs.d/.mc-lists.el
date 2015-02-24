@@ -3,11 +3,25 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+	c-electric-delete-forward
+	c-electric-semi&comma
+	c-electric-star
+	c-indent-line-or-region
+	comment-dwim
+	end-of-visual-line
+	esc/back-to-indentation-or-beginning
+	esc/open-line-below
+	esc/yank-displaced-parens
 	hydra-multiple-cursors/mc/edit-lines
+	mc/search-forward
 	org-delete-char
 	org-self-insert-command
+	upcase-region
 	))
 
 (setq mc/cmds-to-run-once
       '(
+	hydra-multiple-cursors/mc/mark-all-like-this
+	hydra-multiple-cursors/mc/mark-next-like-this
+	hydra-multiple-cursors/mc/mark-previous-like-this
 	))
