@@ -2782,7 +2782,9 @@ Below is the forge, boilerplate functions are churned out en-masse.
     ("C-M-="  . esc/yank-displaced-equals)
     ("C-M-`"  . esc/yank-displaced-ticks)
 
-    ("M-'"   . toggle-quotes)
+    ("M-'" . toggle-quotes)
+
+    ("C-c C-f" . esc/visit-favorite-dir)
 
     ;; Buffer-overlay hacks: super useful!
     ("s-e" . esc/raise-eshell)
