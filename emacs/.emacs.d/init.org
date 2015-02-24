@@ -2777,6 +2777,7 @@ Below is the forge, boilerplate functions are churned out en-masse.
     ("s-e" . esc/raise-eshell)
     ;; todo: raise shell
     ;; todo: smarter magit status: use zebulon's stack package
+    ;; todo: save window configuration
     ("s-q" . esc/raise-magit-status))
 #+END_SRC
 
@@ -2841,6 +2842,7 @@ haven't had to look at it yet.
     ("u" upcase-word "upcase")
     ("l" downcase-word "lowercase"))
 
+  ;; todo: create a mirror that manipulates `other-buffer'
   (defhydra hydra-scroll-buffer (esc-mode-map "M-n")
     "cursor-movement"
     ("j" esc/scroll-up-slight "up")
@@ -3622,6 +3624,9 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
 #+END_SRC
 
 * [10/26] TODOs
+** TODO make_tags
+rename to tagsgen and make an emacs wrapper to ido-select a dir and
+tags from there into there.
 ** DONE fix load path
 ** DONE quick dictionary
 ** DONE remove tangles files from git, provide makefile
@@ -3655,6 +3660,7 @@ xo*** TODO asynchronous tangling
   for definitions, not spell check
 ** TODO /meta
 move recentf, other meta files into meta
+
 ** [0/4] advice
 *** TODO finding tags
 look in dirs above for TAGS file and suggest it
