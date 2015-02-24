@@ -3351,7 +3351,45 @@ This command is particularly useful when used in conjunction with
                       (string= (car imenu--rescan-item) name))
             (add-to-list 'symbol-names name)
             (add-to-list 'name-and-pos (cons name position))))))))
+#+END_SRC
 
+[[http://endlessparentheses.com/visit-directory-inside-a-set-of-directories.html#disqus_thread][Visit Directory inside a Set of Directories with Emacs]]
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/ido-extras.el
+  (defcustom esc/favorite-directories nil
+    "List of favorite directories.
+  Used in `esc/visit-favorite-dir'. The order here
+  affects the order that completions will be offered."
+    :type '(repeat directory)
+    :group 'endless)
+  (setq esc/favorite-directories '("~/workspace/classes/ee362k"
+                                       "~/workspace/classes/ee364d"
+                                       "~/workspace/ee445m-labs"))
+  ;;;###autoload
+  (defun esc/visit-favorite-dir (files-too)
+    "Offer all directories inside a set of directories.
+  Compile a list of all directories inside each element of
+  `esc/favorite-directories', and visit one of them with
+  `ido-completing-read'.
+  With prefix argument FILES-TOO also offer to find files."
+    (interactive "P")
+    (let ((completions
+           (mapcar #'abbreviate-file-name
+             (cl-remove-if-not
+              (if files-too #'file-readable-p
+                #'file-directory-p)
+              (apply #'append
+                (mapcar (lambda (x)
+                          (directory-files
+                           (expand-file-name x)
+                           t "^[^\.].*" t))
+                  esc/favorite-directories))))))
+      (dired
+       (ido-completing-read "Open directory: "
+                            completions 'ignored nil ""))))
+#+END_SRC
+
+#+name: fin
+#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/ido-extras.el
   (provide 'ido-config)
 
   ;;; ido-config.el ends here
