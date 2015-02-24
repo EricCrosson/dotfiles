@@ -1010,7 +1010,6 @@ As of <2015-02-18 Wed> this advice did not work for me.
 
 *** org config
 My favorite mode. This was the reason I started using Emacs, didja know?
-#+NAME: org mode configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-to-list 'org-modules 'org-habit)
   (setq-default major-mode 'org-mode)  ;default mode for new buffers
