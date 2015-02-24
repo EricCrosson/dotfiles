@@ -457,7 +457,13 @@ TODO: defcustom
   ;;;###autoload
   (defun esc/raise-magit-status ()
     "Bring up a full-screen magit-status or restore previous
-  window configuration."
+  window configuration.
+
+  This defun will not raise magit if you have merge conflicts in
+  the current buffer.
+
+  This defun kills all buffers matching regexp '^*magit' upon the
+  exit toggle of the fullscreen magit buffer"
     (interactive)
     (save-excursion
       (beginning-of-buffer)
