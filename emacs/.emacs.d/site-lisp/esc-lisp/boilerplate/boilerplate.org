@@ -462,7 +462,7 @@ TODO: defcustom
   This defun will not raise magit if you have merge conflicts in
   the current buffer.
 
-  This defun kills all buffers matching regexp '^*magit' upon the
+  This defun kills all buffers matching regexp '^*magit: ' upon the
   exit toggle of the fullscreen magit buffer"
     (interactive)
     (save-excursion
@@ -476,7 +476,7 @@ TODO: defcustom
                  (message "Buffer not associated with a file")
                (save-buffer)
                (magit-status (file-name-directory (buffer-file-name)))))
-      nil (kill-matching-buffers-no-ask "^*magit")))
+      nil (kill-matching-buffers-no-ask "^*magit: ")))
 
   ;; Thanks sacha! See
   ;; [[http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-5-1][Sacha
