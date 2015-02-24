@@ -612,8 +612,8 @@ Verbatim from the [[http://www.emacswiki.org/emacs/RubyMode][emacswiki]].
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq recentf-auto-cleanup 'never)  ;must be set before recentf loaded
   (after 'recentf
-    (setq recentf-max-menu-items 25
-          recentf-max-saved-items 25
+    (setq recentf-max-menu-items 50
+          recentf-max-saved-items 50
           recentf-keep '(file-remote-p file-readable-p)))
 #+END_SRC
 
