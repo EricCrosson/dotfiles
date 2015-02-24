@@ -988,7 +988,6 @@ Begin Mac OS configuration
 *** org advice
 [[http://emacs.stackexchange.com/a/9347][org mode - How does one use flyspell in org buffers without flyspell
 triggeri...]]
-
 As of <2015-02-18 Wed> this advice did not work for me.
 #+BEGIN_SRC emacs-lisp :tangle no
   ;; NO spell check for embedded snippets
@@ -1023,8 +1022,10 @@ My favorite mode. This was the reason I started using Emacs, didja know?
         org-checkbox-hierarchical-statistics nil
         org-habit-graph-column 55
         org-src-fontify-natively t
+        org-imenu-depth 3
         org-directory "~/org"
         org-agenda-files (append '("~/workspace/ee445m-labs/doc/todo.org"
+                                   "~/workspace/ee445m-labs/doc/lab-manuals/todo.org"
                                    "~/org/intel.org"
                                    "~/org/todo.org")))
 #+END_SRC
