@@ -798,7 +798,8 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 #+END_SRC
 *** Paradox config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (setq paradox-github-token "37204ef66b6566274616d130ec61a0cd4f98e066")
+  (setq paradox-github-token "37204ef66b6566274616d130ec61a0cd4f98e066"
+        paradox-execute-asynchronously t)
 #+END_SRC
 
 ** Autoloads
