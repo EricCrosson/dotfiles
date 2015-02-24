@@ -276,6 +276,18 @@ TODO: defcustom
   ;;; Code:
 
   ;;;###autoload
+  (defun kill-matching-buffers-no-ask (regexp &optional internal-too)
+    "Kill buffers whose name matches the specified REGEXP.
+  The optional second argument indicates whether to kill internal buffers too."
+    (interactive "sKill buffers matching this regular expression: \nP")
+    (dolist (buffer (buffer-list))
+      (let ((name (buffer-name buffer)))
+        (when (and name (not (string-equal name ""))
+                   (or internal-too (/= (aref name 0) ?\s))
+                   (string-match regexp name))
+          (kill-buffer buffer)))))
+
+  ;;;###autoload
   (defmacro esc/toggle-fullscreen-buffer (win-register toggled-mode-test toggle-command
                                                        &optional
                                                        toggle-command-test
@@ -457,7 +469,8 @@ TODO: defcustom
       (progn (if (not (buffer-file-name))
                  (message "Buffer not associated with a file")
                (save-buffer)
-               (magit-status (file-name-directory (buffer-file-name)))))))
+               (magit-status (file-name-directory (buffer-file-name)))))
+      nil (kill-matching-buffers-no-ask "^*magit")))
 
   ;; Thanks sacha! See
   ;; [[http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-5-1][Sacha
