@@ -58,3 +58,8 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/meta/ido.last
 /emacs/.emacs.d/meta/recentf
 /emacs/.emacs.d/.mc-lists.el
+/emacs/.emacs.d/site-lisp/esc-lisp/boilerplate/buffer+.el
+/emacs/.emacs.d/site-lisp/esc-lisp/boilerplate/compilation+.el
+/emacs/.emacs.d/site-lisp/esc-lisp/boilerplate/displaced-yank.el
+/emacs/.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el
+/emacs/.emacs.d/site-lisp/esc-lisp/boilerplate/os-interaction.el

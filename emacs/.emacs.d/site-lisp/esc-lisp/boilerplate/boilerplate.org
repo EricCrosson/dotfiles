@@ -266,9 +266,9 @@ TODO: defcustom
   "))
 #+END_SRC
 
-* Programming+
-#+BEGIN_SRC emacs-lisp :tangle programming+.el
-  ;;; programming+.el --- Programming aides. Everybody needs aides
+* Buffer+
+#+BEGIN_SRC emacs-lisp :tangle buffer+.el
+  ;;; buffer+.el --- Buffer and window management functions
 
   ;;; Commentary:
   ;;
@@ -276,39 +276,327 @@ TODO: defcustom
   ;;; Code:
 
   ;;;###autoload
-  (defun esc/tagsgen ()
-    "Create a TAGS file using TAGSGEN in a directory that is
-  prompted with `ido-read-directory-name'."
-    (interactive)
-    (let* ((tags-dir (ido-read-directory-name "Generate tags in dir: " ))
-           (tagsgen-buffer "*tagsgen*"))
-      (start-process "tagsgen" tagsgen-buffer "tagsgen" tags-dir)
-      (kill-buffer tagsgen-buffer)))
+  (defmacro esc/toggle-fullscreen-buffer (win-register toggled-mode-test toggle-command
+                                                       &optional
+                                                       toggle-command-test
+                                                       clear-command)
+    "Bring up a temporary buffer in fullscreen mode, or restore the
+  previous window configuration.
 
-  (defvar esc-precompile-window-state nil
-    "Storage for `esc/recompile' to restore window configuration
-  after a successful compilation.")
+  WIN-REGISTER         is the register to store the old window configuration in.
 
-  (defvar esc-precompile-window-norestore nil
-    "If non-nil, the user is attempting to recompile after a failed
-  attempt. What this means to `esc/recompile' is this is not the
-  time to save current-window configuration to
-  `esc-precompile-window-state'.")
+  TOGGLED-MODE-TEST    is the major mode of the toggled state, in other words a
+                       test to determine which way to toggle the buffers.
+
+  TOGGLE-COMMAND       is the command to run when toggling into the temporary
+                       state.
+
+  CLEAR-COMMAND        is an optional command to run when reverting back to the
+                       original state; i.e. toggle a flag"
+    (declare (indent defun))
+    `(progn
+       (if ,toggled-mode-test
+           (progn (jump-to-register ,win-register)
+                  (when (not (equal nil ,clear-command))
+                    ,clear-command))
+         (window-configuration-to-register ,win-register)
+         ,toggle-command
+         (delete-other-windows))))
 
   ;;;###autoload
-  (defun esc/recompile ()
-    "Save current window configuration to
-  `esc-precompile-window-state' and execute
-  `recompile'. `esc/bury-compilation-buffer-if-successful' will
-  bury the compilation buffer if compilation succeeds."
+  (defmacro esc/save-window-configuration (win-register &rest body)
+    "Save current window configuration to WIN-REGISTER, run BODY,
+  and restory WIN-REGISTER."
+    (declare (indent defun))
+    `(progn
+       (window-configuration-to-register ,win-register)
+       (progn ,@body)
+       (jump-to-register ,win-register)))
+
+  ;;;###autoload
+  (defun esc/should-have-opened-this-in-other-window (&optional COUNT)
+    "Returns to the previous buffer in current window, calls
+  `other-window', and opens the buffer in the new window.
+
+  COUNT is the number of windows to advance; the argument is passed
+  directly to `other-window', so see the documentation for more
+  details."
     (interactive)
-    (when (not esc-precompile-window-norestore)
-      (window-configuration-to-register esc-precompile-window-state))
-    (recompile))
+    (when (equal nil COUNT)
+      (setq COUNT 1))
+    (let ((target (buffer-name)))
+      (switch-to-prev-buffer)
+      (other-window COUNT)
+      (switch-to-buffer target)))
 
-  (provide 'programming+)
+  ;;;###autoload
+  (defun esc/toggle-window-selectability ()
+    "Ignore/recognize a window from `other-window'."
+    (interactive)
+    (if (window-parameter (selected-window) 'no-other-window)
+        (progn
+          (set-window-parameter (selected-window) 'no-other-window nil)
+          (message "Window will now be recognized by `other-window'"))
+      (set-window-parameter (selected-window) 'no-other-window t)
+      (message "Window will now be ignored by `other-window'")))
 
-  ;;; programming+.el ends here
+  ;;;###autoload
+  (defun esc/toggle-window-dedicated ()
+    "Toggle whether the current active window is dedicated or not.
+
+  When dedicated, `display-buffer' will refrain from displaying
+  another buffer in a window."
+    (interactive)
+    (message
+     (if (let (window (get-buffer-window (current-buffer)))
+           (set-window-dedicated-p window
+                                   (not (window-dedicated-p window))))
+         "Window '%s' is dedicated"
+       "Window '%s' is normal")
+     (current-buffer)))
+
+  ;;;###autoload
+  (defun buffers-matching-regexp (regexp &optional names)
+    "Return a list of buffers matching REGEXP.
+
+  If NAMES is non-nil, return a list of names (strings) instead of
+  buffers."
+    (remq nil
+          (mapcar (lambda (buf)
+                    (let ((name (buffer-name buf)))
+                      (when (string-match regexp name)
+                        (if names
+                            (buffer-name buf)
+                          buf))))
+                  (buffer-list))))
+
+  ;;;###autoload
+  (defun esc/rotate-window-split ()
+    "Transform a vertically split window to a horizontally split
+  window."
+    (interactive)
+    (if (= (count-windows) 2)
+        (let* ((this-win-buffer (window-buffer))
+               (next-win-buffer (window-buffer (next-window)))
+               (this-win-edges (window-edges (selected-window)))
+               (next-win-edges (window-edges (next-window)))
+               (this-win-2nd (not (and (<= (car this-win-edges)
+                                           (car next-win-edges))
+                                       (<= (cadr this-win-edges)
+                                           (cadr next-win-edges)))))
+               (splitter
+                (if (= (car this-win-edges)
+                       (car (window-edges (next-window))))
+                    'split-window-horizontally
+                  'split-window-vertically)))
+          (delete-other-windows)
+          (let ((first-win (selected-window)))
+            (funcall splitter)
+            (if this-win-2nd (other-window 1))
+            (set-window-buffer (selected-window) this-win-buffer)
+            (set-window-buffer (next-window) next-win-buffer)
+            (select-window first-win)
+            (if this-win-2nd (other-window 1))))))
+
+  ;;;###autoload
+  (defun esc/bury-buffer-delete-window ()
+    "Kill current window and bury the current buffer to the bottom
+  of the buffer list."
+    (interactive)
+    (bury-buffer)
+    (delete-window))
+
+  ;;;###autoload
+  (defun esc/bury-other-buffer (&optional switch-to-other-buffer)
+    "Bury the buffer that `mode-line-other-buffer' will take you
+  to.
+
+  If SWITCH-TO-OTHER-BUFFER is non-nil (e.g. this command is
+  prefixed) then after the other-buffer is buried, the command
+  `mode-line-other-buffer' will be used to switch buffers."
+    (interactive "p")
+    (mode-line-other-buffer)
+    (bury-buffer)
+    (when current-prefix-arg (mode-line-other-buffer)))
+
+  ;;;###autoload
+  (defun esc/raise-eshell ()
+    "Bring up a full-screen eshell or restore previous window
+  configuration."
+    (interactive)
+    (esc/toggle-fullscreen-buffer :eshell-fullscreen
+      (string= "eshell-mode" major-mode)
+      (eshell)))
+
+  ;;;###autoload
+  (defun esc/raise-eshell-in-current-dir ()
+    "Bring up a full-screen eshell in the current directory or
+  restore previous window configuration."
+    (interactive)
+    (esc/toggle-fullscreen-buffer
+      :eshell-fullscreen
+      (string= "eshell-mode" major-mode)
+      (when (buffer-file-name)
+        (let ((dir (file-name-directory (buffer-file-name))))
+          (eshell)
+          (insert "cd " dir)
+          (with-no-warnings (eshell-send-input))))))
+
+  ;;;###autoload
+  (defun esc/raise-magit-status ()
+    "Bring up a full-screen magit-status or restore previous
+  window configuration."
+    (interactive)
+    (save-excursion
+      (beginning-of-buffer)
+      (when (re-search-forward "^<<<<<<< variant" nil 'noerror)
+        (error "Resolve merge conflicts first.")))
+    (esc/toggle-fullscreen-buffer
+      :magit-fullscreen
+      (string= "magit-status-mode" major-mode)
+      (progn (if (not (buffer-file-name))
+                 (message "Buffer not associated with a file")
+               (save-buffer)
+               (magit-status (file-name-directory (buffer-file-name)))))))
+
+  ;; Thanks sacha! See
+  ;; [[http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-5-1][Sacha
+  ;; Chua's Emacs configuration]] for more tips.
+  ;;;###autoload
+  (defun esc/vsplit-last-buffer (prefix)
+    "Split the window vertically and display the previous buffer.
+  Argument PREFIX when nil switches the new buffer to the last buffer."
+    (interactive "p")
+    (split-window-vertically)
+    (other-window 1 nil)
+    (unless prefix (switch-to-next-buffer)))
+
+  ;;;###autoload
+  (defun esc/hsplit-last-buffer (prefix)
+    "Split the window horizontally and display the previous buffer.
+  Argument PREFIX when nil switches the new buffer to the last buffer."
+    (interactive "p")
+    (split-window-horizontally)
+    (other-window 1 nil)
+    (unless prefix (switch-to-next-buffer)))
+
+  (provide 'buffer+)
+
+  ;;; buffer+.el ends here
+#+END_SRC
+* Compilation+
+#+BEGIN_SRC emacs-lisp :tangle compilation+.el
+  ;;; compilation+.el --- Compilation-related functions
+
+  ;;; Commentary:
+  ;;
+
+  ;;; Code:
+
+  ;;;###autoload
+    (defun esc/previous-error (n)
+      "Visit previous compilation error message and corresponding source code.
+    Complement to `next-error'."
+      (interactive "p")
+      (next-error (- n)))
+
+  ;;;###autoload
+  (defun esc/auto-byte-recompile ()
+    "If the current buffer is in emacs-lisp-mode and there already exists an .elc
+  file corresponding to the current buffer file, then recompile the file."
+    (interactive)
+    (when (require 'bytecomp nil 'noerror)
+      (when (and (eq major-mode 'emacs-lisp-mode)
+                 (file-exists-p (byte-compile-dest-file buffer-file-name)))
+        (byte-compile-file buffer-file-name))))
+
+  ;;;###autoload
+  (defun esc/bury-compilation-buffer-if-successful (buffer string)
+    "Bury the compilation BUFFER after a successful compile.
+  Argument STRING provided by compilation hooks."
+    (if (not (and
+              (string-match "compilation" (buffer-name buffer))
+              (string-match "finished" string)
+              (not (search-forward "warning" nil t))))
+        (when (boundp esc-precompile-window-norestore)
+          (setq esc-precompile-window-norestore t))
+      (when (boundp esc-precompile-window-state)
+        (jump-to-register esc-precompile-window-state))
+      (message "Compilation successful.")))
+
+  ;;;###autoload
+  (defun esc/org-next-source-code-block ()
+    (interactive)
+    (re-search-forward "#\\+begin_src" nil t)
+    (next-line)
+    (beginning-of-line))
+
+  ;;;###autoload
+  (defun esc/org-prev-source-code-block ()
+    (interactive)
+    (previous-line)
+    (beginning-of-line)
+    (re-search-backward "#\\+begin_src" nil t))
+
+  ;;;###autoload
+  (defun byte-compile-directory(dir)
+    "Compile an .elc file for every .el file contained under
+    DIR (recursive)."
+    (byte-recompile-directory (expand-file-name dir) 0))
+
+  (provide 'compilation+)
+
+  ;;; compilation+.el ends here
+#+END_SRC
+* Displaced yank
+#+BEGIN_SRC emacs-lisp :tangle displaced-yank.el
+  ;;; displaced-yank.el --- Yank and move point
+
+  ;;;###autoload
+
+  ;;; Commentary:
+  ;;
+
+  ;;; Code:
+
+  (defmacro esc/define-displaced-yank (funcname data)
+    "Create a defun of name FUNCNAME that yanks and moves according
+  to DATA. DATA is of the form (STR, MOVE). STR is the string to
+  yank and MOVE is the number of chars to move backward.
+
+  Note that negative values of MOVE are valid."
+    (let ((funsymbol (intern (format "esc/yank-displaced-%s" funcname)))
+          (char (car data))
+          (back (or (cadr data) 1)))
+      `(defun ,funsymbol (&optional ARG)
+         "This defun was generated pragmatically. Docstrings have
+  not been ironed out yet. See the defun-generating code for more
+  information."
+         (interactive "p")
+         (dotimes (i ARG)
+           (insert ,char)
+           (backward-char ,back)))))
+
+  (mapcar* (lambda (function)
+             (let ((funcname (car function))
+                   (data     (cdr function)))
+               (eval `(esc/define-displaced-yank ,funcname ,data))))
+           '((parens "()")
+             (braces "{}")
+             (brackets "[]")
+             (brackets-with-colon "[:]")
+             (chevrons "<>")
+             (quotes "\"\"")
+             (stars "**")
+             (dollars "$$")
+             ;; a good example of code reuse
+             (ticks "`'")
+             (little-arrow "->" 0)
+             (doxygen-comment "/*!  */" 3))) ;; todo: implement with yasnippet
+
+  (provide 'displaced-yank)
+
+  ;;; displaced-yank.el ends here
 #+END_SRC
 * Emacs+
 I'm feelin' a little [[http://stackoverflow.com/a/18680600][Haskelly]]
@@ -788,6 +1076,54 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
   (provide 'emacs+)
 #+END_SRC
 
+* OS interaction
+#+BEGIN_SRC emacs-lisp :tangle os-interaction.el
+  ;;; os-interaction.el --- Emacs should play nicely with whatever OS it's hiding
+
+  ;;; Commentary:
+  ;;
+
+  ;;; Code:
+
+  ;;;###autoload
+  (defun esc/middle-click-yank ()
+    "Yank from the middle click mouse buffer."
+    (interactive)
+    (mouse-yank-primary 1))
+
+  ;;;###autoload
+  (defun esc/insert-file-name (&optional ARG)
+    "Inserts the name of the current file (including extension) at point.
+
+  When ARG is non-nil, the filename will be printed in a different format.
+  If ARG is 0, insert the full path of the filename.
+  If ARG is - (or -1), insert the filename without extension."
+    (interactive "p")
+    (let ((filename (if (equal major-mode 'dired-mode)
+                        default-directory
+                      (buffer-file-name))))
+      (when filename
+        (let ((output (cond ((eq ARG 0)   filename)
+                            ((eq ARG -1)  (file-name-nondirectory
+                                           (file-name-sans-extension filename)))
+                            (t (file-name-nondirectory filename)))))
+          (insert output)))))
+
+  ;;;###autoload
+  (defun esc/copy-file-name-to-clipboard ()
+    "Copy the current buffer file name to the clipboard."
+    (interactive)
+    (let ((filename (if (equal major-mode 'dired-mode)
+                        default-directory
+                      (buffer-file-name))))
+      (when filename
+        (kill-new filename)
+        (message "Copied buffer file name '%s' to the clipboard." filename))))
+
+  (provide 'os-interaction)
+
+  ;;; os-interaction.el ends here
+#+END_SRC
 * Help+
 #+BEGIN_SRC emacs-lisp :tangle help+.el
   ;; TODO make this insert parens, and the appropriate spaces for
@@ -896,6 +1232,50 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
 
 #+END_SRC
 
+* Programming+
+#+BEGIN_SRC emacs-lisp :tangle programming+.el
+  ;;; programming+.el --- Programming aides. Everybody needs aides
+
+  ;;; Commentary:
+  ;;
+
+  ;;; Code:
+
+  ;;;###autoload
+  (defun esc/tagsgen ()
+    "Create a TAGS file using TAGSGEN in a directory that is
+  prompted with `ido-read-directory-name'."
+    (interactive)
+    (let* ((tags-dir (ido-read-directory-name "Generate tags in dir: " ))
+           (tagsgen-buffer "*tagsgen*"))
+      (start-process "tagsgen" tagsgen-buffer "tagsgen" tags-dir)
+      (kill-buffer tagsgen-buffer)))
+
+  (defvar esc-precompile-window-state nil
+    "Storage for `esc/recompile' to restore window configuration
+  after a successful compilation.")
+
+  (defvar esc-precompile-window-norestore nil
+    "If non-nil, the user is attempting to recompile after a failed
+  attempt. What this means to `esc/recompile' is this is not the
+  time to save current-window configuration to
+  `esc-precompile-window-state'.")
+
+  ;;;###autoload
+  (defun esc/recompile ()
+    "Save current window configuration to
+  `esc-precompile-window-state' and execute
+  `recompile'. `esc/bury-compilation-buffer-if-successful' will
+  bury the compilation buffer if compilation succeeds."
+    (interactive)
+    (when (not esc-precompile-window-norestore)
+      (window-configuration-to-register esc-precompile-window-state))
+    (recompile))
+
+  (provide 'programming+)
+
+  ;;; programming+.el ends here
+#+END_SRC
 * extending core functionality
 
 #+NAME: rename-deun
