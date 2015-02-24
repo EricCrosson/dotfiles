@@ -3295,9 +3295,9 @@ This command is particularly useful when used in conjunction with
             header-line-format nil))
     (set-window-buffer nil (current-buffer)))
 #+END_SRC
-** ido-config
+** ido-extras
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/ido-extras.el
-  ;;; ido-config.el --- Miscellaneous defuns shining with ido
+  ;;; ido-extras.el --- Miscellaneous defuns shining with ido
   ;; Configuration functions for using interactive-do.
 
   ;;; Commentary:
