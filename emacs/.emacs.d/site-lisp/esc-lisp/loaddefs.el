@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads nil "boilerplate/boilerplate" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21738 1967 712690 193000))
+;;;;;;  (21740 52268 191909 62000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el
 
 (autoload 'esc/prog-mode-hook "boilerplate/boilerplate" "\
@@ -261,7 +261,7 @@ Compile an .elc file for every .el file contained under
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/emacs+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el"
-;;;;;;  (21738 1967 559356 852000))
+;;;;;;  (21740 52268 21909 58000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el
 
 (autoload 'combinations "boilerplate/emacs+" "\
@@ -278,6 +278,13 @@ Pull up ARG lines.
 (autoload 'esc/toggle-letter-case "boilerplate/emacs+" "\
 Toggle the letter case of current word or text selection.
   Toggles between: “all lower”, “Init Caps”, “ALL CAPS”.
+
+\(fn)" t nil)
+
+(autoload 'sudo-edit-current-file "boilerplate/emacs+" "\
+Edit the current file as sudo with tramp, without needing to
+navigate to it or losing your place in the file. Works on local
+or remote files.
 
 \(fn)" t nil)
 
@@ -463,7 +470,7 @@ windows as you can fit on this screen.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/help+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el"
-;;;;;;  (21738 1967 609356 854000))
+;;;;;;  (21740 52268 85242 393000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el
 
 (autoload 'esc/insert-defun-at-point "boilerplate/help+" "\
@@ -511,8 +518,20 @@ Copy the current buffer file name to the clipboard.
 
 ;;;***
 
+;;;### (autoloads nil "boilerplate/programming+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/programming+.el"
+;;;;;;  (21740 52267 685242 385000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/programming+.el
+
+(autoload 'esc/tagsgen "boilerplate/programming+" "\
+Create a TAGS file using TAGSGEN in a directory that is
+prompted with `ido-read-directory-name'.
+
+\(fn)" t nil)
+
+;;;***
+
 ;;;### (autoloads nil "browse-cliplink" "../../../../../.emacs.d/site-lisp/esc-lisp/browse-cliplink.el"
-;;;;;;  (21738 39370 927582 825000))
+;;;;;;  (21740 51208 185219 680000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/browse-cliplink.el
 
 (autoload 'browse-cliplink "browse-cliplink" "\
@@ -523,7 +542,7 @@ Copy the current buffer file name to the clipboard.
 ;;;***
 
 ;;;### (autoloads nil "clean-mode-line" "../../../../../.emacs.d/site-lisp/esc-lisp/clean-mode-line.el"
-;;;;;;  (21738 39370 964249 493000))
+;;;;;;  (21740 51208 285219 682000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/clean-mode-line.el
 
 (autoload 'clean-mode-line "clean-mode-line" "\
@@ -537,7 +556,7 @@ See `mode-line-cleaner-alist' for more documentation.
 ;;;***
 
 ;;;### (autoloads nil "color-theme-stack" "../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el"
-;;;;;;  (21738 39370 974249 494000))
+;;;;;;  (21740 51208 311886 349000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el
 
 (autoload 'color-theme-push "color-theme-stack" "\
@@ -553,7 +572,7 @@ Restore the previous theme in use.
 ;;;***
 
 ;;;### (autoloads nil "dired-config" "../../../../../.emacs.d/site-lisp/esc-lisp/dired-config.el"
-;;;;;;  (21738 39371 67582 831000))
+;;;;;;  (21740 51208 511886 353000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/dired-config.el
 
 (autoload 'esc/dired-mode-hook "dired-config" "\
@@ -604,7 +623,7 @@ Open esc-lisp in `dired' for easy editing of configs.
 ;;;***
 
 ;;;### (autoloads nil "esc-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el"
-;;;;;;  (21738 39371 194249 505000))
+;;;;;;  (21740 51208 878553 28000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el
 
 (autoload 'esc-mode "esc-mode" "\
@@ -616,7 +635,7 @@ Toggle esc-keys mode.
 ;;;***
 
 ;;;### (autoloads nil "gntp" "../../../../../.emacs.d/site-lisp/esc-lisp/gntp.el"
-;;;;;;  (21738 39371 200916 171000))
+;;;;;;  (21740 51208 901886 362000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/gntp.el
 
 (autoload 'gntp-notify "gntp" "\
@@ -628,7 +647,7 @@ PORT defaults to `gntp-server-port'
 ;;;***
 
 ;;;### (autoloads nil "hidden-mode-line-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode.el"
-;;;;;;  (21738 39371 220916 173000))
+;;;;;;  (21740 51208 971886 363000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode.el
 
 (autoload 'hidden-mode-line-mode "hidden-mode-line-mode" "\
@@ -644,7 +663,7 @@ Minor mode to hide the mode-line in the current buffer.
 ;;;***
 
 ;;;### (autoloads nil "ido-extras" "../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras.el"
-;;;;;;  (21738 39371 227582 839000))
+;;;;;;  (21740 51209 121886 367000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras.el
 
 (autoload 'ido-recentf-open "ido-extras" "\
@@ -659,10 +678,19 @@ mode.
 
 \(fn &optional SYMBOL-LIST)" t nil)
 
+(autoload 'esc/visit-favorite-dir "ido-extras" "\
+Offer all directories inside a set of directories.
+Compile a list of all directories inside each element of
+`esc/favorite-directories', and visit one of them with
+`ido-completing-read'.
+With prefix argument FILES-TOO also offer to find files.
+
+\(fn FILES-TOO)" t nil)
+
 ;;;***
 
 ;;;### (autoloads nil "multiple-cursors-config" "../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el"
-;;;;;;  (21738 39371 247582 840000))
+;;;;;;  (21740 51209 171886 367000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el
 
 (autoload 'esc/multiple-cursors-mode-enabled-hook "multiple-cursors-config" "\
@@ -733,7 +761,7 @@ https://github.com/hershic/ee445m-labs.
 ;;;***
 
 ;;;### (autoloads nil "scroll-all-config" "../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-config.el"
-;;;;;;  (21738 39371 257582 841000))
+;;;;;;  (21740 51209 195219 702000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-config.el
 
 (autoload 'mwheel-scroll-all-function-all "scroll-all-config" "\
@@ -754,7 +782,7 @@ https://github.com/hershic/ee445m-labs.
 ;;;***
 
 ;;;### (autoloads nil "test-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/test-mode.el"
-;;;;;;  (21738 39371 74249 499000))
+;;;;;;  (21740 51208 535219 688000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/test-mode.el
 
 (autoload 'test-mode "test-mode" "\
@@ -766,7 +794,7 @@ Toggle test-keys mode.
 ;;;***
 
 ;;;### (autoloads nil "update-autoloads" "../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads.el"
-;;;;;;  (21738 39371 307582 844000))
+;;;;;;  (21740 51209 288553 37000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads.el
 
 (let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads" loads))))
