@@ -266,6 +266,29 @@ TODO: defcustom
   "))
 #+END_SRC
 
+* Programming+
+#+BEGIN_SRC emacs-lisp :tangle programming+.el
+  ;;; programming+.el --- Programming aides. Everybody needs aides
+
+  ;;; Commentary:
+  ;;
+
+  ;;; Code:
+
+  ;;;###autoload
+  (defun esc/tagsgen ()
+    "Create a TAGS file using TAGSGEN in a directory that is
+  prompted with `ido-read-directory-name'."
+    (interactive)
+    (let* ((tags-dir (ido-read-directory-name "Generate tags in dir: " ))
+           (tagsgen-buffer "*tagsgen*"))
+      (start-process "tagsgen" tagsgen-buffer "tagsgen" tags-dir)
+      (kill-buffer tagsgen-buffer)))
+
+  (provide 'programming+)
+
+  ;;; programming+.el ends here
+#+END_SRC
 * Emacs+
 I'm feelin' a little [[http://stackoverflow.com/a/18680600][Haskelly]]
 #+BEGIN_SRC emacs-lisp :tangle emacs+.el
