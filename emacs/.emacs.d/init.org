@@ -61,6 +61,14 @@ need to keep the list updated, just load all subdirectories and go.
     :group 'esc-mode)
   (setq esc-loaddefs-path (concat esc-lisp-path "loaddefs.el"))
 
+  (defcustom esc-meta-path nil
+    "Path to .emacs.d meta directory, for internal bookkeeping
+  records."
+    :type 'path
+    :options '("~/.emacs.d/meta")
+    :group 'esc-mode)
+  (setq esc-meta-path "~/.emacs.d/meta")
+
   (let ((default-directory site-lisp-path))      ;for easy
     (normal-top-level-add-to-load-path '("."))   ;recursive
     (normal-top-level-add-subdirs-to-load-path)) ;loading
