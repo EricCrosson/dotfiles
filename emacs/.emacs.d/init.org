@@ -272,7 +272,6 @@ GNU/Linux files can be.
   (set-buffer-file-coding-system 'unix)   ;Unix mode. Always
   (setq c-default-style "linux"
         c-basic-offset 2
-        ido-create-new-buffer 'always
         require-final-newline 'visit-save ;compliance
         indent-tabs-mode nil
         comment-style 'indent)
@@ -710,7 +709,9 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
     (setq ido-everywhere t                             ;always Ido
           ido-enable-flex-matching t                   ;smarter Ido
           ido-create-new-buffer 'always                ;quieter Ido
-          ido-file-extensions-order '(".org" ".txt"))) ;precedence
+          ido-create-new-buffer 'always
+          ido-save-directory-list-file (format "%s/ido.last" esc-meta-path)
+          ido-file-extensions-order '(".org" ".el" ".txt"))) ;precedence
 #+END_SRC
 
 *** Git gutter+ config
