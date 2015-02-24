@@ -521,6 +521,7 @@ TODO: defcustom
         (when (boundp esc-precompile-window-norestore)
           (setq esc-precompile-window-norestore t))
       (when (boundp esc-precompile-window-state)
+        (setq esc-precompile-window-norestore nil)
         (jump-to-register esc-precompile-window-state))
       (message "Compilation successful.")))
 
