@@ -703,10 +703,6 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
           ido-enable-flex-matching t                   ;smarter Ido
           ido-create-new-buffer 'always                ;quieter Ido
           ido-file-extensions-order '(".org" ".txt"))) ;precedence
-
-  (autoload-from-package "ido-extras"
-    '(ido-recentf-open
-      ido-goto-symbol))
 #+END_SRC
 
 *** Git gutter+ config
