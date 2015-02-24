@@ -477,6 +477,10 @@ Thanks to [[http://whattheemacsd.com/my-misc.el-02.html][Magnar]] for the advice
       ad-do-it))
 #+END_SRC
 
+*** Auto complete config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq ac-comphist-file (format "%s/ac-comphist.dat" esc-meta-path))
+#+END_SRC
 *** Spray config
 This mode is based on openspritz, a speedreading tutor.
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -589,9 +593,8 @@ Verbatim from the [[http://www.emacswiki.org/emacs/RubyMode][emacswiki]].
 #+END_SRC
 *** Saveplace config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (setq save-place-file (expand-file-name "meta/places" user-emacs-directory))
   (after 'saveplace
-      (setq save-place-file (concat user-emacs-directory "meta/saveplace.el"))
+      (setq save-place-file (format "%s/places" esc-meta-path))
       (setq-default save-place t))
 #+END_SRC
 
@@ -621,6 +624,7 @@ Verbatim from the [[http://www.emacswiki.org/emacs/RubyMode][emacswiki]].
   (after 'recentf
     (setq recentf-max-menu-items 50
           recentf-max-saved-items 50
+          recentf-save-file (format "%s/recentf" esc-meta-path)
           recentf-keep '(file-remote-p file-readable-p)))
 #+END_SRC
 
