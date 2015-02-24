@@ -34,6 +34,16 @@ CLEAR-COMMAND        is an optional command to run when reverting back to the
        (delete-other-windows))))
 
 ;;;###autoload
+(defmacro esc/save-window-configuration (win-register &rest body)
+  "Save current window configuration to WIN-REGISTER, run BODY,
+and restory WIN-REGISTER."
+  (declare (indent defun))
+  `(progn
+     (window-configuration-to-register ,win-register)
+     (progn ,@body)
+     (jump-to-register ,win-register)))
+
+;;;###autoload
 (defun esc/should-have-opened-this-in-other-window (&optional COUNT)
   "Returns to the previous buffer in current window, calls
 `other-window', and opens the buffer in the new window.
