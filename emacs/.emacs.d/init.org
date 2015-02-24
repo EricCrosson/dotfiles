@@ -2651,15 +2651,16 @@ Below is the forge, boilerplate functions are churned out en-masse.
 
 
     ;; Miscellaneous keybindings
-    ("C-c a"   . org-agenda)
-    ("M-K"     . kill-sentence)
-    ("M-z"     . zap-up-to-char) ; up-to, life saver
-    ("M-Z"     . zap-to-char)
-    ("M-j"     . just-one-space) ; conflicts with spotlight
-    ("C-c k"   . esc/copy-line)
-    ("M-P"     . align-regexp)
-    ("C-c e"   . esc/eval-and-replace)
-    ("C-c C-b" . mode-line-other-buffer)
+    ("C-c a"     . org-agenda)
+    ("C-c C-M-l" . org-cliplink)
+    ("M-K"       . kill-sentence)
+    ("M-z"       . zap-up-to-char) ; up-to, life saver
+    ("M-Z"       . zap-to-char)
+    ("M-j"       . just-one-space) ; conflicts with spotlight
+    ("C-c k"     . esc/copy-line)
+    ("M-P"       . align-regexp)
+    ("C-c e"     . esc/eval-and-replace)
+    ("C-c C-b"   . mode-line-other-buffer)
     ;; TODO: change sexp wrapping (i.e. {}[]()) from Xah Lee
 
     ;; todo: paxedit in a hydra
