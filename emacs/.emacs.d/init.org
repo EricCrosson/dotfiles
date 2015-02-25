@@ -806,6 +806,18 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
         paradox-execute-asynchronously t)
 #+END_SRC
 
+*** Programming+ config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defvar esc-precompile-window-state nil
+    "Storage for `esc/recompile' to restore window configuration
+    after a successful compilation.")
+
+  (defvar esc-precompile-window-norestore nil
+    "If non-nil, the user is attempting to recompile after a failed
+    attempt. What this means to `esc/recompile' is this is not the
+    time to save current-window configuration to
+    `esc-precompile-window-state'.")
+#+END_SRC
 ** Autoloads
 #+NAME: Miscellaneous autoloads
     #+BEGIN_SRC emacs-lisp :tangle yes
@@ -3700,6 +3712,9 @@ make an emacs wrapper to ido-select a dir and tagsgen from there
   naturally
 ** TODO tangling scripts adds execute permission
   (write-region "" nil custom-file)
+** [0/1] general purpose deuns
+- [ ] kill buffer and reopen file
+  when revert-buffer just doesn't cut it
 ** TODO gcov output parsed by emacs to hilight gdb code coverage
 ** TODO Help+ standardization
 you have C-h C-M-c, make C-h C-M-k! and f, etc

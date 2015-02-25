@@ -1287,16 +1287,6 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
       (start-process "tagsgen" tagsgen-buffer "tagsgen" tags-dir)
       (kill-buffer tagsgen-buffer)))
 
-  (defvar esc-precompile-window-state nil
-    "Storage for `esc/recompile' to restore window configuration
-  after a successful compilation.")
-
-  (defvar esc-precompile-window-norestore nil
-    "If non-nil, the user is attempting to recompile after a failed
-  attempt. What this means to `esc/recompile' is this is not the
-  time to save current-window configuration to
-  `esc-precompile-window-state'.")
-
   ;;;###autoload
   (defun esc/recompile ()
     "Save current window configuration to
