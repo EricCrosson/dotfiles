@@ -2646,25 +2646,27 @@ Below is the forge, boilerplate functions are churned out en-masse.
   ;; todo: pull buffer management into another hydra
   ;; Enhanced keybindings
   (esc-keys
-    ("C-'"     . execute-extended-command)
-    ("C-j"     . newline-and-indent) ;for consistency in *scratch*
-    ("C-a"     . esc/back-to-indentation-or-beginning)
-    ("s-z"     . other-window)
-    ("C-x 4 k" . esc/mode-line-other-buffer-other-window)
-    ("C-x 4 9" . esc/bury-buffer-delete-window)
-    ("M-x"     . execute-extended-command)
-    ("C-'"     . query-replace)
-    ("C-x M-r" . revert-buffer-no-confirm)
-    ("C-x 2"   . esc/vsplit-last-buffer)
-    ("C-x 3"   . esc/hsplit-last-buffer)
-    ("M-s o"   . occur-dwim)
-    ("C-;"     . er/expand-region)
+    ("C-c C-M-\\" . esc/indent-buffer)
+    ("C-'"        . execute-extended-command)
+    ("C-j"        . newline-and-indent) ;for consistency in *scratch*
+    ("C-a"        . esc/back-to-indentation-or-beginning)
+    ("s-z"        . other-window)
+    ("C-x 4 k"    . esc/mode-line-other-buffer-other-window)
+    ("C-x 4 9"    . esc/bury-buffer-delete-window)
+    ("M-x"        . execute-extended-command)
+    ("C-'"        . query-replace)
+    ("C-x M-r"    . revert-buffer-no-confirm)
+    ("C-x 2"      . esc/vsplit-last-buffer)
+    ("C-x 3"      . esc/hsplit-last-buffer)
+    ("M-s o"      . occur-dwim)
+    ("C-;"        . er/expand-region)
 
     ;; Equivalent to middle-click yank on mouse
     ("C-c y" . esc/middle-click-yank)
 
 
     ;; Miscellaneous keybindings
+    ("C-,"       . org-cycle-agenda-files)
     ("C-c a"     . org-agenda)
     ("C-c C-M-l" . org-cliplink)
     ("M-K"       . kill-sentence)
@@ -3674,7 +3676,7 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
   (provide 'update-autoloads)
 #+END_SRC
 
-* [11/27] TODOs
+* [11/28] TODOs
 ** DONE make_tags
 make an emacs wrapper to ido-select a dir and tagsgen from there
 ** TODO publish esc-mode on melpa
@@ -3697,6 +3699,8 @@ make an emacs wrapper to ido-select a dir and tagsgen from there
 ** TODO Help+ standardization
 you have C-h C-M-c, make C-h C-M-k! and f, etc
 ** TODO use package use-package
+** TODO recentf
+- prefer org over el and txt like ido
 ** [1/3] make process
 *** TODO generate loaddefs
 *** HACKED ensure dir structure is populated in esc-lisp before attempted make

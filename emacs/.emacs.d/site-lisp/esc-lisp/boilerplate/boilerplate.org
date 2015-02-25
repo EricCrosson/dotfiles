@@ -276,6 +276,12 @@ TODO: defcustom
   ;;; Code:
 
   ;;;###autoload
+  (defun esc/indent-buffer ()
+    "Indent the entire buffer without adjusting point or mark."
+    (interactive)
+    (save-excursion (indent-region (point-min) (point-max))))
+
+  ;;;###autoload
   (defun kill-matching-buffers-no-ask (regexp &optional internal-too)
     "Kill buffers whose name matches the specified REGEXP.
   The optional second argument indicates whether to kill internal buffers too."
