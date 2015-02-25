@@ -556,6 +556,10 @@ Configure options for transparent handling of very large files.
     (custom-set-variables
      '(vlf-application 'dont-ask)))
 #+END_SRC
+*** Golden ratio config mode
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-to-list 'golden-ratio-extra-commands 'ace-window)
+#+END_SRC
 *** Conf mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
     (add-to-list
