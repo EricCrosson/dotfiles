@@ -1,0 +1,84 @@
+# Created by Eric Crosson 2015-02-25
+#
+# For this file to work: your /etc/hosts must contain the following
+# line:
+#
+# imap.utmail.com imap.gmail.com          imap.gmail.com
+
+[general]
+accounts = esc,gmail,utexas
+maxsyncaccounts = 3
+
+#
+# Account esc
+#
+
+[Account esc]
+localrepository = esc-local
+remoterepository = esc-remote
+status_backend = sqlite
+
+[Repository esc-local]
+type = Maildir
+localfolders = ~/Maildir/esc
+
+# TODO: use SSL
+[Repository esc-remote]
+type = IMAP
+remotehost = imap.secureserver.net
+remoteuser = esc@ericcrosson.com
+# Necessary as of OfflineIMAP 6.5.4
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+# TODO: create a nametrans lambda, possibly a folderfilter lambda too
+
+
+#
+# Account gmail
+#
+
+[Account gmail]
+localrepository = gmail-local
+remoterepository = gmail-remote
+status_backend = sqlite
+
+[Repository gmail-local]
+type = Maildir
+localfolders = ~/Maildir/gmail
+
+[Repository gmail-remote]
+type = Gmail
+remoteuser = eric.s.crosson@gmail.com
+# remotepasseval = getnetrc(machine='imap.gmail.com', login='eric.s.crosson@gmail.edu')
+nametrans = lambda foldername: re.sub ('^\[gmail\]', 'bak',
+                               re.sub ('sent_mail', 'sent',
+                               re.sub ('starred', 'flagged',
+                               re.sub (' ', '_', foldername.lower()))))
+folderfilter = lambda foldername: foldername not in '[Gmail]/All Mail'
+# Necessary as of OfflineIMAP 6.5.4
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+
+#
+# Account utexas
+#
+
+[Account utexas]
+localrepository = utexas-local
+remoterepository = utexas-remote
+status_backend = sqlite
+
+[Repository utexas-local]
+type = Maildir
+localfolders = ~/Maildir/utexas
+
+[Repository utexas-remote]
+type = IMAP
+remotehost = imap.utmail.com
+remoteuser = eric.s.crosson@utexas.edu
+remotepasseval = getnetrc(machine='imap.gmail.com', login='eric.s.crosson@utexas.edu')
+nametrans = lambda foldername: re.sub ('^\[gmail\]', 'bak',
+                               re.sub ('sent_mail', 'sent',
+                               re.sub ('starred', 'flagged',
+                               re.sub (' ', '_', foldername.lower()))))
+folderfilter = lambda foldername: foldername not in '[Gmail]/All Mail'
+# Necessary as of OfflineIMAP 6.5.4
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
