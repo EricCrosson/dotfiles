@@ -2692,7 +2692,6 @@ Below is the forge, boilerplate functions are churned out en-masse.
     ("M-j"       . just-one-space) ; conflicts with spotlight
     ("C-c k"     . esc/copy-line)
     ("M-P"       . align-regexp)
-    ("C-c e"     . esc/eval-and-replace)
     ("C-c C-b"   . mode-line-other-buffer)
     ;; TODO: change sexp wrapping (i.e. {}[]()) from Xah Lee
 
@@ -2843,6 +2842,15 @@ haven't had to look at it yet.
     "esc/zoom"
     ("," esc/zoom-out)
     ("." esc/zoom-in))
+
+  (defhydra hydra-eval (esc-mode-map "C-c C-e")
+    "eval"
+    ("r" eval-region "region")
+    ("b" eval-buffer "buffer")
+    ("s" eval-last-sexp "sexp")
+    ("d" eval-defun "defun")
+    ("b" edebug-defun "edebug")
+    ("p" esc/eval-and-replace "& replace"))
 
   (defhydra hydra-error (esc-mode-map "M-g")
     "goto-error"
