@@ -625,6 +625,16 @@ TODO: defcustom
   ;;; displaced-yank.el ends here
 #+END_SRC
 * Emacs+
+#+BEGIN_SRC emacs-lisp :tangle emacs+.el
+  ;; TOOD: accept a prefix to yank `buffer-file-name'
+  ;;;###autoload
+  (defun esc/minibuffer-display-buffer-file-name ()
+    "Display `buffer-file-name' in the minibuffer."
+    (interactive)
+    (ignore-errors
+      (message (format "%s" (buffer-file-name)))))
+#+END_SRC
+
 I'm feelin' a little [[http://stackoverflow.com/a/18680600][Haskelly]]
 #+BEGIN_SRC emacs-lisp :tangle emacs+.el
   ;;;###autoload

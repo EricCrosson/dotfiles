@@ -2646,6 +2646,7 @@ Below is the forge, boilerplate functions are churned out en-masse.
   ;; todo: pull buffer management into another hydra
   ;; Enhanced keybindings
   (esc-keys
+    ("<f5>"       . esc/minibuffer-display-buffer-file-name)
     ("C-c C-M-\\" . esc/indent-buffer)
     ("C-'"        . execute-extended-command)
     ("C-j"        . newline-and-indent) ;for consistency in *scratch*
