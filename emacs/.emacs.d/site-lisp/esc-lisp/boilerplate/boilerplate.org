@@ -1061,12 +1061,11 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
   ;;;###autoload
   (defun esc/unkillable-scratch-buffer ()
     "Prevent the *scratch* buffer from ever being killed."
-    (if (equal (buffer-name (current-buffer)) "*scratch*")
-        (progn
-          (delete-region (point-min) (point-max))
-          (insert initial-scratch-message)
-          nil)
-      t))
+    (if (not (equal (buffer-name (current-buffer)) "*scratch*"))
+        t
+      (delete-region (point-min) (point-max))
+      (insert (or initial-scratch-message ""))
+      nil))
 
   ;;;###autoload
   (defun esc/mode-line-other-buffer-other-window ()
