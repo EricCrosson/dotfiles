@@ -441,6 +441,7 @@ Make zipped files obvious.
       notifications
       dired-x
       pretty-lambdada
+      spotify
       vc-hooks
       powerline
 
@@ -744,6 +745,10 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
   (after 'multiple-cursors-autoloads
     (setq mc/list-file "~/.emacs.d/meta/.mc-lists.el"))
 #+END_SRC
+*** Spotify config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (ignore-errors (spotify-enable-song-notifications))
+#+END_SRC
 *** Ace config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'ace-jump-mode (ace-jump-mode-enable-mark-sync))
@@ -809,6 +814,15 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
         paradox-automatically-star t)
 #+END_SRC
 
+*** Workgroups config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (after 'workgroups (setq wg-morph-on nil))
+#+END_SRC
+*** Persp mode conf
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (after 'persp-mode
+    (setq persp-save-dir (format "%s/persp-confs" esc-meta-path)))
+#+END_SRC
 *** Programming+ config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defvar esc-precompile-window-state nil
@@ -2756,7 +2770,7 @@ Below is the forge, boilerplate functions are churned out en-masse.
     ("C-c C-o" . ff-find-other-file)
 
     ;; Git-messenger, a handy little fella
-    ("C-c p" . git-messenger:popup-message)
+    ("C-c [" . git-messenger:popup-message)
 
     ;; todo: hydratize?
     ;; Help+
@@ -2799,6 +2813,7 @@ Below is the forge, boilerplate functions are churned out en-masse.
     ("C-M-\"" . esc/yank-displaced-quotes)
     ("C-M-g"  . esc/yank-displaced-dollars)
     ("C-M-;"  . esc/yank-displaced-stars)
+    ("C-M-:"  . esc/yank-displaced-doxygen-comment)
     ("C-M-="  . esc/yank-displaced-equals)
     ("C-M-`"  . esc/yank-displaced-ticks)
 
