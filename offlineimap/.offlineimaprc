@@ -25,6 +25,8 @@ localfolders = ~/Maildir/esc
 # TODO: use SSL
 [Repository esc-remote]
 type = IMAP
+ssl = yes
+port = 993
 remotehost = imap.secureserver.net
 remoteuser = esc@ericcrosson.com
 # Necessary as of OfflineIMAP 6.5.4
@@ -47,6 +49,7 @@ localfolders = ~/Maildir/gmail
 
 [Repository gmail-remote]
 type = Gmail
+createfolders = false
 remoteuser = eric.s.crosson@gmail.com
 # remotepasseval = getnetrc(machine='imap.gmail.com', login='eric.s.crosson@gmail.edu')
 nametrans = lambda foldername: re.sub ('^\[gmail\]', 'bak',
@@ -72,7 +75,10 @@ localfolders = ~/Maildir/utexas
 
 [Repository utexas-remote]
 type = IMAP
-remotehost = imap.utmail.com
+ssl = yes
+port = 993
+createfolders = false
+remotehost = imap.gmail.com
 remoteuser = eric.s.crosson@utexas.edu
 remotepasseval = getnetrc(machine='imap.gmail.com', login='eric.s.crosson@utexas.edu')
 nametrans = lambda foldername: re.sub ('^\[gmail\]', 'bak',
