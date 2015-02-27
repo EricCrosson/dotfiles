@@ -558,7 +558,8 @@ Configure options for transparent handling of very large files.
 #+END_SRC
 *** Golden ratio config mode
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (add-to-list 'golden-ratio-extra-commands 'ace-window)
+  (after 'golden-ratio
+    (add-to-list 'golden-ratio-extra-commands 'ace-window))
 #+END_SRC
 *** Conf mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -797,13 +798,15 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 *** Bitly config
 #+NAME: bitly oauth token
 #+BEGIN_SRC emacs-lisp :tangle yes
+  (autoload 'json-read "json.el")
   (after 'bitly
     (setq bitly-access-token "b4a5cd4e51df442ab97012cfc2764c599d6eabf8"))
 #+END_SRC
 *** Paradox config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq paradox-github-token "37204ef66b6566274616d130ec61a0cd4f98e066"
-        paradox-execute-asynchronously t)
+        paradox-execute-asynchronously t
+        paradox-automatically-star t)
 #+END_SRC
 
 *** Programming+ config
@@ -2774,7 +2777,6 @@ Below is the forge, boilerplate functions are churned out en-masse.
 
     ;;; Function keys
     ("<f6>" . spray-mode)
-    ("<f7>" . scroll-all-mode)
     ("<f8>" . esc/follow-mode-80-char-compliant)
     ("<f9>" . flyspell-buffer)
     ("<f10>" . golden-ratio-mode)
@@ -2785,7 +2787,7 @@ Below is the forge, boilerplate functions are churned out en-masse.
     ;; TODO: bookmarks to dotfiles and esc-lisp
 
     ;; esc delimeter and line hacks
-    ("C-<backspace>" . esc/backward-delete-word)
+    ("C-<backspace>" . backward-delete-word)
     ("M-k"    . esc/pull-up-line)
     ("C-M--"  . esc/yank-displaced-little-arrow)
     ("C-M-j"  . esc/yank-displaced-parens)
@@ -2832,6 +2834,12 @@ haven't had to look at it yet.
 *** esc hydras
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (setq hydra-lv nil)
+
+  (defhydra hydra-spotify (esc-mode-map "<f7>")
+    "spotify"
+    ("c"   spotify-playpause "play/pause"
+     "p"   spotify-previous  "prev"
+     "n"   spotify-next      "next"))
 
   (defhydra hydra-text-scale (esc-mode-map  "<f2>")
     "text-scale"
