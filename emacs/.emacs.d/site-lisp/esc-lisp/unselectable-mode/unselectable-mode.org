@@ -1,0 +1,57 @@
+#+startup:all
+#+todo: TODO(t) VERIFY(v) IN-PROGRESS(p) DOCUMENT(m) PRINT(r) | OPTIONAL(o) HIATUS(h) DONE(d) CANCELED(c)
+* Unselectable mode
+The purpose of this buffer-local minor mode is to prevent a buffer
+from being selectable by =other-window=.
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;;; dedicated-mode.el --- Hide a window from `other-window'
+  ;; Copyright (C) 2015     Eric Steven Crosson (esc)
+
+  ;; This program is free software: you can redistribute it and/or modify
+  ;; it under the terms of the GNU General Public License as published by
+  ;; the Free Software Foundation, either version 3 of the License, or
+  ;; (at your option) any later version.
+
+  ;; This program is distributed in the hope that it will be useful,
+  ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ;; GNU General Public License for more details.
+
+  ;; You should have received a copy of the GNU General Public License
+  ;; along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+  ;;; Commentary:
+  ;;
+
+  ;;; Code:
+
+  (defvar unselectable-mode-map (make-keymap)
+    "The keymap for `unselectable-mode'.")
+
+  ;;;###autoload
+  (define-minor-mode unselectable-mode
+    "Toggle `unselectable-mode'.
+
+  When enabled, `unselectable-mode' prevents a buffer from being
+  chosen by `other-window'."
+    nil " unselectable" 'unselectable-mode-map)
+
+  ;;;###autoload
+  (defun toggle-window-selectability ()
+    "Ignore/recognize a window from `other-window'."
+    (interactive)
+    (if (window-parameter (selected-window) 'no-other-window)
+        (progn
+          (set-window-parameter (selected-window) 'no-other-window nil)
+          (message "Window will now be recognized by `other-window'"))
+      (set-window-parameter (selected-window) 'no-other-window t)
+      (message "Window will now be ignored by `other-window'")))
+
+  (add-hook 'unselectable-mode-hook 'toggle-window-selectability)
+
+  (provide 'unselectable-mode)
+
+  ;;; unselectable-mode.el ends here
+
+#+END_SRC

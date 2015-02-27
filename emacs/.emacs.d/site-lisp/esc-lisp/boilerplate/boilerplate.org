@@ -348,17 +348,6 @@ TODO: defcustom
       (switch-to-buffer target)))
 
   ;;;###autoload
-  (defun esc/toggle-window-selectability ()
-    "Ignore/recognize a window from `other-window'."
-    (interactive)
-    (if (window-parameter (selected-window) 'no-other-window)
-        (progn
-          (set-window-parameter (selected-window) 'no-other-window nil)
-          (message "Window will now be recognized by `other-window'"))
-      (set-window-parameter (selected-window) 'no-other-window t)
-      (message "Window will now be ignored by `other-window'")))
-
-  ;;;###autoload
   (defun buffers-matching-regexp (regexp &optional names)
     "Return a list of buffers matching REGEXP.
 
