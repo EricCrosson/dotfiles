@@ -81,13 +81,19 @@ need to keep the list updated, just load all subdirectories and go.
          esc-lisp-path "loaddefs.el"))
 #+END_SRC
 
+Use [[https://github.com/jwiegley/use-package][use-package]]
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (require 'use-package)
+#+END_SRC
+
 Set up [[https://github.com/tarsius/auto-compile][auto-compile mode]] to compile source files before loading iff
 source is newer than the presently compiled file. A good tradeoff
 with proper distributed version control.
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (setq load-prefer-newer t)
-  (require 'auto-compile)
-  (auto-compile-on-load-mode 1)
+  (use-package auto-compile
+    :init
+    (setq load-prefer-newer t)
+    (auto-compile-on-load-mode 1))
 #+END_SRC
 
 ** UI
@@ -99,49 +105,22 @@ Now that the legal stuff is out of the way, let's get out the rat poison.
           scroll-bar-mode))
 #+END_SRC
 
-TODO: load this with color-stack
 Fire up the mood lighting
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (require 'bliss-theme)
-  (load-theme 'bliss t)
-  ;; TODO: hook on color change
+  (use-package bliss-theme
+    ;; TODO: switch with color-theme stack
+    :config (load-theme 'bliss t))
+
+  ;; TODO: rehook on color change to bliss
   (mapcar (lambda (data) (set-face-attribute (car data) nil
                                         :underline  nil
                                         :foreground 'unspecified
                                         :background (cadr data)))
           '((highlight "#333")
             (region    "#444")))
-#+END_SRC
-** Free variables
-Free as in free of compiler warnings.
-TODO: nix this and use the feature provided by =use-package=
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (eval-when-compile
-    (defvar display-time-load-average-threshold)
-    (defvar dabbrev-case-replace)
-    (defvar compilation-save-buffers-predicate)
-    (defvar starttls-use-gnutls)
-    (defvar c-default-style)
-    (defvar c-basic-offset)
-    (defvar desktop-path)
-    (defvar desktop-base-filename)
-    (defvar desktop-load-locked-desktop)
-    (defvar eshell-mode-map)
-    (defvar eshell-where-to-jump)
-    (defvar eshell-review-quick-commands)
-    (defvar eshell-smart-space-goes-to-end)
-    (defvar w32-pass-lwindow-to-system)
-    (defvar w32-pass-rwindow-to-system)
-    (defvar w32-pass-apps-to-system)
-    (defvar w32-lwindow-modifier)
-    (defvar w32-rwindow-modifier)
-    (defvar w32-apps-modifier)
-    (defvar mac-command-modifier)
-    (defvar mac-option-modifier)
-    (defvar ns-function-modifier)
-    (defvar display-time-24hr-format))
-#+END_SRC
 
+
+#+END_SRC
 ** Macros
 I took the macro below from [[http://milkbox.net/note/single-file-master-emacs-configuration/][milkypostman]]. His article is really worth
 a read; stop what you're doing and go take a look if you haven't.
@@ -181,9 +160,9 @@ Facilitate normal initialization processes.
 #+END_SRC
 
 ** Package configuration
-#+NAME: package-manager-initialization
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (when (require 'package nil 'noerror)
+  (use-package package
+    :config
     (setq package-user-dir (concat site-lisp-path "elpa/"))
     (mapc (lambda (source) (add-to-list 'package-archives source) t)
           '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -202,7 +181,6 @@ Hello, My Name Is
 #+END_SRC
 
 ** Behavioral modifications
-#+NAME: behavioral-modifications
 #+BEGIN_SRC emacs-lisp :tangle yes
   (put 'overwrite-mode 'disabled t)       ;There shall be no 'insert'
   (fset 'yes-or-no-p 'y-or-n-p)           ;change yes-no to y-n
@@ -274,18 +252,6 @@ tempt users to disable them.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq search-whitespace-regexp "[ \t\r\n]+")
 #+END_SRC
-
-Keep a history of =M-x= across sessions.
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (setq savehist-file (concat user-emacs-directory "meta/savehist"))
-  (savehist-mode 1)
-  (setq savehist-save-minibuffer-history 1)
-  (setq savehist-additional-variables
-        '(kill-ring
-          search-ring
-          regexp-search-ring))
-#+END_SRC
-
 ** Aliases
 I did not grow up in an era where this is a straightforward mnemonic.
 #+NAME: alias fmakunbound => undefun
@@ -358,12 +324,23 @@ about a post)
 
 ** Package initialization
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (require-package
-    '(cl-lib                               ;The Golden Package
-      eldoc                                ;included in gnuemacs
-      use-package))
+  (use-package cl-lib) ;; todo is this necessary?
+  ;;(use-package eldoc) ;; TODO: hook onto lisp modes
 #+END_SRC
 ** Configuration
+*** Save hist config
+Keep a history of =M-x= across sessions.
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package savehist
+    :config
+    (setq savehist-file (concat user-emacs-directory "meta/savehist"))
+    (setq savehist-save-minibuffer-history 1)
+    (setq savehist-additional-variables
+          '(kill-ring
+            search-ring
+            regexp-search-ring))
+    (savehist-mode 1))
+#+END_SRC
 *** undo-tree config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package undo-tree
@@ -397,12 +374,57 @@ about a post)
 #+END_SRC
 *** Displaced yank config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package displaced-yank)
+  (use-package displaced-yank
+    :init
+    ;; todo: load with use-package displaced yank
+    ;; esc delimeter and line hacks
+      (bind-key "C-<backspace>" 'backward-delete-word        esc-mode-map)
+      (bind-key "C-M--"  'esc/yank-displaced-little-arrow    esc-mode-map)
+      (bind-key "C-M-j"  'esc/yank-displaced-parens          esc-mode-map)
+      (bind-key "C-M-k"  'esc/yank-displaced-braces          esc-mode-map)
+      (bind-key "C-M-|"  'esc/yank-displaced-pipes           esc-mode-map)
+      (bind-key "C-M-l"  'esc/yank-displaced-brackets        esc-mode-map)
+      (bind-key "C-M-,"  'esc/yank-displaced-chevrons        esc-mode-map)
+      (bind-key "C-M-'"  'esc/yank-displaced-single-quotes   esc-mode-map)
+      (bind-key "C-M-\"" 'esc/yank-displaced-quotes          esc-mode-map)
+      (bind-key "C-M-g"  'esc/yank-displaced-dollars         esc-mode-map)
+      (bind-key "C-M-;"  'esc/yank-displaced-stars           esc-mode-map)
+      (bind-key "C-M-:"  'esc/yank-displaced-doxygen-comment esc-mode-map)
+      (bind-key "C-M-="  'esc/yank-displaced-equals          esc-mode-map)
+      (bind-key "C-M-`"  'esc/yank-displaced-ticks           esc-mode-map))
 #+END_SRC
 *** Powerline config
 That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee-d77b-45da-ac5c-b9bbb562.gif][Power⚡Line]] baby!
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package powerline)
+#+END_SRC
+*** Smartrep conf
+I don't know where smartrep defines keys but this worked for me and I
+haven't had to look at it yet.
+#+BEGIN_SRC emacs-lisp :tangle no
+  (smartrep-define-key global-map "C-c ."
+    '(("+" . apply-operation-to-number-at-point)
+      ("-" . apply-operation-to-number-at-point)
+      ("*" . apply-operation-to-number-at-point)
+      ("/" . apply-operation-to-number-at-point)
+      ("\\" . apply-operation-to-number-at-point)
+      ("^" . apply-operation-to-number-at-point)
+      ("<" . apply-operation-to-number-at-point)
+      (">" . apply-operation-to-number-at-point)
+      ("#" . apply-operation-to-number-at-point)
+      ("%" . apply-operation-to-number-at-point)
+      ("'" . operate-on-number-at-point)))
+#+END_SRC
+*** Toggle quotes conf
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package toggle-quotes
+    :init (bind-key "M-'" 'toggle-quotes esc-mode-map))
+#+END_SRC
+*** Goto last change conf
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package goto-last-change
+    :init
+    (bind-key "C-c /" 'goto-last-change esc-mode-map))
 #+END_SRC
 *** Which func config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -613,8 +635,9 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
   (use-package latex
     :commands latex-mode
     :config
+    (use-package writegood-mode)
     (load "auctex.el" nil t t)
-    (load "preview-latex.el" nil t t)
+    ;;(load "preview-latex.el" nil t t)
     (setq TeX-command-default "latex"
           TeX-auto-save t
           TeX-parse-self t
@@ -664,6 +687,11 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
                   ido-create-new-buffer 'always
                   ido-save-directory-list-file (format "%s/ido.last" esc-meta-path)
                   ido-file-extensions-order '(".org" ".el" ".txt")))
+
+  (use-package ido-extras
+    :init
+    (bind-key "M-i"     'ido-goto-symbol  esc-mode-map)
+    (bind-key "C-x C-r" 'ido-recentf-open esc-mode-map))
 #+END_SRC
 *** Git gutter+ config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -693,9 +721,20 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 *** Ace config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package ace-jump-mode
+    :init
+    ;; todo: hydratize?
+    (bind-key "C-c SPC" 'ace-jump-mode esc-mode-map)
+    (bind-key "C-x SPC" 'ace-jump-mode-pop-mark esc-mode-map)
+    (bind-key "C-M-S-l" 'ace-jump-buffer esc-mode-map)
     :config (ace-jump-mode-enable-mark-sync))
   (use-package ace-window
     :config (setq aw-keys (number-sequence 97 (+ 97 26))))
+#+END_SRC
+*** Git messenger config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package git-messenger
+    :init
+    (bind-key "C-c [" 'git-messenger:popup-message esc-mode-map))
 #+END_SRC
 *** Keyfreq mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -783,32 +822,36 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 [[http://spw.sdf.org/blog/tech/emacs/expandregionlines.html][Notes from the Library : /blog/tech/emacs/expandregionlines.html]]
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package expand-region
-    :commands er/expand-region
-    :config (defadvice er/expand-region (around fill-out-region activate)
-              (if (or (not (region-active-p))
-                      (eq last-command 'er/expand-region))
-                  ad-do-it
-                (if (< (point) (mark))
-                    (let ((beg (point)))
-                      (goto-char (mark))
-                      (end-of-line)
-                      (forward-char 1)
-                      (push-mark)
-                      (goto-char beg)
-                      (beginning-of-line))
-                  (let ((end (point)))
-                    (goto-char (mark))
-                    (beginning-of-line)
-                    (push-mark)
-                    (goto-char end)
-                    (end-of-line)
-                    (forward-char 1))))))
+    :init  (bind-key "C-;" 'er/expand-region esc-mode-map)
+    :config
+    (defadvice er/expand-region (around fill-out-region activate)
+      (if (or (not (region-active-p))
+              (eq last-command 'er/expand-region))
+          ad-do-it
+        (if (< (point) (mark))
+            (let ((beg (point)))
+              (goto-char (mark))
+              (end-of-line)
+              (forward-char 1)
+              (push-mark)
+              (goto-char beg)
+              (beginning-of-line))
+          (let ((end (point)))
+            (goto-char (mark))
+            (beginning-of-line)
+            (push-mark)
+            (goto-char end)
+            (end-of-line)
+            (forward-char 1))))))
+
 #+END_SRC
 *** Autopair config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package autopair
     :commands autopair-global-mode)
 #+END_SRC
+*** Diminish mode config
+TODO: diminish here with use-package
 *** Lexbind config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package lexbind-mode
@@ -819,12 +862,55 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
   (use-package eshell
     :init (add-hook 'eshell-named-command-hook 'esc/eshell-exec-perl))
 #+END_SRC
-** Autoloads
+*** Misc cmds config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package misc
-    :commands zap-up-to-char)
+    :commands zap-up-to-char
+    :idle
+    (after 'esc-mode
+      (esc-key "M-z"     'zap-up-to-char) ; up-to, life saver
+      (esc-key "M-Z"     'zap-to-char)))
+
   (use-package misc-cmds
-    :commands revert-buffer-no-confirm)
+    :commands revert-buffer-no-confirm
+    :idle
+    (after 'esc-mode
+      (esc-key "C-x M-r" 'revert-buffer-no-confirm)))
+#+END_SRC
+*** Helm conig
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Helm
+  (use-package helm
+    :idle-priority 7
+    :idle
+    (after 'esc-mode
+      (esc-keys
+        ("C-c i"   . helm-imenu)
+        ("C-x C-j" . helm-for-files))))
+#+END_SRC
+*** Windmove config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Windmove from shift keys
+  (use-package windmove
+    :idle (windmove-default-keybindings))
+#+END_SRC
+*** Fold this config
+Thanks yet again [[https://github.com/magnars/fold-this.el][Magnar]]
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package fold-this
+    :idle-priority 8
+    :idle
+    (after 'esc-mode
+      (esc-keys
+        ("C-c f" . fold-this)
+        ("C-c F" . fold-this-unfold-all))))
+#+END_SRC
+*** Org cliplink config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package org-cliplink
+    :idle
+    (after 'esc-mode
+      (esc-key "C-c C-M-l" 'org-cliplink)))
 #+END_SRC
 ** Hooks
 Attach =esc-mode= hooks
@@ -974,6 +1060,9 @@ Begin Mac OS configuration
 My favorite mode. This was the reason I started using Emacs, didja
 know?
 #+BEGIN_SRC emacs-lisp :tangle yes
+    ;; Org mode bindings -- TODO: in use-pcakage
+
+
   (use-package org
     :pre-load (setq org-replace-disputed-keys t)
     :idle-priority 2
@@ -1007,6 +1096,11 @@ know?
                                      "~/workspace/ee445m-labs/doc/lab-manuals/todo.org"
                                      "~/org/intel.org"
                                      "~/org/todo.org")))
+    (after 'esc-mode
+      (esc-keys
+          ("C-,"     . org-cycle-agenda-files)
+          ("C-c a"   . org-agenda)
+          ("C-c l l" . org-store-link)))
 
     (add-to-list 'org-modules 'org-habit)
     (add-to-list 'org-structure-template-alist
@@ -2406,10 +2500,8 @@ What is the difference between my current setup and using
 `define-globalized-minor-mode'?
 
 *** esc variables
-
 As a convention, esc functions are prefixed with `esc/' while esc
 variables are prefixed with `esc-'
-
 #+NAME: define customizable variables
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (defcustom esc-line-shift-amount 6
@@ -2531,71 +2623,9 @@ Macros to insert bindings in =esc-mode-map=.
     )
 #+END_SRC
 
+TODO: use-package to load during idle time
 Below is the forge, boilerplate functions are churned out en-masse.
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  (defmacro esc/define-displaced-yank (funcname data)
-    "This macro generates functions for `esc-mode-map'."
-    (let ((funcname (intern (format "esc/yank-displaced-%s" funcname)))
-          (str (car data))
-          (back (or (cadr data) 1)))
-      (let ((docstring (format "Insert %s ARG times." str)))
-      `(defun ,funcname (&optional ARG)
-         ,docstring
-         (interactive "p")
-         (dotimes (i ARG)
-           (insert ,str)
-           (backward-char ,back))))))
-
-  (mapcar (lambda (function)
-            (let ((funcname (car function))
-                  (data     (cdr function)))
-              (eval `(esc/define-displaced-yank ,funcname ,data))))
-          '((parens              "()")
-            (braces              "{}")
-            (brackets            "[]")
-            (brackets-with-colon "[:]")
-            (pipes               "||")
-            (chevrons            "<>")
-            (quotes              "\"\"")
-            (single-quotes       "''")
-            (stars               "**")
-            (dollars             "$$")
-            (equals              "==")
-            ;; a good example of code reuse
-            (ticks               "`'")
-            (little-arrow        "->" 0)
-            (doxygen-comment     "/*!  */" 3))) ;; todo: implement with yasnippet
-
-  ;; todo: use current line in absence of region
-  (defmacro esc/define-org-header-indentation(funcname callback)
-    "Define functions to manipulate the header level of selected
-  region in `org-mode'."
-    (let ((command-name (intern (format "esc/org-%s-headers-in-region" funcname)))
-          (docstring (format "%s `org-mode' headers arg times in currently
-  selected region."
-                             funcname)))
-    `(defun ,command-name (&optional arg)
-       ,docstring
-       (interactive "p")
-       (save-excursion
-         (let ((beg (save-excursion
-                      (goto-char (region-beginning)) (beginning-of-line) (point)))
-               (end (save-excursion
-                      (goto-char (region-end)) (end-of-line) (point))))
-           (goto-char end)
-           (while (and (< beg (point))
-                       (re-search-backward "^\*" beg 'noerror))
-             (dotimes (i arg) ,callback)
-             (previous-line)
-             (end-of-line)))))))
-
-  (mapcar (lambda (data)
-            (let ((funcname (car data))
-                  (callback (cadr data)))
-              (eval `(esc/define-org-header-indentation ,funcname ,callback))))
-          '((indent (insert "*"))
-            (unindent (kill-forward-chars 1))))
-
   (defmacro esc/define-scroll-slight(funcname)
     "Define functions to scroll the buffer slightly without moving point."
     (let ((docstring (format "Scroll %s the page ARG times without
@@ -2604,7 +2634,7 @@ Below is the forge, boilerplate functions are churned out en-masse.
 
   This command can be prefixed." funcname))
           (command-name (intern (format "esc/scroll-%s-slight" funcname)))
-          (command (intern (format "scroll-%s" funcname))))
+          (command      (intern (format "scroll-%s" funcname))))
       `(defun ,command-name(&optional arg)
          ,docstring
          (interactive "p")
@@ -2641,188 +2671,93 @@ Below is the forge, boilerplate functions are churned out en-masse.
 *** esc bindings
 #+NAME: keybindings defined here
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  ;; Windmove from shift keys
-  (when (fboundp 'windmove-default-keybindings)
-    (windmove-default-keybindings))
-
-  ;; Helm
-  (after 'helm-autoloads
-    (esc-keys
-      ("C-c i"   . helm-imenu)
-      ("C-x C-j" . helm-for-files)))
-
+  ;; Remaps -- wherever they may be bound
   (esc-replace-key 'goto-line 'esc/goto-line-with-feedback)
+  (esc-replace-key 'split-window-right 'esc/hsplit-last-buffer)
+  (esc-replace-key 'split-window-below 'esc/vsplit-last-buffer)
 
   ;; todo: pull buffer management into another hydra
+  ;; Buffer management
+  (esc-key "C-x 4 k"    'esc/mode-line-other-buffer-other-window)
+  (esc-key "C-x 4 9"    'esc/bury-buffer-delete-window)
+  (esc-key "C-c C-M-\\" 'esc/indent-buffer)
+
   ;; Enhanced keybindings
-  (esc-keys
-    ("<f5>"       . esc/minibuffer-display-buffer-file-name)
-    ("C-c C-M-\\" . esc/indent-buffer)
-    ("C-'"        . execute-extended-command)
-    ("C-j"        . newline-and-indent) ;for consistency in *scratch*
-    ("C-a"        . esc/back-to-indentation-or-beginning)
-    ("s-z"        . other-window)
-    ("C-x 4 k"    . esc/mode-line-other-buffer-other-window)
-    ("C-x 4 9"    . esc/bury-buffer-delete-window)
-    ("M-x"        . execute-extended-command)
-    ("C-'"        . query-replace)
-    ("C-x M-r"    . revert-buffer-no-confirm)
-    ("C-x 2"      . esc/vsplit-last-buffer)
-    ("C-x 3"      . esc/hsplit-last-buffer)
-    ("M-s o"      . occur-dwim)
-    ("C-;"        . er/expand-region)
+  (esc-key "C-a"     'esc/back-to-indentation-or-beginning)
+  (esc-key "M-s o"   'occur-dwim)
 
-    ;; Equivalent to middle-click yank on mouse
-    ("C-c y" . esc/middle-click-yank)
+  ;; Equivalent to middle-click yank on mouse
+  (esc-key "C-c y" 'esc/middle-click-yank)
 
+  ;; Miscellaneous keybindings
+  (esc-key "C-c C-b" 'mode-line-other-buffer)
+  (esc-key "M-K"     'kill-sentence)
+  (esc-key "M-j"     'just-one-space) ; conflicts with spotlight
+  (esc-key "C-c k"   'esc/copy-line)
+  (esc-key "M-P"     'align-regexp) ;; TODO: pull aligns into hydra
+  (esc-key "C-'"     'query-replace)
+  ;; TODO: change sexp wrapping (esc-key i 'e. {}[]()) from Xah Lee
 
-    ;; Miscellaneous keybindings
-    ("C-,"       . org-cycle-agenda-files)
-    ("C-c a"     . org-agenda)
-    ("C-c C-M-l" . org-cliplink)
-    ("M-K"       . kill-sentence)
-    ("M-z"       . zap-up-to-char) ; up-to, life saver
-    ("M-Z"       . zap-to-char)
-    ("M-j"       . just-one-space) ; conflicts with spotlight
-    ("C-c k"     . esc/copy-line)
-    ("M-P"       . align-regexp)
-    ("C-c C-b"   . mode-line-other-buffer)
-    ;; TODO: change sexp wrapping (i.e. {}[]()) from Xah Lee
+  ;; Programming bindings
+  (esc-key "C-c m" 'compile)
+  (esc-key "C-c C-m" 'esc/recompile)
 
-    ;; todo: paxedit in a hydra
+  ;; C-q cluster
+  (esc-key "C-q" 'delete-region)     ;like C-w, but gone forever.
+  (esc-key "C-c q" 'auto-fill-mode)  ;more frequented than
+  (esc-key "C-c C-q" 'quoted-insert) ;  this command
 
-    ;; todo: single mode should be one hydra
-    ;; f-related-keybindings
-    ("C-x F"   . recentf-open-files)
-    ("C-x f"   . esc/toggle-selective-display)
-    ("C-x M-f" . single/ff-in-single-mode)
+  ;; newline creation
+  (esc-key "<C-return>"   'esc/open-line-below)
+  (esc-key "<C-S-return>" 'esc/open-line-above)
+  (esc-key "C-M-O"        'split-line)
+  (esc-key "M-k"          'esc/pull-up-line)
 
-    ;; Fold-this keybindings. Thanks again [[https://github.com/magnars/fold-this.el][Magnar]]!
-    ("C-c f"   . fold-this)
-    ("C-c F"   . fold-this-unfold-all)
+  ;; LaTeX bindings
+  ;; todo: hydratize that block
+  (esc-key "C-c l b" 'esc/insert-latex-block)
 
-    ;; ido-extras keybindings
-    ("M-i"       . ido-goto-symbol)
-    ("C-x C-r"   . ido-recentf-open)
-    ("C-x C-S-r" . find-file-read-only)
+   ;; Mark commands
+  (esc-key "C-x m" 'pop-to-mark-command)
 
-    ;; Programming bindings
-    ("C-c m" . compile)
-    ("C-c C-m" . esc/recompile)
+  ;; Lisp/sexp movement
+  (esc-key "C-S-k" 'kill-sexp)
 
-    ;; C-q cluster
-    ("C-q"     . delete-region)  ;like C-w, but gone
-    ("C-c q"   . auto-fill-mode) ;more frequented than
-    ("C-c C-q" . quoted-insert)   ;this command
+  ;; Buffer control
+  (esc-key "C-x M-b" 'bury-buffer)
+  (esc-key "C-x M-B" 'esc/bury-other-buffer)
+  (esc-key "C-c o" 'clone-indirect-buffer-other-window)
+  (esc-key "C-c C-o" 'ff-find-other-file) ;; TODO: only bind in appropriate modes
 
-    ;; newline creation
-    ("<C-return>"   . esc/open-line-below)
-    ("<C-S-return>" . esc/open-line-above)
-
-    ;; LaTeX bindings
-    ;; todo: hydratize that block
-    ("C-c l b" . esc/insert-latex-block)
-
-    ;; Ace jump mode. Like an ace
-    ;; todo: hydratize
-    ("C-c SPC" . ace-jump-mode)
-    ("C-x SPC" . ace-jump-mode-pop-mark)
-    ("C-M-S-l" . ace-jump-buffer)
-    ("C-M-O" . split-line)
-
-    ;; Mark commands
-    ("C-x m" . pop-to-mark-command)
-
-    ;; Lisp/sexp movement
-    ("C-S-k" . kill-sexp)
-
-    ;; Preserving stock org functionality
-    ("C-c l l" . org-store-link)
-
-    ;; Buffer control
-    ("C-x C-b" . global-git-gutter+-mode) ; every invocation was accidental
-    ("C-x M-b" . bury-buffer)
-    ("C-x M-B" . esc/bury-other-buffer)
-    ("C-c o"   . clone-indirect-buffer-other-window)
-    ("C-c C-o" . ff-find-other-file)
-
-    ;; Git-messenger, a handy little fella
-    ("C-c [" . git-messenger:popup-message)
-
-    ;; todo: hydratize?
-    ;; Help+
-    ("C-h C-f"   . find-function)
-    ("C-h C-k"   . find-function-on-key)
-    ("C-h C-v"   . find-variable)
-    ("C-h C-l"   . find-library)
-    ("C-h C-n"   . esc/insert-defun-at-point)
-    ("C-h M-k"   . describe-keymap)
-    ("C-h C-M-c" . esc/insert-key-combination)
-
-    ;; Un- and re- doing
-    ("C-c /"   . goto-last-change)
-
-    ;; Font maniplation
-    ("C-M-<" . esc/zoom-out)
-    ("C-M->" . esc/zoom-in)
+  ;; todo: hydratize?
+  ;; Help+
+  (esc-key "C-h C-f" 'find-function)
+  (esc-key "C-h C-k" 'find-function-on-key)
+  (esc-key "C-h C-v" 'find-variable)
+  (esc-key "C-h C-l" 'find-library)
+  (esc-key "C-h C-n" 'esc/insert-defun-at-point)
+  (esc-key "C-h M-k" 'describe-keymap)
+  (esc-key "C-h C-M-c" 'esc/insert-key-combination)
 
     ;;; Function keys
-    ("<f6>" . spray-mode)
-    ("<f8>" . esc/follow-mode-80-char-compliant)
-    ("<f9>" . flyspell-buffer)
-    ("<f10>" . golden-ratio-mode)
-    ;; TODO: create a defun to save win configuration first
-    ;; see stack on zebulon
+  (esc-key "<f5>"  'esc/minibuffer-display-buffer-file-name)
+  (esc-key "<f6>"  'spray-mode)
+  (esc-key "<f8>"  'esc/follow-mode-80-char-compliant)
+  (esc-key "<f9>"  'flyspell-buffer)
+  (esc-key "<f10>" 'golden-ratio-mode)
+  ;; TODO: create a defun to save win configuration first
+  ;; see stack on zebulon
 
-    ;; Sysadmin bindings
-    ;; TODO: bookmarks to dotfiles and esc-lisp
+  (esc-key "C-c C-f" 'esc/visit-favorite-dir)
 
-    ;; esc delimeter and line hacks
-    ("C-<backspace>" . backward-delete-word)
-    ("M-k"    . esc/pull-up-line)
-    ("C-M--"  . esc/yank-displaced-little-arrow)
-    ("C-M-j"  . esc/yank-displaced-parens)
-    ("C-M-k"  . esc/yank-displaced-braces)
-    ("C-M-|"  . esc/yank-displaced-pipes)
-    ("C-M-l"  . esc/yank-displaced-brackets)
-    ("C-M-,"  . esc/yank-displaced-chevrons)
-    ("C-M-'"  . esc/yank-displaced-single-quotes)
-    ("C-M-\"" . esc/yank-displaced-quotes)
-    ("C-M-g"  . esc/yank-displaced-dollars)
-    ("C-M-;"  . esc/yank-displaced-stars)
-    ("C-M-:"  . esc/yank-displaced-doxygen-comment)
-    ("C-M-="  . esc/yank-displaced-equals)
-    ("C-M-`"  . esc/yank-displaced-ticks)
-
-    ("M-'" . toggle-quotes)
-
-    ("C-c C-f" . esc/visit-favorite-dir)
-
-    ;; Buffer-overlay hacks: super useful!
-    ("s-e" . esc/raise-eshell)
-    ;; todo: raise shell
-    ;; todo: smarter magit status: use zebulon's stack package
-    ;; todo: save window configuration
-    ("s-q" . esc/raise-magit-status))
+  ;; Buffer-overlay hacks: super useful!
+  ;; TODO: smarter win-restore config
+  (esc-key "s-q" 'esc/raise-magit-status)
+  (esc-key "s-e" 'esc/raise-eshell)
+  ;; todo: raise shell
+  ;; todo: smarter magit status: use zebulon's stack package
+  ;; todo: save window configuration
 #+END_SRC
-
-I don't know where smartrep defines keys but this worked for me and I
-haven't had to look at it yet.
-#+BEGIN_SRC emacs-lisp :tangle no
-  (smartrep-define-key global-map "C-c ."
-    '(("+" . apply-operation-to-number-at-point)
-      ("-" . apply-operation-to-number-at-point)
-      ("*" . apply-operation-to-number-at-point)
-      ("/" . apply-operation-to-number-at-point)
-      ("\\" . apply-operation-to-number-at-point)
-      ("^" . apply-operation-to-number-at-point)
-      ("<" . apply-operation-to-number-at-point)
-      (">" . apply-operation-to-number-at-point)
-      ("#" . apply-operation-to-number-at-point)
-      ("%" . apply-operation-to-number-at-point)
-      ("'" . operate-on-number-at-point)))
-#+END_SRC
-
 *** esc hydras
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (setq hydra-lv nil)
@@ -3012,6 +2947,7 @@ haven't had to look at it yet.
                 undo-tree-visualizer-relative-timestamps t))
 
         ;; less clutter on the mode line
+        (after 'test-mode (diminish 'test-mode))
         (diminish 'auto-fill-function)
         (diminish 'visual-line-mode)
         ;;(diminish 'global-visual-line-mode)
@@ -3387,6 +3323,8 @@ This command is particularly useful when used in conjunction with
                       (string= (car imenu--rescan-item) name))
             (add-to-list 'symbol-names name)
             (add-to-list 'name-and-pos (cons name position))))))))
+
+  (provide 'ido-extras)
 #+END_SRC
 
 [[http://endlessparentheses.com/visit-directory-inside-a-set-of-directories.html#disqus_thread][Visit Directory inside a Set of Directories with Emacs]]
@@ -3694,10 +3632,9 @@ Incantation inspired by [[http://stackoverflow.com/questions/4189159/emacs23-eli
   (provide 'update-autoloads)
 #+END_SRC
 
-* [11/28] TODOs
+* [12/28] TODOs
 ** DONE make_tags
 make an emacs wrapper to ido-select a dir and tagsgen from there
-** TODO publish esc-mode on melpa
 ** DONE fix load path
 ** DONE quick dictionary
 ** DONE remove tangles files from git, provide makefile
@@ -3708,20 +3645,21 @@ make an emacs wrapper to ido-select a dir and tagsgen from there
 ** DONE smooth esc scrolling
   best definition so far: scrolling that increases over time
 ** DONE naming standard for org babel files sectioning
+** DONE use package use-package
+** TODO publish esc-mode on melpa
 ** TODO scratch buffer as consistent config file
   only emacs-lisp source blocks from the org file are loaded,
   naturally
-** TODO tangling scripts adds execute permission
-  (write-region "" nil custom-file)
-** [0/1] general purpose deuns
-- [ ] kill buffer and reopen file
-  when revert-buffer just doesn't cut it
 ** TODO gcov output parsed by emacs to hilight gdb code coverage
 ** TODO Help+ standardization
 you have C-h C-M-c, make C-h C-M-k! and f, etc
-** IN-PROGRESS use package use-package
 ** TODO recentf
 - prefer org over el and txt like ido
+** TODO /meta
+move recentf, other meta files into meta
+** [0/1] general purpose deuns
+- [ ] kill buffer and reopen file
+  when revert-buffer just doesn't cut it
 ** [1/3] make process
 *** TODO generate loaddefs
 *** HACKED ensure dir structure is populated in esc-lisp before attempted make
@@ -3734,10 +3672,9 @@ xo*** TODO asynchronous tangling
 *** TODO human readable sizes in dired
   First have to determine how to unhide information on demand
   for definitions, not spell check
-** TODO /meta
-move recentf, other meta files into meta
-
-** [0/4] advice
+** [0/5] advice
+*** TODO tangling scripts adds execute permission
+  (write-region "" nil custom-file)
 *** TODO finding tags
 look in dirs above for TAGS file and suggest it
 *** TODO org C-c ' to preserve window configuration?

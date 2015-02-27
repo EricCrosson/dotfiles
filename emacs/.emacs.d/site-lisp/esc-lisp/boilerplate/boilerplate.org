@@ -548,51 +548,101 @@ TODO: defcustom
 
   ;;; compilation+.el ends here
 #+END_SRC
+* Org+
+#+BEGIN_SRC emacs-lisp :tangle org+.el
+  ;; todo: use current line in absence of region
+  (defmacro esc/define-org-header-indentation(funcname callback)
+    "Define functions to manipulate the header level of selected
+  region in `org-mode'."
+    (let ((command-name (intern (format "esc/org-%s-headers-in-region" funcname)))
+          (docstring (format "%s `org-mode' headers arg times in currently
+  selected region."
+                             funcname)))
+    `(defun ,command-name (&optional arg)
+       ,docstring
+       (interactive "p")
+       (save-excursion
+         (let ((beg (save-excursion
+                      (goto-char (region-beginning)) (beginning-of-line) (point)))
+               (end (save-excursion
+                      (goto-char (region-end)) (end-of-line) (point))))
+           (goto-char end)
+           (while (and (< beg (point))
+                       (re-search-backward "^\*" beg 'noerror))
+             (dotimes (i arg) ,callback)
+             (previous-line)
+             (end-of-line)))))))
+
+  (mapcar (lambda (data)
+            (let ((funcname (car data))
+                  (callback (cadr data)))
+              (eval `(esc/define-org-header-indentation ,funcname ,callback))))
+          '((indent (insert "*"))
+            (unindent (kill-forward-chars 1))))
+
+  (provide 'org+)
+
+  ;;; org+.el ends here
+#+END_SRC
 * Displaced yank
 #+BEGIN_SRC emacs-lisp :tangle displaced-yank.el
   ;;; displaced-yank.el --- Yank and move point
+  ;; Copyright (C) 2015  esc
 
-  ;;;###autoload
+  ;; This program is free software: you can redistribute it and/or modify
+  ;; it under the terms of the GNU General Public License as published by
+  ;; the Free Software Foundation, either version 3 of the License, or
+  ;; (at your option) any later version.
+
+  ;; This program is distributed in the hope that it will be useful,
+  ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ;; GNU General Public License for more details.
+
+  ;; You should have received a copy of the GNU General Public License
+  ;; along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   ;;; Commentary:
-  ;;
 
   ;;; Code:
 
   (defmacro esc/define-displaced-yank (funcname data)
     "Create a defun of name FUNCNAME that yanks and moves according
-  to DATA. DATA is of the form (STR, MOVE). STR is the string to
-  yank and MOVE is the number of chars to move backward.
+    to DATA. DATA is of the form (STR, MOVE). STR is the string to
+    yank and MOVE is the number of chars to move backward.
 
-  Note that negative values of MOVE are valid."
+    Note that negative values of MOVE are valid."
     (let ((funsymbol (intern (format "esc/yank-displaced-%s" funcname)))
           (char (car data))
           (back (or (cadr data) 1)))
       `(defun ,funsymbol (&optional ARG)
          "This defun was generated pragmatically. Docstrings have
-  not been ironed out yet. See the defun-generating code for more
-  information."
+    not been ironed out yet. See the defun-generating code for more
+    information."
          (interactive "p")
          (dotimes (i ARG)
            (insert ,char)
            (backward-char ,back)))))
 
-  (mapcar* (lambda (function)
-             (let ((funcname (car function))
-                   (data     (cdr function)))
-               (eval `(esc/define-displaced-yank ,funcname ,data))))
-           '((parens "()")
-             (braces "{}")
-             (brackets "[]")
-             (brackets-with-colon "[:]")
-             (chevrons "<>")
-             (quotes "\"\"")
-             (stars "**")
-             (dollars "$$")
-             ;; a good example of code reuse
-             (ticks "`'")
-             (little-arrow "->" 0)
-             (doxygen-comment "/*!  */" 3))) ;; todo: implement with yasnippet
+  (mapcar (lambda (function)
+            (let ((funcname (car function))
+                  (data     (cdr function)))
+              (eval `(esc/define-displaced-yank ,funcname ,data))))
+          '((parens              "()")
+            (braces              "{}")
+            (brackets            "[]")
+            (brackets-with-colon "[:]")
+            (pipes               "||")
+            (chevrons            "<>")
+            (quotes              "\"\"")
+            (single-quotes       "''")
+            (stars               "**")
+            (dollars             "$$")
+            (equals              "==")
+            ;; a good example of code reuse
+            (ticks               "`'")
+            (little-arrow        "->" 0)
+            (doxygen-comment     "/*!  */" 3))) ;; todo: implement with yasnippet
 
   (provide 'displaced-yank)
 

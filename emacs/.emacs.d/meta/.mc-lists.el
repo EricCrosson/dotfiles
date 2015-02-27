@@ -45,6 +45,7 @@
 	forward-sexp
 	hydra--negative-argument
 	hydra-move-text/move-text-down
+	hydra-multiple-cursors/mc/reverse-regions
 	ignore
 	indent-for-tab-command
 	insert-register
