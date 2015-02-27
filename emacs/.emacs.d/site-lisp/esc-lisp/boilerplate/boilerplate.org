@@ -1277,7 +1277,7 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
   ;;; Code:
 
   ;;;###autoload
-  (defun esc/tagsgen ()
+  (defun tagsgen ()
     "Create a TAGS file using TAGSGEN in a directory that is
   prompted with `ido-read-directory-name'."
     (interactive)
