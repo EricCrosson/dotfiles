@@ -449,6 +449,8 @@ Make zipped files obvious.
       ; is there a way to get these autoloads loaded implicitly, like
       ; elpa does?
       esc-mode                             ;The Power Glove
+      unselectable-mode
+      dedicated-mode                      ;todo: use-package on these guys
       displaced-yank))
 #+END_SRC
 

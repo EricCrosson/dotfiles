@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads nil "boilerplate/boilerplate" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21742 30098 433577 343000))
+;;;;;;  (21743 53507 130241 430000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el
 
 (autoload 'esc/prog-mode-hook "boilerplate/boilerplate" "\
@@ -102,7 +102,7 @@ depending on the value of ARG.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/buffer+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/buffer+.el"
-;;;;;;  (21742 30097 713577 332000))
+;;;;;;  (21743 53506 503574 731000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/buffer+.el
 
 (autoload 'esc/indent-buffer "boilerplate/buffer+" "\
@@ -235,7 +235,7 @@ Argument PREFIX when nil switches the new buffer to the last buffer.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/compilation+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/compilation+.el"
-;;;;;;  (21742 30097 810244 0))
+;;;;;;  (21743 53506 540241 400000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/compilation+.el
 
 (autoload 'esc/previous-error "boilerplate/compilation+" "\
@@ -275,7 +275,7 @@ Compile an .elc file for every .el file contained under
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/displaced-yank" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/displaced-yank.el"
-;;;;;;  (21742 30097 836910 668000))
+;;;;;;  (21743 53506 573574 735000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/displaced-yank.el
 
 (autoload 'esc/define-displaced-yank "boilerplate/displaced-yank" "\
@@ -290,7 +290,7 @@ Note that negative values of MOVE are valid.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/emacs+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el"
-;;;;;;  (21742 30098 156910 672000))
+;;;;;;  (21743 53506 810241 413000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el
 
 (autoload 'esc/minibuffer-display-buffer-file-name "boilerplate/emacs+" "\
@@ -504,7 +504,7 @@ windows as you can fit on this screen.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/help+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el"
-;;;;;;  (21742 30098 233577 340000))
+;;;;;;  (21743 53507 6908 90000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el
 
 (autoload 'esc/insert-defun-at-point "boilerplate/help+" "\
@@ -528,7 +528,7 @@ Completion is available for the keymap name.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/os-interaction" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/os-interaction.el"
-;;;;;;  (21742 30098 180244 6000))
+;;;;;;  (21743 53506 836908 82000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/os-interaction.el
 
 (autoload 'esc/middle-click-yank "boilerplate/os-interaction" "\
@@ -553,10 +553,10 @@ Copy the current buffer file name to the clipboard.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/programming+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/programming+.el"
-;;;;;;  (21742 30098 330244 8000))
+;;;;;;  (21743 53507 30241 425000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/programming+.el
 
-(autoload 'esc/tagsgen "boilerplate/programming+" "\
+(autoload 'tagsgen "boilerplate/programming+" "\
 Create a TAGS file using TAGSGEN in a directory that is
 prompted with `ido-read-directory-name'.
 
@@ -610,6 +610,28 @@ Switch to a theme, saving the old one.
 Restore the previous theme in use.
 
 \(fn)" nil nil)
+
+;;;***
+
+;;;### (autoloads nil "dedicated-mode/dedicated-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/dedicated-mode/dedicated-mode.el"
+;;;;;;  (21744 3167 273590 268000))
+;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/dedicated-mode/dedicated-mode.el
+
+(autoload 'dedicated-mode "dedicated-mode/dedicated-mode" "\
+Toggle dedicated-mode.
+
+Dedicated mode binds a window to a buffer; no other buffer Will
+be displayed until the window is undedicated.
+
+\(fn &optional ARG)" t nil)
+
+(autoload 'toggle-window-dedicated "dedicated-mode/dedicated-mode" "\
+Toggle whether the current active window is dedicated or not.
+
+When dedicated, a window will not change the buffer it is
+displaying.
+
+\(fn)" t nil)
 
 ;;;***
 
