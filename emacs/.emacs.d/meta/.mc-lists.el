@@ -40,6 +40,7 @@
 	esc/pull-up-line
 	esc/toggle-letter-case
 	esc/toggle-window-dedicated
+	esc/yank-displaced-parens
 	fill-paragraph
 	forward-sexp
 	hydra--negative-argument
@@ -59,6 +60,7 @@
 	org-end-of-line
 	org-force-self-insert
 	org-kill-line
+	org-metaright
 	org-self-insert-command
 	org-todo
 	org-yank
