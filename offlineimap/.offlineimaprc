@@ -7,7 +7,7 @@
 
 [general]
 accounts = esc,gmail,utexas
-maxsyncaccounts = 3
+# maxsyncaccounts = 3
 
 #
 # Account esc
