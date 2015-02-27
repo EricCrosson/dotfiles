@@ -114,34 +114,22 @@ Fire up the mood lighting
 #+END_SRC
 ** Free variables
 Free as in free of compiler warnings.
+TODO: nix this and use the feature provided by =use-package=
 #+BEGIN_SRC emacs-lisp :tangle yes
   (eval-when-compile
-    (defvar package-user-dir)
-    (defvar package-archives)
-    (defvar uniquify-separator)
-    (defvar uniquify-buffer-name-style)
-    (defvar save-place-file)
     (defvar display-time-load-average-threshold)
     (defvar dabbrev-case-replace)
     (defvar compilation-save-buffers-predicate)
     (defvar starttls-use-gnutls)
-    (defvar recentf-auto-cleanup)
     (defvar c-default-style)
     (defvar c-basic-offset)
-    (defvar ido-create-new-buffer)
-    (defvar desktop-save)
     (defvar desktop-path)
     (defvar desktop-base-filename)
     (defvar desktop-load-locked-desktop)
-    (defvar ff-always-in-other-window)
-    (defvar ff-always-try-to-create)
-    (defvar ff-search-directories)
     (defvar eshell-mode-map)
     (defvar eshell-where-to-jump)
     (defvar eshell-review-quick-commands)
     (defvar eshell-smart-space-goes-to-end)
-    (defvar w3m-mode-map)
-    (defvar iedit-mode-keymap)
     (defvar w32-pass-lwindow-to-system)
     (defvar w32-pass-rwindow-to-system)
     (defvar w32-pass-apps-to-system)
@@ -151,17 +139,7 @@ Free as in free of compiler warnings.
     (defvar mac-command-modifier)
     (defvar mac-option-modifier)
     (defvar ns-function-modifier)
-    (defvar dired-mode-map)
-    (defvar org-replace-disputed-keys)
-    (defvar org-clock-persist)
-    (defvar org-hide-leading-stars)
-    (defvar org-hide-emphasis-markers)
-    (defvar org-src-fontify-natively)
-    (defvar org-agenda-files)
-    (defvar org-confirm-babel-evaluate)
-    (defvar display-time-24hr-format)
-    (defvar global-auto-revert-non-file-buffers)
-    (defvar auto-revert-verbose))
+    (defvar display-time-24hr-format))
 #+END_SRC
 
 ** Macros
@@ -316,22 +294,6 @@ I did not grow up in an era where this is a straightforward mnemonic.
 #+END_SRC
 
 ** Advice
-*** org advice
-Shrink the agenda buffer as small as we can and keep it that way
-#+NAME: Shrink agenda buffer
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defadvice org-agenda (around shrink-agenda-buffer activate)
-    "Shrink the agenda after initial display."
-    ad-do-it
-    (shrink-window-if-larger-than-buffer))
-
-  ;; keep it shrunken upon refresh
-  (defadvice org-agenda-redo (around shrink-agenda-buffer-after-refresh activate)
-    "Shrink the agenda after refreshing the display."
-    ad-do-it
-    (shrink-window-if-larger-than-buffer))
-#+END_SRC
-
 *** builtim command advice
 The following macro is to prevent the user from manually having to
 create directories (=M-x make-directory RET RET=) after using
@@ -394,18 +356,27 @@ Prefix '0' to comment-dwim to kill comments entirely.
 TODO: write about how cool this is! (not related to above comment
 about a post)
 
-*** undo tree advice
-Make zipped files obvious.
-#+BEGIN_SRC emacs-lisp :tangle no
-  (after 'undo-tree
+** Package initialization
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (require-package
+    '(cl-lib                               ;The Golden Package
+      eldoc                                ;included in gnuemacs
+      use-package))
+#+END_SRC
+** Configuration
+*** undo-tree config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package undo-tree
+    :config
+    ;;; Make zipped files obvious.
     (defadvice undo-tree-make-history-save-file-name
         (after undo-tree activate)
-      (setq ad-return-value (concat ad-return-value ".gz"))))
-#+END_SRC
+      (setq ad-return-value (concat ad-return-value ".gz")))
 
-Thanks to [[http://whattheemacsd.com/my-misc.el-02.html][Magnar]] for the advice.
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defadvice undo-tree-undo (around keep-region activate)
+    ;;; Thanks to
+    ;;; [[http://whattheemacsd.com/my-misc.el-02.html][Magnar]] for the
+    ;;; advice.
+    (defadvice undo-tree-undo (around keep-region activate)
       (if (use-region-p)
           (let ((m (set-marker (make-marker) (mark)))
                 (p (set-marker (make-marker) (point))))
@@ -414,56 +385,20 @@ Thanks to [[http://whattheemacsd.com/my-misc.el-02.html][Magnar]] for the advice
             (set-mark m)
             (set-marker p nil)
             (set-marker m nil))
-        ad-do-it))
+        ad-do-it)))
 #+END_SRC
-
-*** expand-region advice
-[[http://spw.sdf.org/blog/tech/emacs/expandregionlines.html][Notes from the Library : /blog/tech/emacs/expandregionlines.html]]
+*** notifications config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (defadvice er/expand-region (around fill-out-region activate)
-    (if (or (not (region-active-p))
-            (eq last-command 'er/expand-region))
-        ad-do-it
-      (if (< (point) (mark))
-          (let ((beg (point)))
-            (goto-char (mark))
-            (end-of-line)
-            (forward-char 1)
-            (push-mark)
-            (goto-char beg)
-            (beginning-of-line))
-        (let ((end (point)))
-          (goto-char (mark))
-          (beginning-of-line)
-          (push-mark)
-          (goto-char end)
-          (end-of-line)
-          (forward-char 1)))))
+  (use-package notifications)
 #+END_SRC
-** Package initialization
-#+NAME: require-packages
+*** esc mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (require-package
-    '(cl-lib                               ;The Golden Package
-      saveplace                            ;included in gnuemacs
-      uniquify                             ;included in gnuemacs
-      eldoc                                ;included in gnuemacs
-      use-package
-      auto-complete
-      notifications
-      dired-x
-      pretty-lambdada
-      spotify
-      vc-hooks
-
-      ;; custom packages
-      ; is there a way to get these autoloads loaded implicitly, like
-      ; elpa does?
-      esc-mode                             ;The Power Glove
-      displaced-yank))
+  (use-package esc-mode)
 #+END_SRC
-
-** Configuration
+*** Displaced yank config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package displaced-yank)
+#+END_SRC
 *** Powerline config
 That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee-d77b-45da-ac5c-b9bbb562.gif][Power⚡Line]] baby!
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -505,7 +440,11 @@ Gotta love that [[http://awesome.naquadah.org/][awesome wm]]
 *** Auto complete config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package auto-complete
-    :init (setq ac-comphist-file (format "%s/ac-comphist.dat" esc-meta-path))
+    :commands global-auto-complete-mode
+    :init
+    (setq ac-comphist-file (format "%s/ac-comphist.dat" esc-meta-path))
+    (global-auto-complete-mode t)
+
     :config
     (ac-config-default)
     (add-to-list 'ac-dictionary-directories
@@ -519,11 +458,10 @@ This mode is based on [[https://github.com/Miserlou/Glance-Bookmarklet][OpenSpri
 #+END_SRC
 
 *** Enhanced ruby mode config
-Verbatim from the [[http://www.emacswiki.org/emacs/RubyMode][EmacsWiki]]
+From the [[http://www.emacswiki.org/emacs/RubyMode][EmacsWiki]]
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package enh-ruby-mode
-    :mode "\\.rb$"
-    :mode "\\.\\(?:gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'"
+    :mode "\\.\\(?:gemspec\\|rb\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'"
     :interpreter "ruby"
     :commands enh-ruby-mode
     :idle (add-hook 'enh-ruby-mode-hook 'esc/enh-ruby-mode-hook))
@@ -620,9 +558,13 @@ TODO: disable autopair-mode for web-mode
 #+END_SRC
 *** C config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (setq ff-search-directories '("." "../inc" "../src"))
-  (add-to-list 'auto-mode-alist '("\\.tcc$" . c++-mode))
-  (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ ")
+  (use-package cc-mode
+    :init (setq ff-search-directories '("." "../inc" "../src"))
+    :config
+    (use-package c++-mode :mode "\\.tcc$")
+    (use-package c-eldoc
+      :config
+      (setq c-eldoc-includes "`pkg-config gtk+-2.0 --cflags` -I./ -I../ ")))
 #+END_SRC
 *** FIC-mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -667,9 +609,10 @@ TODO: turn this into a minor mode for toggling with =esc-mode=
 #+END_SRC
 *** LaTeX config
 Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-latex-export.html][orgmode.com]]
-#+NAME: LaTeX configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (after 'latex-mode
+  (use-package latex
+    :commands latex-mode
+    :config
     (load "auctex.el" nil t t)
     (load "preview-latex.el" nil t t)
     (setq TeX-command-default "latex"
@@ -677,9 +620,9 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
           TeX-parse-self t
           TeX-PDF-mode t
           latex-run-command "pdflatex")
+    ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
     (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
     (local-set-key (kbd "C-c C-s") 'latex-math-preview-expression))
-  ;; (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 #+END_SRC
 
 *** Flyspell mode config
@@ -703,6 +646,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 *** Idle highlight config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package idle-highlight
+    :disabled t
     :config (setq-default idle-highlight-idle-time 10.0))
 #+END_SRC
 *** Uniquify config
@@ -723,12 +667,12 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 #+END_SRC
 *** Git gutter+ config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;(global-git-gutter+-mode t)
-  (after 'git-gutter+
-    ;;; Jump between hunks
+  (use-package git-gutter+
+    :config
+    ;; Jump between hunks
     (define-key git-gutter+-mode-map (kbd "C-x n") 'git-gutter+-next-hunk)
     (define-key git-gutter+-mode-map (kbd "C-x p") 'git-gutter+-previous-hunk)
-     ;;; Act on hunks
+    ;; Act on hunks
     (define-key git-gutter+-mode-map (kbd "C-x v =") 'git-gutter+-show-hunk)
     ;; Stage hunk at point.
     ;; If region is active, stage all hunk lines within the region.
@@ -736,7 +680,6 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
     (define-key git-gutter+-mode-map (kbd "C-x c") 'git-gutter+-commit)
     (define-key git-gutter+-mode-map (kbd "C-x C") 'git-gutter+-stage-and-commit))
 #+END_SRC
-
 *** Multiple cursors config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package multiple-cursors
@@ -801,6 +744,13 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
   (use-package persp-mode
     :config (setq persp-save-dir (format "%s/persp-confs" esc-meta-path)))
 #+END_SRC
+*** Haskell mode conf
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package haskell-mode
+    :config
+    (use-package haskell-indent
+      :init (add-hook 'haskell-mode-hook 'haskell-indent-mode)))
+#+END_SRC
 *** Programming+ config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defvar esc-precompile-window-state nil
@@ -813,18 +763,69 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
   time to save current-window configuration to
   `esc-precompile-window-state'.")
 #+END_SRC
+*** Pretty lambdada config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package pretty-lambdada
+    :idle-priority 6
+    :idle (mapc (lambda (prettify-this-mode)
+                  (add-hook prettify-this-mode 'pretty-lambda))
+                '(emacs-lisp-mode-hook
+                  org-mode-hook ;to include source blocks :\
+                  enh-ruby-mode-hook
+                  ruby-mode-hook)))
+#+END_SRC
+*** Magit config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package magit
+    :commands magit-status)
+#+END_SRC
+*** Expand region config
+[[http://spw.sdf.org/blog/tech/emacs/expandregionlines.html][Notes from the Library : /blog/tech/emacs/expandregionlines.html]]
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package expand-region
+    :commands er/expand-region
+    :config (defadvice er/expand-region (around fill-out-region activate)
+              (if (or (not (region-active-p))
+                      (eq last-command 'er/expand-region))
+                  ad-do-it
+                (if (< (point) (mark))
+                    (let ((beg (point)))
+                      (goto-char (mark))
+                      (end-of-line)
+                      (forward-char 1)
+                      (push-mark)
+                      (goto-char beg)
+                      (beginning-of-line))
+                  (let ((end (point)))
+                    (goto-char (mark))
+                    (beginning-of-line)
+                    (push-mark)
+                    (goto-char end)
+                    (end-of-line)
+                    (forward-char 1))))))
+#+END_SRC
+*** Autopair config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package autopair
+    :commands autopair-global-mode)
+#+END_SRC
+*** Lexbind config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package lexbind-mode
+    :init (add-hook 'emacs-lisp-mode-hook 'lexbind-mode))
+#+END_SRC
+*** Eshell config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package eshell
+    :init (add-hook 'eshell-named-command-hook 'esc/eshell-exec-perl))
+#+END_SRC
 ** Autoloads
-#+NAME: Miscellaneous autoloads
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (autoload-from-package "iedit"         '(iedit)) ;multi-replace
-      (autoload-from-package "magit"         '(magit-status))
-      (autoload-from-package "misc"          '(zap-up-to-char))
-      (autoload-from-package "misc-cmds"     '(revert-buffer-no-confirm))
-      (autoload-from-package "expand-region" '(er/expand-region))
-      (autoload-from-package "autopair"      '(autopair-global-mode)) ;autopair characters
-      (autoload-from-package "auto-complete" '(global-auto-complete-mode)) ;autocomplete syntax
-    #+END_SRC
-
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package misc
+    :commands zap-up-to-char)
+  (use-package misc-cmds
+    :commands revert-buffer-no-confirm)
+#+END_SRC
 ** Hooks
 Attach =esc-mode= hooks
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -857,43 +858,17 @@ Attach =esc-mode= hooks
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'find-file-hook 'esc/remove-dos-eol)
 #+END_SRC
-*** Lexbind mode
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (after 'lexbind-mode
-    (add-hook 'emacs-lisp-mode-hook 'lexbind-mode))
-#+END_SRC
-
-*** Eshell hook
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'eshell-named-command-hook 'esc/eshell-exec-perl)
-#+END_SRC
-
 *** Save hooks
 Handy little hooks to nudge new files in the right direction.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 #+END_SRC
-
 *** Compilation buffer hook
-#+NAME: Burying the Compilation buffer if successful
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'compilation-finish-functions
             'esc/bury-compilation-buffer-if-successful)
   (add-to-list 'same-window-buffer-names "*compilation*")
-#+END_SRC
-*** Haskell mode hook
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'haskell-mode-hook 'haskell-indent-mode)
-#+END_SRC
-*** Pretty lambdada mode hook
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (mapc (lambda (prettify-this-mode)
-          (add-hook prettify-this-mode 'pretty-lambda))
-        '(emacs-lisp-mode-hook
-          org-mode-hook ;to include source blocks :\
-          enh-ruby-mode-hook
-          ruby-mode-hook))
 #+END_SRC
 *** Change major mode hook
 Take this opportunity to refresh the mode line. Inspiration from
@@ -907,7 +882,6 @@ Emacs]].
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'kill-buffer-query-functions 'esc/unkillable-scratch-buffer)
 #+END_SRC
-
 *** Kill emacs hook
 Summon the magical cookies.
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -970,35 +944,121 @@ Begin Mac OS configuration
 
 ** Dired configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (require-package '(dired-details))
-  (dired-details-install)
-
-  ;; auto-dired-reload
-  ;; Reload dired after making changes
-  (after 'dash
-    (put '--each 'lisp-indent-function 1)
-    (--each '(dired-do-rename
-              dired-create-directory
-              wdired-abort-changes)
-            (eval `(defadvice ,it (after revert-buffer activate)
-                     (revert-buffer)))))
+  (use-package dired-details
+    :idle-priority 6
+    :idle
+    (dired-details-install)
+    (use-package dired-x)
+    (use-package dash
+      :idle 6
+      ;; Reload dired after making changes
+      (put '--each 'lisp-indent-function 1)
+      (--each '(dired-do-rename
+                dired-create-directory
+                wdired-abort-changes)
+        (eval `(defadvice ,it (after revert-buffer activate)
+                 (revert-buffer)))))
+    (use-package wdired
+      :config
+      (define-key wdired-mode-map
+        (vector 'remap 'beginning-of-line) 'esc/dired-back-to-start-of-files)
+      (define-key wdired-mode-map
+        (vector 'remap 'esc/back-to-indentation-or-beginning)
+        'esc/dired-back-to-start-of-files)
+      (define-key wdired-mode-map
+        (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
+      (define-key wdired-mode-map
+        (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)))
 #+END_SRC
-
-*** Wdired
+** org config
+My favorite mode. This was the reason I started using Emacs, didja
+know?
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (eval-after-load "wdired"
-    '(progn
-       (define-key wdired-mode-map (kbd "C-a") 'esc/dired-back-to-start-of-files)
-       (define-key wdired-mode-map
-         (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
-       (define-key wdired-mode-map
-         (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)))
-#+END_SRC
+  (use-package org
+    :pre-load (setq org-replace-disputed-keys t)
+    :idle-priority 2
+    :idle
+    (setq-default major-mode 'org-mode)  ;default mode for new buffers
 
-** Organize mode configuration
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package org)
+    :config
+    ;;; org advice -- shrink the agenda buffer and keep it that way
+    (defadvice org-agenda (around shrink-agenda-buffer activate)
+      "Shrink the agenda after initial display."
+      ad-do-it
+      (shrink-window-if-larger-than-buffer))
+
+    ;; keep it shrunken upon refresh
+    (defadvice org-agenda-redo (around shrink-agenda-buffer-after-refresh activate)
+      "Shrink the agenda after refreshing the display."
+      ad-do-it
+      (shrink-window-if-larger-than-buffer))
+    ;;; end org advice
+
+    (setq org-checkbox-hierarchical-statistics nil
+          org-hierarchical-todo-statistics nil
+          org-hide-emphasis-markers t
+          org-src-fontify-natively t
+          org-clock-persist 'history
+          org-habit-graph-column 55
+          org-hide-leading-stars t
+          org-directory "~/org"
+          org-imenu-depth 3
+          org-agenda-files (append '("~/workspace/ee445m-labs/doc/todo.org"
+                                     "~/workspace/ee445m-labs/doc/lab-manuals/todo.org"
+                                     "~/org/intel.org"
+                                     "~/org/todo.org")))
+
+    (add-to-list 'org-modules 'org-habit)
+    (add-to-list 'org-structure-template-alist
+                 '("E"
+                   "#+BEGIN_SRC emacs-lisp ?\n\n#+END_SRC"
+                   "<emacs-lisp>\n?\n</emacs-lisp>"))
+
+    (defun esc/org-confirm-babel ()
+      (setq org-confirm-babel-evaluate nil)
+
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '(;; Always execute these languages
+         (R               .       t)
+         (ditaa           .       t)
+         (dot             .       t)
+         (plantuml        .       t)
+         (emacs-lisp      .       t)
+         (lisp            .       t)
+         (clojure         .       t)
+         (scala           .       t)
+         (gnuplot         .       t)
+         (haskell         .       t)
+         (ocaml           .       t)
+         (python          .       t)
+         (ruby            .       t)
+         (sh              .       t)
+         (sqlite          .       t)
+         (octave          .       t)
+         (plantuml        .       t)
+         ;; Never execute these languages
+         (screen          .       nil)
+         (sql             .       nil))))
+
+    (add-hook 'org-mode-hook 'esc/org-confirm-babel)
+
+    (use-package ox-latex
+      ;; optimize: probably possible to optimize use-package's loading
+      ;; of the below code
+      :init
+      ;; Add minted to the defaults packages to include when exporting.
+      (add-to-list 'org-latex-packages-alist '("" "minted"))
+      ;; Tell the latex export to use the minted package for source
+      ;; code coloration.
+      (setq org-latex-listings 'minted)
+      ;; Let the exporter use the -shell-escape option to let latex
+      ;; execute external programs.
+      ;; This obviously and can be dangerous to activate!
+      (setq org-latex-pdf-process
+            '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))))
 #+END_SRC
+[[http://lists.gnu.org/archive/html/emacs-orgmode/2012-05/msg00708.html][More information on defining your own Easy Templates]].
 *** org advice
 [[http://emacs.stackexchange.com/a/9347][org mode - How does one use flyspell in org buffers without flyspell
 triggeri...]]
@@ -1022,69 +1082,8 @@ As of <2015-02-18 Wed> this advice did not work for me.
       (setq ad-return-value rlt)))
 #+END_SRC
 
-*** org config
-My favorite mode. This was the reason I started using Emacs, didja know?
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-to-list 'org-modules 'org-habit)
-  (setq-default major-mode 'org-mode)  ;default mode for new buffers
-  (setq org-replace-disputed-keys t    ;must be set before org is loaded
-        org-clock-persist 'history
-        org-hide-leading-stars t
-        org-hide-emphasis-markers t
-        org-hierarchical-todo-statistics     nil
-        org-checkbox-hierarchical-statistics nil
-        org-habit-graph-column 55
-        org-src-fontify-natively t
-        org-imenu-depth 3
-        org-directory "~/org"
-        org-agenda-files (append '("~/workspace/ee445m-labs/doc/todo.org"
-                                   "~/workspace/ee445m-labs/doc/lab-manuals/todo.org"
-                                   "~/org/intel.org"
-                                   "~/org/todo.org")))
-#+END_SRC
-
-[[http://lists.gnu.org/archive/html/emacs-orgmode/2012-05/msg00708.html][More information on defining your own Easy Templates]].
-#+BEGIN_SRC emacs-lisp :tangle yes
-    (after 'org
-           (add-to-list 'org-structure-template-alist
-                        '("E"
-                          "#+BEGIN_SRC emacs-lisp ?\n\n#+END_SRC"
-                          "<emacs-lisp>\n?\n</emacs-lisp>")))
-
-#+END_SRC
-
 *** org babel
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (setq org-confirm-babel-evaluate nil)
-
-              (org-babel-do-load-languages
-               'org-babel-load-languages
-               '(;; Always execute these languages
-                 (R               .       t)
-                 (ditaa           .       t)
-                 (dot             .       t)
-                 (plantuml        .       t)
-                 (emacs-lisp      .       t)
-                 (lisp            .       t)
-                 (clojure         .       t)
-                 (scala           .       t)
-                 (gnuplot         .       t)
-                 (haskell         .       t)
-                 (ocaml           .       t)
-                 (python          .       t)
-                 (ruby            .       t)
-                 (sh              .       t)
-                 (sqlite          .       t)
-                 (octave          .       t)
-                 (plantuml        .       t)
-                 ;; Never execute these languages
-                 (screen          .       nil)
-                 (sql             .       nil)))))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
   ;;; org-export-blocks-format-plantuml.el Export UML using plantuml
   ;;
   ;; OBSOLETED, use ob-plantuml.el bundled in org instead.
@@ -1157,26 +1156,9 @@ My favorite mode. This was the reason I started using Emacs, didja know?
            "#+END_EXAMPLE\n")))))
 
 #+END_SRC
-
-#+NAME: org latex export syntax highlighting
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Include the latex-exporter
-  (require-package '(ox-latex))
-  ;; Add minted to the defaults packages to include when exporting.
-  (add-to-list 'org-latex-packages-alist '("" "minted"))
-  ;; Tell the latex export to use the minted package for source
-  ;; code coloration.
-  (setq org-latex-listings 'minted)
-  ;; Let the exporter use the -shell-escape option to let latex
-  ;; execute external programs.
-  ;; This obviously and can be dangerous to activate!
-  (setq org-latex-pdf-process
-        '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-#+END_SRC
-
 *** org beamer
 Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-mode-and.html][emacs-fu]]!
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
   ;; allow for export=>beamer by placing
   ;; #+LaTeX_CLASS: beamer in org files
   (unless (boundp 'org-export-latex-classes)
@@ -1232,14 +1214,14 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
 
 #+END_SRC
 *** org capture
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
   (setq org-default-notes-file (concat org-directory "/capture.org"))
   (after 'org
     (after 'esc-mode
       (esc-key "C-c C-p" 'org-capture)))
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
   (setq org-capture-templates
         '(;; General tasks go here
           ("t" "Todo" entry
@@ -1263,7 +1245,7 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
 #+END_SRC
 
 **** org refile
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
   (setq ;; Work refile locations
    esc-refile-targets-centtech
    `(,(concat org-directory "/centtech/lru.org")
@@ -2378,7 +2360,20 @@ off my back. I can totally wreck it without wrecking esc-mode, thereby
 avoiding emacs daemon restarts.
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/test-mode.el
   ;;; test-mode.el --- A destructable minor mode to make restarts less frequent.
+  ;; Copyright (C) 2015   Eric Steven Crosson esc
 
+  ;; This program is free software: you can redistribute it and/or modify
+  ;; it under the terms of the GNU General Public License as published by
+  ;; the Free Software Foundation, either version 3 of the License, or
+  ;; (at your option) any later version.
+
+  ;; This program is distributed in the hope that it will be useful,
+  ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ;; GNU General Public License for more details.
+
+  ;; You should have received a copy of the GNU General Public License
+  ;; along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   ;;; Commentary:
   ;;
@@ -2398,7 +2393,7 @@ avoiding emacs daemon restarts.
 
   ;;; test-mode.el ends here
 #+END_SRC
-TODO: link =test-mode= with =esc-mode=
+TODO: link =test-mode= with =esc-mode= instead of enabling globally
 ** esc-mode
 *** summary
 Here lies my personal minor mode, where I confine all of my custom
@@ -3008,14 +3003,8 @@ haven't had to look at it yet.
         ;;                                 'revert-buffer-keep-undo
         ;;                               'revert-buffer))
 
-        ;; TODO: clean up this garbage (but keep functionality)
-        ;;   - possibility: wrap with 'ignore-errors
-        (if (<= emacs-major-version 23)
-            (message "Old Emacs prevents visual-line-mode, auto-complete-mode")
-          (global-visual-line-mode activate) ;word wrap by default
-          (diminish 'visual-line-mode)
-          (after 'auto-complete
-            (global-auto-complete-mode activate))) ;in all buffers
+        (global-visual-line-mode activate) ;word wrap by default
+        (diminish 'visual-line-mode)
 
         (after 'undo-tree-autoloads
           (global-undo-tree-mode activate)
@@ -3039,7 +3028,6 @@ haven't had to look at it yet.
 
   (add-hook 'esc-mode-hook 'esc/accompanying-mode-hook)
 #+END_SRC
-
 *** esc fin
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   (esc-mode 1)
@@ -3731,7 +3719,7 @@ make an emacs wrapper to ido-select a dir and tagsgen from there
 ** TODO gcov output parsed by emacs to hilight gdb code coverage
 ** TODO Help+ standardization
 you have C-h C-M-c, make C-h C-M-k! and f, etc
-** TODO use package use-package
+** IN-PROGRESS use package use-package
 ** TODO recentf
 - prefer org over el and txt like ido
 ** [1/3] make process
