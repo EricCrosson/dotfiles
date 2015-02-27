@@ -45,13 +45,9 @@ display another buffer until the window is undedicated
   When dedicated, a window will not change the buffer it is
   displaying."
     (interactive)
-    (message
-     (if (let (window (get-buffer-window (current-buffer)))
-           (set-window-dedicated-p window
-                                   (not (window-dedicated-p window))))
-         "Window '%s' is dedicated"
-       "Window '%s' is normal")
-     (current-buffer)))
+    (let ((window (get-buffer-window (current-buffer))))
+      (set-window-dedicated-p window
+                              (not (window-dedicated-p window)))))
 
   (add-hook 'dedicated-mode-hook 'toggle-window-dedicated)
 
