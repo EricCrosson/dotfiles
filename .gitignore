@@ -63,3 +63,4 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/site-lisp/esc-lisp/boilerplate/displaced-yank.el
 /emacs/.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el
 /emacs/.emacs.d/site-lisp/esc-lisp/boilerplate/os-interaction.el
+/emacs/.emacs.d/site-lisp/esc-lisp/dedicated-mode/dedicated-mode.el

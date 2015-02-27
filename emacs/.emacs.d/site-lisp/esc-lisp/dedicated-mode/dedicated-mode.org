@@ -1,0 +1,61 @@
+#+startup:content
+#+todo: TODO(t) VERIFY(v) IN-PROGRESS(p) DOCUMENT(m) PRINT(r) | OPTIONAL(o) HIATUS(h) DONE(d) CANCELED(c)
+* Dedicated mode
+The purpose of this buffer-local minor mode is to provide a
+toggle-able state whereby a window is bound to a buffer, and won't
+display another buffer until the window is undedicated
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;;; dedicated-mode.el --- Bind a buffer to a window
+  ;; Copyright (C) 2015     Eric Steven Crosson (esc)
+
+  ;; This program is free software: you can redistribute it and/or modify
+  ;; it under the terms of the GNU General Public License as published by
+  ;; the Free Software Foundation, either version 3 of the License, or
+  ;; (at your option) any later version.
+
+  ;; This program is distributed in the hope that it will be useful,
+  ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ;; GNU General Public License for more details.
+
+  ;; You should have received a copy of the GNU General Public License
+  ;; along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+  ;;; Commentary:
+  ;;
+
+  ;;; Code:
+
+  (defvar dedicated-mode-map (make-keymap)
+    "The keymap for function `dedicated-mode'.")
+
+    ;;;###autoload
+  (define-minor-mode dedicated-mode
+    "Toggle dedicated-mode.
+
+  Dedicated mode binds a window to a buffer; no other buffer Will
+  be displayed until the window is undedicated."
+    nil " dedicated" 'dedicated-mode-map)
+
+  ;;;###autoload
+  (defun toggle-window-dedicated ()
+    "Toggle whether the current active window is dedicated or not.
+
+  When dedicated, a window will not change the buffer it is
+  displaying."
+    (interactive)
+    (message
+     (if (let (window (get-buffer-window (current-buffer)))
+           (set-window-dedicated-p window
+                                   (not (window-dedicated-p window))))
+         "Window '%s' is dedicated"
+       "Window '%s' is normal")
+     (current-buffer)))
+
+  (add-hook 'dedicated-mode-hook 'toggle-window-dedicated)
+
+  (provide 'dedicated-mode)
+
+  ;;; dedicated-mode.el ends here
+#+END_SRC

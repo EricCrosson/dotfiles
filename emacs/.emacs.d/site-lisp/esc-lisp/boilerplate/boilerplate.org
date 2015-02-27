@@ -359,21 +359,6 @@ TODO: defcustom
       (message "Window will now be ignored by `other-window'")))
 
   ;;;###autoload
-  (defun esc/toggle-window-dedicated ()
-    "Toggle whether the current active window is dedicated or not.
-
-  When dedicated, `display-buffer' will refrain from displaying
-  another buffer in a window."
-    (interactive)
-    (message
-     (if (let (window (get-buffer-window (current-buffer)))
-           (set-window-dedicated-p window
-                                   (not (window-dedicated-p window))))
-         "Window '%s' is dedicated"
-       "Window '%s' is normal")
-     (current-buffer)))
-
-  ;;;###autoload
   (defun buffers-matching-regexp (regexp &optional names)
     "Return a list of buffers matching REGEXP.
 
