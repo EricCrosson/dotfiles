@@ -28,11 +28,11 @@ display another buffer until the window is undedicated
   ;;; Code:
 
   (defvar dedicated-mode-map (make-keymap)
-    "The keymap for function `dedicated-mode'.")
+    "The keymap for `dedicated-mode'.")
 
     ;;;###autoload
   (define-minor-mode dedicated-mode
-    "Toggle dedicated-mode.
+    "Toggle `dedicated-mode'.
 
   Dedicated mode binds a window to a buffer; no other buffer Will
   be displayed until the window is undedicated."
