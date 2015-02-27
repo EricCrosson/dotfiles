@@ -746,7 +746,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 *** Ace config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'ace-jump-mode (ace-jump-mode-enable-mark-sync))
-  (after 'ace-window (setq aw-keys '(?a ?b ?c ?d ?e ?f ?g ?h ?i)))
+  (after 'ace-window (setq aw-keys (number-sequence 97 (+ 97 26))))
 #+END_SRC
 
 *** Which func config
