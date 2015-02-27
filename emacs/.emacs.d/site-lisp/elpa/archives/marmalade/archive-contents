@@ -1905,9 +1905,6 @@
  (memoize .
 	  [(1 0 1)
 	   nil "Memoization functions" single])
- (melpa-repository .
-		   [(0 0 5)
-		    nil "add the melpa elpa repository to emacs" single])
  (mediawiki .
 	    [(2 2 3)
 	     nil "mediawiki frontend" single])
@@ -3428,7 +3425,7 @@
 	   [(1 4 6)
 	    nil "Screen for Emacsen" single])
  (elpy .
-       [(1 7 0)
+       [(1 7 1)
 	((company
 	  (0 8 2))
 	 (find-file-in-project

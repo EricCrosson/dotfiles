@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads nil "boilerplate/boilerplate" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21741 26298 854193 626000))
+;;;;;;  (21742 30098 433577 343000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el
 
 (autoload 'esc/prog-mode-hook "boilerplate/boilerplate" "\
@@ -102,7 +102,7 @@ depending on the value of ARG.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/buffer+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/buffer+.el"
-;;;;;;  (21741 26298 220860 329000))
+;;;;;;  (21742 30097 713577 332000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/buffer+.el
 
 (autoload 'esc/indent-buffer "boilerplate/buffer+" "\
@@ -235,7 +235,7 @@ Argument PREFIX when nil switches the new buffer to the last buffer.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/compilation+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/compilation+.el"
-;;;;;;  (21741 26298 284193 660000))
+;;;;;;  (21742 30097 810244 0))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/compilation+.el
 
 (autoload 'esc/previous-error "boilerplate/compilation+" "\
@@ -275,7 +275,7 @@ Compile an .elc file for every .el file contained under
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/displaced-yank" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/displaced-yank.el"
-;;;;;;  (21741 26298 307526 991000))
+;;;;;;  (21742 30097 836910 668000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/displaced-yank.el
 
 (autoload 'esc/define-displaced-yank "boilerplate/displaced-yank" "\
@@ -290,7 +290,7 @@ Note that negative values of MOVE are valid.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/emacs+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el"
-;;;;;;  (21741 26298 567526 976000))
+;;;;;;  (21742 30098 156910 672000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el
 
 (autoload 'esc/minibuffer-display-buffer-file-name "boilerplate/emacs+" "\
@@ -504,7 +504,7 @@ windows as you can fit on this screen.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/help+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el"
-;;;;;;  (21741 26298 727526 966000))
+;;;;;;  (21742 30098 233577 340000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el
 
 (autoload 'esc/insert-defun-at-point "boilerplate/help+" "\
@@ -528,7 +528,7 @@ Completion is available for the keymap name.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/os-interaction" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/os-interaction.el"
-;;;;;;  (21741 26298 610860 307000))
+;;;;;;  (21742 30098 180244 6000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/os-interaction.el
 
 (autoload 'esc/middle-click-yank "boilerplate/os-interaction" "\
@@ -553,7 +553,7 @@ Copy the current buffer file name to the clipboard.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/programming+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/programming+.el"
-;;;;;;  (21741 26298 754193 632000))
+;;;;;;  (21742 30098 330244 8000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/programming+.el
 
 (autoload 'esc/tagsgen "boilerplate/programming+" "\
@@ -573,7 +573,7 @@ bury the compilation buffer if compilation succeeds.
 ;;;***
 
 ;;;### (autoloads nil "browse-cliplink" "../../../../../.emacs.d/site-lisp/esc-lisp/browse-cliplink.el"
-;;;;;;  (21741 26499 294182 43000))
+;;;;;;  (21742 3390 42740 859000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/browse-cliplink.el
 
 (autoload 'browse-cliplink "browse-cliplink" "\
@@ -584,7 +584,7 @@ bury the compilation buffer if compilation succeeds.
 ;;;***
 
 ;;;### (autoloads nil "clean-mode-line" "../../../../../.emacs.d/site-lisp/esc-lisp/clean-mode-line.el"
-;;;;;;  (21741 26499 320848 708000))
+;;;;;;  (21742 3390 116074 194000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/clean-mode-line.el
 
 (autoload 'clean-mode-line "clean-mode-line" "\
@@ -598,7 +598,7 @@ See `mode-line-cleaner-alist' for more documentation.
 ;;;***
 
 ;;;### (autoloads nil "color-theme-stack" "../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el"
-;;;;;;  (21741 26499 344182 40000))
+;;;;;;  (21742 3390 139407 527000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el
 
 (autoload 'color-theme-push "color-theme-stack" "\
@@ -614,7 +614,7 @@ Restore the previous theme in use.
 ;;;***
 
 ;;;### (autoloads nil "dired-config" "../../../../../.emacs.d/site-lisp/esc-lisp/dired-config.el"
-;;;;;;  (21741 26499 557515 361000))
+;;;;;;  (21742 3390 326074 196000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/dired-config.el
 
 (autoload 'esc/dired-mode-hook "dired-config" "\
@@ -665,7 +665,7 @@ Open esc-lisp in `dired' for easy editing of configs.
 ;;;***
 
 ;;;### (autoloads nil "esc-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el"
-;;;;;;  (21741 26499 934182 6000))
+;;;;;;  (21742 3390 686074 203000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el
 
 (autoload 'esc-mode "esc-mode" "\
@@ -677,7 +677,7 @@ Toggle esc-keys mode.
 ;;;***
 
 ;;;### (autoloads nil "gntp" "../../../../../.emacs.d/site-lisp/esc-lisp/gntp.el"
-;;;;;;  (21741 26499 960848 671000))
+;;;;;;  (21742 3390 776074 203000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/gntp.el
 
 (autoload 'gntp-notify "gntp" "\
@@ -689,7 +689,7 @@ PORT defaults to `gntp-server-port'
 ;;;***
 
 ;;;### (autoloads nil "hidden-mode-line-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode.el"
-;;;;;;  (21741 26500 10848 668000))
+;;;;;;  (21742 3390 852740 872000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode.el
 
 (autoload 'hidden-mode-line-mode "hidden-mode-line-mode" "\
@@ -705,7 +705,7 @@ Minor mode to hide the mode-line in the current buffer.
 ;;;***
 
 ;;;### (autoloads nil "ido-extras" "../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras.el"
-;;;;;;  (21741 26500 124181 995000))
+;;;;;;  (21742 3390 969407 540000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras.el
 
 (autoload 'ido-recentf-open "ido-extras" "\
@@ -732,7 +732,7 @@ With prefix argument FILES-TOO also offer to find files.
 ;;;***
 
 ;;;### (autoloads nil "multiple-cursors-config" "../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el"
-;;;;;;  (21741 26500 167515 325000))
+;;;;;;  (21742 3391 16074 207000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el
 
 (autoload 'esc/multiple-cursors-mode-enabled-hook "multiple-cursors-config" "\
@@ -803,7 +803,7 @@ https://github.com/hershic/ee445m-labs.
 ;;;***
 
 ;;;### (autoloads nil "scroll-all-config" "../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-config.el"
-;;;;;;  (21741 26500 190848 657000))
+;;;;;;  (21742 3391 42740 875000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-config.el
 
 (autoload 'mwheel-scroll-all-function-all "scroll-all-config" "\
@@ -824,7 +824,7 @@ https://github.com/hershic/ee445m-labs.
 ;;;***
 
 ;;;### (autoloads nil "test-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/test-mode.el"
-;;;;;;  (21741 26499 580848 693000))
+;;;;;;  (21742 3390 346074 197000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/test-mode.el
 
 (autoload 'test-mode "test-mode" "\
@@ -836,7 +836,7 @@ Toggle test-keys mode.
 ;;;***
 
 ;;;### (autoloads nil "update-autoloads" "../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads.el"
-;;;;;;  (21741 26500 334181 982000))
+;;;;;;  (21742 3391 162740 876000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads.el
 
 (let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads" loads))))
