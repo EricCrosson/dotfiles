@@ -474,6 +474,8 @@ Gotta love that [[http://awesome.naquadah.org/][awesome wm]]
 
     :config
     (ac-config-default)
+    (setq-default ac-auto-show-menu .1)
+    (setq-default ac-sources (append '(ac-source-imenu) ac-sources))
     (add-to-list 'ac-dictionary-directories
                  "~/.emacs.d/auto-complete/ac-dict"))
 #+END_SRC
