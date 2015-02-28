@@ -2682,13 +2682,10 @@ Macros to insert bindings in =esc-mode-map=.
 
   (defhydra hydra-text-scale (esc-mode-map  "<f2>")
     "text-scale"
-    ("k" text-scale-increase)
-    ("j" text-scale-decrease))
-
-  (defhydra hydra-zoom (esc-mode-map  "C-<f2>")
-    "esc/zoom"
-    ("," esc/zoom-out)
-    ("." esc/zoom-in))
+    ("j" text-scale-decrease "dec")
+    ("k" text-scale-increase "inc")
+    ("." default-text-scale-increase "default-dec")
+    ("," default-text-scale-decrease "default-inc"))
 
   (defhydra hydra-eval (esc-mode-map "C-c C-e")
     "eval"
@@ -2732,8 +2729,8 @@ Macros to insert bindings in =esc-mode-map=.
   ;; todo: create a mirror that manipulates `other-buffer'
   (defhydra hydra-scroll-buffer (esc-mode-map "M-n")
     "cursor-movement"
-    ("j" esc/scroll-up-slight "up")
-    ("k" esc/scroll-down-slight "dw")
+    ("j" scroll-slight-up "up")
+    ("k" scroll-slight-down "dw")
     ("s" isearch-forward "i-f" :color blue)
     ("r" isearch-backward "i-r" :color blue)
     ("h" backward-char "back")
@@ -2744,9 +2741,10 @@ Macros to insert bindings in =esc-mode-map=.
     ("a" beginning-of-line "beg-ln")
     ("d" scroll-up "pg up")
     ("u" scroll-down "pg dn")
-    ("q" read-only-mode "read")
+    ("q" read-only-mode)
     ("/" goto-last-change "last-chng")
-    ("DEL" kill-buffer "kill" :color blue))
+    ("." find-tag "tag")
+    ("*" pop-tag-mark "pop-tag"))
 
   (defhydra hydra-window-adjustment (esc-mode-map "C-z")
     "window adjustment"
@@ -2759,21 +2757,18 @@ Macros to insert bindings in =esc-mode-map=.
     ("b" mode-line-other-buffer "mode-line-other-buffer")
     ("u" bury-buffer "bury"))
 
+  ;; TODO: use-package itize
   (after 'org
     (defhydra hydra-org-nav-source-block (esc-mode-map "C-c n")
       "org src block nav"
-      ("n" esc/org-next-source-code-block "next")
-      ("p" esc/org-prev-source-code-block "prev")))
+      ("n" org-jump-next-src-block "next")
+      ("p" org-jump-prev-src-block "prev")))
 
-  ;; todo: move-text-page,slight-up
   (defhydra hydra-move-text (esc-mode-map "M-RET")
     "move text"
     ("j" move-text-down "down")
-    ("k" move-text-up "up"))
-
-  (defhydra hydra-hide-lines (esc-mode-map "C-c h")
-    "hide lines"
-    ("h" hide-lines "hide")
+    ("k" move-text-up "up")
+    ("h" hide-lines "hide-lines")
     ("r" esc/reveal-all-hidden-lines "reveal all"))
 
   (defhydra hydra-mnimap (esc-mode-map "C-c M-RET")
@@ -3570,6 +3565,8 @@ you have C-h C-M-c, make C-h C-M-k! and f, etc
 ** TODO /meta
 move recentf, other meta files into meta
 ** [0/1] general purpose deuns
+- [ ] follow mode 80 char compliant
+  to its own mode
 - [ ] kill buffer and reopen file
   when revert-buffer just doesn't cut it
 ** [1/3] make process
