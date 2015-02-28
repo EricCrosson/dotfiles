@@ -398,11 +398,6 @@ That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package powerline)
 #+END_SRC
-*** Bury successful compilation buffer mode conf
-TODO : associate with =esc-mode=
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package bury-successful-compilation-buffer-mode)
-#+END_SRC
 *** Smartrep conf
 I don't know where smartrep defines keys but this worked for me and I
 haven't had to look at it yet.
@@ -618,6 +613,10 @@ TODO: turn this into a minor mode for toggling with =esc-mode=
   (setq compile-command "make -k -j32"
           compilation-ask-about-save nil
           compilation-save-buffers-predicate '(lambda () nil)) ;never ask to save
+#+END_SRC
+TODO : associate with =esc-mode=
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package bury-successful-compilation-buffer-mode)
 #+END_SRC
 *** Byte compilation config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -2672,109 +2671,109 @@ Macros to insert bindings in =esc-mode-map=.
 #+END_SRC
 *** esc hydras
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  (setq hydra-lv nil)
+    (setq hydra-lv nil)
 
-  (defhydra hydra-spotify (esc-mode-map "<f7>")
-    "spotify"
-    ("c"   spotify-playpause "play/pause"
-     "p"   spotify-previous  "prev"
-     "n"   spotify-next      "next"))
+    (defhydra hydra-spotify (esc-mode-map "<f7>")
+      "spotify"
+      ("c"   spotify-playpause "play/pause"
+       "p"   spotify-previous  "prev"
+       "n"   spotify-next      "next"))
 
-  (defhydra hydra-text-scale (esc-mode-map  "<f2>")
-    "text-scale"
-    ("j" text-scale-decrease "dec")
-    ("k" text-scale-increase "inc")
-    ("." default-text-scale-increase "default-dec")
-    ("," default-text-scale-decrease "default-inc"))
+    (defhydra hydra-text-scale (esc-mode-map  "<f2>")
+      "text-scale"
+      ("j" text-scale-decrease "dec")
+      ("k" text-scale-increase "inc")
+      ("." default-text-scale-increase "default-dec")
+      ("," default-text-scale-decrease "default-inc"))
 
-  (defhydra hydra-eval (esc-mode-map "C-c C-e")
-    "eval"
-    ("r" eval-region "region")
-    ("b" eval-buffer "buffer")
-    ("s" eval-last-sexp "sexp")
-    ("d" eval-defun "defun")
-    ("b" edebug-defun "edebug")
-    ("p" esc/eval-and-replace "& replace"))
+    (defhydra hydra-eval (esc-mode-map "C-c C-e")
+      "eval"
+      ("r" eval-region "region")
+      ("b" eval-buffer "buffer")
+      ("s" eval-last-sexp "sexp")
+      ("d" eval-defun "defun")
+      ("b" edebug-defun "edebug")
+      ("p" esc/eval-and-replace "& replace"))
 
-  (defhydra hydra-error (esc-mode-map "M-g")
-    "goto-error"
-    ("h" first-error "first")
-    ("j" next-error "next")
-    ("k" previous-error "prev")
-    ("l" esc/goto-line-with-feedback "goto-line" :color blue))
+    (defhydra hydra-error (esc-mode-map "M-g")
+      "goto-error"
+      ("h" first-error "first")
+      ("j" next-error "next")
+      ("k" previous-error "prev")
+      ("l" esc/goto-line-with-feedback "goto-line" :color blue))
 
-  (defhydra hydra-multiple-cursors (esc-mode-map "M-a")
-    "multiple-cursors"
-    ("l" mc/edit-lines "edit")
-    ("n" mc/mark-next-like-this "mark next")
-    ("p" mc/mark-previous-like-this "mark prev")
-    ("s" mc/sort-regions "sort")
-    ("r" mc/reverse-regions "reverse")
-    ("e" mc/insert-numbers "enumerate")
-    ("*" mc/mark-all-like-this "mark all")
-    ("o" mc/mark-all-like-this-dwim "mark all dwim"))
+    (defhydra hydra-multiple-cursors (esc-mode-map "M-a")
+      "multiple-cursors"
+      ("l" mc/edit-lines "edit")
+      ("n" mc/mark-next-like-this "mark next")
+      ("p" mc/mark-previous-like-this "mark prev")
+      ("s" mc/sort-regions "sort")
+      ("r" mc/reverse-regions "reverse")
+      ("e" mc/insert-numbers "enumerate")
+      ("*" mc/mark-all-like-this "mark all")
+      ("o" mc/mark-all-like-this-dwim "mark all dwim"))
 
-  (defhydra hydra-word-at-point (esc-mode-map "C-S-s")
-    "word at point"
-    ("r" esc/search-word-backward "search-backward")
-    ("s" esc/search-word-forward "search-forward"))
+    (defhydra hydra-word-at-point (esc-mode-map "C-S-s")
+      "word at point"
+      ("r" esc/search-word-backward "search-backward")
+      ("s" esc/search-word-forward "search-forward"))
 
-  ;; todo: move to beginning of word in pre hook
-  (defhydra hydra-case-word-at-point (esc-mode-map "C-S-l")
-    "case word at point"
-    ("c" capitalize-word "capitalize")
-    ("u" upcase-word "upcase")
-    ("l" downcase-word "lowercase"))
+    ;; todo: move to beginning of word in pre hook
+    (defhydra hydra-case-word-at-point (esc-mode-map "C-S-l")
+      "case word at point"
+      ("c" capitalize-word "capitalize")
+      ("u" upcase-word "upcase")
+      ("l" downcase-word "lowercase"))
 
-  ;; todo: create a mirror that manipulates `other-buffer'
-  (defhydra hydra-scroll-buffer (esc-mode-map "M-n")
-    "cursor-movement"
-    ("j" scroll-slight-up "up")
-    ("k" scroll-slight-down "dw")
-    ("s" isearch-forward "i-f" :color blue)
-    ("r" isearch-backward "i-r" :color blue)
-    ("h" backward-char "back")
-    ("l" forward-char "frwd")
-    ("n" next-line "next")
-    ("p" previous-line "prev")
-    ("e" end-of-line "end-ln")
-    ("a" beginning-of-line "beg-ln")
-    ("d" scroll-up "pg up")
-    ("u" scroll-down "pg dn")
-    ("q" read-only-mode)
-    ("/" goto-last-change "last-chng")
-    ("." find-tag "tag")
-    ("*" pop-tag-mark "pop-tag"))
+    ;; todo: create a mirror that manipulates `other-buffer'
+    (defhydra hydra-scroll-buffer (esc-mode-map "M-n")
+      "cursor-movement"
+      ("j" scroll-slight-up "up")
+      ("k" scroll-slight-down "dw")
+      ("s" isearch-forward "i-f" :color blue)
+      ("r" isearch-backward "i-r" :color blue)
+      ("h" backward-char "back")
+      ("l" forward-char "frwd")
+      ("n" next-line "next")
+      ("p" previous-line "prev")
+      ("e" end-of-line "end-ln")
+      ("a" beginning-of-line "beg-ln")
+      ("d" scroll-up "pg up")
+      ("u" scroll-down "pg dn")
+      ("q" read-only-mode)
+      ("/" goto-last-change "last-chng")
+      ("." find-tag "tag")
+      ("*" pop-tag-mark "pop-tag"))
 
-  (defhydra hydra-window-adjustment (esc-mode-map "C-z")
-    "window adjustment"
-    ("r" esc/rotate-window-split "rotate")
-    ("p" esc/swap-buffer-locations "swap")
-    ("o" esc/should-have-opened-this-in-other-window "other window")
-    ("s" esc/toggle-window-selectability "toggle selectability")
-    ("w" ace-window "ace-window")
-    ("d" esc/toggle-window-dedicated "toggle dedicated")
-    ("b" mode-line-other-buffer "mode-line-other-buffer")
-    ("u" bury-buffer "bury"))
+    (defhydra hydra-window-adjustment (esc-mode-map "C-z")
+      "window adjustment"
+      ("r" esc/rotate-window-split "rotate")
+      ("p" esc/swap-buffer-locations "swap")
+      ("o" esc/should-have-opened-this-in-other-window "other window")
+      ("s" esc/toggle-window-selectability "toggle selectability")
+      ("w" ace-window "ace-window")
+      ("d" esc/toggle-window-dedicated "toggle dedicated")
+      ("b" mode-line-other-buffer "mode-line-other-buffer")
+      ("u" bury-buffer "bury"))
 
-  ;; TODO: use-package itize
-  (after 'org
-    (defhydra hydra-org-nav-source-block (esc-mode-map "C-c n")
-      "org src block nav"
-      ("n" org-jump-next-src-block "next")
-      ("p" org-jump-prev-src-block "prev")))
+    ;; TODO: use-package itize
+    (after 'org
+      (defhydra hydra-org-nav-source-block (esc-mode-map "C-c n")
+        "org src block nav"
+        ("n" org-jump-next-src-block "next")
+        ("p" org-jump-prev-src-block "prev")))
 
-  (defhydra hydra-move-text (esc-mode-map "M-RET")
-    "move text"
-    ("j" move-text-down "down")
-    ("k" move-text-up "up")
-    ("h" hide-lines "hide-lines")
-    ("r" esc/reveal-all-hidden-lines "reveal all"))
+    (defhydra hydra-move-text (esc-mode-map "M-RET")
+      "move text"
+      ("j" move-text-down "down")
+      ("k" move-text-up "up")
+      ("h" hide-lines "hide-lines")
+      ("r" esc/reveal-all-hidden-lines "reveal all"))
 
-  (defhydra hydra-mnimap (esc-mode-map "C-c M-RET")
-    "minimap"
-    ("m" minimap-toggle "toggle")
-    ("k" minimap-kill "kill" :color blue))
+    (defhydra hydra-mnimap (esc-mode-map "C-c M-RET")
+      "minimap"
+      ("m" minimap-toggle "toggle")
+      ("k" minimap-kill "kill" :color blue))
 #+END_SRC
 
 *** esc hook
