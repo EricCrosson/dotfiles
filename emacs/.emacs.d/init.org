@@ -398,6 +398,11 @@ That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package powerline)
 #+END_SRC
+*** Bury successful compilation buffer mode conf
+TODO : associate with =esc-mode=
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package bury-successful-compilation-buffer-mode)
+#+END_SRC
 *** Smartrep conf
 I don't know where smartrep defines keys but this worked for me and I
 haven't had to look at it yet.
