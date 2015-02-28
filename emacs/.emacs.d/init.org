@@ -516,7 +516,6 @@ Modify ibuffer view to include human readable size information.
                   filename-and-process))))
 #+END_SRC
 
-**** elpa packages
 ibuffer-vc is great; make it automatic.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (after 'ibuffer-vc-autoloads
@@ -620,7 +619,6 @@ TODO: turn this into a minor mode for toggling with =esc-mode=
           compilation-ask-about-save nil
           compilation-save-buffers-predicate '(lambda () nil)) ;never ask to save
 #+END_SRC
-
 *** Byte compilation config
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Diminish compiler warnings
@@ -797,18 +795,6 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
     (use-package haskell-indent
       :init (add-hook 'haskell-mode-hook 'haskell-indent-mode)))
 #+END_SRC
-*** Programming+ config
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defvar esc-precompile-window-state nil
-    "Storage for `esc/recompile' to restore window configuration
-  after a successful compilation.")
-
-  (defvar esc-precompile-window-norestore nil
-    "If non-nil, the user is attempting to recompile after a failed
-  attempt. What this means to `esc/recompile' is this is not the
-  time to save current-window configuration to
-  `esc-precompile-window-state'.")
-#+END_SRC
 *** Pretty lambdada config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package pretty-lambdada
@@ -959,8 +945,6 @@ Handy little hooks to nudge new files in the right direction.
 #+END_SRC
 *** Compilation buffer hook
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'compilation-finish-functions
-            'esc/bury-compilation-buffer-if-successful)
   (add-to-list 'same-window-buffer-names "*compilation*")
 #+END_SRC
 *** Change major mode hook
@@ -1371,27 +1355,6 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
   ;;; .emacs.el ends here
 #+END_SRC
 * esc-lisp
-** big-fringe-mode
-Thanks to [[http://bzg.fr/emacs-strip-tease.html][#Emacs, naked]].
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/big-fringe-mode.el
-  (defvar big-fringe-mode nil "State of \\[big-fringe-mode].")
-
-  ;;:###autoload
-  (define-minor-mode big-fringe-mode
-    "Minor mode to use big fringe in the current buffer."
-    :init-value nil
-    :global t
-    :variable big-fringe-mode
-    :group 'editing-basics
-    (if (not big-fringe-mode)
-        (set-fringe-style nil)
-      (set-fringe-mode
-       (/ (- (frame-pixel-width)
-             (* 100 (frame-char-width)))
-          2))))
-
-  (provide 'big-fringe-mode)
-#+END_SRC
 ** browse-cliplink
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/browse-cliplink.el
   ;;; browse-cliplink.el --- invoke browse-web at the url in your clipboard
@@ -2511,18 +2474,6 @@ As a convention, esc functions are prefixed with `esc/' while esc
 variables are prefixed with `esc-'
 #+NAME: define customizable variables
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  (defcustom esc-line-shift-amount 6
-      "The number of lines to shift in `esc-mode-map'."
-      :type    'integer
-      :options '(5 6)
-      :group   'esc-mode)
-
-  (defcustom esc-zoom-amount 10
-      "The number of points to zoom in `esc-zoom-in' and `esc-zoom-out'."
-      :type    'integer
-      :options '(10)
-      :group   'esc-mode)
-
   (defvar esc-mode-map (make-keymap)
       "The keymap for `esc-mode'.")
 
@@ -2630,51 +2581,6 @@ Macros to insert bindings in =esc-mode-map=.
     )
 #+END_SRC
 
-TODO: use-package to load during idle time
-Below is the forge, boilerplate functions are churned out en-masse.
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  (defmacro esc/define-scroll-slight(funcname)
-    "Define functions to scroll the buffer slightly without moving point."
-    (let ((docstring (format "Scroll %s the page ARG times without
-  moving point. The number of lines to scroll is determined by the
-  variable `esc-line-shift-amount'.
-
-  This command can be prefixed." funcname))
-          (command-name (intern (format "esc/scroll-%s-slight" funcname)))
-          (command      (intern (format "scroll-%s" funcname))))
-      `(defun ,command-name(&optional arg)
-         ,docstring
-         (interactive "p")
-         (dotimes (i arg)
-           (,command esc-line-shift-amount)))))
-
-  (mapcar (lambda (data) (eval `(esc/define-scroll-slight ,data)))
-          '(up down))
-
-  (defmacro esc/define-zoom(funcname operation)
-    "Define functions to zoom into and out of a buffer."
-    (let ((command (intern (format "esc/zoom-%s" funcname)))
-          (docstring (format "Zoom %s on the font in all buffers by
-  `esc-zoom-amount' points.
-
-  This command can be prefixed." funcname)))
-      `(defun ,command(arg)
-         ,docstring
-         (interactive "p")
-         (dotimes (i arg)
-           (set-face-attribute 'default nil
-                               :height (,operation
-                                        (face-attribute 'default :height)
-                                        esc-zoom-amount))))))
-
-  (mapcar (lambda (data)
-            (let ((funcname (car data))
-                  (command (cadr data)))
-              (eval `(esc/define-zoom ,funcname ,command))))
-          '((in  +)
-            (out -)))
-#+END_SRC
-
 *** esc bindings
 #+NAME: keybindings defined here
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
@@ -2693,7 +2599,6 @@ Below is the forge, boilerplate functions are churned out en-masse.
   (esc-key "C-a"     'esc/back-to-indentation-or-beginning)
   (esc-key "M-s o"   'occur-dwim)
 
-  ;; Equivalent to middle-click yank on mouse
   (esc-key "C-c y" 'esc/middle-click-yank)
 
   ;; Miscellaneous keybindings
@@ -2707,7 +2612,7 @@ Below is the forge, boilerplate functions are churned out en-masse.
 
   ;; Programming bindings
   (esc-key "C-c m" 'compile)
-  (esc-key "C-c C-m" 'esc/recompile)
+  (esc-key "C-c C-m" 'recompile)
 
   ;; C-q cluster
   (esc-key "C-q" 'delete-region)     ;like C-w, but gone forever.
