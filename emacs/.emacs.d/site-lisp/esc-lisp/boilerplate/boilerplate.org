@@ -493,13 +493,6 @@ TODO: defcustom
   ;;; Code:
 
   ;;;###autoload
-    (defun esc/previous-error (n)
-      "Visit previous compilation error message and corresponding source code.
-    Complement to `next-error'."
-      (interactive "p")
-      (next-error (- n)))
-
-  ;;;###autoload
   (defun esc/auto-byte-recompile ()
     "If the current buffer is in emacs-lisp-mode and there already exists an .elc
   file corresponding to the current buffer file, then recompile the file."
@@ -508,35 +501,6 @@ TODO: defcustom
       (when (and (eq major-mode 'emacs-lisp-mode)
                  (file-exists-p (byte-compile-dest-file buffer-file-name)))
         (byte-compile-file buffer-file-name))))
-
-  ;;;###autoload
-  (defun esc/bury-compilation-buffer-if-successful (buffer string)
-    "Bury the compilation BUFFER after a successful compile.
-  Argument STRING provided by compilation hooks."
-    (if (not (and
-              (string-match "compilation" (buffer-name buffer))
-              (string-match "finished" string)
-              (not (search-forward "warning" nil t))))
-        (when (boundp esc-precompile-window-norestore)
-          (setq esc-precompile-window-norestore t))
-      (when (boundp esc-precompile-window-state)
-        (setq esc-precompile-window-norestore nil)
-        (jump-to-register esc-precompile-window-state))
-      (message "Compilation successful.")))
-
-  ;;;###autoload
-  (defun esc/org-next-source-code-block ()
-    (interactive)
-    (re-search-forward "#\\+begin_src" nil t)
-    (next-line)
-    (beginning-of-line))
-
-  ;;;###autoload
-  (defun esc/org-prev-source-code-block ()
-    (interactive)
-    (previous-line)
-    (beginning-of-line)
-    (re-search-backward "#\\+begin_src" nil t))
 
   ;;;###autoload
   (defun byte-compile-directory(dir)
@@ -613,14 +577,13 @@ TODO: defcustom
 
     Note that negative values of MOVE are valid."
     (let ((funsymbol (intern (format "esc/yank-displaced-%s" funcname)))
+          (docstring (format "(insert \"%s\") and (backward-char %d). This command can be prefixed, and will iterate N times." (car data) (or (cadr data) 1)))
           (char (car data))
           (back (or (cadr data) 1)))
-      `(defun ,funsymbol (&optional ARG)
-         "This defun was generated pragmatically. Docstrings have
-    not been ironed out yet. See the defun-generating code for more
-    information."
+      `(defun ,funsymbol (&optional N)
+         ,docstring
          (interactive "p")
-         (dotimes (i ARG)
+         (dotimes (i (or N 1))
            (insert ,char)
            (backward-char ,back)))))
 
@@ -937,16 +900,6 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
     "Enable code folding in current buffer."
     (interactive "P")
     (set-selective-display (if selective-display nil (or column 1))))
-
-  ;;;###autoload
-  (defun esc/toggle-fullscreen ()
-    "Toggles whether the currently selected frame consumes the entire display
-     or is decorated with a window border"
-    (interactive)
-    (let ((f (selected-frame)))
-      (modify-frame-parameters f
-                               `((fullscreen . ,(if (eq nil (frame-parameter f 'fullscreen))
-                                                    'fullboth nil))))))
 
   ;;;###autoload
   (defun esc/unroll-cc-arguments ()
@@ -1291,40 +1244,6 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
 
 #+END_SRC
 
-* Programming+
-#+BEGIN_SRC emacs-lisp :tangle programming+.el
-  ;;; programming+.el --- Programming aides. Everybody needs aides
-
-  ;;; Commentary:
-  ;;
-
-  ;;; Code:
-
-  ;;;###autoload
-  (defun tagsgen ()
-    "Create a TAGS file using TAGSGEN in a directory that is
-  prompted with `ido-read-directory-name'."
-    (interactive)
-    (let* ((tags-dir (ido-read-directory-name "Generate tags in dir: " ))
-           (tagsgen-buffer "*tagsgen*"))
-      (start-process "tagsgen" tagsgen-buffer "tagsgen" tags-dir)
-      (kill-buffer tagsgen-buffer)))
-
-  ;;;###autoload
-  (defun esc/recompile ()
-    "Save current window configuration to
-  `esc-precompile-window-state' and execute
-  `recompile'. `esc/bury-compilation-buffer-if-successful' will
-  bury the compilation buffer if compilation succeeds."
-    (interactive)
-    (when (not esc-precompile-window-norestore)
-      (window-configuration-to-register esc-precompile-window-state))
-    (recompile))
-
-  (provide 'programming+)
-
-  ;;; programming+.el ends here
-#+END_SRC
 * extending core functionality
 
 #+NAME: rename-deun

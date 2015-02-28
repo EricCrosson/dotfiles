@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads nil "boilerplate/boilerplate" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21743 53507 130241 430000))
+;;;;;;  (21745 8438 557669 306000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el
 
 (autoload 'esc/prog-mode-hook "boilerplate/boilerplate" "\
@@ -102,7 +102,7 @@ depending on the value of ARG.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/buffer+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/buffer+.el"
-;;;;;;  (21743 53506 503574 731000))
+;;;;;;  (21745 8438 271002 625000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/buffer+.el
 
 (autoload 'esc/indent-buffer "boilerplate/buffer+" "\
@@ -152,19 +152,6 @@ directly to `other-window', so see the documentation for more
 details.
 
 \(fn &optional COUNT)" t nil)
-
-(autoload 'esc/toggle-window-selectability "boilerplate/buffer+" "\
-Ignore/recognize a window from `other-window'.
-
-\(fn)" t nil)
-
-(autoload 'esc/toggle-window-dedicated "boilerplate/buffer+" "\
-Toggle whether the current active window is dedicated or not.
-
-When dedicated, `display-buffer' will refrain from displaying
-another buffer in a window.
-
-\(fn)" t nil)
 
 (autoload 'buffers-matching-regexp "boilerplate/buffer+" "\
 Return a list of buffers matching REGEXP.
@@ -235,34 +222,12 @@ Argument PREFIX when nil switches the new buffer to the last buffer.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/compilation+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/compilation+.el"
-;;;;;;  (21743 53506 540241 400000))
+;;;;;;  (21745 8438 284335 959000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/compilation+.el
-
-(autoload 'esc/previous-error "boilerplate/compilation+" "\
-Visit previous compilation error message and corresponding source code.
-  Complement to `next-error'.
-
-\(fn N)" t nil)
 
 (autoload 'esc/auto-byte-recompile "boilerplate/compilation+" "\
 If the current buffer is in emacs-lisp-mode and there already exists an .elc
 file corresponding to the current buffer file, then recompile the file.
-
-\(fn)" t nil)
-
-(autoload 'esc/bury-compilation-buffer-if-successful "boilerplate/compilation+" "\
-Bury the compilation BUFFER after a successful compile.
-Argument STRING provided by compilation hooks.
-
-\(fn BUFFER STRING)" nil nil)
-
-(autoload 'esc/org-next-source-code-block "boilerplate/compilation+" "\
-
-
-\(fn)" t nil)
-
-(autoload 'esc/org-prev-source-code-block "boilerplate/compilation+" "\
-
 
 \(fn)" t nil)
 
@@ -290,7 +255,7 @@ Note that negative values of MOVE are valid.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/emacs+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el"
-;;;;;;  (21743 53506 810241 413000))
+;;;;;;  (21745 8438 417669 299000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el
 
 (autoload 'esc/minibuffer-display-buffer-file-name "boilerplate/emacs+" "\
@@ -410,12 +375,6 @@ Enable code folding in current buffer.
 
 \(fn COLUMN)" t nil)
 
-(autoload 'esc/toggle-fullscreen "boilerplate/emacs+" "\
-Toggles whether the currently selected frame consumes the entire display
-   or is decorated with a window border
-
-\(fn)" t nil)
-
 (autoload 'esc/unroll-cc-arguments "boilerplate/emacs+" "\
 Unroll a function's arguments into a more readable
   one-per-line format. Be sure to invoke this defun from before the
@@ -504,7 +463,7 @@ windows as you can fit on this screen.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/help+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el"
-;;;;;;  (21743 53507 6908 90000))
+;;;;;;  (21745 8438 511002 637000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el
 
 (autoload 'esc/insert-defun-at-point "boilerplate/help+" "\
@@ -528,7 +487,7 @@ Completion is available for the keymap name.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/os-interaction" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/os-interaction.el"
-;;;;;;  (21743 53506 836908 82000))
+;;;;;;  (21745 8438 487669 302000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/os-interaction.el
 
 (autoload 'esc/middle-click-yank "boilerplate/os-interaction" "\
@@ -553,7 +512,7 @@ Copy the current buffer file name to the clipboard.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/programming+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/programming+.el"
-;;;;;;  (21743 53507 30241 425000))
+;;;;;;  (21745 7907 754308 643000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/programming+.el
 
 (autoload 'tagsgen "boilerplate/programming+" "\
@@ -562,18 +521,10 @@ prompted with `ido-read-directory-name'.
 
 \(fn)" t nil)
 
-(autoload 'esc/recompile "boilerplate/programming+" "\
-Save current window configuration to
-`esc-precompile-window-state' and execute
-`recompile'. `esc/bury-compilation-buffer-if-successful' will
-bury the compilation buffer if compilation succeeds.
-
-\(fn)" t nil)
-
 ;;;***
 
 ;;;### (autoloads nil "browse-cliplink" "../../../../../.emacs.d/site-lisp/esc-lisp/browse-cliplink.el"
-;;;;;;  (21744 65216 297218 368000))
+;;;;;;  (21746 17658 240199 268000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/browse-cliplink.el
 
 (autoload 'browse-cliplink "browse-cliplink" "\
@@ -584,7 +535,7 @@ bury the compilation buffer if compilation succeeds.
 ;;;***
 
 ;;;### (autoloads nil "clean-mode-line" "../../../../../.emacs.d/site-lisp/esc-lisp/clean-mode-line.el"
-;;;;;;  (21744 65216 500551 711000))
+;;;;;;  (21746 17658 253532 602000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/clean-mode-line.el
 
 (autoload 'clean-mode-line "clean-mode-line" "\
@@ -598,7 +549,7 @@ See `mode-line-cleaner-alist' for more documentation.
 ;;;***
 
 ;;;### (autoloads nil "color-theme-stack" "../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el"
-;;;;;;  (21744 65216 527218 379000))
+;;;;;;  (21746 17658 266865 936000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/color-theme-stack.el
 
 (autoload 'color-theme-push "color-theme-stack" "\
@@ -636,7 +587,7 @@ displaying.
 ;;;***
 
 ;;;### (autoloads nil "dired-config" "../../../../../.emacs.d/site-lisp/esc-lisp/dired-config.el"
-;;;;;;  (21744 65216 663885 53000))
+;;;;;;  (21746 17658 363532 607000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/dired-config.el
 
 (autoload 'esc/dired-mode-hook "dired-config" "\
@@ -687,7 +638,7 @@ Open esc-lisp in `dired' for easy editing of configs.
 ;;;***
 
 ;;;### (autoloads nil "esc-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el"
-;;;;;;  (21744 65217 167218 412000))
+;;;;;;  (21746 17658 523532 615000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el
 
 (autoload 'esc-mode "esc-mode" "\
@@ -699,7 +650,7 @@ Toggle esc-keys mode.
 ;;;***
 
 ;;;### (autoloads nil "gntp" "../../../../../.emacs.d/site-lisp/esc-lisp/gntp.el"
-;;;;;;  (21744 65217 203885 81000))
+;;;;;;  (21746 17658 533532 616000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/gntp.el
 
 (autoload 'gntp-notify "gntp" "\
@@ -711,7 +662,7 @@ PORT defaults to `gntp-server-port'
 ;;;***
 
 ;;;### (autoloads nil "hidden-mode-line-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode.el"
-;;;;;;  (21744 65217 267218 417000))
+;;;;;;  (21746 17658 553532 617000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/hidden-mode-line-mode.el
 
 (autoload 'hidden-mode-line-mode "hidden-mode-line-mode" "\
@@ -727,7 +678,7 @@ Minor mode to hide the mode-line in the current buffer.
 ;;;***
 
 ;;;### (autoloads nil "ido-extras" "../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras.el"
-;;;;;;  (21744 65217 363885 90000))
+;;;;;;  (21746 17658 583532 619000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/ido-extras.el
 
 (autoload 'ido-recentf-open "ido-extras" "\
@@ -754,7 +705,7 @@ With prefix argument FILES-TOO also offer to find files.
 ;;;***
 
 ;;;### (autoloads nil "multiple-cursors-config" "../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el"
-;;;;;;  (21744 65217 423885 93000))
+;;;;;;  (21746 17658 606865 954000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el
 
 (autoload 'esc/multiple-cursors-mode-enabled-hook "multiple-cursors-config" "\
@@ -825,7 +776,7 @@ https://github.com/hershic/ee445m-labs.
 ;;;***
 
 ;;;### (autoloads nil "scroll-all-config" "../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-config.el"
-;;;;;;  (21744 65217 593885 101000))
+;;;;;;  (21746 17658 616865 954000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-config.el
 
 (autoload 'mwheel-scroll-all-function-all "scroll-all-config" "\
@@ -846,7 +797,7 @@ https://github.com/hershic/ee445m-labs.
 ;;;***
 
 ;;;### (autoloads nil "test-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/test-mode.el"
-;;;;;;  (21744 65216 690551 721000))
+;;;;;;  (21746 17658 373532 608000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/test-mode.el
 
 (autoload 'test-mode "test-mode" "\
@@ -858,7 +809,7 @@ Toggle test-keys mode.
 ;;;***
 
 ;;;### (autoloads nil "update-autoloads" "../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads.el"
-;;;;;;  (21744 65217 697218 439000))
+;;;;;;  (21746 17658 656865 956000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads.el
 
 (let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads" loads))))
