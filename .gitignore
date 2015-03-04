@@ -65,3 +65,6 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/site-lisp/esc-lisp/boilerplate/os-interaction.el
 /emacs/.emacs.d/site-lisp/esc-lisp/dedicated-mode/dedicated-mode.el
 /emacs/.emacs.d/site-lisp/esc-lisp/unselectable-mode/unselectable-mode.el
+/emacs/.emacs.d/meta/persp-confspersp-auto-save
+/emacs/.emacs.d/meta/desktop/.emacs.desktop
+/emacs/.emacs.d/meta/persp-confs/ee445m-labs.psp
