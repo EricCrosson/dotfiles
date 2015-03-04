@@ -779,7 +779,9 @@ TODO: conform to use-packages way of creating stubs
 *** Persp mode conf
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package persp-mode
-    :config (setq persp-save-dir (format "%s/persp-confs" esc-meta-path)))
+    :config
+    (setq persp-save-dir (format "%s/persp-confs" esc-meta-path))
+    (add-hook 'after-init-hook '(lambda () (persp-mode 1))))
 #+END_SRC
 *** Haskell mode conf
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1663,6 +1665,7 @@ Macros to insert bindings in =esc-mode-map=.
   (esc-key "<f5>"  'esc/minibuffer-display-buffer-file-name)
   (esc-key "<f6>"  'spray-mode)
   (esc-key "<f8>"  'esc/follow-mode-80-char-compliant)
+  (esc-key "C-c <f8>" 'esc/hsplit-last-buffer-follow-mode)
   (esc-key "<f9>"  'flyspell-buffer)
   (esc-key "<f10>" 'golden-ratio-mode)
   ;; TODO: create a defun to save win configuration first

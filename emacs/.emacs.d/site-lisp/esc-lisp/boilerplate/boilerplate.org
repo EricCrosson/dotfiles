@@ -1070,7 +1070,7 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
   ;; TODO: find a way to keep these window changes from being registered
   ;; by winner-mode
   ;;;###autoload
-  (defun esc/follow-mode-80-char-compliant()
+  (defun esc/follow-mode-80-char-compliant ()
     "Open the current buffer in `follow-mode' in as many 80-char
   windows as you can fit on this screen."
     (interactive)
@@ -1084,6 +1084,14 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
     (delete-window)
     (balance-windows)
     (recenter-top-bottom))
+
+  ;;;###autoload
+  (defun esc/hsplit-last-buffer-follow-mode ()
+    "Split the current buffer horizontally and engage function
+  `follow-mode'."
+    (interactive)
+    (esc/hsplit-last-buffer t)
+    (follow-mode 1))
 
   (provide 'emacs+)
 #+END_SRC
