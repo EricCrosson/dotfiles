@@ -1,0 +1,1 @@
+(define-package "broadcast" "20150303.1354" "Links buffers together for editing." '((emacs "24.4")) :url "https://github.com/killdash9/broadcast.el" :keywords '("convenience" "frames" "link" "cursors"))
