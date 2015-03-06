@@ -1747,10 +1747,9 @@ Macros to insert bindings in =esc-mode-map=.
       ("u" upcase-word "upcase")
       ("l" downcase-word "lowercase"))
 
-    ;; for compatibility
-    (esc-key "M-n M-n" 'comint-next-input)
+    (esc-key "M-m M-m" 'back-to-indentation)
     ;; todo: create a mirror that manipulates `other-buffer'
-    (defhydra hydra-scroll-buffer (esc-mode-map "M-n")
+    (defhydra hydra-scroll-buffer (esc-mode-map "M-m")
       "cursor-movement"
       ("j" scroll-slight-up "up")
       ("k" scroll-slight-down "dw")
