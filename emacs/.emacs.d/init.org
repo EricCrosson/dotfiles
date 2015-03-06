@@ -212,6 +212,10 @@ Now everybody agrees that the =*Minibuffer*= prompt is uneditable.
                                                  minibuffer-prompt))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ()
+#+END_SRC
+
 Line numbers, when visible, should be loaded after a short delay and
 not loaded eagerly. They're candy, and who spends resources acquiring
 candy?
@@ -606,7 +610,7 @@ TODO: turn this into a minor mode for toggling with =esc-mode=
 #+END_SRC
 TODO : associate with =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (bury-successful-compilation-mode 1)
+  (bury-successful-compilation 1)
 #+END_SRC
 *** Byte compilation config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -769,7 +773,7 @@ TODO: conform to use-packages way of creating stubs
     :config
     (setq paradox-execute-asynchronously t
           paradox-automatically-star t
-          paradox-github-token nil))
+          paradox-github-token "55e6ef08f8952a054f90e588adfe92c94bf4dfd8"))
 #+END_SRC
 *** Workgroups config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -779,6 +783,7 @@ TODO: conform to use-packages way of creating stubs
 *** Persp mode conf
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package persp-mode
+    :disabled t
     :config
     (setq persp-save-dir (format "%s/persp-confs" esc-meta-path))
     (add-hook 'after-init-hook '(lambda () (persp-mode 1))))
@@ -889,11 +894,17 @@ TODO: diminish here with use-package
         ("C-c i"   . helm-imenu)
         ("C-x C-j" . helm-for-files))))
 #+END_SRC
+*** Rainbow delimeters mode
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package rainbow-delimiters
+    ;; TODO: associate with esc-mode
+    :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+#+END_SRC
 *** Windmove config
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Windmove from shift keys
   (use-package windmove
-    :idle (windmove-default-keybindings))
+    :config (windmove-default-keybindings))
 #+END_SRC
 *** Fold this config
 Thanks yet again [[https://github.com/magnars/fold-this.el][Magnar]]
@@ -1373,8 +1384,7 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
   (defcustom esc/dired-mode-hook nil
     "esc's hook to add to \\[dired-mode-hook]."
     :type    'hook
-    :options '((define-key dired-mode-map (kbd "M-RET") 'esc/dired-find-file-single-mode)
-               (define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
+    :options '((define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
                (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)
                (define-key dired-mode-map (kbd "^") 'esc/dired-up-level-reuse-buffer))
     :group   'esc-dired)
@@ -1390,7 +1400,6 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
                   dired-recursive-deletes 'top
                   dired-omit-verbose nil)
     (define-key dired-mode-map (kbd "C-a") 'esc/dired-back-to-start-of-files)
-    (define-key dired-mode-map (kbd "M-RET") 'esc/dired-find-file-single-mode)
     (define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
     (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)
     (define-key dired-mode-map (kbd "^") 'esc/dired-up-level-reuse-buffer))
@@ -1660,6 +1669,8 @@ Macros to insert bindings in =esc-mode-map=.
   (esc-key "C-h C-n" 'esc/insert-defun-at-point)
   (esc-key "C-h M-k" 'describe-keymap)
   (esc-key "C-h C-M-c" 'esc/insert-key-combination)
+  ;;; todo: rename insert-defun to insert-function
+  (esc-key "C-h C-M-f" 'esc/insert-defun-at-point)
 
     ;;; Function keys
   (esc-key "<f5>"  'esc/minibuffer-display-buffer-file-name)
@@ -1840,7 +1851,8 @@ Macros to insert bindings in =esc-mode-map=.
           (global-git-gutter-mode activate-bool))
         (setq-default save-place       activate-bool
                       abbrev-mode      activate-bool
-                      auto-revert-mode activate-bool)
+                      auto-revert-mode activate-bool
+                      truncate-lines   activate-bool)
         (diminish 'auto-revert-mode)
         (setq
          display-time-24hr-format             activate-bool
@@ -1858,8 +1870,9 @@ Macros to insert bindings in =esc-mode-map=.
         ;;                                 'revert-buffer-keep-undo
         ;;                               'revert-buffer))
 
-        (global-visual-line-mode activate) ;word wrap by default
-        (diminish 'visual-line-mode)
+        ;; todo: when you use visual-line-mode enable physical-line-mode
+        ;; (global-visual-line-mode activate) ;word wrap by default
+        ;; (diminish 'visual-line-mode)
 
         (after 'undo-tree-autoloads
           (global-undo-tree-mode activate)
@@ -1869,8 +1882,8 @@ Macros to insert bindings in =esc-mode-map=.
         ;; less clutter on the mode line
         (after 'test-mode (diminish 'test-mode))
         (diminish 'auto-fill-function)
-        (diminish 'visual-line-mode)
-        ;;(diminish 'global-visual-line-mode)
+        ;; (diminish 'visual-line-mode)
+        ;; (diminish 'global-visual-line-mode)
         (after 'autopair  (diminish 'autopair-mode))
         (after 'abbrev    (diminish 'abbrev-mode))
         (after 'undo-tree (diminish 'undo-tree-mode))

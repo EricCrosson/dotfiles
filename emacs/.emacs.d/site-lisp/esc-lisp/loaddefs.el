@@ -4,7 +4,7 @@
 
 
 ;;;### (autoloads nil "boilerplate/boilerplate" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el"
-;;;;;;  (21745 8438 557669 306000))
+;;;;;;  (21753 44525 76129 839000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/boilerplate.el
 
 (autoload 'esc/prog-mode-hook "boilerplate/boilerplate" "\
@@ -102,7 +102,7 @@ depending on the value of ARG.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/buffer+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/buffer+.el"
-;;;;;;  (21745 8438 271002 625000))
+;;;;;;  (21753 44524 596129 815000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/buffer+.el
 
 (autoload 'esc/indent-buffer "boilerplate/buffer+" "\
@@ -222,7 +222,7 @@ Argument PREFIX when nil switches the new buffer to the last buffer.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/compilation+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/compilation+.el"
-;;;;;;  (21745 8438 284335 959000))
+;;;;;;  (21753 44524 622796 483000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/compilation+.el
 
 (autoload 'esc/auto-byte-recompile "boilerplate/compilation+" "\
@@ -255,7 +255,7 @@ Note that negative values of MOVE are valid.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/emacs+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el"
-;;;;;;  (21745 8438 417669 299000))
+;;;;;;  (21753 44524 902796 497000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/emacs+.el
 
 (autoload 'esc/minibuffer-display-buffer-file-name "boilerplate/emacs+" "\
@@ -460,10 +460,16 @@ windows as you can fit on this screen.
 
 \(fn)" t nil)
 
+(autoload 'esc/hsplit-last-buffer-follow-mode "boilerplate/emacs+" "\
+Split the current buffer horizontally and engage function
+`follow-mode'.
+
+\(fn)" t nil)
+
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/help+" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el"
-;;;;;;  (21745 8438 511002 637000))
+;;;;;;  (21753 44524 976129 834000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/help+.el
 
 (autoload 'esc/insert-defun-at-point "boilerplate/help+" "\
@@ -487,7 +493,7 @@ Completion is available for the keymap name.
 ;;;***
 
 ;;;### (autoloads nil "boilerplate/os-interaction" "../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/os-interaction.el"
-;;;;;;  (21745 8438 487669 302000))
+;;;;;;  (21753 44524 926129 832000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/boilerplate/os-interaction.el
 
 (autoload 'esc/middle-click-yank "boilerplate/os-interaction" "\
@@ -587,7 +593,7 @@ displaying.
 ;;;***
 
 ;;;### (autoloads nil "dired-config" "../../../../../.emacs.d/site-lisp/esc-lisp/dired-config.el"
-;;;;;;  (21751 20967 269645 150000))
+;;;;;;  (21753 44167 952778 574000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/dired-config.el
 
 (autoload 'esc/dired-mode-hook "dired-config" "\
@@ -638,7 +644,7 @@ Open esc-lisp in `dired' for easy editing of configs.
 ;;;***
 
 ;;;### (autoloads nil "esc-mode" "../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el"
-;;;;;;  (21751 20967 392978 490000))
+;;;;;;  (21753 44168 69445 247000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/esc-mode.el
 
 (autoload 'esc-mode "esc-mode" "\
@@ -705,7 +711,7 @@ With prefix argument FILES-TOO also offer to find files.
 ;;;***
 
 ;;;### (autoloads nil "multiple-cursors-config" "../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el"
-;;;;;;  (21751 20967 416311 824000))
+;;;;;;  (21753 44168 89445 248000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/multiple-cursors-config.el
 
 (autoload 'esc/multiple-cursors-mode-enabled-hook "multiple-cursors-config" "\
@@ -776,7 +782,7 @@ https://github.com/hershic/ee445m-labs.
 ;;;***
 
 ;;;### (autoloads nil "scroll-all-config" "../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-config.el"
-;;;;;;  (21751 20967 429645 159000))
+;;;;;;  (21753 44168 102778 582000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/scroll-all-config.el
 
 (autoload 'mwheel-scroll-all-function-all "scroll-all-config" "\
@@ -809,7 +815,7 @@ Toggle test-keys mode.
 ;;;***
 
 ;;;### (autoloads nil "update-autoloads" "../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads.el"
-;;;;;;  (21751 20967 512978 496000))
+;;;;;;  (21753 44168 146111 917000))
 ;;; Generated autoloads from ../../../../../.emacs.d/site-lisp/esc-lisp/update-autoloads.el
 
 (let ((loads (get 'autoloads 'custom-loads))) (if (member '"update-autoloads" loads) nil (put 'autoloads 'custom-loads (cons '"update-autoloads" loads))))

@@ -3,22 +3,11 @@
 
 (setq mc/cmds-to-run-for-all
       '(
-	TeX-insert-dollar
-	TeX-insert-sub-or-superscript
-	esc/back-to-indentation-or-beginning
-	esc/yank-displaced-braces
-	kill-region
-	kill-sexp
-	kill-visual-line
-	mc/search-forward
+	org-self-insert-command
 	))
 
 (setq mc/cmds-to-run-once
       '(
-	hydra-multiple-cursors/mc/edit-lines
-	hydra-multiple-cursors/mc/insert-numbers
-	hydra-multiple-cursors/mc/mark-all-like-this
 	hydra-multiple-cursors/mc/mark-next-like-this
-	hydra-multiple-cursors/mc/mark-previous-like-this
-	markdown-exdent-or-delete
+	hydra-multiple-cursors/mc/edit-lines
 	))

@@ -1,7 +1,4 @@
 (1
- (mvn-help .
-	   [(0 0 1)
-	    nil "maven help tools" single])
  (zone-matrix .
 	      [(0 0 1)
 	       nil "Matrix themed Zone mode" tar])
@@ -1786,6 +1783,9 @@
  (mwe-log-commands .
 		   [(20041106)
 		    nil "log keyboard commands to buffer" single])
+ (mvn-help .
+	   [(0 0 1)
+	    nil "maven help tools" single])
  (mv-shell .
 	   [(1 2)
 	    nil "keep buffers in sync with filename throughout 'mv'commands in shell-mode." single])

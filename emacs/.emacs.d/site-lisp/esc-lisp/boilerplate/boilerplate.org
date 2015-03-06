@@ -207,8 +207,10 @@ TODO: defcustom
   (defun esc/comint-mode-hook ()
     "esc's code to \\[comint-mode-hook]."
     ;; TODO: find the active keymap in comint-mode
-    (define-key comint-mode-map "M-p" 'comint-previous-input)
-    (define-key comint-mode-map "M-S-p" 'ace-window))
+    (bind-key "M" 'self-insert-command)
+    ;;(define-key comint-mode-map "M-p" 'comint-previous-input)
+    ;;(define-key comint-mode-map "M-S-p" 'ace-window)
+    )
 #+END_SRC
 ** iedit-mode-hook
 TODO: defcustom
