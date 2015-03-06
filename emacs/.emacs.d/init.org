@@ -924,6 +924,10 @@ Thanks yet again [[https://github.com/magnars/fold-this.el][Magnar]]
     (after 'esc-mode
       (esc-key "C-c C-M-l" 'org-cliplink)))
 #+END_SRC
+*** Minibuffer config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'eval-expression-minibuffer-setup-hook 'eldoc-mode)
+#+END_SRC
 ** Hooks
 Attach =esc-mode= hooks
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1870,6 +1874,9 @@ Macros to insert bindings in =esc-mode-map=.
         ;; todo: when you use visual-line-mode enable physical-line-mode
         ;; (global-visual-line-mode activate) ;word wrap by default
         ;; (diminish 'visual-line-mode)
+
+        ;; todo: make reversible
+        (fringe-mode 0)
 
         (after 'undo-tree-autoloads
           (global-undo-tree-mode activate)
