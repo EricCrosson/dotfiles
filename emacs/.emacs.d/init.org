@@ -1487,7 +1487,6 @@ default settings by running =M-x esc-mode=.
 
 What is the difference between my current setup and using
 `define-globalized-minor-mode'?
-
 *** esc variables
 As a convention, esc functions are prefixed with `esc/' while esc
 variables are prefixed with `esc-'
@@ -1775,9 +1774,9 @@ Macros to insert bindings in =esc-mode-map=.
       ("r" esc/rotate-window-split "rotate")
       ("p" esc/swap-buffer-locations "swap")
       ("o" esc/should-have-opened-this-in-other-window "other window")
-      ("s" esc/toggle-window-selectability "toggle selectability")
+      ("s" unselectable-buffer "selectable")
       ("w" ace-window "ace-window")
-      ("d" esc/toggle-window-dedicated "toggle dedicated")
+      ("d" dedicated-bufer "dedicated")
       ("b" mode-line-other-buffer "mode-line-other-buffer")
       ("u" bury-buffer "bury"))
 
