@@ -772,8 +772,7 @@ TODO: conform to use-packages way of creating stubs
   (use-package paradox
     :config
     (setq paradox-execute-asynchronously t
-          paradox-automatically-star t
-          paradox-github-token "55e6ef08f8952a054f90e588adfe92c94bf4dfd8"))
+          paradox-automatically-star nil))
 #+END_SRC
 *** Workgroups config
 #+BEGIN_SRC emacs-lisp :tangle yes
