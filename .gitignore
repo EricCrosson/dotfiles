@@ -70,3 +70,6 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/meta/persp-confs/ee445m-labs.psp
 /emacs/.emacs.d/site-lisp/elpa/archives/melpa-stable/archive-contents
 /emacs/.emacs.d/site-lisp/elpa/archives/melpa/archive-contents
+/emacs/.emacs.d/meta/.mc-lists.el
+/emacs/.emacs.d/meta/desktop/.emacs.desktop.lock
+/emacs/.emacs.d/site-lisp/esc-lisp/loaddefs.el

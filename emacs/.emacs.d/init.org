@@ -427,8 +427,9 @@ haven't had to look at it yet.
     (bind-key "C-c /" 'goto-last-change esc-mode-map))
 #+END_SRC
 *** Which func config
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package which-func
+    :disabled t
     :config (mapc (lambda (mode) (add-to-list 'which-func-modes mode))
                   '(;org-mode
                     emacs-lisp-mode
@@ -665,7 +666,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
         (quietly-read-abbrev-file)))
 #+END_SRC
 *** Idle highlight config
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package idle-highlight
     :disabled t
     :config (setq-default idle-highlight-idle-time 10.0))
@@ -693,7 +694,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
     (bind-key "C-x C-b" 'ido-switch-buffer-current-major-mode esc-mode-map))
 #+END_SRC
 *** Git gutter+ config
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package git-gutter+
     :disabled t
     :config
@@ -780,7 +781,7 @@ TODO: conform to use-packages way of creating stubs
     :config (setq wg-morph-on nil))
 #+END_SRC
 *** Persp mode conf
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package persp-mode
     :disabled t
     :config
