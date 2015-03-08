@@ -68,3 +68,5 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/meta/persp-confspersp-auto-save
 /emacs/.emacs.d/meta/desktop/.emacs.desktop
 /emacs/.emacs.d/meta/persp-confs/ee445m-labs.psp
+/emacs/.emacs.d/site-lisp/elpa/archives/melpa-stable/archive-contents
+/emacs/.emacs.d/site-lisp/elpa/archives/melpa/archive-contents
