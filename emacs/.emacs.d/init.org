@@ -97,30 +97,33 @@ with proper distributed version control.
 #+END_SRC
 
 ** UI
-Now that the legal stuff is out of the way, let's get out the rat poison.
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (mapc (lambda (mode) (when (fboundp mode) (funcall mode -1)))
-        '(menu-bar-mode
-          tool-bar-mode
-          scroll-bar-mode))
-#+END_SRC
+    Now that the legal stuff is out of the way, let's get out the rat poison.
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (mapc (lambda (mode) (when (fboundp mode) (funcall mode -1)))
+            '(menu-bar-mode
+              tool-bar-mode
+              scroll-bar-mode))
+    #+END_SRC
 
-Fire up the mood lighting
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package bliss-theme
-    ;; TODO: switch with color-theme stack
-    :config (load-theme 'bliss t))
+    Fire up the mood lighting
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (use-package bliss-theme
+        ;; TODO: switch with color-theme stack
+        :config (load-theme 'bliss t))
 
-  ;; TODO: rehook on color change to bliss
-  (mapcar (lambda (data) (set-face-attribute (car data) nil
-                                        :underline  nil
-                                        :foreground 'unspecified
-                                        :background (cadr data)))
-          '((highlight "#333")
-            (region    "#444")))
+      ;; TODO: rehook on color change to bliss
+      (mapcar (lambda (data) (set-face-attribute (car data) nil
+                                            :underline  nil
+                                            :foreground 'unspecified
+                                            :background (cadr data)))
+              '((highlight "#333")
+                (region    "#444")))
+    #+END_SRC
 
-
-#+END_SRC
+    Favored font of late
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (set-face-attribute 'default nil :font "Meslo LG S 8")
+    #+END_SRC
 ** Macros
 I took the macro below from [[http://milkbox.net/note/single-file-master-emacs-configuration/][milkypostman]]. His article is really worth
 a read; stop what you're doing and go take a look if you haven't.
