@@ -27,6 +27,19 @@
 * Hooks
 Here are custom hooks esc appends to common exposed hooks.
 Captain Hook. Hooks are great. Everybody should expose more hooks.
+** has no better home
+#+BEGIN_SRC emacs-lisp
+  ;;;###autoload
+  (defun esc/auto-byte-recompile ()
+    "If the current buffer is in emacs-lisp-mode and there already exists an .elc
+  file corresponding to the current buffer file, then recompile the file."
+    (interactive)
+    (when (require 'bytecomp nil 'noerror)
+      (when (and (eq major-mode 'emacs-lisp-mode)
+                 (file-exists-p (byte-compile-dest-file buffer-file-name)))
+        (byte-compile-file buffer-file-name))))
+#+END_SRC
+
 ** prog-mode-hook
 #+NAME: prog-mode-hook
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -485,35 +498,6 @@ TODO: defcustom
 
   ;;; buffer+.el ends here
 #+END_SRC
-* Compilation+
-#+BEGIN_SRC emacs-lisp :tangle compilation+.el
-  ;;; compilation+.el --- Compilation-related functions
-
-  ;;; Commentary:
-  ;;
-
-  ;;; Code:
-
-  ;;;###autoload
-  (defun esc/auto-byte-recompile ()
-    "If the current buffer is in emacs-lisp-mode and there already exists an .elc
-  file corresponding to the current buffer file, then recompile the file."
-    (interactive)
-    (when (require 'bytecomp nil 'noerror)
-      (when (and (eq major-mode 'emacs-lisp-mode)
-                 (file-exists-p (byte-compile-dest-file buffer-file-name)))
-        (byte-compile-file buffer-file-name))))
-
-  ;;;###autoload
-  (defun byte-compile-directory(dir)
-    "Compile an .elc file for every .el file contained under
-    DIR (recursive)."
-    (byte-recompile-directory (expand-file-name dir) 0))
-
-  (provide 'compilation+)
-
-  ;;; compilation+.el ends here
-#+END_SRC
 * Org+
 #+BEGIN_SRC emacs-lisp :tangle org+.el
   ;; todo: use current line in absence of region
@@ -552,6 +536,12 @@ TODO: defcustom
 #+END_SRC
 * Emacs+
 #+BEGIN_SRC emacs-lisp :tangle emacs+.el
+  ;;;###autoload
+  (defun byte-compile-directory(dir)
+    "Compile an .elc file for every .el file contained under
+      DIR (recursive)."
+    (byte-recompile-directory (expand-file-name dir) 0))
+
   ;; TOOD: accept a prefix to yank `buffer-file-name'
   ;;;###autoload
   (defun esc/minibuffer-display-buffer-file-name ()
