@@ -73,8 +73,7 @@ need to keep the list updated, just load all subdirectories and go.
     (normal-top-level-add-to-load-path '("."))   ;recursive
     (normal-top-level-add-subdirs-to-load-path)) ;loading
 
-  (autoload 'list-files-in-subtree-matching-regexp-recursive
-    (concat esc-lisp-path "update-autoloads.el"))
+  (autoload 'list-files-in-subtree-matching-regexp-recursive "update-autoloads")
   ;; Load all project's loaddefs.el (automatically managed)
   (mapc (lambda (loaddef) (load-file loaddef))
         (list-files-in-subtree-matching-regexp-recursive
