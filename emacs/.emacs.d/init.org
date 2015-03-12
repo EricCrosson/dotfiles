@@ -931,6 +931,13 @@ Thanks yet again [[https://github.com/magnars/fold-this.el][Magnar]]
     (after 'esc-mode
       (esc-key "C-c C-M-l" 'org-cliplink)))
 #+END_SRC
+*** Unkillable scratch config
+TODO: integrate with =esc-mode=
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package unkillable-scratch
+    :idle-priority 6
+    :idle (unkillable-scratch 1))
+#+END_SRC
 *** Minibuffer config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'eval-expression-minibuffer-setup-hook 'eldoc-mode)
@@ -983,11 +990,6 @@ Take this opportunity to refresh the mode line. Inspiration from
 Emacs]].
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'after-change-major-mode-hook 'clean-mode-line)
-#+END_SRC
-*** Kill buffer hook
-[[http://emacswiki.org/emacs/RecreateScratchBuffer][EmacsWiki: Recreate Scratch Buffer]]
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;(add-hook 'kill-buffer-query-functions 'esc/unkillable-scratch-buffer)
 #+END_SRC
 *** Kill emacs hook
 Summon the magical cookies.
