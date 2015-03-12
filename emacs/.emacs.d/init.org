@@ -1701,7 +1701,7 @@ Macros to insert bindings in =esc-mode-map=.
   ;; Buffer-overlay hacks: super useful!
   ;; TODO: smarter win-restore config
   (esc-key "s-q" 'esc/raise-magit-status)
-  (esc-key "s-e" 'esc/raise-eshell)
+  ;; (esc-key "s-e" 'esc/raise-eshell)
   ;; todo: raise shell
   ;; todo: smarter magit status: use zebulon's stack package
   ;; todo: save window configuration
