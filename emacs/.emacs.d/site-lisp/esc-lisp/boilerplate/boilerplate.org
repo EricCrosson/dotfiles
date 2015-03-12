@@ -701,14 +701,16 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
         (insert (number-to-string (+ i begin)))
         (insert " "))))
 
-  ;;;###autoload
-  (defun esc/copy-line (&optional arg)
-    "Copy current line in the kill ring."
-    (interactive "p")
-    (dotimes (i arg)
-      (kill-ring-save (line-beginning-position)
-                      (line-beginning-position 2)))
-    (message "Line copied."))
+;;;###autoload
+(defun esc/copy-line (&optional arg)
+  "Copy current line in the kill ring."
+  (interactive "p")
+  (let ((lines (if arg (+ 1 arg) 2)))
+    (kill-ring-save (line-beginning-position)
+		    (line-beginning-position lines))
+    (message (if (eq 2 lines)
+		 "Line copied."
+	       (format "%d lines copied." lines)))))
 
   ;;;###autoload
   (defun esc/remove-dos-eol ()
