@@ -162,6 +162,10 @@ Facilitate normal initialization processes.
            ,packages))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (require-package '(emacs+ compilation+ buffer+ boilerplate help+ org+ os-interaction programming+ dired-config))
+#+END_SRC
+
 ** Package configuration
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package package
@@ -984,7 +988,7 @@ Emacs]].
 *** Kill buffer hook
 [[http://emacswiki.org/emacs/RecreateScratchBuffer][EmacsWiki: Recreate Scratch Buffer]]
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'kill-buffer-query-functions 'esc/unkillable-scratch-buffer)
+  ;;(add-hook 'kill-buffer-query-functions 'esc/unkillable-scratch-buffer)
 #+END_SRC
 *** Kill emacs hook
 Summon the magical cookies.
@@ -1483,6 +1487,8 @@ Thanks [[http://whattheemacsd.com/setup-dired.el-02.html][Magnar]] for all the g
   (defun esc/dired-back-to-start-of-files ()
     (interactive)
     (backward-char (- (current-column) 2)))
+
+  (provide 'dired-config)
 #+END_SRC
 ** esc-mode
 *** summary
@@ -1832,7 +1838,7 @@ Macros to insert bindings in =esc-mode-map=.
                 line-number-mode
                 display-time-mode
                 column-number-mode
-                which-function-mode
+                ;; which-function-mode
                 global-hl-line-mode
                 display-battery-mode
                 autopair-global-mode

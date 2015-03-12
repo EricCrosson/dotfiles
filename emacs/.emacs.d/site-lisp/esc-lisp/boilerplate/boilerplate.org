@@ -1254,6 +1254,10 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
 
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (provide 'boilerplate)
+#+END_SRC
+
 * extending core functionality
 
 #+NAME: rename-deun

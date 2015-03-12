@@ -73,3 +73,6 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/meta/.mc-lists.el
 /emacs/.emacs.d/meta/desktop/.emacs.desktop.lock
 /emacs/.emacs.d/site-lisp/esc-lisp/loaddefs.el
+/emacs/.emacs.d/site-lisp/elpa/archives/gnu/archive-contents
+/emacs/.emacs.d/site-lisp/elpa/archives/gnu/archive-contents.signed
+/emacs/.emacs.d/site-lisp/elpa/archives/org/archive-contents
