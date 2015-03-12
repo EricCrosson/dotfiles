@@ -376,7 +376,8 @@ Keep a history of =M-x= across sessions.
 #+END_SRC
 *** esc mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package esc-mode)
+  (use-package esc-mode
+      :config (esc-mode 1))
 #+END_SRC
 *** Displaced yank config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1914,7 +1915,6 @@ Macros to insert bindings in =esc-mode-map=.
 #+END_SRC
 *** esc fin
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  (esc-mode 1)
   (provide 'esc-mode)
 #+END_SRC
 
