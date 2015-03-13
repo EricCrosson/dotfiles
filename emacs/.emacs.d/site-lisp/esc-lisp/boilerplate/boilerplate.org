@@ -622,8 +622,6 @@ Many thanks to [[http://www.emacswiki.org/emacs/DictMode][EmacsWiki]].
 #+END_SRC
 
 * [0/2] TODOs
-** [0/1] logically separate commands
-*** TODO re-incorporate them back into org
 ** [0/1] org
 *** TODO C-. to bury until current-buffer isn't in org-agenda-files
 or possibly cycle through your init files

@@ -191,7 +191,7 @@ Hello, My Name Is
   (put 'overwrite-mode 'disabled t)       ;There shall be no 'insert'
   (fset 'yes-or-no-p 'y-or-n-p)           ;change yes-no to y-n
   (setq-default size-indication-mode t)
-  (setq debug-on-error t
+  (setq ;debug-on-error t
         inhibit-startup-screen t
         initial-scratch-message nil
         ring-bell-function 'ignore        ;turn off alarms completely
@@ -249,13 +249,6 @@ tempt users to disable them.
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Backup settings
   (push '("." . "~/.config/.emacs.d/") backup-directory-alist)
-  (desktop-save-mode 1)                   ;use desktop file
-  (setq ;desktop-save 'if-exists           ;save open buffers
-        desktop-path '("~/.emacs.d/meta/desktop/") ;local desktop files
-        desktop-base-filename "default"
-        desktop-load-locked-desktop t     ;never freeze after crash
-        backup-by-copying-when-linked t
-        backup-by-copying-when-mismatch t)
 #+END_SRC
 
 =i-search= is capable of spanning whitespace regions
@@ -343,19 +336,6 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package mojo)
 #+END_SRC
-*** Save hist config
-Keep a history of =M-x= across sessions.
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package savehist
-    :config
-    (setq savehist-file (concat user-emacs-directory "meta/savehist"))
-    (setq savehist-save-minibuffer-history 1)
-    (setq savehist-additional-variables
-          '(kill-ring
-            search-ring
-            regexp-search-ring))
-    (savehist-mode 1))
-#+END_SRC
 *** undo-tree config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package undo-tree
@@ -431,8 +411,7 @@ haven't had to look at it yet.
 TODO: associate with esc-mode
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package help-extras
-     :idle-priority 6
-     :idle (help-extras 1))
+     :config (help-extras 1))
 #+END_SRC
 *** File operations config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -612,6 +591,28 @@ TODO: disable autopair-mode for web-mode
   (use-package fic-mode
     :idle (add-hook 'prog-mode-hook 'turn-on-fic-mode)
     :idle-priority 4)
+#+END_SRC
+*** Save desktop config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (desktop-save-mode 1)                   ;use desktop file
+  (setq desktop-path '("~/.emacs.d/meta/desktop/") ;local desktop files
+        desktop-base-filename "default"
+        desktop-load-locked-desktop t     ;never freeze after crash
+        backup-by-copying-when-linked t
+        backup-by-copying-when-mismatch t)
+#+END_SRC
+*** Savehist config
+Keep a history of =M-x= across sessions.
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package savehist
+    :config
+    (setq savehist-file (concat user-emacs-directory "meta/savehist"))
+    (setq savehist-save-minibuffer-history 1)
+    (setq savehist-additional-variables
+          '(kill-ring
+            search-ring
+            regexp-search-ring))
+    (savehist-mode 1))
 #+END_SRC
 *** Saveplace config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1643,17 +1644,13 @@ Macros to insert bindings in =esc-mode-map=.
   (esc-replace-key 'split-window-right 'esc/hsplit-last-buffer)
   (esc-replace-key 'split-window-below 'esc/vsplit-last-buffer)
 
-  ;; todo: pull buffer management into another hydra
   ;; Buffer management
-  (esc-key "C-x 4 k"    'esc/mode-line-other-buffer-other-window)
-  (esc-key "C-x 4 9"    'esc/bury-buffer-delete-window)
   (esc-key "C-c C-M-\\" 'indent-buffer)
 
   ;; Enhanced keybindings
   (esc-key "C-a"     'back-to-indentation-or-beginning)
   (esc-key "M-s o"   'occur-dwim)
-
-  (esc-key "C-c y" 'middle-click-yank)
+  (esc-key "C-c y"  'middle-click-yank)
 
   ;; Miscellaneous keybindings
   (esc-key "C-c C-b" 'mode-line-other-buffer)
@@ -1956,7 +1953,6 @@ Configuration for [[https://github.com/magnars/multiple-cursors.el][magnars/mult
 (defun esc/multiple-cursors-mode-disabled-hook ()
   "esc's code to \\[multiple-cursors-mode-disabled-hook]."
   (autopair-mode 1))
-
 #+END_SRC
 
 Thanks, Jeff Chu! [[http://www.jeffchu.com/posts/2013/01/2013-01-29-multiple-cursors-mode.html][
