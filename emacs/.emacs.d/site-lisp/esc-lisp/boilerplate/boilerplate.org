@@ -1070,24 +1070,6 @@ Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-mo
     (message "File touched"))
 #+END_SRC
 
-#+NAME: insert key combination at point
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;;###autoload
-  (defun esc/insert-key-combination (key &optional arg)
-    "Insert string describing KEY sequence. KEY is a string.
-  If ARG is non nil, wrap the inserted string in some useful text
-  depending on the value of ARG.
-
-      Value of ARG      Example inserted string
-      positive          \"C-h c\"
-      negative          (kbd \"C-h c\")"
-    (interactive "kType a key combination: \np")
-    (let ((str (key-description key)))
-      (insert (cond ((< arg 0)        (concat "(kbd \"" str "\")"))
-                    ((not (eq arg 1)) (concat "\"" str "\""))
-                    (t                 str)))))
-#+END_SRC
-
 #+NAME: Searching for word at point up or down
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defun esc/search-word-backward ()

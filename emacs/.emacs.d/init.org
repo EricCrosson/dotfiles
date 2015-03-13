@@ -162,7 +162,7 @@ Facilitate normal initialization processes.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (require-package '(emacs+ compilation+ buffer+ boilerplate help+ org+ os-interaction programming+ dired-config))
+  (require-package '(emacs+ compilation+ buffer+ boilerplate org+ os-interaction programming+ dired-config))
 #+END_SRC
 
 ** Package configuration
@@ -421,6 +421,17 @@ haven't had to look at it yet.
       ("#" . apply-operation-to-number-at-point)
       ("%" . apply-operation-to-number-at-point)
       ("'" . operate-on-number-at-point)))
+#+END_SRC
+*** Help extras conf
+TODO: associate with esc-mode
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package help-extras
+     :idle-priority 6
+     :idle (help-extras 1))
+#+END_SRC
+*** File operations config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package file-operations)
 #+END_SRC
 *** Toggle quotes conf
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1669,24 +1680,13 @@ Macros to insert bindings in =esc-mode-map=.
   (esc-key "C-S-k" 'kill-sexp)
 
   ;; Buffer control
+  (esc-key "C-x o" 'ace-window)
   (esc-key "C-x M-b" 'bury-buffer)
   (esc-key "C-x M-B" 'esc/bury-other-buffer)
   (esc-key "C-c o" 'clone-indirect-buffer-other-window)
   (esc-key "C-c C-o" 'ff-find-other-file) ;; TODO: only bind in appropriate modes
 
-  ;; todo: hydratize?
-  ;; Help+
-  (esc-key "C-h C-f" 'find-function)
-  (esc-key "C-h C-k" 'find-function-on-key)
-  (esc-key "C-h C-v" 'find-variable)
-  (esc-key "C-h C-l" 'find-library)
-  (esc-key "C-h C-n" 'esc/insert-defun-at-point)
-  (esc-key "C-h M-k" 'describe-keymap)
-  (esc-key "C-h C-M-c" 'esc/insert-key-combination)
-  ;;; todo: rename insert-defun to insert-function
-  (esc-key "C-h C-M-f" 'esc/insert-defun-at-point)
-
-    ;;; Function keys
+  ;;; Function keys
   (esc-key "<f5>"  'esc/minibuffer-display-buffer-file-name)
   (esc-key "<f6>"  'spray-mode)
   (esc-key "<f8>"  'esc/follow-mode-80-char-compliant)
@@ -1834,13 +1834,11 @@ Macros to insert bindings in =esc-mode-map=.
                 keyfreq-mode
                 recentf-mode
                 icomplete-mode
-                guide-key-mode
                 auto-fill-mode
                 show-paren-mode
                 line-number-mode
                 display-time-mode
                 column-number-mode
-                ;; which-function-mode
                 global-hl-line-mode
                 display-battery-mode
                 autopair-global-mode
@@ -1878,7 +1876,7 @@ Macros to insert bindings in =esc-mode-map=.
          auto-revert-verbose                  (not activate-bool)
          confirm-nonexistent-file-or-buffer   (not activate-bool))
 
-        ;; TODO: this was determined to have a bug in it. Handle the bug
+        ;; this was determined to have a bug in it. Handle the bug
         ;;(setq revert-buffer-function (if (esc-mode-enabledp)
         ;;                                 'revert-buffer-keep-undo
         ;;                               'revert-buffer))
