@@ -260,31 +260,6 @@ TODO: defcustom
     ;; TODO: copy from ecrosson-mobl
     )
 #+END_SRC
-* Licenses
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;;###autoload
-  (defun esc/insert-short-gpl ()
-    "Insert the short version of the GNU GPL v3."
-    (interactive)
-    (insert
-     "<one line to give the program's name and a brief idea of what it does.>
-  Copyright (C) <year>  <name of author>
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
-  "))
-#+END_SRC
-
 * Buffer+
 #+BEGIN_SRC emacs-lisp :tangle buffer+.el
   ;;; buffer+.el --- Buffer and window management functions
@@ -293,12 +268,6 @@ TODO: defcustom
   ;;
 
   ;;; Code:
-
-  ;;;###autoload
-  (defun esc/indent-buffer ()
-    "Indent the entire buffer without adjusting point or mark."
-    (interactive)
-    (save-excursion (indent-region (point-min) (point-max))))
 
   ;;;###autoload
   (defun kill-matching-buffers-no-ask (regexp &optional internal-too)
@@ -481,106 +450,7 @@ TODO: defcustom
 
   ;;; buffer+.el ends here
 #+END_SRC
-* Org+
-#+BEGIN_SRC emacs-lisp :tangle org+.el
-  ;; todo: use current line in absence of region
-  (defmacro esc/define-org-header-indentation(funcname callback)
-    "Define functions to manipulate the header level of selected
-  region in `org-mode'."
-    (let ((command-name (intern (format "esc/org-%s-headers-in-region" funcname)))
-          (docstring (format "%s `org-mode' headers arg times in currently
-  selected region."
-                             funcname)))
-    `(defun ,command-name (&optional arg)
-       ,docstring
-       (interactive "p")
-       (save-excursion
-         (let ((beg (save-excursion
-                      (goto-char (region-beginning)) (beginning-of-line) (point)))
-               (end (save-excursion
-                      (goto-char (region-end)) (end-of-line) (point))))
-           (goto-char end)
-           (while (and (< beg (point))
-                       (re-search-backward "^\*" beg 'noerror))
-             (dotimes (i arg) ,callback)
-             (previous-line)
-             (end-of-line)))))))
-
-  (mapcar (lambda (data)
-            (let ((funcname (car data))
-                  (callback (cadr data)))
-              (eval `(esc/define-org-header-indentation ,funcname ,callback))))
-          '((indent (insert "*"))
-            (unindent (kill-forward-chars 1))))
-
-  (provide 'org+)
-
-  ;;; org+.el ends here
-#+END_SRC
 * Emacs+
-#+BEGIN_SRC emacs-lisp :tangle emacs+.el
-  ;;;###autoload
-  (defun byte-compile-directory(dir)
-    "Compile an .elc file for every .el file contained under
-      DIR (recursive)."
-    (byte-recompile-directory (expand-file-name dir) 0))
-
-  ;; TOOD: accept a prefix to yank `buffer-file-name'
-  ;;;###autoload
-  (defun esc/minibuffer-display-buffer-file-name ()
-    "Display `buffer-file-name' in the minibuffer."
-    (interactive)
-    (ignore-errors
-      (message (format "%s" (buffer-file-name)))))
-#+END_SRC
-
-I'm feelin' a little [[http://stackoverflow.com/a/18680600][Haskelly]]
-#+BEGIN_SRC emacs-lisp :tangle emacs+.el
-  ;;;###autoload
-  (defun combinations (&rest lists)
-    "Return a list of all possible combinations of the elements of
-  LISTS. Think applicative functors from Haskell."
-    (if (car lists)
-        (mapcan (lambda (inner-val)
-                  (mapcar (lambda (outer-val)
-                            (cons outer-val
-                                  inner-val))
-                          (car lists)))
-                (apply #'combinations (cdr lists)))
-      (list nil)))
-#+END_SRC
-
-[[http://whattheemacsd.com/key-bindings.el-03.html][Magnar]] said it best, here's one command I could not live without.
-#+BEGIN_SRC emacs-lisp :tangle emacs+.el
-  ;;;###autoload
-  (defun esc/pull-up-line (&optional arg)
-    "Pull up ARG lines."
-    (interactive "p")
-    (dotimes (i arg)
-      (join-line -1)))
-#+END_SRC
-
-[[http://www.emacswiki.org/emacs/TrampMode#toc30][EmacsWiki: Tramp Mode]]
-#+BEGIN_SRC emacs-lisp :tangle emacs+.el
-  ;;;###autoload
-  (defun sudo-edit-current-file ()
-    "Edit the current file as sudo with tramp, without needing to
-  navigate to it or losing your place in the file. Works on local
-  or remote files."
-    (interactive)
-    (let ((position (point)))
-      (find-alternate-file
-       (if (file-remote-p (buffer-file-name))
-           (let ((vec (tramp-dissect-file-name (buffer-file-name))))
-             (tramp-make-tramp-file-name
-              "sudo"
-              (tramp-file-name-user vec)
-              (tramp-file-name-host vec)
-              (tramp-file-name-localname vec)))
-         (concat "/sudo:root@localhost:" (buffer-file-name))))
-      (goto-char position)))
-#+END_SRC
-
 [[http://emacsredux.com/blog/2015/01/18/clear-comint-buffers/][Clear Comint Buffers - Emacs Redux]]
 #+BEGIN_SRC emacs-lisp :tangle emacs+.el
   (defun comint-clear-buffer ()
@@ -614,26 +484,6 @@ Many thanks to [[http://www.emacswiki.org/emacs/DictMode][EmacsWiki]].
              dictionary-default-dictionary))))
 #+END_SRC
 
-Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
-#+BEGIN_SRC emacs-lisp :tangle emacs+.el
-  ;;;###autoload
-  (defun occur-dwim ()
-    "Call `occur' with a sane default.
-
-  \\[occur-dwim] will offer as the default candidate:
-
-  - the current region, if it's active
-  - the current symbol, otherwise"
-    (interactive)
-    (push (if (region-active-p)
-              (buffer-substring-no-properties
-               (region-beginning)
-               (region-end))
-            (thing-at-point 'symbol))
-          regexp-history)
-    (call-interactively 'occur))
-#+END_SRC
-
 #+BEGIN_SRC emacs-lisp :tangle emacs+.el
     ;;;###autoload
     (defun esc/insert-numeric-sequence ()
@@ -645,33 +495,6 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
           (insert (number-to-string (+ i begin)))
           (insert " "))))
 
-  ;;;###autoload
-  (defun esc/copy-line (&optional arg)
-    "Copy current line in the kill ring."
-    (interactive "p")
-    (let ((lines (if arg (+ 1 arg) 2)))
-      (kill-ring-save (line-beginning-position)
-                      (line-beginning-position lines))
-      (message (if (eq 2 lines)
-                   "Line copied."
-                 (format "%d lines copied." lines)))))
-
-    ;;;###autoload
-    (defun esc/remove-dos-eol ()
-      "Do not show ^M in files containing mixed UNIX and DOS line endings."
-      (interactive)
-      (setq buffer-display-table (make-display-table))
-      (aset buffer-display-table ?\^M []))
-
-    ;;;###autoload
-    (defun esc/word-count (&optional begin end)
-      "Count words bounded by mark and cursor; if no region defined, use buffer."
-      (interactive "r")
-      (let ((b (if mark-active begin (point-min)))
-            (e (if mark-active end (point-max))))
-        (message "Word count: %s" (how-many "\\w+" b e))))
-
-    ;;;###autoload
     (defun esc/insert-time ()
       "Insert string for the current time formatted as '21:25'."
       (interactive)
@@ -690,59 +513,6 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
         (insert (format-time-string format))))
 
     ;;;###autoload
-    (defun esc/back-to-indentation-or-beginning ()
-      "Returns the point to the beginning of the current line, or if
-    already there, the beginning of text on the current line."
-      (interactive)
-      (let ((pt (point)))
-        (beginning-of-line)
-        (when (eq pt (point))
-          (beginning-of-line-text))))
-
-    ;;;###autoload
-    (defun esc/increment-number-at-point (arg)
-      "Increment the number at point. Can be prefaced with a multiplier."
-      (interactive "p")
-      (dotimes (i arg)
-        (skip-chars-backward "0123456789")
-        (or (looking-at "[[:digit:]]+")
-            (error "No number at point"))
-        (replace-match (number-to-string
-                        (1+ (string-to-number (match-string 0)))))))
-
-    ;;;###autoload
-    (defun esc/delete-current-buffer-file ()
-      "Removes file connected to current buffer and kills buffer."
-      (interactive)
-      (let ((filename (buffer-file-name))
-            (buffer (current-buffer))
-            (name (buffer-name)))
-        (if (not (and filename (file-exists-p filename)))
-            (ido-kill-buffer)
-          (when (yes-or-no-p "Are you sure you want to remove this file? ")
-            (delete-file filename)
-            (kill-buffer buffer)
-            (message "File '%s' successfully removed" filename)))))
-
-    ;;;###autoload
-    (defun esc/rename-current-buffer-file ()
-      "Renames current buffer and file it is visiting."
-      (interactive)
-      (let ((name (buffer-name))
-            (filename (buffer-file-name)))
-        (if (not (and filename (file-exists-p filename)))
-            (error "Buffer '%s' is not visiting a file" name)
-          (let ((new-name (read-file-name "New name: " filename)))
-            (if (get-buffer new-name)
-                (error "A buffer named '%s' already exists" new-name)
-              (rename-file filename new-name 1)
-              (rename-buffer new-name)
-              (set-visited-file-name new-name)
-              (set-buffer-modified-p nil)
-              (message "File '%s' successfully renamed to '%s'"
-                       name new-name))))))
-
-    ;;;###autoload
     (defun esc/get-buffers-matching-mode (mode)
       "Returns a list of buffers where their major-mode is equal to MODE."
       (let ((buffer-mode-matches '()))
@@ -751,20 +521,6 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
             (if (eq mode major-mode)
                 (add-to-list 'buffer-mode-matches buf))))
         buffer-mode-matches))
-
-    ;;;###autoload
-    (defun esc/multi-occur-in-this-mode ()
-      "Show all lines matching REGEXP in buffers with this major mode."
-      (interactive)
-      (multi-occur
-       (esc/get-buffers-matching-mode major-mode)
-       (car (occur-read-primary-args))))
-
-    ;;;###autoload
-    (defun esc/toggle-selective-display (column)
-      "Enable code folding in current buffer."
-      (interactive "P")
-      (set-selective-display (if selective-display nil (or column 1))))
 
     ;;;###autoload
     (defun esc/unroll-cc-arguments ()
@@ -809,56 +565,6 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
               (set-window-start w1 s2)
               (set-window-start w2 s1)
               (setq i (1+ i)))))))
-
-    ;; generate programatically
-    ;;;###autoload
-    (defun esc/open-line-below ()
-      "Create a new line above the current line. Can be used with point
-       anywhere on the line."
-      (interactive)
-      (end-of-line)
-      (newline)
-      (indent-for-tab-command))
-
-    ;;;###autoload
-    (defun esc/open-line-above ()
-      "Create a new line below the current line. Can be used with point
-       anywhere on the line."
-      (interactive)
-      (beginning-of-line)
-      (newline)
-      (forward-line -1)
-      (indent-for-tab-command))
-
-    ;;;###autoload
-    (defun esc/goto-line-with-feedback ()
-      "Show line numbers temporarily, while prompting for the line number input."
-      (interactive)
-      (unwind-protect (progn
-                        (linum-mode 1)
-                        (goto-line (read-number "Goto line: ")))
-        (linum-mode -1)))
-
-    ;;;###autoload
-    (defun esc/delete-whole-word ()
-      "This defun will delete the entire word at point. This function
-    relies on `esc/kill-whole-word'."
-      (interactive)
-      (esc/kill-whole-word t))
-
-    ;; TODO: accept a prefix arg
-    ;;;###autoload
-    (defun esc/kill-whole-word (&optional delete)
-      "This defun will kill the entire word at point (on both sides
-    of point). DELETE, if non-nil, will prevent the word from being
-    appended to the kill-ring."
-      (interactive)
-      (let ((bounds (bounds-of-thing-at-point 'word)))
-        (save-excursion
-          (goto-char (car bounds))
-          (if (not delete)
-              (kill-word 1)
-            (delete-region (car bounds) (cdr bounds))))))
 
     ;;;###autoload
     (defun esc/eval-and-replace (&optional arg)
@@ -908,189 +614,11 @@ Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
       (mode-line-other-buffer)
       (other-window -1))
 
-      ;;;###autoload
-      (defun delete-word (arg)
-        "Delete characters forward until encountering the end of a word.
-      With argument, do this that many times."
-        (interactive "p")
-        (delete-region (point) (progn (forward-word arg) (point))))
-
-      ;;;###autoload
-      (defun backward-delete-word (arg)
-        "Delete characters backward until encountering the end of a word.
-      With argument, do this that many times."
-        (interactive "p")
-        (delete-word (- arg)))
-
     (provide 'emacs+)
-#+END_SRC
-
-* Help+
-#+BEGIN_SRC emacs-lisp :tangle help+.el
-  ;; TODO make this insert parens, and the appropriate spaces for
-  ;; arguments. I'm envisioning a clean, cdlatex-mode type thing
-  ;;;###autoload
-  (defun esc/insert-defun-at-point (&optional key insert untranslated string)
-    "Insert at point the name of the function KEY invokes.  KEY is a string.
-    If INSERT (the prefix arg) is non-nil, insert the message in the
-    buffer.  If non-nil, UNTRANSLATED is a vector of the untranslated
-    events.  It can also be a number in which case the untranslated
-    events from the last key hit are used.
-
-    If KEY is a menu item or a tool-bar button that is disabled, this command
-    temporarily enables it to allow getting help on disabled items and buttons."
-    (interactive
-     (let ((enable-disabled-menus-and-buttons t)
-           (cursor-in-echo-area t)
-           saved-yank-menu)
-       (unwind-protect
-           (let (key)
-             ;; If yank-menu is empty, populate it temporarily, so that
-             ;; "Select and Paste" menu can generate a complete event.
-             (when (null (cdr yank-menu))
-               (setq saved-yank-menu (copy-sequence yank-menu))
-               (menu-bar-update-yank-menu "(any string)" nil))
-             (setq key (read-key-sequence "Describe key (or click or menu item): "))
-             ;; Clear the echo area message (Bug#7014).
-             (message nil)
-             ;; If KEY is a down-event, read and discard the
-             ;; corresponding up-event.  Note that there are also
-             ;; down-events on scroll bars and mode lines: the actual
-             ;; event then is in the second element of the vector.
-             (and (vectorp key)
-                  (let ((last-idx (1- (length key))))
-                    (and (eventp (aref key last-idx))
-                         (memq 'down (event-modifiers (aref key last-idx)))))
-                  (read-event))
-             (list
-              key
-              (if current-prefix-arg (prefix-numeric-value current-prefix-arg))
-              1))
-         ;; Put yank-menu back as it was, if we changed it.
-         (when saved-yank-menu
-           (setq yank-menu (copy-sequence saved-yank-menu))
-           (fset 'yank-menu (cons 'keymap yank-menu))))))
-
-    (if (numberp untranslated)
-        (setq untranslated (this-single-command-raw-keys)))
-    (let* ((event (if (and (symbolp (aref key 0))
-                           (> (length key) 1)
-                           (consp (aref key 1)))
-                      (aref key 1)
-                    (aref key 0)))
-           (modifiers (event-modifiers event))
-           (standard-output (if insert (current-buffer) standard-output))
-           (mouse-msg (if (or (memq 'click modifiers) (memq 'down modifiers)
-                              (memq 'drag modifiers)) " at that spot" ""))
-           (defn (key-binding key t))
-           key-desc)
-      ;; Handle the case where we faked an entry in "Select and Paste" menu.
-      (if (and (eq defn nil)
-               (stringp (aref key (1- (length key))))
-               (eq (key-binding (substring key 0 -1)) 'yank-menu))
-          (setq defn 'menu-bar-select-yank))
-      ;; Don't bother user with strings from (e.g.) the select-paste menu.
-      (if (stringp (aref key (1- (length key))))
-          (aset key (1- (length key)) "(any string)"))
-      (if (and (> (length untranslated) 0)
-               (stringp (aref untranslated (1- (length untranslated)))))
-          (aset untranslated (1- (length untranslated)) "(any string)"))
-      ;; Now describe the key, perhaps as changed.
-      (setq key-desc (help-key-description key untranslated))
-      (if (or (null defn) (integerp defn) (equal defn 'undefined))
-          (princ (format "%s%s is undefined" key-desc mouse-msg))
-        (if string
-            defn
-          (insert (format "%S" defn))))))
-
-  (provide 'help+)
-#+END_SRC
-
-Thanks to [[https://github.com/ubolonton/.emacs.d/blob/master/lib/single-file-modes/help-fns%252B.el%0A][help-fns+]].
-#+BEGIN_SRC emacs-lisp :tangle help+.el
-  ;;;###autoload
-  (defun describe-keymap (keymap)
-    "Describe bindings in KEYMAP, a variable whose value is a keymap.
-  Completion is available for the keymap name."
-    (interactive
-     (list (intern
-            (completing-read
-             "Keymap: " obarray
-             (lambda (m) (and (boundp m) (keymapp (symbol-value m))))
-             t nil 'variable-name-history))))
-    (unless (and (symbolp keymap) (boundp keymap) (keymapp (symbol-value keymap)))
-      (error "`%S' is not a keymapp" keymap))
-    (let ((name  (symbol-name keymap))
-          (doc   (documentation-property keymap 'variable-documentation)))
-      (help-setup-xref (list #'describe-keymap keymap) (interactive-p))
-      (with-output-to-temp-buffer "*Help*"
-        (princ name) (terpri)
-        (princ (make-string (length name) ?-)) (terpri) (terpri)
-        (when doc (princ doc) (terpri) (terpri))
-        ;; Use `insert' instead of `princ', so control chars (e.g. \377) insert correctly.
-        (with-current-buffer "*Help*"
-          (insert (substitute-command-keys (concat "\\{" name "}")))))))
-
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangle yes
   (provide 'boilerplate)
-#+END_SRC
-
-* extending core functionality
-
-#+NAME: rename-deun
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;;###autoload
-  (defun rename-defun (function)
-    "Rename loaded FUNCTION to a new name. Makfunbound FUNCTION after
-  evaling the newly named defun."
-    (interactive (find-function-read))
-    (if (null function)
-        (message "You didn't specify a function")
-      (let ((function-name (symbol-name function)))
-        (find-function-do-it function nil 'switch-to-buffer)
-        (let ((begin (point))
-              (end (save-excursion (end-of-defun) (point)))
-              (new-name (read-string (concat "Rename " function-name " to: "))))
-          (save-excursion
-            (replace-string function-name new-name t begin end))
-          (eval-defun nil)
-          (makfunbound function)))))
-#+END_SRC
-
-#+NAME: touch
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;;###autoload
-  (defun touch ()
-    "Updates mtime on the file described by the current buffer."
-    (interactive)
-    (shell-command (concat "touch " (shell-quote-argument (buffer-file-name))))
-    (clear-visited-file-modtime)
-    (message "File touched"))
-#+END_SRC
-
-#+NAME: Searching for word at point up or down
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defun esc/search-word-backward ()
-    "Find the previous occurrence of the current word."
-    (interactive)
-    (let ((cur (point)))
-      (skip-syntax-backward "w_")
-      (goto-char
-       (if (re-search-backward (concat "\\_<" (current-word) "\\_>") nil t)
-           (match-beginning 0)
-         cur))))
-
-  (defun esc/search-word-forward ()
-    "Find the next occurrence of the current word."
-    (interactive)
-    (let ((cur (point)))
-      (skip-syntax-forward "w_")
-      (goto-char
-       (if (re-search-forward (concat "\\_<" (current-word) "\\_>") nil t)
-           (match-beginning 0)
-         cur))))
 #+END_SRC
 
 * [0/2] TODOs

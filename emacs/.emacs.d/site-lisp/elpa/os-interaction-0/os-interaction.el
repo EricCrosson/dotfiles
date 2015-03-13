@@ -32,13 +32,13 @@
 ;;; Code:
 
 ;;;###autoload
-(defun esc/middle-click-yank ()
+(defun middle-click-yank ()
   "Yank from the middle click mouse buffer."
   (interactive)
   (mouse-yank-primary 1))
 
 ;;;###autoload
-(defun esc/insert-file-name (&optional ARG)
+(defun insert-file-name (&optional ARG)
   "Inserts the name of the current file (including extension) at point.
 
 When ARG is non-nil, the filename will be printed in a different format.
@@ -56,7 +56,7 @@ If ARG is - (or -1), insert the filename without extension."
         (insert output)))))
 
 ;;;###autoload
-(defun esc/copy-file-name-to-clipboard ()
+(defun copy-file-name-to-clipboard ()
   "Copy the current buffer file name to the clipboard."
   (interactive)
   (let ((filename (if (equal major-mode 'dired-mode)

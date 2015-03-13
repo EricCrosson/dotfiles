@@ -338,6 +338,11 @@ about a post)
   ;;(use-package eldoc) ;; TODO: hook onto lisp modes
 #+END_SRC
 ** Configuration
+*** Mojo config
+Mojo is my personal extension of the GNU Emacs global namespace.
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package mojo)
+#+END_SRC
 *** Save hist config
 Keep a history of =M-x= across sessions.
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -954,6 +959,10 @@ TODO: integrate with =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'eval-expression-minibuffer-setup-hook 'eldoc-mode)
 #+END_SRC
+*** Org indent header config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package org-indent-header)
+#+END_SRC
 ** Hooks
 Attach =esc-mode= hooks
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -983,8 +992,9 @@ Attach =esc-mode= hooks
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
 #+END_SRC
 *** Find-file hook
+TODO: this could be idle-loaded, as it will load all of mojo.el
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'find-file-hook 'esc/remove-dos-eol)
+  (add-hook 'find-file-hook 'remove-dos-eol)
 #+END_SRC
 *** Save hooks
 Handy little hooks to nudge new files in the right direction.
@@ -1629,7 +1639,7 @@ Macros to insert bindings in =esc-mode-map=.
 #+NAME: keybindings defined here
 #+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
   ;; Remaps -- wherever they may be bound
-  (esc-replace-key 'goto-line 'esc/goto-line-with-feedback)
+  (esc-replace-key 'goto-line 'goto-line-with-feedback)
   (esc-replace-key 'split-window-right 'esc/hsplit-last-buffer)
   (esc-replace-key 'split-window-below 'esc/vsplit-last-buffer)
 
@@ -1637,19 +1647,19 @@ Macros to insert bindings in =esc-mode-map=.
   ;; Buffer management
   (esc-key "C-x 4 k"    'esc/mode-line-other-buffer-other-window)
   (esc-key "C-x 4 9"    'esc/bury-buffer-delete-window)
-  (esc-key "C-c C-M-\\" 'esc/indent-buffer)
+  (esc-key "C-c C-M-\\" 'indent-buffer)
 
   ;; Enhanced keybindings
-  (esc-key "C-a"     'esc/back-to-indentation-or-beginning)
+  (esc-key "C-a"     'back-to-indentation-or-beginning)
   (esc-key "M-s o"   'occur-dwim)
 
-  (esc-key "C-c y" 'esc/middle-click-yank)
+  (esc-key "C-c y" 'middle-click-yank)
 
   ;; Miscellaneous keybindings
   (esc-key "C-c C-b" 'mode-line-other-buffer)
   (esc-key "M-K"     'kill-sentence)
   (esc-key "M-j"     'just-one-space) ; conflicts with spotlight
-  (esc-key "C-c k"   'esc/copy-line)
+  (esc-key "C-c k"   'copy-line)
   (esc-key "M-P"     'align-regexp) ;; TODO: pull aligns into hydra
   (esc-key "C-'"     'query-replace)
   ;; TODO: change sexp wrapping (esc-key i 'e. {}[]()) from Xah Lee
@@ -1664,10 +1674,10 @@ Macros to insert bindings in =esc-mode-map=.
   (esc-key "C-c C-q" 'quoted-insert) ;  this command
 
   ;; newline creation
-  (esc-key "<C-return>"   'esc/open-line-below)
-  (esc-key "<C-S-return>" 'esc/open-line-above)
+  (esc-key "<C-return>"   'open-line-below)
+  (esc-key "<C-S-return>" 'open-line-above)
   (esc-key "C-M-O"        'split-line)
-  (esc-key "M-k"          'esc/pull-up-line)
+  (esc-key "M-k"          'pull-up-line)
 
   ;; LaTeX bindings
   ;; todo: hydratize that block
@@ -1687,7 +1697,7 @@ Macros to insert bindings in =esc-mode-map=.
   (esc-key "C-c C-o" 'ff-find-other-file) ;; TODO: only bind in appropriate modes
 
   ;;; Function keys
-  (esc-key "<f5>"  'esc/minibuffer-display-buffer-file-name)
+  (esc-key "<f5>"  'minibuffer-display-buffer-file-name)
   (esc-key "<f6>"  'spray-mode)
   (esc-key "<f8>"  'esc/follow-mode-80-char-compliant)
   (esc-key "C-c <f8>" 'esc/hsplit-last-buffer-follow-mode)
@@ -1737,7 +1747,7 @@ Macros to insert bindings in =esc-mode-map=.
       ("h" first-error "first")
       ("j" next-error "next")
       ("k" previous-error "prev")
-      ("l" esc/goto-line-with-feedback "goto-line" :color blue))
+      ("l" goto-line-with-feedback "goto-line" :color blue))
 
     (defhydra hydra-multiple-cursors (esc-mode-map "M-a")
       "multiple-cursors"

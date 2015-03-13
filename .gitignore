@@ -1,3 +1,4 @@
+*.elc
 *~
 /emacs/.emacs.d/ac-comphist.dat
 emacs/.emacs.d/session.*
@@ -77,3 +78,5 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/site-lisp/elpa/archives/gnu/archive-contents.signed
 /emacs/.emacs.d/site-lisp/elpa/archives/org/archive-contents
 /emacs/.emacs.d/site-lisp/elpa/archives/marmalade/archive-contents
+/emacs/.emacs.d/site-lisp/elpa/file-operations-0/file-operations.elc
+/emacs/.emacs.d/site-lisp/elpa/os-interaction-0/os-interaction.elc
