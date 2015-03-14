@@ -60,10 +60,11 @@
 ;; interest, invoke the normal help keybinding but continue holding
 ;; control during the second keypress.
 
-;; I also recommend the miscellaneous binding
+;; I also recommend the miscellaneous bindings
 
 ;; (bind-key "C-h C-l" 'find-library)
 
+;; (bind-key "C-h C-M-b" 'describe-function-binding-briefly)
 
 
 ;; The following bindings extend the default help system to include
@@ -89,6 +90,18 @@ The library where VARIABLE is defined is searched for in
 See also `find-function-recenter-line' and `find-function-after-hook'."
   (interactive (find-function-read 'defvar))
   (insert (symbol-name variable)))
+
+(defun describe-function-binding-briefly (function)
+  "Describe the key binding associated with FUNCTION."
+  (interactive (find-function-read))
+  (describe-function function)
+  (save-excursion
+  (switch-to-buffer "*Help*")
+  (when (re-search-forward "It is bound to \\(.*?\\)\\(\\.\\|\\,\\)")
+    (let ((binding (buffer-substring-no-properties (match-beginning 1)
+						   (match-end 1))))
+      (kill-buffer "*Help*")
+      (message "%s is bound by %s" (symbol-name function) binding)))))
 
 ;; TODO make this insert parens, and the appropriate spaces for
 ;; arguments. I'm envisioning a clean, cdlatex-mode type thing
@@ -231,6 +244,7 @@ Completion is available for the keymap name."
 (bind-key "C-h C-v" 'find-variable help-extras-map)
 
 (bind-key "C-h C-l" 'find-library help-extras-map)
+(bind-key "C-h C-M-b" 'describe-function-binding-briefly help-extras-map)
 
 (bind-key "C-h C-M-c" 'insert-function-on-key help-extras-map)
 (bind-key "C-h C-M-k" 'insert-key-combination help-extras-map)
