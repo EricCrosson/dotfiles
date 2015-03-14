@@ -1689,15 +1689,14 @@ Macros to insert bindings in =esc-mode-map=.
   ;; Buffer control
   (esc-key "C-x o" 'ace-window)
   (esc-key "C-x M-b" 'bury-buffer)
-  (esc-key "C-x M-B" 'esc/bury-other-buffer)
   (esc-key "C-c o" 'clone-indirect-buffer-other-window)
   (esc-key "C-c C-o" 'ff-find-other-file) ;; TODO: only bind in appropriate modes
 
   ;;; Function keys
   (esc-key "<f5>"  'minibuffer-display-buffer-file-name)
   (esc-key "<f6>"  'spray-mode)
-  (esc-key "<f8>"  'esc/follow-mode-80-char-compliant)
-  (esc-key "C-c <f8>" 'esc/hsplit-last-buffer-follow-mode)
+  (esc-key "<f8>"  'follow-mode-80-char-compliant)
+  (esc-key "C-c <f8>" 'hsplit-last-buffer-follow-mode)
   (esc-key "<f9>"  'flyspell-buffer)
   (esc-key "<f10>" 'golden-ratio-mode)
   ;; TODO: create a defun to save win configuration first
