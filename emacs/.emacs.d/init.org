@@ -218,10 +218,6 @@ Now everybody agrees that the =*Minibuffer*= prompt is uneditable.
                                                  minibuffer-prompt))
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ()
-#+END_SRC
-
 Line numbers, when visible, should be loaded after a short delay and
 not loaded eagerly. They're candy, and who spends resources acquiring
 candy?
@@ -388,7 +384,8 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 *** Powerline config
 That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee-d77b-45da-ac5c-b9bbb562.gif][Power⚡Line]] baby!
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package powerline)
+  (use-package powerline
+    :config (powerline-default-theme))
 #+END_SRC
 *** Smartrep conf
 I don't know where smartrep defines keys but this worked for me and I
@@ -738,11 +735,27 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
   (use-package multiple-cursors
     :config (setq mc/list-file "~/.emacs.d/meta/.mc-lists.el"))
 #+END_SRC
+*** Minimap config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package minimap
+    :config
+    (defhydra hydra-mnimap (esc-mode-map "C-c M-RET")
+      "minimap"
+      ("m" minimap-toggle "toggle")
+      ("k" minimap-kill "kill" :color blue)))
+#+END_SRC
 *** Spotify config
 TODO: idle-load this package after =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package spotify
-    :commands spotify-enable-song-notifications)
+    :commands spotify-enable-song-notifications
+    :config
+    (after 'esc-mode
+      (defhydra hydra-spotify (esc-mode-map "<f7>")
+         "spotify"
+         ("c"   spotify-playpause "play/pause"
+          "p"   spotify-previous  "prev"
+          "n"   spotify-next      "next"))))
 #+END_SRC
 *** Ace config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -907,7 +920,14 @@ TODO: diminish here with use-package
     (after 'esc-mode
       (esc-key "C-x M-r" 'revert-buffer-no-confirm)))
 #+END_SRC
-*** Helm conig
+
+#+BEGIN_SRC emacs-lisp :tangle no
+    ;; this was determined to have a bug in it. Handle the bug
+    ;;(setq revert-buffer-function (if (esc-mode-enabledp)
+    ;;                                 'revert-buffer-keep-undo
+    ;;                               'revert-buffer))
+#+END_SRC
+*** Helm config
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Helm
   (use-package helm
@@ -918,11 +938,15 @@ TODO: diminish here with use-package
         ("C-c i"   . helm-imenu)
         ("C-x C-j" . helm-for-files))))
 #+END_SRC
-*** Rainbow delimeters mode
+*** Rainbow delimeters mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package rainbow-delimiters
     ;; TODO: associate with esc-mode
     :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+#+END_SRC
+*** Fringe mode config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (fringe-mode 0)
 #+END_SRC
 *** Windmove config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -964,6 +988,58 @@ TODO: integrate with =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package org-indent-header)
 #+END_SRC
+*** Dired config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package dired-details
+    :idle-priority 6
+    :idle
+    (dired-details-install)
+    (use-package dired-x)
+    (use-package dash
+      :idle 6
+      ;; Reload dired after making changes
+      (put '--each 'lisp-indent-function 1)
+      (--each '(dired-do-rename
+                dired-create-directory
+                wdired-abort-changes)
+        (eval `(defadvice ,it (after revert-buffer activate)
+                 (revert-buffer)))))
+    (use-package wdired
+      :config
+      (define-key wdired-mode-map
+        (vector 'remap 'beginning-of-line) 'esc/dired-back-to-start-of-files)
+      (define-key wdired-mode-map
+        (vector 'remap 'esc/back-to-indentation-or-beginning)
+        'esc/dired-back-to-start-of-files)
+      (define-key wdired-mode-map
+        (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
+      (define-key wdired-mode-map
+        (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)))
+#+END_SRC
+*** Diminish config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (after 'undo-tree-autoloads
+    (global-undo-tree-mode t)
+    (setq undo-tree-visualizer-timestamps t
+          undo-tree-visualizer-relative-timestamps t))
+
+  ;; less clutter on the mode line
+  (diminish 'auto-revert-mode)
+  (after 'test-mode (diminish 'test-mode))
+  (diminish 'auto-fill-function)
+  ;; (diminish 'visual-line-mode)
+  ;; (diminish 'global-visual-line-mode)
+  (after 'autopair  (diminish 'autopair-mode))
+  (after 'abbrev    (diminish 'abbrev-mode))
+  (after 'undo-tree (diminish 'undo-tree-mode))
+  (after 'org-indent (diminish 'org-indent-mode))
+  (after 'magit (diminish 'magit-auto-revert-mode))
+  (after 'fic-mode (diminish 'fic-mode))
+  (after 'eldoc (diminish 'eldoc-mode))
+  (after 'smerge-mode (diminish 'smerge-mode))
+  (after 'auto-complete (diminish 'auto-complete-mode))
+  (after 'esc-mode (diminish 'esc-mode))
+#+END_SRC
 ** Hooks
 Attach =esc-mode= hooks
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -992,7 +1068,7 @@ Attach =esc-mode= hooks
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
 #+END_SRC
-*** Find-file hook
+*** Find file hook
 TODO: this could be idle-loaded, as it will load all of mojo.el
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-hook 'find-file-hook 'remove-dos-eol)
@@ -1025,6 +1101,142 @@ Override the kill function.
   (fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
 #+END_SRC
 
+** Uncurated
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;;; Multiple cursors configuration
+
+  (defcustom esc/multiple-cursors-mode-enabled-hook nil
+    "esc's code to function `multiple-cursors-mode-enabled-hook'."
+    :type         'hook
+    :options      '((autopair-mode -1)
+                    (define-key mc/keymap (kbd "C-s") 'mc/search-forward)
+                    (define-key mc/keymap (kbd "C-r") 'mc/search-backward))
+    :group        'multiple-cursors)
+
+  ;;;###autoload
+  (defun esc/multiple-cursors-mode-enabled-hook ()
+    "esc's code to function `multiple-cursors-mode-enabled-hook'."
+    (autopair-mode -1)
+    ;; mc/keymap isn't created until this point
+    (defvar mc/search--last-term nil)
+    (define-key mc/keymap (kbd "C-s") 'mc/search-forward)
+    (define-key mc/keymap (kbd "C-r") 'mc/search-backward))
+
+  (defcustom esc/multiple-cursors-mode-disabled-hook nil
+    "esc's code to function `multiple-cursors-mode-disabled-hook`."
+    :type         'hook
+    :options      '((autopair-mode 1))
+    :group        'multiple-cursors)
+
+  ;;;###autoload
+  (defun esc/multiple-cursors-mode-disabled-hook ()
+    "esc's code to function `multiple-cursors-mode-disabled-hook`."
+    (autopair-mode 1))
+
+  ;;;###autoload
+  (defun mc/search (search-command)
+    "Iterate through each active cursor and search for the designated string.
+  SEARCH-COMMAND is the command to use for movement- either
+  function `search-forward` or function `search-backward`.
+
+  Helper defun for function `mc/search-forward` and function `mc/search-backward`."
+    ;; Read new search term when not repeated command or applying to fake cursors
+    (when (and (not mc--executing-command-for-fake-cursor)
+               (not (eq last-command 'mc/search-forward))
+               (not (eq last-command 'mc/search-backward)))
+      (setq mc/search--last-term (read-from-minibuffer "Search: ")))
+    (funcall search-command mc/search--last-term))
+
+  ;;;###autoload
+  (defun mc/search-forward ()
+    "Simplified version of forward search that supports multiple cursors."
+    (interactive)
+    (mc/search 'search-forward))
+
+  ;;;###autoload
+  (defun mc/search-backward ()
+    "Simplified version of backward search that supports multiple cursors."
+    (interactive)
+    (mc/search 'search-backward))
+
+  ;;; Dired configuration
+
+  (defcustom esc/dired-mode-hook nil
+    "esc's hook to add to \\[dired-mode-hook]."
+    :type    'hook
+    :options '((define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
+               (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)
+               (define-key dired-mode-map (kbd "^") 'esc/dired-up-level-reuse-buffer))
+    :group   'esc)
+
+  ;;;###autoload
+  (defun esc/dired-mode-hook ()
+    "esc's hook to \\[dired-mode-hook]."
+    (let ((activate (if (eq major-mode 'dired-mode) 1 -1)))
+      (hl-line-mode activate)
+      (after 'dired-x (dired-omit-mode activate)))
+    (setq-default dired-details-hidden-string "--- "
+                  dired-recursive-copies 'always
+                  dired-recursive-deletes 'top
+                  dired-omit-verbose nil)
+    (define-key dired-mode-map (kbd "C-a") 'esc/dired-back-to-start-of-files)
+    (define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
+    (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)
+    (define-key dired-mode-map (kbd "^") 'esc/dired-up-level-reuse-buffer))
+
+  (defcustom esc/dired-load-hook nil
+    "esc's hook to add to \\[dired-mode-hook]."
+    :type    'hook
+    :options '((load "dired-x" nil t)
+               (setq dired-listing-switches "-alh") ; todo: make friendly
+               (setq-default dired-recursive-copies 'always)
+               (setq-default dired-recursive-deletes 'top)
+               (esc/dired-load-hook-omit-files))
+    :group   'esc)
+
+  ;;;###autoload
+  (defun esc/dired-load-hook ()
+    "esc's hook to \\[dired-load-hook]."
+    (load "dired-x" nil t) ; todo: make friendly
+    (setq-default dired-listing-switches "-alh")
+    (setq-default dired-recursive-copies 'always
+                  dired-recursive-deletes 'top)
+    (esc/dired-load-hook-omit-files))
+
+  ;;;###autoload
+  (defun esc/dired-load-hook-omit-files ()
+    (setq dired-omit-verbose nil)
+    (after 'undo-tree
+      (setq dired-omit-files (concat dired-omit-files "\\|^\\.*~undo-tree~$"))))
+
+  ;;;###autoload
+  (defun esc/dired-back-to-top ()
+    "Goes to the first line in dired, not the top of the buffer."
+    (interactive)
+    (beginning-of-buffer)
+    (when (not (search-forward ".." nil 'noerror))
+      (beginning-of-buffer))          ;likely dired-omit-mode is enabled
+    (dired-next-line 1))
+
+  ;;;###autoload
+  (defun esc/dired-jump-to-bottom ()
+    "Goes to the last line in dired, not the bottom of the buffer."
+    (interactive)
+    (end-of-buffer)
+    (dired-previous-line 1))
+
+  ;;;###autoload
+  (defun esc/dired-up-level-reuse-buffer ()
+    "This defun will go to the parent directory in dired while reusing the current buffer."
+    (interactive)
+    (find-alternate-file ".."))
+
+  ;;;###autoload
+  (defun esc/dired-back-to-start-of-files ()
+    (interactive)
+    (backward-char (- (current-column) 2)))
+
+#+END_SRC
 ** OS configuration
 Operating system-specific configurations take place here, within this
 massive =cond=.
@@ -1074,34 +1286,6 @@ Begin Mac OS configuration
             (setq ns-function-modifier 'hyper))))
 #+END_SRC
 
-** Dired configuration
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package dired-details
-    :idle-priority 6
-    :idle
-    (dired-details-install)
-    (use-package dired-x)
-    (use-package dash
-      :idle 6
-      ;; Reload dired after making changes
-      (put '--each 'lisp-indent-function 1)
-      (--each '(dired-do-rename
-                dired-create-directory
-                wdired-abort-changes)
-        (eval `(defadvice ,it (after revert-buffer activate)
-                 (revert-buffer)))))
-    (use-package wdired
-      :config
-      (define-key wdired-mode-map
-        (vector 'remap 'beginning-of-line) 'esc/dired-back-to-start-of-files)
-      (define-key wdired-mode-map
-        (vector 'remap 'esc/back-to-indentation-or-beginning)
-        'esc/dired-back-to-start-of-files)
-      (define-key wdired-mode-map
-        (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
-      (define-key wdired-mode-map
-        (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)))
-#+END_SRC
 ** org config
 My favorite mode. This was the reason I started using Emacs, didja
 know?
@@ -1412,594 +1596,11 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
   (message "All done, %s%s" (user-login-name) ".")
   ;;; .emacs.el ends here
 #+END_SRC
-* esc-lisp
-** dired-config
-#+NAME: defcustom esc's dired hooks
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/dired-config.el
-  (defcustom esc/dired-mode-hook nil
-    "esc's hook to add to \\[dired-mode-hook]."
-    :type    'hook
-    :options '((define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
-               (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)
-               (define-key dired-mode-map (kbd "^") 'esc/dired-up-level-reuse-buffer))
-    :group   'esc-dired)
-
-  ;;;###autoload
-  (defun esc/dired-mode-hook ()
-    "esc's hook to \\[dired-mode-hook]."
-    (let ((activate (if (eq major-mode 'dired-mode) 1 -1)))
-      (hl-line-mode activate)
-      (after 'dired-x (dired-omit-mode activate)))
-    (setq-default dired-details-hidden-string "--- "
-                  dired-recursive-copies 'always
-                  dired-recursive-deletes 'top
-                  dired-omit-verbose nil)
-    (define-key dired-mode-map (kbd "C-a") 'esc/dired-back-to-start-of-files)
-    (define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
-    (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)
-    (define-key dired-mode-map (kbd "^") 'esc/dired-up-level-reuse-buffer))
-
-  (defcustom esc/dired-load-hook nil
-    "esc's hook to add to \\[dired-mode-hook]."
-    :type    'hook
-    :options '((load "dired-x" nil t)
-               (setq dired-listing-switches "-alh") ; todo: make friendly
-               (esc/dired-load-hook-omit-files))
-    :group   'esc-dired)
-
-  ;;;###autoload
-  (defun esc/dired-load-hook ()
-    "esc's hook to \\[dired-load-hook]."
-    (load "dired-x" nil t) ; todo: make friendly
-    (setq-default dired-listing-switches "-alh")
-    (setq-default dired-recursive-copies 'always)
-    (esc/dired-load-hook-omit-files))
-#+END_SRC
-#+NAME: dired-lib
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/dired-config.el
-  ;;;###autoload
-  (defun esc/dired-load-hook-omit-files ()
-    (setq dired-omit-verbose nil)
-    (setq dired-omit-files (concat dired-omit-files "\\|^\\.dropbox$"))
-    (after 'undo-tree
-      (setq dired-omit-files (concat dired-omit-files "\\|^\\.*~undo-tree~$"))))
-#+END_SRC
-
-Thanks [[http://whattheemacsd.com/setup-dired.el-02.html][Magnar]] for all the good ideas.
-
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/dired-config.el
-  ;;;###autoload
-  (defun esc/dired-back-to-top ()
-    "Goes to the first line in dired, not the top of the buffer."
-    (interactive)
-    (beginning-of-buffer)
-    (when (not (search-forward ".." nil 'noerror))
-      (beginning-of-buffer))          ;likely dired-omit-mode is enabled
-    (dired-next-line 1))
-
-  ;;;###autoload
-  (defun esc/dired-jump-to-bottom ()
-    "Goes to the last line in dired, not the bottom of the buffer."
-    (interactive)
-    (end-of-buffer)
-    (dired-previous-line 1))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/dired-config.el
-  ;;;###autoload
-  (defun esc/dired-find-file-single-mode ()
-    "This defun will invoke `dired-find-file` and open the file(s) at point in `single-mode'."
-    (interactive)
-    (dired-find-file)
-    (single-mode 1))
-
-  ;;;###autoload
-  (defun esc/dired-up-level-reuse-buffer ()
-    "This defun will go to the parent directory in dired while reusing the current buffer."
-    (interactive)
-    (find-alternate-file ".."))
-
-  ;;;###autoload
-  (defun esc/search-my-lisp-dir ()
-    "Open esc-lisp in `dired' for easy editing of configs."
-    (interactive)
-    (esc/edit-configs)
-    (esc/dired-back-to-top)
-    (call-interactively 'isearch-forward))
-
-  ;;;###autoload
-  (defun esc/dired-back-to-start-of-files ()
-    (interactive)
-    (backward-char (- (current-column) 2)))
-
-  (provide 'dired-config)
-#+END_SRC
-** esc-mode
-*** summary
-Here lies my personal minor mode, where I confine all of my custom
-keybindings. I also hook all of my preferred major and minor modes
-onto this mode's activation hook. Though all of my customizations are
-active by default for new emacs sessions, one can get back to the
-default settings by running =M-x esc-mode=.
-
-What is the difference between my current setup and using
-`define-globalized-minor-mode'?
-*** esc variables
-As a convention, esc functions are prefixed with `esc/' while esc
-variables are prefixed with `esc-'
-#+NAME: define customizable variables
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  (defvar esc-mode-map (make-keymap)
-      "The keymap for `esc-mode'.")
-
-  ;;;###autoload
-  (define-minor-mode esc-mode
-      "Toggle esc-keys mode.
-                   A minor mode so that my key settings override annoying major modes."
-      t " esc" 'esc-mode-map)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  ;; TODO: devise method of keeping these options in sync with the
-  ;; entire current implementation of esc/accompanying-mode-hook
-  (defcustom esc/accompanying-mode-hook nil
-    "Hook that is appended to esc-mode-hook."
-    :type         'hook
-    :options      '(;; do's
-                    (when (fboundp 'ido-mode) (ido-mode (esc-mode-enabledp)))
-                    (when (fboundp 'eldoc-mode) (eldoc-mode (esc-mode-enabledp)))
-                    (when (fboundp 'winner-mode) (winner-mode (esc-mode-enabledp)))
-                    (when (fboundp 'keyfreq-mode) (keyfreq-mode (esc-mode-enabledp)))
-                    (when (fboundp 'recentf-mode) (recentf-mode (esc-mode-enabledp)))
-                    (when (fboundp 'icomplete-mode) (icomplete-mode (esc-mode-enabledp)))
-                    (when (fboundp 'guide-key-mode) (guide-key-mode (esc-mode-enabledp)))
-                    (when (fboundp 'auto-fill-mode) (auto-fill-mode (esc-mode-enabledp)))
-                    (when (fboundp 'show-paren-mode) (show-paren-mode (esc-mode-enabledp)))
-                    (when (fboundp 'line-number-mode) (line-number-mode (esc-mode-enabledp)))
-                    (when (fboundp 'display-time-mode) (display-time-mode (esc-mode-enabledp)))
-                    (when (fboundp 'column-number-mode) (column-number-mode (esc-mode-enabledp)))
-                    (when (fboundp 'which-function-mode) (which-function-mode (esc-mode-enabledp)))
-                    (when (fboundp 'global-hl-line-mode) (global-hl-line-mode (esc-mode-enabledp)))
-                    (when (fboundp 'display-battery-mode) (display-battery-mode (esc-mode-enabledp)))
-                    (when (fboundp 'autopair-global-mode) (autopair-global-mode (esc-mode-enabledp)))
-                    (when (fboundp 'auto-compression-mode) (auto-compression-mode (esc-mode-enabledp)))
-                    (when (fboundp 'global-on-screen-mode) (global-on-screen-mode (esc-mode-enabledp)))
-                    (when (fboundp 'global-font-lock-mode) (global-font-lock-mode (esc-mode-enabledp)))
-                    (when (fboundp 'global-auto-revert-mode) (global-auto-revert-mode (esc-mode-enabledp)))
-                    (when (fboundp 'global-rainbow-delimiters-mode) (global-rainbow-delimiters-mode (esc-mode-enabledp)))
-                    ;; dont's
-                    (when (fboundp 'tool-bar-mode) (tool-bar-mode (dont (esc-mode-enabledp))))
-                    (when (fboundp 'menu-bar-mode) (menu-bar-mode (dont (esc-mode-enabledp))))
-                    (when (fboundp 'scroll-bar-mode) (scroll-bar-mode (dont (esc-mode-enabledp))))
-                    (when (fboundp 'blink-cursor-mode) (blink-cursor-mode (dont (esc-mode-enabledp))))
-                    (when (fboundp 'transient-mark-mode) (transient-mark-mode (dont (esc-mode-enabledp)))))
-    :group        'esc-mode)
-#+END_SRC
-
-*** esc macros
-#+NAME: self inflection
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  (defmacro esc-mode-enabledp ()
-      "A macro to determine if \\[esc-mode] is currently enabled."
-      `(progn (and (boundp 'esc-mode) esc-mode)))
-#+END_SRC
-
-TODO: integrate this into =esc-mode= again
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-    (after 'diminish-autoloads
-      (defmacro diminish-or-restore (mode)
-        "A macro to diminish a MODE, if `esc-mode' is being enabled;
-              or disable a MODE, if `esc-mode' is being disabled."
-        `(progn
-           (after 'diminish-autoloads
-             (if (esc-mode-enabledp)
-                 (diminish ,mode)
-               (diminish-undo ,mode))))))
-#+END_SRC
-
-Never you mind this macros...
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  (defmacro dont (operand)
-    "A macro to avoid awkward, unintuitive code in \\[esc-accompanying-mode-hook].
-            OPERAND is an integer to de/activate a given mode."
-    `(progn
-       (if (numberp ,operand)
-           (* (- 1) ,operand)
-         (if ,operand nil t))))
-#+END_SRC
-
-Macros to insert bindings in =esc-mode-map=.
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  (defmacro esc-key (sequence action)
-    "A macro to bind SEQUENCE to ACTION in `esc-mode-map'."
-    `(define-key esc-mode-map (kbd ,sequence) ,action))
-
-  (defmacro esc-keys (&rest binding-list)
-    "A macro to bind all keybindings and functions in BINDING-LIST
-  in `esc-mode-map'.
-
-  This macro runs conses through \\[esc-key] for convenience."
-    (declare (indent defun))
-    `(mapc (lambda (binding) (esc-key (car binding) (cdr binding)))
-           '(,@binding-list)))
-
-
-  ;; TODO: esc-replace-key
-  (defmacro esc-replace-key (old-action new-action)
-    ""
-    `(define-key esc-mode-map (vector 'remap ,old-action) ,new-action))
-
-
-  ;; TODO: implement a vector remap analog to esc-keys
-  (defmacro esc-replace-keys (&rest binding-list)
-    ""
-    )
-#+END_SRC
-
-*** esc bindings
-#+NAME: keybindings defined here
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  ;; Remaps -- wherever they may be bound
-  (esc-replace-key 'goto-line 'goto-line-with-feedback)
-  (esc-replace-key 'split-window-right 'esc/hsplit-last-buffer)
-  (esc-replace-key 'split-window-below 'esc/vsplit-last-buffer)
-
-  ;; Buffer management
-  (esc-key "C-c C-M-\\" 'indent-buffer)
-
-  ;; Enhanced keybindings
-  (esc-key "C-a"     'back-to-indentation-or-beginning)
-  (esc-key "M-s o"   'occur-dwim)
-  (esc-key "C-c y"  'middle-click-yank)
-
-  ;; Miscellaneous keybindings
-  (esc-key "C-c C-b" 'mode-line-other-buffer)
-  (esc-key "M-K"     'kill-sentence)
-  (esc-key "M-j"     'just-one-space) ; conflicts with spotlight
-  (esc-key "C-c k"   'copy-line)
-  (esc-key "M-P"     'align-regexp) ;; TODO: pull aligns into hydra
-  (esc-key "C-'"     'query-replace)
-  ;; TODO: change sexp wrapping (esc-key i 'e. {}[]()) from Xah Lee
-
-  ;; Programming bindings
-  (esc-key "C-c m" 'compile)
-  (esc-key "C-c C-m" 'recompile)
-
-  ;; C-q cluster
-  (esc-key "C-q" 'delete-region)     ;like C-w, but gone forever.
-  (esc-key "C-c q" 'auto-fill-mode)  ;more frequented than
-  (esc-key "C-c C-q" 'quoted-insert) ;  this command
-
-  ;; newline creation
-  (esc-key "<C-return>"   'open-line-below)
-  (esc-key "<C-S-return>" 'open-line-above)
-  (esc-key "C-M-O"        'split-line)
-  (esc-key "M-k"          'pull-up-line)
-
-  ;; LaTeX bindings
-  ;; todo: hydratize that block
-  (esc-key "C-c l b" 'esc/insert-latex-block)
-
-   ;; Mark commands
-  (esc-key "C-x m" 'pop-to-mark-command)
-
-  ;; Lisp/sexp movement
-  (esc-key "C-S-k" 'kill-sexp)
-
-  ;; Buffer control
-  (esc-key "C-x o" 'ace-window)
-  (esc-key "C-x M-b" 'bury-buffer)
-  (esc-key "C-c o" 'clone-indirect-buffer-other-window)
-  (esc-key "C-c C-o" 'ff-find-other-file) ;; TODO: only bind in appropriate modes
-
-  ;;; Function keys
-  (esc-key "<f5>"  'minibuffer-display-buffer-file-name)
-  (esc-key "<f6>"  'spray-mode)
-  (esc-key "<f8>"  'follow-mode-80-char-compliant)
-  (esc-key "C-c <f8>" 'hsplit-last-buffer-follow-mode)
-  (esc-key "<f9>"  'flyspell-buffer)
-  (esc-key "<f10>" 'golden-ratio-mode)
-  ;; TODO: create a defun to save win configuration first
-  ;; see stack on zebulon
-
-  (esc-key "C-c f" 'esc/visit-favorite-dir)
-
-  ;; Buffer-overlay hacks: super useful!
-  ;; TODO: smarter win-restore config
-  (esc-key "s-q" 'esc/raise-magit-status)
-  ;; (esc-key "s-e" 'esc/raise-eshell)
-  ;; todo: raise shell
-  ;; todo: smarter magit status: use zebulon's stack package
-  ;; todo: save window configuration
-#+END_SRC
-*** esc hydras
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-    (setq hydra-lv nil)
-
-    (defhydra hydra-spotify (esc-mode-map "<f7>")
-      "spotify"
-      ("c"   spotify-playpause "play/pause"
-       "p"   spotify-previous  "prev"
-       "n"   spotify-next      "next"))
-
-    (defhydra hydra-text-scale (esc-mode-map  "<f2>")
-      "text-scale"
-      ("j" text-scale-decrease "dec")
-      ("k" text-scale-increase "inc")
-      ("." default-text-scale-increase "default-dec")
-      ("," default-text-scale-decrease "default-inc"))
-
-    (defhydra hydra-eval (esc-mode-map "C-c C-e")
-      "eval"
-      ("r" eval-region "region")
-      ("b" eval-buffer "buffer")
-      ("s" eval-last-sexp "sexp")
-      ("d" eval-defun "defun")
-      ("b" edebug-defun "edebug")
-      ("p" esc/eval-and-replace "& replace"))
-
-    (defhydra hydra-error (esc-mode-map "M-g")
-      "goto-error"
-      ("h" first-error "first")
-      ("j" next-error "next")
-      ("k" previous-error "prev")
-      ("l" goto-line-with-feedback "goto-line" :color blue))
-
-    (defhydra hydra-multiple-cursors (esc-mode-map "M-a")
-      "multiple-cursors"
-      ("l" mc/edit-lines "edit")
-      ("n" mc/mark-next-like-this "mark next")
-      ("p" mc/mark-previous-like-this "mark prev")
-      ("s" mc/sort-regions "sort")
-      ("r" mc/reverse-regions "reverse")
-      ("e" mc/insert-numbers "enumerate")
-      ("*" mc/mark-all-like-this "mark all")
-      ("o" mc/mark-all-like-this-dwim "mark all dwim"))
-
-    (defhydra hydra-word-at-point (esc-mode-map "C-S-s")
-      "word at point"
-      ("r" esc/search-word-backward "search-backward")
-      ("s" esc/search-word-forward "search-forward"))
-
-    ;; todo: move to beginning of word in pre hook
-    (defhydra hydra-case-word-at-point (esc-mode-map "C-S-l")
-      "case word at point"
-      ("c" capitalize-word "capitalize")
-      ("u" upcase-word "upcase")
-      ("l" downcase-word "lowercase"))
-
-    (esc-key "M-m M-m" 'back-to-indentation)
-    ;; todo: create a mirror that manipulates `other-buffer'
-    (defhydra hydra-scroll-buffer (esc-mode-map "M-m")
-      "cursor-movement"
-      ("j" scroll-slight-up "up")
-      ("k" scroll-slight-down "dw")
-      ("s" isearch-forward "i-f" :color blue)
-      ("r" isearch-backward "i-r" :color blue)
-      ("h" backward-char "back")
-      ("l" forward-char "frwd")
-      ("n" next-line "next")
-      ("p" previous-line "prev")
-      ("e" end-of-line "end-ln")
-      ("a" beginning-of-line "beg-ln")
-      ("d" scroll-up "pg up")
-      ("u" scroll-down "pg dn")
-      ("q" read-only-mode)
-      ("/" goto-last-change "last-chng")
-      ("." find-tag "tag")
-      ("*" pop-tag-mark "pop-tag"))
-
-    (defhydra hydra-window-adjustment (esc-mode-map "C-z")
-      "window adjustment"
-      ("r" esc/rotate-window-split "rotate")
-      ("p" esc/swap-buffer-locations "swap")
-      ("o" esc/should-have-opened-this-in-other-window "other window")
-      ("s" unselectable-buffer "selectable")
-      ("w" ace-window "ace-window")
-      ("d" dedicated-bufer "dedicated")
-      ("b" mode-line-other-buffer "mode-line-other-buffer")
-      ("u" bury-buffer "bury"))
-
-    ;; TODO: use-package itize
-    (after 'org
-      (defhydra hydra-org-nav-source-block (esc-mode-map "C-c n")
-        "org src block nav"
-        ("n" org-jump-next-src-block "next")
-        ("p" org-jump-prev-src-block "prev")))
-
-    (defhydra hydra-move-text (esc-mode-map "M-RET")
-      "move text"
-      ("j" move-text-down "down")
-      ("k" move-text-up "up")
-      ("h" hide-lines "hide-lines")
-      ("r" esc/reveal-all-hidden-lines "reveal all"))
-
-    (defhydra hydra-mnimap (esc-mode-map "C-c M-RET")
-      "minimap"
-      ("m" minimap-toggle "toggle")
-      ("k" minimap-kill "kill" :color blue))
-#+END_SRC
-
-*** esc hook
-#+NAME: esc-mode-hook
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  ;; The proper definition of `esc-mode-hook'
-  (defun esc/accompanying-mode-hook ()
-    "esc's customizations added to `esc-mode-hook'."
-    (let* ((activate-bool (esc-mode-enabledp))
-           (activate (if activate-bool 1 -1)))
-        (if activate-bool (powerline-default-theme) (powerline-revert))
-
-        ;; esc-mode wouldn't be complete without these helper modes
-        ;; activate these modes
-        (mapc (lambda (mode) (when (fboundp mode)
-                          (ignore-errors (funcall mode activate))))
-              '(ido-mode
-                eldoc-mode
-                winner-mode
-                keyfreq-mode
-                recentf-mode
-                icomplete-mode
-                auto-fill-mode
-                show-paren-mode
-                line-number-mode
-                display-time-mode
-                column-number-mode
-                global-hl-line-mode
-                display-battery-mode
-                autopair-global-mode
-                auto-compression-mode
-                global-on-screen-mode
-                global-font-lock-mode
-                global-auto-revert-mode
-                global-rainbow-delimiters-mode))
-
-        ;; deactivate these modes
-        (mapc (lambda (mode) (when (fboundp mode)
-                          (ignore-errors (funcall mode (dont activate)))))
-              '(tool-bar-mode
-                menu-bar-mode
-                scroll-bar-mode
-                blink-cursor-mode
-                transient-mark-mode))
-
-        ;; esc-mode enjoys these settings also
-        (when (fboundp 'global-git-gutter-mode)
-          (global-git-gutter-mode activate-bool))
-        (setq-default save-place       activate-bool
-                      abbrev-mode      activate-bool
-                      auto-revert-mode activate-bool
-                      truncate-lines   activate-bool)
-        (diminish 'auto-revert-mode)
-        (setq
-         display-time-24hr-format             activate-bool
-         global-auto-revert-non-file-buffers  activate-bool
-         next-line-add-newlines               activate-bool
-         kill-whole-line                      activate-bool
-         vc-follow-symlinks                   activate-bool
-         search-highlight                     activate-bool
-         query-replace-highlight              activate-bool
-         auto-revert-verbose                  (not activate-bool)
-         confirm-nonexistent-file-or-buffer   (not activate-bool))
-
-        ;; this was determined to have a bug in it. Handle the bug
-        ;;(setq revert-buffer-function (if (esc-mode-enabledp)
-        ;;                                 'revert-buffer-keep-undo
-        ;;                               'revert-buffer))
-
-        ;; todo: when you use visual-line-mode enable physical-line-mode
-        ;; (global-visual-line-mode activate) ;word wrap by default
-        ;; (diminish 'visual-line-mode)
-
-        ;; todo: make reversible
-        (fringe-mode 0)
-
-        (after 'undo-tree-autoloads
-          (global-undo-tree-mode activate)
-          (setq undo-tree-visualizer-timestamps t
-                undo-tree-visualizer-relative-timestamps t))
-
-        ;; less clutter on the mode line
-        (after 'test-mode (diminish 'test-mode))
-        (diminish 'auto-fill-function)
-        ;; (diminish 'visual-line-mode)
-        ;; (diminish 'global-visual-line-mode)
-        (after 'autopair  (diminish 'autopair-mode))
-        (after 'abbrev    (diminish 'abbrev-mode))
-        (after 'undo-tree (diminish 'undo-tree-mode))
-        (after 'org-indent (diminish 'org-indent-mode))
-        (after 'magit (diminish 'magit-auto-revert-mode))
-        (after 'fic-mode (diminish 'fic-mode))
-        (after 'eldoc (diminish 'eldoc-mode))
-        (after 'smerge-mode (diminish 'smerge-mode))
-        (after 'auto-complete (diminish 'auto-complete-mode))
-        (after 'esc-mode (diminish 'esc-mode))))
-
-  (add-hook 'esc-mode-hook 'esc/accompanying-mode-hook)
-#+END_SRC
-*** esc fin
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/esc-mode.el
-  (provide 'esc-mode)
-#+END_SRC
-
-** multiple-cursors-config
-Configuration for [[https://github.com/magnars/multiple-cursors.el][magnars/multiple-cursors.el · GitHub]].
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/multiple-cursors-config.el
-(defcustom esc/multiple-cursors-mode-enabled-hook nil
-  "esc's code to \\[multiple-cursors-mode-enabled-hook]."
-  :type         'hook
-  :options      '((autopair-mode -1)
-		  (define-key mc/keymap (kbd "C-s") 'mc/search-forward)
-		  (define-key mc/keymap (kbd "C-r") 'mc/search-backward))
-  :group        'multiple-cursors)
-
-;;;###autoload
-(defun esc/multiple-cursors-mode-enabled-hook ()
-  "esc's code to \\[multiple-cursors-mode-enabled-hook]."
-  (autopair-mode -1)
-  ;; mc/keymap isn't created until this point
-  (defvar mc/search--last-term nil)
-  (define-key mc/keymap (kbd "C-s") 'mc/search-forward)
-  (define-key mc/keymap (kbd "C-r") 'mc/search-backward))
-
-(defcustom esc/multiple-cursors-mode-disabled-hook nil
-  "esc's code to \\[multiple-cursors-mode-disabled-hook]."
-  :type         'hook
-  :options      '((autopair-mode 1))
-  :group        'multiple-cursors)
-
-;;;###autoload
-(defun esc/multiple-cursors-mode-disabled-hook ()
-  "esc's code to \\[multiple-cursors-mode-disabled-hook]."
-  (autopair-mode 1))
-#+END_SRC
-
-Thanks, Jeff Chu! [[http://www.jeffchu.com/posts/2013/01/2013-01-29-multiple-cursors-mode.html][
-Jeff Chu - Emacs Multiple Cursors Mode and Search]]
-#+BEGIN_SRC emacs-lisp :tangle site-lisp/esc-lisp/multiple-cursors-config.el
-;;;###autoload
-(defun mc/search (search-command)
-  "Iterate through each active cursor and search for the designated string.
-SEARCH-COMMAND is the command to use for movement- either
-\\[search-forward] or \\[search-backward].
-
-Helper defun for \\[mc/search-forward] and \\[mc/search-backward]."
-  ;; Read new search term when not repeated command or applying to fake cursors
-  (when (and (not mc--executing-command-for-fake-cursor)
-             (not (eq last-command 'mc/search-forward))
-             (not (eq last-command 'mc/search-backward)))
-    (setq mc/search--last-term (read-from-minibuffer "Search: ")))
-  (funcall search-command mc/search--last-term))
-
-;;;###autoload
-(defun mc/search-forward ()
-  "Simplified version of forward search that supports multiple cursors."
-  (interactive)
-  (mc/search 'search-forward))
-
-;;;###autoload
-(defun mc/search-backward ()
-  "Simplified version of backward search that supports multiple cursors."
-  (interactive)
-  (mc/search 'search-backward))
-#+END_SRC
-
-*** [0/1] TODOs
-**** TODO allow for regexp's in isearch
-
-* [12/29] TODOs
-** DONE make_tags
-make an emacs wrapper to ido-select a dir and tagsgen from there
-** DONE fix load path
-** DONE quick dictionary
+* [6/23] TODOs
 ** DONE remove tangles files from git, provide makefile
 ** DONE allow tabs in makefile-mode
   works with tabify
-** DONE byte-compile-directory
 ** DONE diminish stuff
-** DONE smooth esc scrolling
-  best definition so far: scrolling that increases over time
-** DONE naming standard for org babel files sectioning
 ** DONE use package use-package
 ** TODO publish esc-mode on melpa
 ** TODO scratch buffer as consistent config file

@@ -70,16 +70,6 @@
 	      (apply #'combinations (cdr lists)))
     (list nil)))
 
-;; [[http://whattheemacsd.com/key-bindings.el-03.html][Magnar]] said
-;; it best, here's one command I could not live without.
-
-;;;###autoload
-(defun pull-up-line (&optional arg)
-  "Pull up ARG lines."
-  (interactive "p")
-  (dotimes (i arg)
-    (join-line -1)))
-
 ;; [[http://www.emacswiki.org/emacs/TrampMode#toc30][EmacsWiki: Tramp Mode]]
 
 ;;;###autoload
@@ -100,35 +90,6 @@
        (concat "/sudo:root@localhost:" (buffer-file-name))))
     (goto-char position)))
 
-;; Courtesy of [[http://oremacs.com/2015/01/26/occur-dwim/][or emacs]].
-
-;;;###autoload
-(defun occur-dwim ()
-  "Call function `occur' with a sane default.
-
-Function `occur-dwim' will offer as the default candidate:
-- the current region, if it's active
-- the current symbol, otherwise"
-  (interactive)
-  (push (if (region-active-p)
-	    (buffer-substring-no-properties
-	     (region-beginning)
-	     (region-end))
-	  (thing-at-point 'symbol))
-	regexp-history)
-  (call-interactively 'occur))
-
-;;;###autoload
-(defun copy-line (&optional arg)
-  "Copy current line in the kill ring."
-  (interactive "p")
-  (let ((lines (if arg (+ 1 arg) 2)))
-    (kill-ring-save (line-beginning-position)
-		    (line-beginning-position lines))
-    (message (if (eq 2 lines)
-		 "Line copied."
-	       (format "%d lines copied." lines)))))
-
 ;;;###autoload
 (defun remove-dos-eol ()
   "Do not show ^M in files containing mixed UNIX and DOS line
@@ -138,48 +99,10 @@ endings."
   (aset buffer-display-table ?\^M []))
 
 ;;;###autoload
-(defun back-to-indentation-or-beginning ()
-  "Returns the point to the beginning of the current line, or if
-already there, the beginning of text on the current line."
-  (interactive)
-  (let ((pt (point)))
-    (beginning-of-line)
-    (when (eq pt (point))
-      (beginning-of-line-text))))
-
-;;;###autoload
 (defun toggle-selective-display (column)
   "Enable code folding in current buffer."
   (interactive "P")
   (set-selective-display (if selective-display nil (or column 1))))
-
-;;;###autoload
-(defun open-line-below ()
-  "Create a new line above the current line. Can be used with point
-       anywhere on the line."
-  (interactive)
-  (end-of-line)
-  (newline)
-  (indent-for-tab-command))
-
-;;;###autoload
-(defun open-line-above ()
-  "Create a new line below the current line. Can be used with point
-       anywhere on the line."
-  (interactive)
-  (beginning-of-line)
-  (newline)
-  (forward-line -1)
-  (indent-for-tab-command))
-
-;;;###autoload
-(defun goto-line-with-feedback ()
-  "Show line numbers temporarily, while prompting for the line number input."
-  (interactive)
-  (unwind-protect (progn
-		    (linum-mode 1)
-		    (goto-line (read-number "Goto line: ")))
-    (linum-mode -1)))
 
 ;;;###autoload
 (defun delete-whole-word ()

@@ -280,35 +280,6 @@ TODO: defcustom
                    (or internal-too (/= (aref name 0) ?\s))
                    (string-match regexp name))
           (kill-buffer buffer)))))
-
-  ;;;###autoload
-  (defmacro esc/toggle-fullscreen-buffer (win-register toggled-mode-test toggle-command
-                                                       &optional
-                                                       toggle-command-test
-                                                       clear-command)
-    "Bring up a temporary buffer in fullscreen mode, or restore the
-  previous window configuration.
-
-  WIN-REGISTER         is the register to store the old window configuration in.
-
-  TOGGLED-MODE-TEST    is the major mode of the toggled state, in other words a
-                       test to determine which way to toggle the buffers.
-
-  TOGGLE-COMMAND       is the command to run when toggling into the temporary
-                       state.
-
-  CLEAR-COMMAND        is an optional command to run when reverting back to the
-                       original state; i.e. toggle a flag"
-    (declare (indent defun))
-    `(progn
-       (if ,toggled-mode-test
-           (progn (jump-to-register ,win-register)
-                  (when (not (equal nil ,clear-command))
-                    ,clear-command))
-         (window-configuration-to-register ,win-register)
-         ,toggle-command
-         (delete-other-windows))))
-
   ;;;###autoload
   (defmacro esc/save-window-configuration (win-register &rest body)
     "Save current window configuration to WIN-REGISTER, run BODY,
@@ -318,22 +289,6 @@ TODO: defcustom
        (window-configuration-to-register ,win-register)
        (progn ,@body)
        (jump-to-register ,win-register)))
-
-  ;;;###autoload
-  (defun esc/should-have-opened-this-in-other-window (&optional COUNT)
-    "Returns to the previous buffer in current window, calls
-  `other-window', and opens the buffer in the new window.
-
-  COUNT is the number of windows to advance; the argument is passed
-  directly to `other-window', so see the documentation for more
-  details."
-    (interactive)
-    (when (equal nil COUNT)
-      (setq COUNT 1))
-    (let ((target (buffer-name)))
-      (switch-to-prev-buffer)
-      (other-window COUNT)
-      (switch-to-buffer target)))
 
   ;;;###autoload
   (defun buffers-matching-regexp (regexp &optional names)
@@ -349,34 +304,6 @@ TODO: defcustom
                             (buffer-name buf)
                           buf))))
                   (buffer-list))))
-
-  ;;;###autoload
-  (defun esc/rotate-window-split ()
-    "Transform a vertically split window to a horizontally split
-  window."
-    (interactive)
-    (if (= (count-windows) 2)
-        (let* ((this-win-buffer (window-buffer))
-               (next-win-buffer (window-buffer (next-window)))
-               (this-win-edges (window-edges (selected-window)))
-               (next-win-edges (window-edges (next-window)))
-               (this-win-2nd (not (and (<= (car this-win-edges)
-                                           (car next-win-edges))
-                                       (<= (cadr this-win-edges)
-                                           (cadr next-win-edges)))))
-               (splitter
-                (if (= (car this-win-edges)
-                       (car (window-edges (next-window))))
-                    'split-window-horizontally
-                  'split-window-vertically)))
-          (delete-other-windows)
-          (let ((first-win (selected-window)))
-            (funcall splitter)
-            (if this-win-2nd (other-window 1))
-            (set-window-buffer (selected-window) this-win-buffer)
-            (set-window-buffer (next-window) next-win-buffer)
-            (select-window first-win)
-            (if this-win-2nd (other-window 1))))))
 
   ;;;###autoload
   ;; (defun esc/raise-eshell ()
@@ -401,50 +328,7 @@ TODO: defcustom
           (insert "cd " dir)
           (with-no-warnings (eshell-send-input))))))
 
-  ;;;###autoload
-  (defun esc/raise-magit-status ()
-    "Bring up a full-screen magit-status or restore previous
-  window configuration.
 
-  This defun will not raise magit if you have merge conflicts in
-  the current buffer.
-
-  This defun kills all buffers matching regexp '^*magit: ' upon the
-  exit toggle of the fullscreen magit buffer"
-    (interactive)
-    (save-excursion
-      (beginning-of-buffer)
-      (when (re-search-forward "^<<<<<<< variant" nil 'noerror)
-        (error "Resolve merge conflicts first.")))
-    (esc/toggle-fullscreen-buffer
-      :magit-fullscreen
-      (string= "magit-status-mode" major-mode)
-      (progn (if (not (buffer-file-name))
-                 (message "Buffer not associated with a file")
-               (save-buffer)
-               (magit-status (file-name-directory (buffer-file-name)))))
-      nil (kill-matching-buffers-no-ask "^*magit: ")))
-
-  ;; Thanks sacha! See
-  ;; [[http://pages.sachachua.com/.emacs.d/Sacha.html#sec-1-5-1][Sacha
-  ;; Chua's Emacs configuration]] for more tips.
-  ;;;###autoload
-  (defun esc/vsplit-last-buffer (prefix)
-    "Split the window vertically and display the previous buffer.
-  Argument PREFIX when nil switches the new buffer to the last buffer."
-    (interactive "p")
-    (split-window-vertically)
-    (other-window 1 nil)
-    (unless prefix (switch-to-next-buffer)))
-
-  ;;;###autoload
-  (defun esc/hsplit-last-buffer (prefix)
-    "Split the window horizontally and display the previous buffer.
-  Argument PREFIX when nil switches the new buffer to the last buffer."
-    (interactive "p")
-    (split-window-horizontally)
-    (other-window 1 nil)
-    (unless prefix (switch-to-next-buffer)))
 
   (provide 'buffer+)
 
@@ -546,41 +430,6 @@ Many thanks to [[http://www.emacswiki.org/emacs/DictMode][EmacsWiki]].
       (message "done"))
 
     ;;;###autoload
-    (defun esc/swap-buffer-locations ()
-      "Rotate your windows around and around."
-      (interactive)
-      (if (not (> (count-windows) 1))
-          (error "You can't rotate a single window"))
-      (let ((i 1))
-        (let ((numWindows (count-windows)))
-          (while  (< i numWindows)
-            (let* ((w1 (elt (window-list) i))
-                   (w2 (elt (window-list) (+ (% i numWindows) 1)))
-                   (b1 (window-buffer w1))
-                   (b2 (window-buffer w2))
-                   (s1 (window-start w1))
-                   (s2 (window-start w2)))
-              (set-window-buffer w1  b2)
-              (set-window-buffer w2 b1)
-              (set-window-start w1 s2)
-              (set-window-start w2 s1)
-              (setq i (1+ i)))))))
-
-    ;;;###autoload
-    (defun esc/eval-and-replace (&optional arg)
-      "Replace the preceding sexp with its value."
-      (interactive "P")
-      (backward-kill-sexp)
-      (let ((expression (current-kill 0)))
-        (condition-case nil
-            (progn
-              (when arg (insert (concat expression " = ")))
-              (prin1 (eval (read expression))
-                     (current-buffer)))
-          (error (message "Invalid expression")
-                 (insert expression)))))
-
-    ;;;###autoload
     (defun esc/save-buffers-kill-emacs (&optional arg)
       "Offer to save each buffer(once only), then kill this Emacs process.
        With prefix ARG, silently save all file-visiting buffers, then kill."
@@ -605,14 +454,7 @@ Many thanks to [[http://www.emacswiki.org/emacs/DictMode][EmacsWiki]].
                (funcall confirm-kill-emacs "Really exit Emacs? "))
            (kill-emacs)))
 
-    ;;;###autoload
-    (defun esc/mode-line-other-buffer-other-window ()
-      "Switch to `other-window', use `mode-line-other-buffer', and
-        switch back to the original window."
-      (interactive)
-      (other-window 1)
-      (mode-line-other-buffer)
-      (other-window -1))
+
 
     (provide 'emacs+)
 #+END_SRC

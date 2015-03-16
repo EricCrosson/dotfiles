@@ -32,12 +32,6 @@
 ;;; Code:
 
 ;;;###autoload
-(defun middle-click-yank ()
-  "Yank from the middle click mouse buffer."
-  (interactive)
-  (mouse-yank-primary 1))
-
-;;;###autoload
 (defun insert-file-name (&optional ARG)
   "Inserts the name of the current file (including extension) at point.
 
