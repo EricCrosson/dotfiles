@@ -118,10 +118,18 @@ with proper distributed version control.
               '((highlight "#333")
                 (region    "#444")))
     #+END_SRC
-
+** Fonts
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (defun font-exists-p (font) 
+       "Nil unless FONT is recognized by Emacs." 
+       (if (null (x-list-fonts font)) nil t))
+   #+END_SRC
+   
     Favored font of late
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (set-face-attribute 'default nil :font "Meslo LG S 8")
+    #+BEGIN_SRC emacs-lisp :tangle yes;
+      (let ((esc-font "Meslo LG S 8"))
+        (when (font-exists-p esc-font)
+          (set-face-attribute 'default nil :font esc-font)))
     #+END_SRC
 ** Macros
 I took the macro below from [[http://milkbox.net/note/single-file-master-emacs-configuration/][milkypostman]]. His article is really worth
