@@ -321,11 +321,6 @@ Prefix '0' to comment-dwim to kill comments entirely.
 TODO: write about how cool this is! (not related to above comment
 about a post)
 
-** Package initialization
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;(use-package cl-lib) ;; todo is: this necessary?
-  ;;(use-package eldoc) ;; TODO: hook onto lisp modes
-#+END_SRC
 ** Configuration
 *** Mojo config
 Mojo is my personal extension of the GNU Emacs global namespace.
