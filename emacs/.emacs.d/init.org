@@ -388,6 +388,7 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee-d77b-45da-ac5c-b9bbb562.gif][Power⚡Line]] baby!
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package powerline
+    :disabled t
     :config (powerline-default-theme))
 #+END_SRC
 *** Smartrep conf
