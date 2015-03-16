@@ -1314,12 +1314,7 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
   (message "All done, %s%s" (user-login-name) ".")
   ;;; .emacs.el ends here
 #+END_SRC
-* [6/23] TODOs
-** DONE remove tangles files from git, provide makefile
-** DONE allow tabs in makefile-mode
-  works with tabify
-** DONE diminish stuff
-** DONE use package use-package
+* [2/19] TODOs
 ** TODO publish esc-mode on melpa
 ** TODO scratch buffer as consistent config file
   only emacs-lisp source blocks from the org file are loaded,
