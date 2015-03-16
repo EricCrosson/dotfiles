@@ -322,6 +322,14 @@ TODO: write about how cool this is! (not related to above comment
 about a post)
 
 ** Configuration
+*** Auto package update config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package auto-package-update
+    :idle-priority 9
+    :idle
+      (setq auto-package-update-interval 3)
+      (ignore-errors (auto-package-update-maybe)))
+#+END_SRC
 *** Mojo config
 Mojo is my personal extension of the GNU Emacs global namespace.
 #+BEGIN_SRC emacs-lisp :tangle yes
