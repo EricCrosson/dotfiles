@@ -97,6 +97,7 @@ prior respective states on exit."
     "The keymap for `esc-mode'.")
 
 (require 'esc-defuns)
+(require 'esc-hooks)
 
 ;;; esc-mode key bindings
 

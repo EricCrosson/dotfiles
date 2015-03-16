@@ -47,20 +47,6 @@ need to keep the list updated, just load all subdirectories and go.
     :group 'esc-mode)
   (setq site-lisp-path "~/.emacs.d/site-lisp/")
 
-  (defcustom esc-lisp-path nil
-    "Path to esc's lisp library."
-    :type 'path
-    :options '("~/.emacs.d/site-lisp/esc-lisp/")
-    :group 'esc-mode)
-  (setq esc-lisp-path (concat site-lisp-path "esc-lisp/"))
-
-  (defcustom esc-loaddefs-path nil
-    "Path to `loaddefs.el' file used by esc's Emacs sessions."
-    :type 'path
-    :options '("~/.emacs.d/site-lisp/esc-lisp/loaddefs.el")
-    :group 'esc-mode)
-  (setq esc-loaddefs-path (concat esc-lisp-path "loaddefs.el"))
-
   (defcustom esc-meta-path nil
     "Path to .emacs.d meta directory, for internal bookkeeping
   records."
@@ -72,12 +58,6 @@ need to keep the list updated, just load all subdirectories and go.
   (let ((default-directory site-lisp-path))      ;for easy
     (normal-top-level-add-to-load-path '("."))   ;recursive
     (normal-top-level-add-subdirs-to-load-path)) ;loading
-
-  (autoload 'list-files-in-subtree-matching-regexp-recursive "update-autoloads")
-  ;; Load all project's loaddefs.el (automatically managed)
-  (mapc (lambda (loaddef) (load-file loaddef))
-        (list-files-in-subtree-matching-regexp-recursive
-         esc-lisp-path "loaddefs.el"))
 #+END_SRC
 
 Use [[https://github.com/jwiegley/use-package][use-package]]
@@ -120,13 +100,13 @@ with proper distributed version control.
     #+END_SRC
 ** Fonts
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (defun font-exists-p (font) 
-       "Nil unless FONT is recognized by Emacs." 
+     (defun font-exists-p (font)
+       "Nil unless FONT is recognized by Emacs."
        (if (null (x-list-fonts font)) nil t))
    #+END_SRC
-   
+
     Favored font of late
-    #+BEGIN_SRC emacs-lisp :tangle yes;
+    #+BEGIN_SRC emacs-lisp :tangle yes
       (let ((esc-font "Meslo LG S 8"))
         (when (font-exists-p esc-font)
           (set-face-attribute 'default nil :font esc-font)))
@@ -152,25 +132,6 @@ notifications.
        (message ,message)
        (progn ,@body)
        (message (concat ,message "...done"))))
-#+END_SRC
-
-Facilitate normal initialization processes.
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defmacro autoload-from-package (package functions)
-    "From PACKAGE (string), autoload FUNCTIONS (list)."
-    (declare (indent defun))
-    `(mapc (lambda (fn) (autoload fn ,package nil t))
-           ,functions))
-
-  (defmacro require-package (packages)
-    "Require PACKAGES (list) quietly."
-    (declare (indent defun))
-    `(mapc (lambda (package) (require package nil 'noerror))
-           ,packages))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (require-package '(emacs+ compilation+ buffer+ boilerplate org+ os-interaction programming+ dired-config))
 #+END_SRC
 
 ** Package configuration
@@ -260,75 +221,10 @@ tempt users to disable them.
   (setq search-whitespace-regexp "[ \t\r\n]+")
 #+END_SRC
 ** Aliases
-I did not grow up in an era where this is a straightforward mnemonic.
-#+NAME: alias fmakunbound => undefun
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defalias 'undefun 'fmakunbound)
-#+END_SRC
-
-** Advice
-*** builtim command advice
-The following macro is to prevent the user from manually having to
-create directories (=M-x make-directory RET RET=) after using
-=find-file= on a nonexistent file.
-#+BEGIN_SRC emacs-lisp :tangle yes
-(defadvice find-file (before make-directory-maybe
-			     (filename &optional wildcards) activate)
-  "Create nonexistent parent directories while visiting files."
-  (unless (file-exists-p filename)
-    (let ((dir (file-name-directory filename)))
-      (unless (file-exists-p dir)
-        (make-directory dir)))))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defadvice term-sentinel (around my-advice-term-sentinel (proc msg))
-    "Kill `term-mode' buffers when an exit signal is received."
-    (if (memq (process-status proc) '(signal exit))
-        (let ((buffer (process-buffer proc)))
-          ad-do-it
-          (kill-buffer buffer))
-      ad-do-it))
-#+END_SRC
-
-*** comment-dwim
-I wrote a post about my path to this advice somewhere. I'll find a link when it's stable.
-#+NAME: One Commenter to Rule Them All (TM)
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defadvice comment-dwim (around comment-line-maybe activate)
-    "If invoked from the beginning of a line or the beginning of
-  text on a line, comment the current line instead of appending a
-  comment to the line."
-    (if (and (not (use-region-p))
-             (not (eq (line-end-position)
-                      (save-excursion (back-to-indentation) (point))))
-             (or (eq (point) (line-beginning-position))
-                 (eq (point) (save-excursion (back-to-indentation) (point)))))
-        (comment-or-uncomment-region (line-beginning-position)
-                                     (line-end-position))
-      ad-do-it
-      (setq deactivate-mark nil)))
-#+END_SRC
-
-Prefix '0' to comment-dwim to kill comments entirely.
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (defadvice comment-dwim (around delete-comment-if-prefixed activate)
-    "If the universal prefix to \\[comment-dwim] is 0, delete the
-    comment from the current line or marked region."
-    (if (not (eq current-prefix-arg 0))   ; normal behavior
-        ad-do-it
-      (let ((comments (if (region-active-p)
-                          (count-lines (region-beginning) (region-end))
-                        1)))
-        (save-excursion
-          (when (region-active-p)
-            (goto-char (region-beginning)))
-          (comment-kill comments)))))
-#+END_SRC
-
-TODO: write about how cool this is! (not related to above comment
-about a post)
-
+   I did not grow up in an era where this is a straightforward mnemonic.
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (defalias 'undefun 'fmakunbound)
+   #+END_SRC
 ** Configuration
 *** Auto package update config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -845,6 +741,8 @@ TODO: conform to use-packages way of creating stubs
       :init (add-hook 'haskell-mode-hook 'haskell-indent-mode)))
 #+END_SRC
 *** Clean mode line conf
+    Take this opportunity to refresh the mode line. Inspiration from
+    [[http://www.masteringemacs.org/article/hiding-replacing-modeline-strings][Mastering Emacs]].
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package clean-mode-line
     :config
@@ -855,7 +753,8 @@ TODO: conform to use-packages way of creating stubs
             (python-mode . "Py")
             (lisp-interaction-mode . "λ")
             (emacs-lisp-mode . "eλ")
-            (lisp-mode . "λ"))))
+            (lisp-mode . "λ")))
+    (add-hook 'after-change-major-mode-hook 'clean-mode-line))
 #+END_SRC
 *** Pretty lambdada config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1052,203 +951,10 @@ TODO: integrate with =esc-mode=
   (after 'auto-complete (diminish 'auto-complete-mode))
   (after 'esc-mode (diminish 'esc-mode))
 #+END_SRC
-** Hooks
-Attach =esc-mode= hooks
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (mapc (lambda (hook)
-          (let ((attach (intern (format "esc/%s" hook))))
-            (add-hook hook attach)))
-        '(erc-mode-hook
-          prog-mode-hook
-          fundamental-mode-hook
-          emacs-lisp-mode-hook
-          c-mode-common-hook
-          c++-mode-hook
-          eshell-mode-hook
-          iedit-mode-hook
-          comint-mode-hook
-          big-fringe-mode-hook
-          org-mode-hook
-          minibuffer-setup-hook
-          dired-mode-hook
-          dired-load-hook
-          multiple-cursors-mode-enabled-hook
-          multiple-cursors-mode-disabled-hook))
-#+END_SRC
-
-*** Text mode hook
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'text-mode-hook 'turn-on-auto-fill)
-#+END_SRC
-*** Find file hook
-TODO: this could be idle-loaded, as it will load all of mojo.el
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'find-file-hook 'remove-dos-eol)
-#+END_SRC
-*** Save hooks
-Handy little hooks to nudge new files in the right direction.
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'before-save-hook 'delete-trailing-whitespace)
-  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-#+END_SRC
-*** Compilation buffer hook
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-to-list 'same-window-buffer-names "*compilation*")
-#+END_SRC
-*** Change major mode hook
-Take this opportunity to refresh the mode line. Inspiration from
-[[http://www.masteringemacs.org/article/hiding-replacing-modeline-strings][Hiding and replacing modeline strings with clean-mode-line - Mastering
-Emacs]].
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'after-change-major-mode-hook 'clean-mode-line)
-#+END_SRC
-*** Kill emacs hook
-Summon the magical cookies.
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (add-hook 'kill-emacs-hook 'update-esc-lisp-autoloads)
-#+END_SRC
-
-Override the kill function.
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (fset 'save-buffers-kill-emacs 'esc/save-buffers-kill-emacs)
-#+END_SRC
-
-** Uncurated
-#+BEGIN_SRC emacs-lisp :tangle yes
-  ;;; Multiple cursors configuration
-
-  (defcustom esc/multiple-cursors-mode-enabled-hook nil
-    "esc's code to function `multiple-cursors-mode-enabled-hook'."
-    :type         'hook
-    :options      '((autopair-mode -1)
-                    (define-key mc/keymap (kbd "C-s") 'mc/search-forward)
-                    (define-key mc/keymap (kbd "C-r") 'mc/search-backward))
-    :group        'multiple-cursors)
-
-  ;;;###autoload
-  (defun esc/multiple-cursors-mode-enabled-hook ()
-    "esc's code to function `multiple-cursors-mode-enabled-hook'."
-    (autopair-mode -1)
-    ;; mc/keymap isn't created until this point
-    (defvar mc/search--last-term nil)
-    (define-key mc/keymap (kbd "C-s") 'mc/search-forward)
-    (define-key mc/keymap (kbd "C-r") 'mc/search-backward))
-
-  (defcustom esc/multiple-cursors-mode-disabled-hook nil
-    "esc's code to function `multiple-cursors-mode-disabled-hook`."
-    :type         'hook
-    :options      '((autopair-mode 1))
-    :group        'multiple-cursors)
-
-  ;;;###autoload
-  (defun esc/multiple-cursors-mode-disabled-hook ()
-    "esc's code to function `multiple-cursors-mode-disabled-hook`."
-    (autopair-mode 1))
-
-  ;;;###autoload
-  (defun mc/search (search-command)
-    "Iterate through each active cursor and search for the designated string.
-  SEARCH-COMMAND is the command to use for movement- either
-  function `search-forward` or function `search-backward`.
-
-  Helper defun for function `mc/search-forward` and function `mc/search-backward`."
-    ;; Read new search term when not repeated command or applying to fake cursors
-    (when (and (not mc--executing-command-for-fake-cursor)
-               (not (eq last-command 'mc/search-forward))
-               (not (eq last-command 'mc/search-backward)))
-      (setq mc/search--last-term (read-from-minibuffer "Search: ")))
-    (funcall search-command mc/search--last-term))
-
-  ;;;###autoload
-  (defun mc/search-forward ()
-    "Simplified version of forward search that supports multiple cursors."
-    (interactive)
-    (mc/search 'search-forward))
-
-  ;;;###autoload
-  (defun mc/search-backward ()
-    "Simplified version of backward search that supports multiple cursors."
-    (interactive)
-    (mc/search 'search-backward))
-
-  ;;; Dired configuration
-
-  (defcustom esc/dired-mode-hook nil
-    "esc's hook to add to \\[dired-mode-hook]."
-    :type    'hook
-    :options '((define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
-               (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)
-               (define-key dired-mode-map (kbd "^") 'esc/dired-up-level-reuse-buffer))
-    :group   'esc)
-
-  ;;;###autoload
-  (defun esc/dired-mode-hook ()
-    "esc's hook to \\[dired-mode-hook]."
-    (let ((activate (if (eq major-mode 'dired-mode) 1 -1)))
-      (hl-line-mode activate)
-      (after 'dired-x (dired-omit-mode activate)))
-    (setq-default dired-details-hidden-string "--- "
-                  dired-recursive-copies 'always
-                  dired-recursive-deletes 'top
-                  dired-omit-verbose nil)
-    (define-key dired-mode-map (kbd "C-a") 'esc/dired-back-to-start-of-files)
-    (define-key dired-mode-map (vector 'remap 'beginning-of-buffer) 'esc/dired-back-to-top)
-    (define-key dired-mode-map (vector 'remap 'end-of-buffer) 'esc/dired-jump-to-bottom)
-    (define-key dired-mode-map (kbd "^") 'esc/dired-up-level-reuse-buffer))
-
-  (defcustom esc/dired-load-hook nil
-    "esc's hook to add to \\[dired-mode-hook]."
-    :type    'hook
-    :options '((load "dired-x" nil t)
-               (setq dired-listing-switches "-alh") ; todo: make friendly
-               (setq-default dired-recursive-copies 'always)
-               (setq-default dired-recursive-deletes 'top)
-               (esc/dired-load-hook-omit-files))
-    :group   'esc)
-
-  ;;;###autoload
-  (defun esc/dired-load-hook ()
-    "esc's hook to \\[dired-load-hook]."
-    (load "dired-x" nil t) ; todo: make friendly
-    (setq-default dired-listing-switches "-alh")
-    (setq-default dired-recursive-copies 'always
-                  dired-recursive-deletes 'top)
-    (esc/dired-load-hook-omit-files))
-
-  ;;;###autoload
-  (defun esc/dired-load-hook-omit-files ()
-    (setq dired-omit-verbose nil)
-    (after 'undo-tree
-      (setq dired-omit-files (concat dired-omit-files "\\|^\\.*~undo-tree~$"))))
-
-  ;;;###autoload
-  (defun esc/dired-back-to-top ()
-    "Goes to the first line in dired, not the top of the buffer."
-    (interactive)
-    (beginning-of-buffer)
-    (when (not (search-forward ".." nil 'noerror))
-      (beginning-of-buffer))          ;likely dired-omit-mode is enabled
-    (dired-next-line 1))
-
-  ;;;###autoload
-  (defun esc/dired-jump-to-bottom ()
-    "Goes to the last line in dired, not the bottom of the buffer."
-    (interactive)
-    (end-of-buffer)
-    (dired-previous-line 1))
-
-  ;;;###autoload
-  (defun esc/dired-up-level-reuse-buffer ()
-    "This defun will go to the parent directory in dired while reusing the current buffer."
-    (interactive)
-    (find-alternate-file ".."))
-
-  ;;;###autoload
-  (defun esc/dired-back-to-start-of-files ()
-    (interactive)
-    (backward-char (- (current-column) 2)))
-
-#+END_SRC
+*** Compilation buffer config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (add-to-list 'same-window-buffer-names "*compilation*")
+    #+END_SRC
 ** OS configuration
 Operating system-specific configurations take place here, within this
 massive =cond=.
