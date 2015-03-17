@@ -62,6 +62,7 @@ need to keep the list updated, just load all subdirectories and go.
 
 Use [[https://github.com/jwiegley/use-package][use-package]]
 #+BEGIN_SRC emacs-lisp :tangle yes
+  (quelpa 'use-package)
   (eval-when-compile (require 'use-package))
 #+END_SRC
 
@@ -242,12 +243,37 @@ tempt users to disable them.
       (setq auto-package-update-interval 3)
       (ignore-errors (auto-package-update-maybe)))
 #+END_SRC
+*** Color theme config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'monochrome-theme)
+      (quelpa 'bliss-theme)
+    #+END_SRC
 *** Mojo config
 Mojo is my personal extension of the GNU Emacs global namespace.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa '(mojo :repo "EricCrosson/mojo" :fetcher github))
   (use-package mojo)
 #+END_SRC
+*** Hidden mode line
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa '(hidden-mode-line :repo "EricCrosson/hidden-mode-line" :fetcher github))
+    #+END_SRC
+*** Writegood mode config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'writegood-mode)
+      (use-package writegood-mode
+        :config
+          (add-hook 'fundamental-mode-hook 'writegood-mode)
+          (add-hook 'latex-mode-hook 'writegood-mode))
+    #+END_SRC
+*** Yaml mode config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'yaml-mode)
+    #+END_SRC
+*** Yasnippet config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'yasnippet)
+    #+END_SRC
 *** undo-tree config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'undo-tree)
@@ -308,6 +334,10 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 
     (esc-mode 1))
 #+END_SRC
+*** Mode line in header config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'mode-line-in-hdeader)
+    #+END_SRC
 *** Displaced yank config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa '(displaced-yank :repo "EricCrosson/displaced-yank" :fetcher github))
@@ -821,6 +851,18 @@ TODO: conform to use-packages way of creating stubs
                   enh-ruby-mode-hook
                   ruby-mode-hook)))
 #+END_SRC
+*** Bind key config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'bind-key)
+    #+END_SRC
+*** Bash completion config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'bash-completion)
+    #+END_SRC
+*** Markdown mode
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'markdown-mode)
+    #+END_SRC
 *** Magit config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'magit)
@@ -928,6 +970,10 @@ Thanks yet again [[https://github.com/magnars/fold-this.el][Magnar]]
               ("C-c F" . fold-this-unfold-all))))
 
 #+END_SRC
+*** Tagsgen config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa '(tagsgen :repo "EricCrosson/tagsgen" :fetcher github))
+    #+END_SRC
 *** Org cliplink config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'org-cliplink)
