@@ -34,7 +34,7 @@
 #+END_SRC
 
 ** Package configuration and Load path
-   Install [[https://github.com/quelpa/quelpa][quelpa]] if it doesn't exist yet
+Install [[https://github.com/quelpa/quelpa][quelpa]] if it doesn't exist yet
 #+BEGIN_SRC emacs-lisp :tangle yes
   (unless (require 'quelpa nil 'noerror)
     (with-temp-buffer
@@ -699,8 +699,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 *** Multiple cursors config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'multiple-cursors)
-  (use-package multiple-cursors
-    :config (setq mc/list-file "~/.emacs.d/meta/.mc-lists.el"))
+  (use-package multiple-cursors)
 #+END_SRC
 *** Spotify config
 TODO: idle-load this package after =esc-mode=
@@ -725,6 +724,8 @@ TODO: idle-load this package after =esc-mode=
       (bind-key "C-x SPC" 'ace-jump-mode-pop-mark esc-mode-map)
       (bind-key "C-M-S-l" 'ace-jump-buffer esc-mode-map)
     :config (ace-jump-mode-enable-mark-sync))
+
+  (quelpa 'ace-window)
   (use-package ace-window
     :config (setq aw-keys (number-sequence 97 (+ 97 26))))
 #+END_SRC
