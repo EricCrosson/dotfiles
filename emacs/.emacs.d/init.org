@@ -1351,13 +1351,10 @@ know?
   ;;; .emacs.el ends here
 #+END_SRC
 * [2/18] TODOs
-** TODO publish esc-mode on melpa
 ** TODO scratch buffer as consistent config file
   only emacs-lisp source blocks from the org file are loaded,
   naturally
 ** TODO gcov output parsed by emacs to hilight gdb code coverage
-** TODO recentf
-- prefer org over el and txt like ido
 ** TODO /meta
 move recentf, other meta files into meta
 ** TODO minibufer
@@ -1374,8 +1371,3 @@ look in dirs above for TAGS file and suggest it
 *** TODO org C-c ' to preserve window configuration?
 *** TODO C-h C-k takes you to org instead of .el
 *** TODO C-x M-r to save undo information
-** [0/2] backburner
-*** [0/2] ibuffer-vc
-On the backburner because I haven't used ibuffer in some time.
-**** TODO create mode to replace sort-by -mode with -ssh host
-**** TODO make it group files over tramp
