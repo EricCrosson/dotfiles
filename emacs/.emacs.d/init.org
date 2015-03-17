@@ -1247,7 +1247,7 @@ know?
     (add-to-list 'org-modules 'org-habit)
     (add-to-list 'org-structure-template-alist
                  '("E"
-                   "#+BEGIN_SRC emacs-lisp ?\n\n#+END_SRC"
+                   "#+BEGIN_SRC emacs-lisp :tangle ?\n\n#+END_SRC"
                    "<emacs-lisp>\n?\n</emacs-lisp>"))
 
     (defun esc/org-confirm-babel ()
@@ -1256,26 +1256,26 @@ know?
       (org-babel-do-load-languages
        'org-babel-load-languages
        '(;; Always execute these languages
-         (R               .       t)
-         (ditaa           .       t)
-         (dot             .       t)
-         (plantuml        .       t)
-         (emacs-lisp      .       t)
-         (lisp            .       t)
-         (clojure         .       t)
-         (scala           .       t)
-         (gnuplot         .       t)
-         (haskell         .       t)
-         (ocaml           .       t)
-         (python          .       t)
-         (ruby            .       t)
-         (sh              .       t)
-         (sqlite          .       t)
-         (octave          .       t)
-         (plantuml        .       t)
+         (R           . t)
+         (ditaa       . t)
+         (dot         . t)
+         (plantuml    . t)
+         (emacs-lisp  . t)
+         (lisp        . t)
+         (clojure     . t)
+         (scala       . t)
+         (gnuplot     . t)
+         (haskell     . t)
+         (ocaml       . t)
+         (python      . t)
+         (ruby        . t)
+         (sh          . t)
+         (sqlite      . t)
+         (octave      . t)
+         (plantuml    . t)
          ;; Never execute these languages
-         (screen          .       nil)
-         (sql             .       nil))))
+         (screen      . nil)
+         (sql         . nil))))
 
     (add-hook 'org-mode-hook 'esc/org-confirm-babel)
 
@@ -1295,169 +1295,13 @@ know?
             '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))))
 #+END_SRC
 [[http://lists.gnu.org/archive/html/emacs-orgmode/2012-05/msg00708.html][More information on defining your own Easy Templates]].
-*** org advice
-[[http://emacs.stackexchange.com/a/9347][org mode - How does one use flyspell in org buffers without flyspell
-triggeri...]]
-As of <2015-02-18 Wed> this advice did not work for me.
-#+BEGIN_SRC emacs-lisp :tangle no
-  ;; NO spell check for embedded snippets
-  (defadvice org-mode-flyspell-verify (after org-mode-flyspell-verify-hack activate)
-    (let ((rlt ad-return-value)
-          (begin-regexp "^[ \t]*#\\+begin_\\(src\\|html\\|latex\\)")
-          (end-regexp "^[ \t]*#\\+end_\\(src\\|html\\|latex\\)")
-          old-flag
-          b e)
-      (when ad-return-value
-        (save-excursion
-          (setq old-flag case-fold-search)
-          (setq case-fold-search t)
-          (setq b (re-search-backward begin-regexp nil t))
-          (if b (setq e (re-search-forward end-regexp nil t)))
-          (setq case-fold-search old-flag))
-        (if (and b e (< (point) e)) (setq rlt nil)))
-      (setq ad-return-value rlt)))
-#+END_SRC
-
-*** org babel
-#+BEGIN_SRC emacs-lisp :tangle no
-  ;;; org-export-blocks-format-plantuml.el Export UML using plantuml
-  ;;
-  ;; OBSOLETED, use ob-plantuml.el bundled in org instead.
-  ;;
-  ;; Copy from org-export-blocks-format-ditaa
-  ;;
-  ;; E.g.
-  ;; #+BEGIN_UML
-  ;;   Alice -> Bob: Authentication Request
-  ;;   Bob --> Alice: Authentication Response
-  ;; #+END_UML
-
-  (eval-after-load "org-exp-blocks"
-    '(progn
-       (add-to-list 'org-export-blocks '(uml iy/org-export-blocks-format-plantuml nil))
-       (add-to-list 'org-protecting-blocks "uml")))
-
-  (defvar iy/org-plantuml-jar-path (expand-file-name "~/Dropbox/java-libs/plantuml.jar")
-    "Path to the plantuml jar executable.")
-  (defun iy/org-export-blocks-format-plantuml (body &rest headers)
-    "Pass block BODY to the plantuml utility creating an image.
-    Specify the path at which the image should be saved as the first
-    element of headers, any additional elements of headers will be
-    passed to the plantuml utility as command line arguments."
-    (message "plantuml-formatting...")
-    (let* ((args (if (cdr headers) (mapconcat 'identity (cdr headers) " ")))
-           (data-file (make-temp-file "org-plantuml"))
-           (hash (progn
-                   (set-text-properties 0 (length body) nil body)
-                   (sha1 (prin1-to-string (list body args)))))
-           (raw-out-file (if headers (car headers)))
-           (out-file-parts (if (string-match "\\(.+\\)\\.\\([^\\.]+\\)$" raw-out-file)
-                               (cons (match-string 1 raw-out-file)
-                                     (match-string 2 raw-out-file))
-                             (cons raw-out-file "png")))
-           (out-file (concat (car out-file-parts) "_" hash "." (cdr out-file-parts))))
-      (unless (file-exists-p iy/org-plantuml-jar-path)
-        (error (format "Could not find plantuml.jar at %s" iy/org-plantuml-jar-path)))
-      (setq body (if (string-match "^\\([^:\\|:[^ ]\\)" body)
-                     body
-                   (mapconcat (lambda (x) (substring x (if (> (length x) 1) 2 1)))
-                              (org-split-string body "\n")
-                              "\n")))
-      (cond
-       ((or htmlp latexp docbookp)
-        (unless (file-exists-p out-file)
-          (mapc ;; remove old hashed versions of this file
-           (lambda (file)
-             (when (and (string-match (concat (regexp-quote (car out-file-parts))
-                                              "_\\([[:alnum:]]+\\)\\."
-                                              (regexp-quote (cdr out-file-parts)))
-                                      file)
-                        (= (length (match-string 1 out-file)) 40))
-               (delete-file (expand-file-name file
-                                              (file-name-directory out-file)))))
-           (directory-files (or (file-name-directory out-file)
-                                default-directory)))
-          (with-temp-file data-file (insert (concat "@startuml\n" body "\n@enduml")))
-          (message (concat "java -jar " iy/org-plantuml-jar-path " -pipe " args))
-          (with-temp-buffer
-            (call-process-shell-command
-             (concat "java -jar " iy/org-plantuml-jar-path " -pipe " args)
-             data-file
-             '(t nil))
-            (write-region nil nil out-file)))
-        (format "\n[[file:%s]]\n" out-file))
-       (t (concat
-           "\n#+BEGIN_EXAMPLE\n"
-           body (if (string-match "\n$" body) "" "\n")
-           "#+END_EXAMPLE\n")))))
-
-#+END_SRC
-*** org beamer
-Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-mode-and.html][emacs-fu]]!
-#+BEGIN_SRC emacs-lisp :tangle no
-  ;; allow for export=>beamer by placing
-  ;; #+LaTeX_CLASS: beamer in org files
-  (unless (boundp 'org-export-latex-classes)
-    (setq org-export-latex-classes nil))
-  (add-to-list 'org-export-latex-classes
-    ;; beamer class, for presentations
-    '("beamer"
-       "\\documentclass[11pt]{beamer}\n
-        \\mode<{{{beamermode}}}>\n
-        \\usetheme{{{{beamertheme}}}}\n
-        \\usecolortheme{{{{beamercolortheme}}}}\n
-        \\beamertemplateballitem\n
-        \\setbeameroption{show notes}
-        \\usepackage[utf8]{inputenc}\n
-        \\usepackage[T1]{fontenc}\n
-        \\usepackage{hyperref}\n
-        \\usepackage{color}
-        \\usepackage{listings}
-        \\lstset{numbers=none,language=[ISO]C++,tabsize=4,
-    frame=single,
-    basicstyle=\\small,
-    showspaces=false,showstringspaces=false,
-    showtabs=false,
-    keywordstyle=\\color{blue}\\bfseries,
-    commentstyle=\\color{red},
-    }\n
-        \\usepackage{verbatim}\n
-        \\institute{{{{beamerinstitute}}}}\n
-         \\subject{{{{beamersubject}}}}\n"
-
-       ("\\section{%s}" . "\\section*{%s}")
-
-       ("\\begin{frame}[fragile]\\frametitle{%s}"
-         "\\end{frame}"
-         "\\begin{frame}[fragile]\\frametitle{%s}"
-         "\\end{frame}")))
-
-    ;; letter class, for formal letters
-
-    (add-to-list 'org-export-latex-classes
-
-    '("letter"
-       "\\documentclass[11pt]{letter}\n
-        \\usepackage[utf8]{inputenc}\n
-        \\usepackage[T1]{fontenc}\n
-        \\usepackage{color}"
-
-       ("\\section{%s}" . "\\section*{%s}")
-       ("\\subsection{%s}" . "\\subsection*{%s}")
-       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-       ("\\paragraph{%s}" . "\\paragraph*{%s}")
-       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-#+END_SRC
 *** org capture
 #+BEGIN_SRC emacs-lisp :tangle no
   (setq org-default-notes-file (concat org-directory "/capture.org"))
   (after 'org
     (after 'esc-mode
       (esc-key "C-c C-p" 'org-capture)))
-#+END_SRC
 
-#+BEGIN_SRC emacs-lisp :tangle no
   (setq org-capture-templates
         '(;; General tasks go here
           ("t" "Todo" entry
@@ -1479,7 +1323,6 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
            (file+headline (concat org-directory "/smash/smash.org") "Notes")
            "* %?\n")))
 #+END_SRC
-
 **** org refile
 #+BEGIN_SRC emacs-lisp :tangle no
   (setq ;; Work refile locations
@@ -1499,7 +1342,6 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
                         (esc-refile-targets-smash    :maxlevel . 5)
                         (org-agenda-files            :maxlevel . 4)))
 #+END_SRC
-
 ** Fin
 #+BEGIN_SRC emacs-lisp :tangle yes
   (setq initial-scratch-message
