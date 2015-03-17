@@ -33,8 +33,16 @@
     ;;; Code:
 #+END_SRC
 
-** Load path
-This is a neat trick I found to take away 99.9% of the headache when
+** Package configuration and Load path
+   Install [[https://github.com/quelpa/quelpa][quelpa]] if it doesn't exist yet
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (unless (require 'quelpa nil 'noerror)
+    (with-temp-buffer
+      (url-insert-file-contents "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
+      (eval-buffer)))
+#+END_SRC
+
+   This is a neat trick I found to take away 99.9% of the headache when
 dealing with Emacs' load path. Assuming the user has placed every
 file, script and dependency in his or her =~/.emacs.d/= directory,
 this block will ensure Emacs can find each file come load time. No
@@ -63,17 +71,26 @@ need to keep the list updated, just load all subdirectories and go.
 Use [[https://github.com/jwiegley/use-package][use-package]]
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'use-package)
-  (eval-when-compile (require 'use-package))
+  (require 'use-package)
+  (use-package package
+    :config
+    (mapc (lambda (source) (add-to-list 'package-archives source) t)
+          '(("gnu" . "http://elpa.gnu.org/packages/")
+            ("marmalade" . "http://marmalade-repo.org/packages/")
+            ("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")
+            ("melpa" . "http://melpa.milkbox.net/packages/")
+            ("org" . "http://orgmode.org/elpa/")))
+    (package-initialize))
 #+END_SRC
 
 Set up [[https://github.com/tarsius/auto-compile][auto-compile mode]] to compile source files before loading iff
 source is newer than the presently compiled file. A good tradeoff
 with proper distributed version control.
 #+BEGIN_SRC emacs-lisp :tangle yes
+  (quelpa 'auto-compile)
   (use-package auto-compile
-    :init
-    (setq load-prefer-newer t)
-    (auto-compile-on-load-mode 1))
+    :init (setq load-prefer-newer t)
+    :config (auto-compile-on-load-mode 1))
 #+END_SRC
 
 ** UI
@@ -87,6 +104,9 @@ with proper distributed version control.
 
     Fire up the mood lighting
     #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'bliss-theme)
+      (quelpa 'monochrome-theme)
+
       (use-package bliss-theme
         ;; TODO: switch with color-theme stack
         :config (load-theme 'bliss t))
@@ -133,26 +153,6 @@ notifications.
        (message ,message)
        (progn ,@body)
        (message (concat ,message "...done"))))
-#+END_SRC
-
-** Package configuration
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package package
-    :config
-    (setq package-user-dir (concat site-lisp-path "elpa/"))
-    (mapc (lambda (source) (add-to-list 'package-archives source) t)
-          '(("gnu" . "http://elpa.gnu.org/packages/")
-            ("marmalade" . "http://marmalade-repo.org/packages/")
-            ("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")
-            ("melpa" . "http://melpa.milkbox.net/packages/")
-            ("org" . "http://orgmode.org/elpa/")))
-    (package-initialize))
-
-  ;; install quelpa if it doesn't exist yet
-  (unless (require 'quelpa)
-    (with-temp-buffer
-      (url-insert-file-contents "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
-      (eval-buffer)))
 #+END_SRC
 
 ** User metadata
@@ -237,17 +237,12 @@ tempt users to disable them.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa '(auto-package-update :repo "rranelli/auto-package-update.el"
                                 :fetcher github))
+
   (use-package auto-package-update
-    :idle-priority 9
-    :idle
+    :config
       (setq auto-package-update-interval 3)
       (ignore-errors (auto-package-update-maybe)))
 #+END_SRC
-*** Color theme config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'monochrome-theme)
-      (quelpa 'bliss-theme)
-    #+END_SRC
 *** Mojo config
 Mojo is my personal extension of the GNU Emacs global namespace.
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -298,6 +293,11 @@ Mojo is my personal extension of the GNU Emacs global namespace.
             (set-marker m nil))
         ad-do-it)))
 #+END_SRC
+*** Bind key config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'bind-key)
+      (use-package bind-key)
+    #+END_SRC
 *** esc mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa '(esc-mode :repo "EricCrosson/esc-mode" :fetcher github))
@@ -342,6 +342,7 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa '(displaced-yank :repo "EricCrosson/displaced-yank" :fetcher github))
   (use-package displaced-yank
+      :init
       ;; todo: load with use-package displaced yank
       ;; esc delimeter and line hacks
       (bind-key "C-<backspace>" 'backward-delete-word        esc-mode-map)
@@ -373,22 +374,11 @@ That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee
   (use-package help-extras
      :config (help-extras 1))
 #+END_SRC
-*** File operations config
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa '(file-operations :repo "EricCrosson/file-operations" :fetcher github))
-  (use-package file-operations)
-#+END_SRC
-*** Toggle quotes conf
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'toggle-quotes)
-  (use-package toggle-quotes
-      (bind-key "M-'" 'toggle-quotes esc-mode-map))
-#+END_SRC
 *** Goto last change conf
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'goto-last-change)
   (use-package goto-last-change
-      (bind-key "C-c /" 'goto-last-change esc-mode-map))
+     :init (bind-key "C-c /" 'goto-last-change esc-mode-map))
 #+END_SRC
 *** Which func config
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -435,9 +425,9 @@ Gotta love that [[http://awesome.naquadah.org/][awesome wm]]
     :commands global-auto-complete-mode
     :init
     (setq ac-comphist-file (format "%s/ac-comphist.dat" esc-meta-path))
-    (global-auto-complete-mode t)
 
     :config
+    (global-auto-complete-mode t)
     (ac-config-default)
     (setq-default ac-auto-show-menu .1)
     (setq-default ac-sources (append '(ac-source-imenu) ac-sources))
@@ -528,9 +518,8 @@ Configure options for transparent handling of very large files.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'golden-ratio)
   (use-package golden-ratio
-    :idle (after 'golden-ratio
-            (add-to-list 'golden-ratio-extra-commands 'ace-window))
-    :idle-priority 6)
+    :init (after 'golden-ratio
+            (add-to-list 'golden-ratio-extra-commands 'ace-window)))
 #+END_SRC
 *** Conf mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -559,8 +548,7 @@ TODO: disable autopair-mode for web-mode
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'fic-mode)
   (use-package fic-mode
-    :idle (add-hook 'prog-mode-hook 'turn-on-fic-mode)
-    :idle-priority 4)
+    :config (add-hook 'prog-mode-hook 'turn-on-fic-mode))
 #+END_SRC
 *** Save desktop config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -618,8 +606,8 @@ TODO : associate with =esc-mode=
 #+END_SRC
 *** Recentf config
 #+BEGIN_SRC emacs-lisp :tangle yes
+  (setq recentf-auto-cleanup 'never)
   (use-package recentf
-    :pre-load (setq recentf-auto-cleanup 'never)
     :config (setq recentf-max-menu-items 50
                   recentf-max-saved-items 50
                   recentf-save-file (format "%s/recentf" esc-meta-path)
@@ -671,9 +659,9 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 #+END_SRC
 *** Uniquify config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package uniquify
-    :pre-load (setq uniquify-separator ":"
-                    uniquify-buffer-name-style 'post-forward))
+  (setq uniquify-separator ":"
+        uniquify-buffer-name-style 'post-forward)
+  (use-package uniquify)
 #+END_SRC
 *** Ido config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -714,16 +702,6 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
   (use-package multiple-cursors
     :config (setq mc/list-file "~/.emacs.d/meta/.mc-lists.el"))
 #+END_SRC
-*** Minimap config
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'minimap)
-  (use-package minimap
-    :config
-    (defhydra hydra-mnimap (esc-mode-map "C-c M-RET")
-      "minimap"
-      ("m" minimap-toggle "toggle")
-      ("k" minimap-kill "kill" :color blue)))
-#+END_SRC
 *** Spotify config
 TODO: idle-load this package after =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -742,10 +720,10 @@ TODO: idle-load this package after =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'ace-jump-mode)
   (use-package ace-jump-mode
-    ;; todo: hydratize?
-    (bind-key "C-c SPC" 'ace-jump-mode esc-mode-map)
-    (bind-key "C-x SPC" 'ace-jump-mode-pop-mark esc-mode-map)
-    (bind-key "C-M-S-l" 'ace-jump-buffer esc-mode-map)
+    :init
+      (bind-key "C-c SPC" 'ace-jump-mode esc-mode-map)
+      (bind-key "C-x SPC" 'ace-jump-mode-pop-mark esc-mode-map)
+      (bind-key "C-M-S-l" 'ace-jump-buffer esc-mode-map)
     :config (ace-jump-mode-enable-mark-sync))
   (use-package ace-window
     :config (setq aw-keys (number-sequence 97 (+ 97 26))))
@@ -754,7 +732,7 @@ TODO: idle-load this package after =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'git-messenger)
   (use-package git-messenger
-    (bind-key "C-c [" 'git-messenger:popup-message esc-mode-map))
+    :init (bind-key "C-c [" 'git-messenger:popup-message esc-mode-map))
 #+END_SRC
 *** Keyfreq mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -775,8 +753,8 @@ TODO: idle-load this package after =esc-mode=
 TODO: conform to use-packages way of creating stubs
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'clipmon)
-  (use-package clipmon
-    :pre-load (defvar clipmon--autoinsert " clipmon--autoinserted-this"))
+  (defvar clipmon--autoinsert " clipmon--autoinserted-this")
+  (use-package clipmon)
 #+END_SRC
 *** Mouse avoidance config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -785,10 +763,9 @@ TODO: conform to use-packages way of creating stubs
 *** Bitly config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'bitly)
+  (autoload 'json-read "json.el")
   (use-package bitly
-    :pre-load (autoload 'json-read "json.el")
-    :config
-    (setq bitly-access-token "b4a5cd4e51df442ab97012cfc2764c599d6eabf8"))
+    :config (setq bitly-access-token "b4a5cd4e51df442ab97012cfc2764c599d6eabf8"))
 #+END_SRC
 *** Paradox config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -843,18 +820,13 @@ TODO: conform to use-packages way of creating stubs
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'pretty-lambdada)
   (use-package pretty-lambdada
-    :idle-priority 6
-    :idle (mapc (lambda (prettify-this-mode)
+    :init (mapc (lambda (prettify-this-mode)
                   (add-hook prettify-this-mode 'pretty-lambda))
                 '(emacs-lisp-mode-hook
                   org-mode-hook ;to include source blocks :\
                   enh-ruby-mode-hook
                   ruby-mode-hook)))
 #+END_SRC
-*** Bind key config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'bind-key)
-    #+END_SRC
 *** Bash completion config
     #+BEGIN_SRC emacs-lisp :tangle yes
       (quelpa 'bash-completion)
@@ -913,14 +885,14 @@ TODO: conform to use-packages way of creating stubs
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package misc
     :commands zap-up-to-char
-    :idle ; seeing as I don't use these commands terribly often
+    :init ; seeing as I don't use these commands terribly often
     (after 'esc-mode
       (esc-key "M-z"     'zap-up-to-char) ; up-to, life saver
       (esc-key "M-Z"     'zap-to-char)))
 
   (use-package misc-cmds
     :commands revert-buffer-no-confirm
-    :idle ; takes a while to need the get-out-of-jail-free button
+    :init ; takes a while to need the get-out-of-jail-free button
     (after 'esc-mode
       (esc-key "C-x M-r" 'revert-buffer-no-confirm)))
 #+END_SRC
@@ -936,8 +908,7 @@ TODO: conform to use-packages way of creating stubs
   ;; Helm
   (quelpa 'helm)
   (use-package helm
-    :idle-priority 7
-    :idle (after 'esc-mode
+    :init (after 'esc-mode
             (esc-keys
               ("C-c i"   . helm-imenu)
               ("C-x C-j" . helm-for-files))))
@@ -963,8 +934,7 @@ Thanks yet again [[https://github.com/magnars/fold-this.el][Magnar]]
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'fold-this)
   (use-package fold-this
-    :idle-priority 8
-    :idle (after 'esc-mode
+    :init (after 'esc-mode
             (esc-keys
               ("C-c f" . fold-this)
               ("C-c F" . fold-this-unfold-all))))
@@ -978,7 +948,7 @@ Thanks yet again [[https://github.com/magnars/fold-this.el][Magnar]]
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'org-cliplink)
   (use-package org-cliplink
-    :idle (after 'esc-mode
+    :init (after 'esc-mode
             (esc-key "C-c C-M-l" 'org-cliplink)))
 #+END_SRC
 *** Unkillable scratch config
@@ -986,8 +956,7 @@ TODO: integrate with =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'unkillable-scratch)
   (use-package unkillable-scratch
-    :idle-priority 6
-    :idle (unkillable-scratch 1))
+    :init (unkillable-scratch 1))
 #+END_SRC
 *** Minibuffer config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -999,14 +968,15 @@ TODO: integrate with =esc-mode=
   (use-package org-indent-header)
 #+END_SRC
 *** Dired config
+    TODO: keymaps go in =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package dired-details
-    :idle-priority 6
-    :idle
-    (dired-details-install)
+    :config (dired-details-install)
+    :init
     (use-package dired-x)
+    (quelpa 'dash)
     (use-package dash
-      :idle 6
+      :init
       ;; Reload dired after making changes
       (put '--each 'lisp-indent-function 1)
       (--each '(dired-do-rename
@@ -1112,11 +1082,9 @@ know?
 #+BEGIN_SRC emacs-lisp :tangle yes
     ;; Org mode bindings -- TODO: in use-pcakage
 
-
+  (setq org-replace-disputed-keys t)
   (use-package org
-    :pre-load (setq org-replace-disputed-keys t)
-    :idle-priority 2
-    :idle
+    :init
     (setq-default major-mode 'org-mode)  ;default mode for new buffers
 
     :config
