@@ -1520,19 +1520,6 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
 move recentf, other meta files into meta
 ** TODO minibufer
 - [ ] disable M-n hydra
-** [0/1] general purpose deuns
-- [ ] follow mode 80 char compliant
-  to its own mode
-- [ ] kill buffer and reopen file
-  when revert-buffer just doesn't cut it
-** [1/3] make process
-*** TODO generate loaddefs
-*** HACKED ensure dir structure is populated in esc-lisp before attempted make
-xo*** TODO asynchronous tangling
-** [1/2] Powerline
-*** DONE make powerline part of esc-mode
-*** TODO activate =size-indication-mode= with =power-line-mode=
-[[https://github.com/otijhuis/emacs/tree/master/vendor/powerline][emacs/vendor/powerline at master · otijhuis/emacs · GitHub]]
 ** [0/1] Dired
 *** TODO human readable sizes in dired
   First have to determine how to unhide information on demand
