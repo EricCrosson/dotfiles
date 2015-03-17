@@ -1508,14 +1508,12 @@ Thanks to [[http://emacs-fu.blogspot.com/2009/10/writing-presentations-with-org-
   (message "All done, %s%s" (user-login-name) ".")
   ;;; .emacs.el ends here
 #+END_SRC
-* [2/19] TODOs
+* [2/18] TODOs
 ** TODO publish esc-mode on melpa
 ** TODO scratch buffer as consistent config file
   only emacs-lisp source blocks from the org file are loaded,
   naturally
 ** TODO gcov output parsed by emacs to hilight gdb code coverage
-** TODO Help+ standardization
-you have C-h C-M-c, make C-h C-M-k! and f, etc
 ** TODO recentf
 - prefer org over el and txt like ido
 ** TODO /meta
