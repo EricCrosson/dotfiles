@@ -5,7 +5,8 @@
 
 ;; Author: Eric Crosson <esc@ericcrosson.com>
 ;; Keywords: miscellaneous
-;; Package-Version: 0
+;; Package-Version: 20150316.1913
+;; Package-X-Original-Version: 0
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

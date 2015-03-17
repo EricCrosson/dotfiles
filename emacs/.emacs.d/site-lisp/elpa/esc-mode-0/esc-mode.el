@@ -52,40 +52,12 @@ prior respective states on exit."
   :type '(repeat function)
   :group 'esc)
 
-(setq esc/associated-modes
-      '(ido-mode
-	eldoc-mode
-	winner-mode
-	keyfreq-mode
-	recentf-mode
-	icomplete-mode
-	auto-fill-mode
-	show-paren-mode
-	line-number-mode
-	display-time-mode
-	column-number-mode
-	global-hl-line-mode
-	display-battery-mode
-	autopair-global-mode
-	auto-compression-mode
-	global-on-screen-mode
-	global-font-lock-mode
-	global-auto-revert-mode
-	global-rainbow-delimiters-mode))
-
 (defcustom esc/disassociated-modes nil
   "List of modes NOT associated with `esc-mode'. In other words,
 `esc-mode' disables these modes on entry and restores their
 prior respective states on exit."
   :type '(repeat function)
   :group 'esc)
-
-(setq esc/disassociated-modes
-      '(tool-bar-mode
-	menu-bar-mode
-	scroll-bar-mode
-	blink-cursor-mode
-	transient-mark-mode))
 
 (defcustom esc/associated-modes-state '()
   "List of states of `esc/associated-modes' upon entry of

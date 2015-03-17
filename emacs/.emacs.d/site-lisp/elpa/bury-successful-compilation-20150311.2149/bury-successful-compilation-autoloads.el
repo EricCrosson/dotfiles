@@ -4,7 +4,7 @@
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
 ;;;### (autoloads nil "bury-successful-compilation" "bury-successful-compilation.el"
-;;;;;;  (21752 31219 258862 958000))
+;;;;;;  (21767 32116 231045 43000))
 ;;; Generated autoloads from bury-successful-compilation.el
 
 (defvar bury-successful-compilation nil "\
@@ -21,11 +21,6 @@ A minor mode to bury the *compilation* buffer upon successful
 compilations.
 
 \(fn &optional ARG)" t nil)
-
-;;;***
-
-;;;### (autoloads nil nil ("bury-successful-compilation-pkg.el")
-;;;;;;  (21752 31219 259692 475000))
 
 ;;;***
 
