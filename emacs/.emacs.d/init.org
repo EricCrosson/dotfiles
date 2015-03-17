@@ -727,7 +727,7 @@ TODO: idle-load this package after =esc-mode=
 
   (quelpa 'ace-window)
   (use-package ace-window
-    :config (setq aw-keys (number-sequence 97 (+ 97 26))))
+    :config (setq aw-keys (number-sequence 97 (+ 97 7))))
 #+END_SRC
 *** Git messenger config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1028,6 +1028,129 @@ TODO: integrate with =esc-mode=
     #+BEGIN_SRC emacs-lisp :tangle yes
       (add-to-list 'same-window-buffer-names "*compilation*")
     #+END_SRC
+*** Miscellaneous modes config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (mapc (lambda (mode) (quelpa mode))
+        '(ac-haskell-process
+          achievements
+          ant
+          apt-utils
+          apt-utils-ido
+          archives
+          asilea
+          async
+          auctex
+          autodisass-java-bytecode
+          auto-overlays
+          brainfuck-mode
+          broadcast
+          capture
+          cd-compile
+          c-eldoc
+          checkbox
+          cmake-font-lock
+          cmake-mode
+          color-theme
+          connection
+          css-eldoc
+          cssh
+          curl-for-url
+          default-text-scale
+          dictionary
+          dired-details
+          disaster
+          disaster-arm
+          doctags
+          eldoc-eval
+          epl
+          flycheck
+          flycheck-package
+          fpaste
+          ghci-completion
+          git-commit-mode
+          gitconfig-mode
+          git-rebase-mode
+          git-timemachine
+          gntp
+          gnu-apl-mode
+          gnupg
+          gtags
+          hide-lines
+          highlight
+          highlight-thing
+          htmlize
+          hydra
+          ibuffer-tramp
+          ibuffer-vc
+          jist
+          langdoc
+          let-alist
+          link
+          lorem-ipsum
+          macrostep
+          misc-cmds
+          move-text
+          multi
+          multiple-cursors
+          names
+          neotree
+          noflet
+          offlineimap
+          on-screen
+          operate-on-number
+          org
+          org-eldoc
+          package-build
+          package-safe-delete
+          packed
+          pdf-tools
+          persistent-scratch
+          pkg-info
+          plantuml-mode
+          poker
+          popup
+          popwin
+          quelpa
+          request
+          rtos-dev-mode
+          rtos-interrupt-generator
+          rubocop
+          ruby-mode
+          scratch
+          shell-command
+          smartrep
+          smooth-scrolling
+          spinner
+          ssh-config-mode
+          ssh-tunnels
+          sunshine
+          symon
+          synonyms
+          synosaurus
+          tablist
+          term-run
+          tup-mode
+          typing
+          unfill
+          vlf
+          xahk-mode))
+#+END_SRC
+
+Custom modes
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (mapc (lambda (mode) (quelpa `(,mode :repo ,(format "EricCrosson/%s" mode) :fetcher github)))
+        '(big-fringe
+          browse-cliplink
+          color-theme-stack
+          dedicated-buffer
+          ido-extras
+          mwheel-scroll-all
+          org-indent-header
+          org-jump-src-block
+          os-interaction
+          scroll-slight
+          update-autoloads))
+#+END_SRC
 ** OS configuration
 Operating system-specific configurations take place here, within this
 massive =cond=.
