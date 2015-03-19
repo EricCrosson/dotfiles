@@ -342,23 +342,44 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa '(displaced-yank :repo "EricCrosson/displaced-yank" :fetcher github))
   (use-package displaced-yank
-      :init
+      :config
+      (mapc (lambda (function)
+            (let ((funcname (car function))
+                  (data     (cdr function)))
+              (eval `(define-displaced-yank ,funcname ,data))))
+          '((parens              "()")
+            (braces              "{}")
+            (brackets            "[]")
+            (brackets-with-colon "[:]")
+            (pipes               "||")
+            (chevrons            "<>")
+            (quotes              "\"\"")
+            (single-quotes       "''")
+            (stars               "**")
+            (dollars             "$$")
+            (equals              "==")
+            ;; a good example of code reuse
+            (ticks               "`'")
+            (little-arrow        "->" 0)
+            (doxygen-comment     "/*!  */" 3)))
+
       ;; todo: load with use-package displaced yank
       ;; esc delimeter and line hacks
-      (bind-key "C-<backspace>" 'backward-delete-word        esc-mode-map)
-      (bind-key "C-M--"  'esc/yank-displaced-little-arrow    esc-mode-map)
-      (bind-key "C-M-j"  'esc/yank-displaced-parens          esc-mode-map)
-      (bind-key "C-M-k"  'esc/yank-displaced-braces          esc-mode-map)
-      (bind-key "C-M-|"  'esc/yank-displaced-pipes           esc-mode-map)
-      (bind-key "C-M-l"  'esc/yank-displaced-brackets        esc-mode-map)
-      (bind-key "C-M-,"  'esc/yank-displaced-chevrons        esc-mode-map)
-      (bind-key "C-M-'"  'esc/yank-displaced-single-quotes   esc-mode-map)
-      (bind-key "C-M-\"" 'esc/yank-displaced-quotes          esc-mode-map)
-      (bind-key "C-M-g"  'esc/yank-displaced-dollars         esc-mode-map)
-      (bind-key "C-M-;"  'esc/yank-displaced-stars           esc-mode-map)
-      (bind-key "C-M-:"  'esc/yank-displaced-doxygen-comment esc-mode-map)
-      (bind-key "C-M-="  'esc/yank-displaced-equals          esc-mode-map)
-      (bind-key "C-M-`"  'esc/yank-displaced-ticks           esc-mode-map))
+
+      (after 'esc-mode
+        (bind-key "C-M--"  'yank-displaced-little-arrow    esc-mode-map)
+        (bind-key "C-M-j"  'yank-displaced-parens          esc-mode-map)
+        (bind-key "C-M-k"  'yank-displaced-braces          esc-mode-map)
+        (bind-key "C-M-|"  'yank-displaced-pipes           esc-mode-map)
+        (bind-key "C-M-l"  'yank-displaced-brackets        esc-mode-map)
+        (bind-key "C-M-,"  'yank-displaced-chevrons        esc-mode-map)
+        (bind-key "C-M-'"  'yank-displaced-single-quotes   esc-mode-map)
+        (bind-key "C-M-\"" 'yank-displaced-quotes          esc-mode-map)
+        (bind-key "C-M-g"  'yank-displaced-dollars         esc-mode-map)
+        (bind-key "C-M-;"  'yank-displaced-stars           esc-mode-map)
+        (bind-key "C-M-:"  'yank-displaced-doxygen-comment esc-mode-map)
+        (bind-key "C-M-="  'yank-displaced-equals          esc-mode-map)
+        (bind-key "C-M-`"  'yank-displaced-ticks           esc-mode-map)))
 #+END_SRC
 *** Powerline config
 That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee-d77b-45da-ac5c-b9bbb562.gif][Power⚡Line]] baby!
@@ -407,7 +428,7 @@ That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee
 My dedicated mode, not the melpa one
 TODO: expand on that
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa '(unselectable-buffer :repo "EricCrosson/unselectable-buffer" :fetcher github))
+  (quelpa '(dedicated-buffer :repo "EricCrosson/dedicated-buffer" :fetcher github))
   (use-package dedicated-buffer)
 #+END_SRC
 *** Lua mode config
@@ -1148,8 +1169,7 @@ Custom modes
           org-indent-header
           org-jump-src-block
           os-interaction
-          scroll-slight
-          update-autoloads))
+          scroll-slight))
 #+END_SRC
 ** OS configuration
 Operating system-specific configurations take place here, within this
