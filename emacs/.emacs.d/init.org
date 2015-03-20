@@ -241,6 +241,7 @@ tempt users to disable them.
   (use-package auto-package-update
     :config
       (setq auto-package-update-interval 3)
+      ;; todo: put on an idle-timer of 5 minutes
       (ignore-errors (auto-package-update-maybe)))
 #+END_SRC
 *** Mojo config
@@ -335,9 +336,9 @@ Mojo is my personal extension of the GNU Emacs global namespace.
     (esc-mode 1))
 #+END_SRC
 *** Mode line in header config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'mode-line-in-hdeader)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (quelpa 'mode-line-in-hdeader)
+#+END_SRC
 *** Displaced yank config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa '(displaced-yank :repo "EricCrosson/displaced-yank" :fetcher github))
