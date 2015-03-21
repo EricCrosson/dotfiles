@@ -311,7 +311,7 @@ Mojo is my personal extension of the GNU Emacs global namespace.
             winner-mode
             keyfreq-mode
             recentf-mode
-            icomplete-mode
+            ;; icomplete-mode ;; old-school
             auto-fill-mode
             show-paren-mode
             line-number-mode
@@ -687,19 +687,29 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 #+END_SRC
 *** Ido config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package ido
-    :config (setq ido-everywhere t                             ;always Ido
-                  ido-enable-flex-matching t                   ;smarter Ido
-                  ido-create-new-buffer 'always                ;quieter Ido
-                  ido-create-new-buffer 'always
-                  ido-save-directory-list-file (format "%s/ido.last" esc-meta-path)
-                  ido-file-extensions-order '(".org" ".el" ".c" ".c" ".dox" ".txt")))
+  (quelpa 'flx-ido)
+  (use-package flx-ido
+    :init (setq ido-save-directory-list-file (format "%s/ido.last" esc-meta-path))
+    :config
+    (ido-mode t)
+    (ido-everywhere 1)
+    (flx-ido-mode 1)
+    (ido-hacks-mode 1)
+    ;; disable ido faces to see flx highlights.
+    (setq ido-enable-flex-matching t
+          ido-use-faces nil)
+    (setq ido-create-new-buffer 'always
+          ido-file-extensions-order '(".org" ".el"
+                                      ".c" ".c"
+                                      ".dox" ".txt")))
 
   (use-package ido-extras
     :init
     (bind-key "M-i"     'ido-goto-symbol  esc-mode-map)
     (bind-key "C-x C-r" 'ido-recentf-open esc-mode-map)
     (bind-key "C-x C-b" 'ido-switch-buffer-current-major-mode esc-mode-map))
+
+  ;; (use-package ido-vertical-mode)
 #+END_SRC
 *** Git gutter+ config
 #+BEGIN_SRC emacs-lisp :tangle no
