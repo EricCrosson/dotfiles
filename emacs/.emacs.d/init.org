@@ -262,6 +262,10 @@ Mojo is my personal extension of the GNU Emacs global namespace.
           (add-hook 'fundamental-mode-hook 'writegood-mode)
           (add-hook 'latex-mode-hook 'writegood-mode))
     #+END_SRC
+*** Writeroom mode config
+#+BEGIN_SRC emacs-lisp :tangle :tangle yes
+  (quelpa 'writeroom-mode)
+#+END_SRC
 *** Yaml mode config
     #+BEGIN_SRC emacs-lisp :tangle yes
       (quelpa 'yaml-mode)
@@ -1173,8 +1177,7 @@ TODO: integrate with =esc-mode=
 Custom modes
 #+BEGIN_SRC emacs-lisp :tangle yes
   (mapc (lambda (mode) (quelpa `(,mode :repo ,(format "EricCrosson/%s" mode) :fetcher github)))
-        '(big-fringe
-          browse-cliplink
+        '(browse-cliplink
           color-theme-stack
           dedicated-buffer
           ido-extras
