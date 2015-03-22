@@ -250,9 +250,9 @@ Mojo is my personal extension of the GNU Emacs global namespace.
   (quelpa '(mojo :repo "EricCrosson/mojo" :fetcher github))
   (use-package mojo)
 #+END_SRC
-*** Hidden mode line
+*** Hide mode line
     #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa '(hidden-mode-line :repo "EricCrosson/hidden-mode-line" :fetcher github))
+      (quelpa '(hide-mode-line :repo "EricCrosson/hide-mode-line" :fetcher github))
     #+END_SRC
 *** Writegood mode config
     #+BEGIN_SRC emacs-lisp :tangle yes
@@ -333,7 +333,9 @@ Mojo is my personal extension of the GNU Emacs global namespace.
             blink-cursor-mode
             transient-mark-mode))
 
-    (esc-mode 1))
+    (esc-mode 1)
+    (esc-key "C-x C-c" 'neotree-toggle)
+    (esc-key "C-c <f5>" 'copy-file-name-to-clipboard))
 #+END_SRC
 *** Mode line in header config
 #+BEGIN_SRC emacs-lisp :tangle yes
