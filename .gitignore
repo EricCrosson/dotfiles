@@ -88,3 +88,4 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/quelpa/cache
 /emacs/.emacs.d/.last-package-update-day
 /emacs/.emacs.d/games/snow
+/emacs/.emacs.d/.sx/
