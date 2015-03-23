@@ -995,7 +995,9 @@ TODO: integrate with =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'unkillable-scratch)
   (use-package unkillable-scratch
-    :init (unkillable-scratch 1))
+    :config
+    (unkillable-scratch 1)
+    (setq unkillable-scratch-behavior 'bury))
 #+END_SRC
 *** Minibuffer config
 #+BEGIN_SRC emacs-lisp :tangle yes
