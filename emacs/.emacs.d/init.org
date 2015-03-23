@@ -700,7 +700,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
     (ido-mode t)
     (ido-everywhere 1)
     (flx-ido-mode 1)
-    (ido-hacks-mode 1)
+    (use-package ido-hacks :config (ido-hacks-mode 1))
     ;; disable ido faces to see flx highlights.
     (setq ido-enable-flex-matching t
           ido-use-faces nil)
@@ -715,7 +715,8 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
     (bind-key "C-x C-r" 'ido-recentf-open esc-mode-map)
     (bind-key "C-x C-b" 'ido-switch-buffer-current-major-mode esc-mode-map))
 
-  ;; (use-package ido-vertical-mode)
+  (use-package ido-vertical-mode
+    :config (ido-vertical-mode 1))
 #+END_SRC
 *** Git gutter+ config
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -990,6 +991,26 @@ Thanks yet again [[https://github.com/magnars/fold-this.el][Magnar]]
     :init (after 'esc-mode
             (esc-key "C-c C-M-l" 'org-cliplink)))
 #+END_SRC
+*** Dictionary config
+#+BEGIN_SRC emacs-lisp :tangle :tangle yes
+  (quelpa 'dictionary)
+  (use-package dictionary
+    :config
+    (defun esc/dictionary-search ()
+      (interactive)
+      (autoload 'dictionary-new-search "dictionary")
+      (let* ((enable-recursive-minibuffers t)
+             (word (current-word))
+             (word-wrapped (if word (concat " (" word ")") ""))
+             (word-query (concat "Word" word-wrapped ": "))
+             (val (read-from-minibuffer word-query)))
+        (dictionary-new-search
+         (cons (cond
+                ((and (equal val "") word) word)
+                ((> (length val) 0) val)
+                (t (error "No word to lookup")))
+               dictionary-default-dictionary)))))
+#+END_SRC
 *** Unkillable scratch config
 TODO: integrate with =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1076,7 +1097,7 @@ TODO: integrate with =esc-mode=
           autodisass-java-bytecode auto-overlays brainfuck-mode
           broadcast capture cd-compile c-eldoc checkbox
           cmake-font-lock cmake-mode color-theme connection
-          css-eldoc cssh curl-for-url default-text-scale dictionary
+          css-eldoc cssh curl-for-url default-text-scale
           dired-details disaster disaster-arm doctags eldoc-eval
           epl flycheck flycheck-package fpaste ghci-completion
           git-commit-mode gitconfig-mode git-rebase-mode
