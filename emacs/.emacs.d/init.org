@@ -244,6 +244,48 @@ tempt users to disable them.
       ;; todo: put on an idle-timer of 5 minutes
       (ignore-errors (auto-package-update-maybe)))
 #+END_SRC
+*** Miscellaneous modes config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (mapc (lambda (mode) (quelpa mode))
+        '(ac-haskell-process achievements ant apt-utils
+          anzu discover fullframe smartscan
+          apt-utils-ido archives asilea async auctex
+          autodisass-java-bytecode auto-overlays brainfuck-mode
+          broadcast capture cd-compile c-eldoc checkbox
+          cmake-font-lock cmake-mode color-theme connection
+          css-eldoc cssh curl-for-url default-text-scale
+          dired-details disaster disaster-arm doctags eldoc-eval
+          epl flycheck flycheck-package fpaste ghci-completion
+          git-commit-mode gitconfig-mode git-rebase-mode
+          git-timemachine gntp gnu-apl-mode gnupg gtags hide-lines
+          highlight highlight-thing htmlize hydra ibuffer-tramp
+          ibuffer-vc jist langdoc let-alist link litable
+          lorem-ipsum macrostep misc-cmds move-text multi
+          multiple-cursors names neotree noflet offlineimap
+          on-screen operate-on-number org org-eldoc package-build
+          package-safe-delete packed pdf-tools persistent-scratch
+          pkg-info plantuml-mode poker popup popwin quelpa request
+          rtos-dev-mode rtos-interrupt-generator rubocop ruby-mode
+          scratch shell-command smartrep smooth-scrolling spinner
+          ssh-config-mode ssh-tunnels sunshine symon synonyms
+          synosaurus tablist term-run tup-mode typing unfill vlf
+          xahk-mode))
+#+END_SRC
+
+Custom modes
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (mapc (lambda (mode) (quelpa `(,mode :repo ,(format "EricCrosson/%s" mode) :fetcher github)))
+        '(browse-cliplink
+          color-theme-stack
+          dedicated-buffer
+          ido-extras
+          mwheel-scroll-all
+          org-indent-header
+          org-jump-src-block
+          os-interaction
+          scroll-slight))
+#+END_SRC
+
 *** Mojo config
 Mojo is my personal extension of the GNU Emacs global namespace.
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -337,9 +379,173 @@ Mojo is my personal extension of the GNU Emacs global namespace.
             blink-cursor-mode
             transient-mark-mode))
 
-    (esc-mode 1)
-    (esc-key "C-x C-c" 'neotree-toggle)
-    (esc-key "C-c <f5>" 'copy-file-name-to-clipboard))
+    ;;; esc-mode key bindings
+    ;; Remaps -- wherever they may be bound
+    (esc-replace-key 'goto-line 'goto-line-with-feedback)
+    (esc-replace-key 'split-window-right 'esc/hsplit-last-buffer)
+    (esc-replace-key 'split-window-below 'esc/vsplit-last-buffer)
+
+    (use-package anzu
+      :init
+      (esc-replace-key 'query-replace 'anzu-query-replace)
+      (esc-replace-key 'query-replace-regexp 'anzu-query-replace-regexp))
+
+    (use-package fullframe
+      :init
+      (fullframe magit-status magit-mode-quit-window)
+      (esc-key "s-q" 'magit-status))
+
+    ;; todo: pull buffer management into another hydra
+    ;; Buffer management
+    (esc-key "C-x 4 k"    'mode-line-other-buffer-other-window)
+    (esc-key "C-c C-M-\\" 'indent-buffer)
+
+    ;; Enhanced keybindings
+    (esc-key "C-a"     'back-to-indentation-or-beginning)
+    (esc-key "M-s o"   'occur-dwim)
+
+    (esc-key "C-c y" 'middle-click-yank)
+
+    (esc-key "C-<backspace>" 'backward-delete-word)
+
+    ;; Miscellaneous keybindings
+    (esc-key "C-c C-b" 'mode-line-other-buffer)
+    (esc-key "M-K"     'kill-sentence)
+    (esc-key "M-j"     'just-one-space) ; conflicts with spotlight
+    (esc-key "C-c k"   'copy-line)
+    (esc-key "M-P"     'align-regexp)
+    (esc-key "C-'"     'query-replace)
+    ;; TODO: change sexp wrapping (esc-key i 'e. {}[]())
+
+    ;; Programming bindings
+    (esc-key "C-c m" 'compile)
+    (esc-key "C-c C-m" 'recompile)
+
+    ;; C-q cluster
+    (esc-key "C-q" 'delete-region)     ;like C-w, but gone forever.
+    (esc-key "C-c q" 'auto-fill-mode)  ;more frequented than
+    (esc-key "C-c C-q" 'quoted-insert) ;  this command
+
+    ;; newline creation
+    (esc-key "<C-return>"   'open-line-below)
+    (esc-key "<C-S-return>" 'open-line-above)
+    (esc-key "C-M-O"        'split-line)
+    (esc-key "M-k"          'pull-up-line)
+
+    ;; Mark commands
+    (esc-key "C-x m" 'pop-to-mark-command)
+
+    ;; Lisp/sexp movement
+    (esc-key "C-S-k" 'kill-sexp)
+
+    ;; Buffer control
+    (esc-key "C-x o" 'ace-window)
+    (esc-key "C-x M-b" 'bury-buffer)
+    (esc-key "C-c o" 'clone-indirect-buffer-other-window)
+    (esc-key "C-c C-o" 'ff-find-other-file)
+
+  ;;; Function keys
+    (esc-key "C-c <f5>" 'copy-file-name-to-clipboard)
+    (esc-key "<f5>"  'minibuffer-display-buffer-file-name)
+    (esc-key "<f6>"  'spray-mode)
+    (esc-key "<f8>"  'follow-mode-80-char-compliant)
+    (esc-key "<f9>"  'flyspell-buffer)
+    (esc-key "<f10>" 'golden-ratio-mode)
+
+    (esc-key "C-c f" 'esc/visit-favorite-dir)
+
+    (esc-key "C-x C-c" 'neotree-toggle) ;; no chance of accidental exit
+
+    (after 'hydra
+      (setq hydra-lv nil) ;; has never worked for me
+
+      (defhydra hydra-text-scale (esc-mode-map  "<f2>")
+        "text-scale"
+        ("j" text-scale-decrease "dec")
+        ("k" text-scale-increase "inc")
+        ("." default-text-scale-increase "default-dec")
+        ("," default-text-scale-decrease "default-inc"))
+
+      (defhydra hydra-eval (esc-mode-map "C-c C-e")
+        "eval"
+        ("r" eval-region "region")
+        ("b" eval-buffer "buffer")
+        ("s" eval-last-sexp "sexp")
+        ("d" eval-defun "defun")
+        ("b" edebug-defun "edebug")
+        ("p" esc/eval-and-replace "& replace"))
+
+      (defhydra hydra-error (esc-mode-map "M-g")
+        "goto-error"
+        ("h" first-error "first")
+        ("j" next-error "next")
+        ("k" previous-error "prev")
+        ("l" goto-line-with-feedback "goto-line" :color blue))
+
+      (defhydra hydra-multiple-cursors (esc-mode-map "M-a")
+        "multiple-cursors"
+        ("l" mc/edit-lines "edit")
+        ("n" mc/mark-next-like-this "mark next")
+        ("p" mc/mark-previous-like-this "mark prev")
+        ("s" mc/sort-regions "sort")
+        ("r" mc/reverse-regions "reverse")
+        ("e" mc/insert-numbers "enumerate")
+        ("*" mc/mark-all-like-this "mark all")
+        ("o" mc/mark-all-like-this-dwim "mark all dwim"))
+
+      ;; todo: move to beginning of word in pre hook
+      (defhydra hydra-case-word-at-point (esc-mode-map "C-S-l")
+        "case word at point"
+        ("c" capitalize-word "capitalize")
+        ("u" upcase-word "upcase")
+        ("l" downcase-word "lowercase"))
+
+      ;; todo: create a mirror that manipulates `other-buffer'
+      (use-package smartscan)
+      (esc-key "M-m M-m" 'back-to-indentation)
+      (defhydra hydra-scroll-buffer (esc-mode-map "M-m")
+        "cursor-movement"
+        ("j" scroll-slight-up "up")
+        ("k" scroll-slight-down "dw")
+        ("s" smartscan-symbol-go-forward "i-f")
+        ("r" smartscan-symbol-go-backward "i-r")
+        ("h" backward-char "back")
+        ("l" forward-char "frwd")
+        ("n" next-line "next")
+        ("p" previous-line "prev")
+        ("e" end-of-line "end-ln")
+        ("a" beginning-of-line "beg-ln")
+        ("d" scroll-up "pg up")
+        ("u" scroll-down "pg dn")
+        ("q" read-only-mode)
+        ("/" goto-last-change "last-chng")
+        ("." find-tag "tag")
+        ("*" pop-tag-mark "pop-tag"))
+
+      (defhydra hydra-window-adjustment (esc-mode-map "C-z")
+        "window adjustment"
+        ("r" esc/rotate-window-split "rotate")
+        ("p" esc/swap-buffer-locations "swap")
+        ("o" esc/should-have-opened-this-in-other-window "other window" :color blue)
+        ("s" unselectable-buffer "selectable")
+        ("d" dedicated-buffer "dedicated")
+        ("b" mode-line-other-buffer "mode-line-other-buffer")
+        ("u" bury-buffer "bury"))
+
+      ;; (after 'org
+      ;;   (defhydra hydra-org-nav-source-block (esc-mode-map "C-c n")
+      ;;     "org src block nav"
+      ;;     ("n" org-jump-next-src-block "next")
+      ;;     ("p" org-jump-prev-src-block "prev")))
+
+      (defhydra hydra-move-text (esc-mode-map "<C-M-return>")
+        "move text"
+        ("j" move-text-down "down")
+        ("k" move-text-up "up")
+        ("h" fold-this "fold-this")
+        ("r" fold-this-unfold-all "unfold all")))
+
+    (esc-mode 1))
 #+END_SRC
 *** Mode line in header config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1089,46 +1295,6 @@ TODO: integrate with =esc-mode=
     #+BEGIN_SRC emacs-lisp :tangle yes
       (add-to-list 'same-window-buffer-names "*compilation*")
     #+END_SRC
-*** Miscellaneous modes config
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (mapc (lambda (mode) (quelpa mode))
-        '(ac-haskell-process achievements ant apt-utils
-          apt-utils-ido archives asilea async auctex
-          autodisass-java-bytecode auto-overlays brainfuck-mode
-          broadcast capture cd-compile c-eldoc checkbox
-          cmake-font-lock cmake-mode color-theme connection
-          css-eldoc cssh curl-for-url default-text-scale
-          dired-details disaster disaster-arm doctags eldoc-eval
-          epl flycheck flycheck-package fpaste ghci-completion
-          git-commit-mode gitconfig-mode git-rebase-mode
-          git-timemachine gntp gnu-apl-mode gnupg gtags hide-lines
-          highlight highlight-thing htmlize hydra ibuffer-tramp
-          ibuffer-vc jist langdoc let-alist link litable
-          lorem-ipsum macrostep misc-cmds move-text multi
-          multiple-cursors names neotree noflet offlineimap
-          on-screen operate-on-number org org-eldoc package-build
-          package-safe-delete packed pdf-tools persistent-scratch
-          pkg-info plantuml-mode poker popup popwin quelpa request
-          rtos-dev-mode rtos-interrupt-generator rubocop ruby-mode
-          scratch shell-command smartrep smooth-scrolling spinner
-          ssh-config-mode ssh-tunnels sunshine symon synonyms
-          synosaurus tablist term-run tup-mode typing unfill vlf
-          xahk-mode))
-#+END_SRC
-
-Custom modes
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (mapc (lambda (mode) (quelpa `(,mode :repo ,(format "EricCrosson/%s" mode) :fetcher github)))
-        '(browse-cliplink
-          color-theme-stack
-          dedicated-buffer
-          ido-extras
-          mwheel-scroll-all
-          org-indent-header
-          org-jump-src-block
-          os-interaction
-          scroll-slight))
-#+END_SRC
 ** OS configuration
 Operating system-specific configurations take place here, within this
 massive =cond=.
