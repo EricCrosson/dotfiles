@@ -248,7 +248,7 @@ tempt users to disable them.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (mapc (lambda (mode) (quelpa mode))
         '(ac-haskell-process achievements ant apt-utils
-          anzu discover fullframe smartscan
+          anzu discover fullframe smartscan fold-this
           apt-utils-ido archives asilea async auctex
           autodisass-java-bytecode auto-overlays brainfuck-mode
           broadcast capture cd-compile c-eldoc checkbox
@@ -379,6 +379,9 @@ Mojo is my personal extension of the GNU Emacs global namespace.
             blink-cursor-mode
             transient-mark-mode))
 
+    ;; todo: some sort of general mode association, i.e. entering
+    ;; minibuffer/multiple-cursors
+
     ;;; esc-mode key bindings
     ;; Remaps -- wherever they may be bound
     (esc-replace-key 'goto-line 'goto-line-with-feedback)
@@ -398,27 +401,36 @@ Mojo is my personal extension of the GNU Emacs global namespace.
     ;; todo: pull buffer management into another hydra
     ;; Buffer management
     (esc-key "C-x 4 k"    'mode-line-other-buffer-other-window)
+    (esc-key "C-c C-b"    'mode-line-other-buffer)
     (esc-key "C-c C-M-\\" 'indent-buffer)
+    (esc-key "C-x o"      'ace-window)
+    (esc-key "C-x M-b"    'bury-buffer)
+    (esc-key "C-c o"      'clone-indirect-buffer-other-window)
+    (esc-key "C-c C-o"    'ff-find-other-file)
 
     ;; Enhanced keybindings
     (esc-key "C-a"     'back-to-indentation-or-beginning)
     (esc-key "M-s o"   'occur-dwim)
 
-    (esc-key "C-c y" 'middle-click-yank)
+    (esc-key "C-c y"   'middle-click-yank)
 
+    ;; Backspace behavior
     (esc-key "C-<backspace>" 'backward-delete-word)
 
-    ;; Miscellaneous keybindings
-    (esc-key "C-c C-b" 'mode-line-other-buffer)
+    ;; Line tramsformations
     (esc-key "M-K"     'kill-sentence)
-    (esc-key "M-j"     'just-one-space) ; conflicts with spotlight
     (esc-key "C-c k"   'copy-line)
+    (esc-key "M-k"     'pull-up-line)
+
+    ;; Miscellaneous keybindings
+    (esc-key "M-j"     'just-one-space) ; conflicts with some WMs/OSes
     (esc-key "M-P"     'align-regexp)
     (esc-key "C-'"     'query-replace)
+    (esc-key "C-?"     'undo-tree-visualize)
     ;; TODO: change sexp wrapping (esc-key i 'e. {}[]())
 
     ;; Programming bindings
-    (esc-key "C-c m" 'compile)
+    (esc-key "C-c m"   'compile)
     (esc-key "C-c C-m" 'recompile)
 
     ;; C-q cluster
@@ -430,7 +442,6 @@ Mojo is my personal extension of the GNU Emacs global namespace.
     (esc-key "<C-return>"   'open-line-below)
     (esc-key "<C-S-return>" 'open-line-above)
     (esc-key "C-M-O"        'split-line)
-    (esc-key "M-k"          'pull-up-line)
 
     ;; Mark commands
     (esc-key "C-x m" 'pop-to-mark-command)
@@ -438,13 +449,7 @@ Mojo is my personal extension of the GNU Emacs global namespace.
     ;; Lisp/sexp movement
     (esc-key "C-S-k" 'kill-sexp)
 
-    ;; Buffer control
-    (esc-key "C-x o" 'ace-window)
-    (esc-key "C-x M-b" 'bury-buffer)
-    (esc-key "C-c o" 'clone-indirect-buffer-other-window)
-    (esc-key "C-c C-o" 'ff-find-other-file)
-
-  ;;; Function keys
+    ;;; Function keys
     (esc-key "C-c <f5>" 'copy-file-name-to-clipboard)
     (esc-key "<f5>"  'minibuffer-display-buffer-file-name)
     (esc-key "<f6>"  'spray-mode)
@@ -452,7 +457,8 @@ Mojo is my personal extension of the GNU Emacs global namespace.
     (esc-key "<f9>"  'flyspell-buffer)
     (esc-key "<f10>" 'golden-ratio-mode)
 
-    (esc-key "C-c f" 'esc/visit-favorite-dir)
+    (esc-key "C-c C-;" 'execute-extended-command)
+    (esc-key "C-c f" 'esc/cvisit-favorite-dir)
 
     (esc-key "C-x C-c" 'neotree-toggle) ;; no chance of accidental exit
 
@@ -547,6 +553,10 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 
     (esc-mode 1))
 #+END_SRC
+
+#+RESULTS:
+: t
+
 *** Mode line in header config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'mode-line-in-hdeader)
@@ -1182,17 +1192,6 @@ TODO: conform to use-packages way of creating stubs
   ;; Windmove from shift keys
   (use-package windmove
     :config (windmove-default-keybindings))
-#+END_SRC
-*** Fold this config
-Thanks yet again [[https://github.com/magnars/fold-this.el][Magnar]]
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'fold-this)
-  (use-package fold-this
-    :init (after 'esc-mode
-            (esc-keys
-              ("C-c f" . fold-this)
-              ("C-c F" . fold-this-unfold-all))))
-
 #+END_SRC
 *** Tagsgen config
     #+BEGIN_SRC emacs-lisp :tangle yes
