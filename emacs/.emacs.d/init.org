@@ -1019,7 +1019,15 @@ TODO: conform to use-packages way of creating stubs
   (use-package paradox
     :config
     (setq paradox-execute-asynchronously t
-          paradox-automatically-star nil))
+          paradox-automatically-star nil
+          paradox-github-token nil))
+#+END_SRC
+*** Weather-mento config
+#+BEGIN_SRC emacs-lisp :tangle :tangle yes
+  (quelpa 'weather-mento)
+  (setq weather-metno-location-name "Austin, Texas"
+        weather-metno-location-latitude 30
+        weather-metno-location-longitude 97)
 #+END_SRC
 *** Workgroups config
 #+BEGIN_SRC emacs-lisp :tangle yes
