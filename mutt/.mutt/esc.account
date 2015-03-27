@@ -1,0 +1,7 @@
+set folder=$HOME/Maildir/esc
+set spoolfile=+/INBOX
+
+set postponed="=Drafts"
+
+set from=esc@ericcrosson.com
+set hostname="ericcrosson.com"

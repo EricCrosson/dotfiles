@@ -1,0 +1,7 @@
+set folder=$HOME/Maildir/gmail
+set spoolfile=+/inbox
+
+set postponed="=Drafts"
+
+set from=eric.s.crosson@gmail.com
+set hostname="gmail.com"
