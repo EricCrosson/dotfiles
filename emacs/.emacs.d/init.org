@@ -250,6 +250,7 @@ tempt users to disable them.
         '(ac-haskell-process achievements ant apt-utils
           anzu discover fullframe smartscan fold-this
           apt-utils-ido archives asilea async auctex
+          highlight-symbol
           autodisass-java-bytecode auto-overlays brainfuck-mode
           broadcast capture cd-compile c-eldoc checkbox
           cmake-font-lock cmake-mode color-theme connection
@@ -493,16 +494,19 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 
       (defhydra hydra-move-text (esc-mode-map "<C-M-return>")
         "move text"
+        ;; move-text bindings
         ("j" move-text-down "down")
         ("k" move-text-up "up")
-        ("h" fold-this "fold-this")
-        ("r" fold-this-unfold-all "unfold all")))
+        ;; fold-this bindings
+        ("f" fold-this "fold-this")
+        ("u" fold-this-unfold-all "unfold all")
+        ;; highlight-symbol bindings
+        ("h" highlight-symbol-at-point)
+        ("n" unhighlight-regexp)
+        ("%" highlight-symbol-query-replace)))
 
     (esc-mode 1))
 #+END_SRC
-
-#+RESULTS:
-: t
 
 *** Hide mode line
     #+BEGIN_SRC emacs-lisp :tangle yes
@@ -560,10 +564,6 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 *** Mode line in header config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'mode-line-in-hdeader)
-#+END_SRC
-*** Highlight symbol config
-#+BEGIN_SRC emacs-lisp :tangle yes
-
 #+END_SRC
 *** Displaced yank config
 #+BEGIN_SRC emacs-lisp :tangle yes
