@@ -63,7 +63,18 @@ keep the list updated, just load all subdirectories and go.
     :group 'esc-mode)
   (setq esc-meta-path "~/.emacs.d/meta")
 
+  (defcustom elpa-path nil
+    "Path to elpa directory."
+    :type 'path
+    :options '("~/.emacs.d/elpa")
+    :group 'esc-mode)
+  (setq elpa-path "~/.emacs.d/elpa")
+
   (let ((default-directory site-lisp-path))      ;for easy
+    (normal-top-level-add-to-load-path '("."))   ;recursive
+    (normal-top-level-add-subdirs-to-load-path)) ;loading
+
+  (let ((default-directory elpa-path))           ;for easy
     (normal-top-level-add-to-load-path '("."))   ;recursive
     (normal-top-level-add-subdirs-to-load-path)) ;loading
 #+END_SRC
@@ -242,7 +253,7 @@ Install all packages -- useful for new hosts. Just remember to keep
 this list up-to-date
 #+BEGIN_SRC emacs-lisp :tangle no
   (mapc (lambda (mode) (quelpa mode))
-        '(ac-haskell-process achievements ant apt-utils anzu
+        '(ac-haskell-process achievements ant apt-utils anzu cache
           discover fullframe smartscan fold-this apt-utils-ido
           archives asilea async auctex highlight-symbol use-package
           auto-compile bliss-theme monochrome-theme
