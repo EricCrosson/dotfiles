@@ -180,6 +180,7 @@ Hello, My Name Is
         remote-file-name-inhibit-cache t  ;don't resolve remote file attrubutes
         auto-save-default nil
         large-file-warning-threshold nil
+        save-interprogram-paste-before-kill t
         set-mark-command-repeat-pop t
         starttls-use-gnutls t
         browse-url-browser-function 'browse-web
@@ -928,13 +929,11 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
           ido-file-extensions-order '(".org" ".el"
                                       ".c" ".c"
                                       ".dox" ".txt")))
-
   (use-package ido-extras
     :init
     (bind-key "M-i"     'ido-goto-symbol  esc-mode-map)
     (bind-key "C-x C-r" 'ido-recentf-open esc-mode-map)
     (bind-key "C-x C-b" 'ido-switch-buffer-current-major-mode esc-mode-map))
-
   (use-package ido-vertical-mode
     :config (ido-vertical-mode 1))
 #+END_SRC
