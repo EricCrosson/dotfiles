@@ -292,59 +292,6 @@ Mojo is my personal extension of the GNU Emacs global namespace.
   (quelpa '(mojo :repo "EricCrosson/mojo" :fetcher github))
   (use-package mojo)
 #+END_SRC
-*** Hide mode line
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa '(hide-mode-line :repo "EricCrosson/hide-mode-line" :fetcher github))
-    #+END_SRC
-*** Writegood mode config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'writegood-mode)
-      (use-package writegood-mode
-        :config
-          (add-hook 'fundamental-mode-hook 'writegood-mode)
-          (add-hook 'latex-mode-hook 'writegood-mode))
-    #+END_SRC
-*** Writeroom mode config
-#+BEGIN_SRC emacs-lisp :tangle :tangle yes
-  (quelpa 'writeroom-mode)
-#+END_SRC
-*** Yaml mode config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'yaml-mode)
-    #+END_SRC
-*** Yasnippet config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'yasnippet)
-    #+END_SRC
-*** undo-tree config
-#+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'undo-tree)
-  (use-package undo-tree
-    :config
-    ;;; Make zipped files obvious.
-    (defadvice undo-tree-make-history-save-file-name
-        (after undo-tree activate)
-      (setq ad-return-value (concat ad-return-value ".gz")))
-
-    ;;; Thanks to
-    ;;; [[http://whattheemacsd.com/my-misc.el-02.html][Magnar]] for the
-    ;;; advice.
-    (defadvice undo-tree-undo (around keep-region activate)
-      (if (use-region-p)
-          (let ((m (set-marker (make-marker) (mark)))
-                (p (set-marker (make-marker) (point))))
-            ad-do-it
-            (goto-char p)
-            (set-mark m)
-            (set-marker p nil)
-            (set-marker m nil))
-        ad-do-it)))
-#+END_SRC
-*** Bind key config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'bind-key)
-      (use-package bind-key)
-    #+END_SRC
 *** esc mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa '(esc-mode :repo "EricCrosson/esc-mode" :fetcher github))
@@ -557,9 +504,66 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 #+RESULTS:
 : t
 
+*** Hide mode line
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa '(hide-mode-line :repo "EricCrosson/hide-mode-line" :fetcher github))
+    #+END_SRC
+*** Writegood mode config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'writegood-mode)
+      (use-package writegood-mode
+        :config
+          (add-hook 'fundamental-mode-hook 'writegood-mode)
+          (add-hook 'latex-mode-hook 'writegood-mode))
+    #+END_SRC
+*** Writeroom mode config
+#+BEGIN_SRC emacs-lisp :tangle :tangle yes
+  (quelpa 'writeroom-mode)
+#+END_SRC
+*** Yaml mode config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'yaml-mode)
+    #+END_SRC
+*** Yasnippet config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'yasnippet)
+    #+END_SRC
+*** undo-tree config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (quelpa 'undo-tree)
+  (use-package undo-tree
+    :config
+    ;;; Make zipped files obvious.
+    (defadvice undo-tree-make-history-save-file-name
+        (after undo-tree activate)
+      (setq ad-return-value (concat ad-return-value ".gz")))
+
+    ;;; Thanks to
+    ;;; [[http://whattheemacsd.com/my-misc.el-02.html][Magnar]] for the
+    ;;; advice.
+    (defadvice undo-tree-undo (around keep-region activate)
+      (if (use-region-p)
+          (let ((m (set-marker (make-marker) (mark)))
+                (p (set-marker (make-marker) (point))))
+            ad-do-it
+            (goto-char p)
+            (set-mark m)
+            (set-marker p nil)
+            (set-marker m nil))
+        ad-do-it)))
+#+END_SRC
+*** Bind key config
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (quelpa 'bind-key)
+      (use-package bind-key)
+    #+END_SRC
 *** Mode line in header config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'mode-line-in-hdeader)
+#+END_SRC
+*** Highlight symbol config
+#+BEGIN_SRC emacs-lisp :tangle yes
+
 #+END_SRC
 *** Displaced yank config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1398,7 +1402,7 @@ know?
     (add-to-list 'org-modules 'org-habit)
     (add-to-list 'org-structure-template-alist
                  '("E"
-                   "#+BEGIN_SRC emacs-lisp :tangle ?\n\n#+END_SRC"
+                   "#+BEGIN_SRC emacs-lisp :tangle yes?\n\n#+END_SRC"
                    "<emacs-lisp>\n?\n</emacs-lisp>"))
 
     (defun esc/org-confirm-babel ()
