@@ -960,8 +960,20 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
   (quelpa 'multiple-cursors)
   (use-package multiple-cursors)
 #+END_SRC
+*** Visual Bookmark bm config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (quelpa 'bm)
+  (use-package bm
+    :commands bm-toggle bm-next bm-previous
+    :config
+    (after 'esc-mode
+      (defhydra hydra-bm (esc-mode-map "C-c C-'")
+        "bm"
+        ("d" bm-toggle "drop/del")
+        ("n" bm-next "next")
+        ("p" bm-previous "prev"))))
+#+END_SRC
 *** Spotify config
-TODO: idle-load this package after =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
   (quelpa 'spotify)
   (use-package spotify
