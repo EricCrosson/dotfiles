@@ -537,15 +537,15 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package company
     :config
-    (progn
-      (setf company-idle-delay 0
-            company-minimum-prefix-length 2
-            company-show-numbers t
-            company-selection-wrap-around t
-            company-dabbrev-ignore-case t
-            company-dabbrev-ignore-invisible t
-            company-dabbrev-downcase nil)
-      (global-company-mode t)))
+    (setf company-idle-delay 0
+          company-minimum-prefix-length 2
+          company-show-numbers t
+          company-selection-wrap-around t
+          company-dabbrev-ignore-case t
+          company-dabbrev-ignore-invisible t
+          company-dabbrev-downcase nil)
+    (global-company-mode t)
+    (after 'diminish (diminish 'company-mode)))
 #+END_SRC
 *** undo-tree config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -1260,7 +1260,7 @@ TODO: keymaps go in =esc-mode=
     (after 'fic-mode (diminish 'fic-mode))
     (after 'eldoc (diminish 'eldoc-mode))
     (after 'smerge-mode (diminish 'smerge-mode))
-    (after 'auto-complete (diminish 'auto-complete-mode))
+    ;; (after 'auto-complete (diminish 'auto-complete-mode))
     (after 'esc-mode (diminish 'esc-mode)))
 #+END_SRC
 *** Compilation buffer config
