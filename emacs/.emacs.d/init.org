@@ -35,18 +35,18 @@
 
 ** Package configuration and Load path
 Install [[https://github.com/quelpa/quelpa][quelpa]] if it doesn't exist yet
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
   (unless (require 'quelpa nil 'noerror)
     (with-temp-buffer
       (url-insert-file-contents "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
       (eval-buffer)))
 #+END_SRC
 
-   This is a neat trick I found to take away 99.9% of the headache when
+This is a neat trick I found to take away 99.9% of the headache when
 dealing with Emacs' load path. Assuming the user has placed every
-file, script and dependency in his or her =~/.emacs.d/= directory,
-this block will ensure Emacs can find each file come load time. No
-need to keep the list updated, just load all subdirectories and go.
+file, script and dependency in his or her =~/.emacs.d/= directory, this
+block will ensure Emacs can find each file come load time. No need to
+keep the list updated, just load all subdirectories and go.
 #+BEGIN_SRC emacs-lisp :tangle yes
   (defcustom site-lisp-path nil
     "Path to esc's lisp library."
@@ -70,7 +70,6 @@ need to keep the list updated, just load all subdirectories and go.
 
 Use [[https://github.com/jwiegley/use-package][use-package]]
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'use-package)
   (require 'use-package)
   (use-package package
     :config
@@ -87,7 +86,6 @@ Set up [[https://github.com/tarsius/auto-compile][auto-compile mode]] to compile
 source is newer than the presently compiled file. A good tradeoff
 with proper distributed version control.
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'auto-compile)
   (use-package auto-compile
     :init (setq load-prefer-newer t)
     :config (auto-compile-on-load-mode 1))
@@ -104,9 +102,6 @@ with proper distributed version control.
 
     Fire up the mood lighting
     #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'bliss-theme)
-      (quelpa 'monochrome-theme)
-
       (use-package bliss-theme
         ;; TODO: switch with color-theme stack
         :config (load-theme 'bliss t))
@@ -236,9 +231,6 @@ tempt users to disable them.
 ** Configuration
 *** Auto package update config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa '(auto-package-update :repo "rranelli/auto-package-update.el"
-                                :fetcher github))
-
   (use-package auto-package-update
     :config
       (setq auto-package-update-interval 3)
@@ -246,12 +238,26 @@ tempt users to disable them.
       (ignore-errors (auto-package-update-maybe)))
 #+END_SRC
 *** Miscellaneous modes config
-#+BEGIN_SRC emacs-lisp :tangle yes
+Install all packages -- useful for new hosts. Just remember to keep
+this list up-to-date
+#+BEGIN_SRC emacs-lisp :tangle no
   (mapc (lambda (mode) (quelpa mode))
-        '(ac-haskell-process achievements ant apt-utils
-          anzu discover fullframe smartscan fold-this
-          apt-utils-ido archives asilea async auctex
-          highlight-symbol
+        '(ac-haskell-process achievements ant apt-utils anzu
+          discover fullframe smartscan fold-this apt-utils-ido
+          archives asilea async auctex highlight-symbol use-package
+          auto-compile bliss-theme monochrome-theme
+          monochrome-theme writegood-mode writeroom-mode company
+          yaml-mode yasnippet undo-tree bind-key
+          mode-line-in-hdeader powerline goto-last-change github)
+          github) lua-mode spray tea-time golden-ratio web-mode
+          fic-mode bury-successful-compilation idle-highlight
+          flx-ido git-gutter+ multiple-cursors bm spotify
+          ace-jump-mode ace-window git-messenger keyfreq
+          browse-kill-ring clipmon bitly paradox weather-mento
+          workgroups persp-mode haskell-mode pretty-lambdada
+          bash-completion markdown-mode magit expand-region
+          autopair lexbind-mode helm rainbow-delimeters
+          org-cliplink dictionary unkillable-scratch dash diminish
           autodisass-java-bytecode auto-overlays brainfuck-mode
           broadcast capture cd-compile c-eldoc checkbox
           cmake-font-lock cmake-mode color-theme connection
@@ -272,10 +278,11 @@ tempt users to disable them.
           ssh-config-mode ssh-tunnels sunshine symon synonyms
           synosaurus tablist term-run tup-mode typing unfill vlf
           xahk-mode))
+  (auto-package-update :repo "rranelli/auto-package-update.el" :fetcher github)
 #+END_SRC
 
-Custom modes
-#+BEGIN_SRC emacs-lisp :tangle yes
+Custom modes are install this way
+#+BEGIN_SRC emacs-lisp :tangle no
   (mapc (lambda (mode) (quelpa `(,mode :repo ,(format "EricCrosson/%s" mode) :fetcher github)))
         '(browse-cliplink
           color-theme-stack
@@ -283,20 +290,27 @@ Custom modes
           ido-extras
           mwheel-scroll-all
           org-indent-header
+          displaced-yank
+          help-extras
+          unselectable-buffer
+          dedicated-buffer
+          clean-mode-line
+          tagsgen
           org-jump-src-block
           os-interaction
+          mojo
+          esc-mode
+          hide-mode-line
           scroll-slight))
 #+END_SRC
 
 *** Mojo config
 Mojo is my personal extension of the GNU Emacs global namespace.
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa '(mojo :repo "EricCrosson/mojo" :fetcher github))
   (use-package mojo)
 #+END_SRC
 *** esc mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa '(esc-mode :repo "EricCrosson/esc-mode" :fetcher github))
   (use-package esc-mode
     :config
     (setq esc/associated-modes
@@ -511,23 +525,16 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 
 *** Hide mode line
     #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa '(hide-mode-line :repo "EricCrosson/hide-mode-line" :fetcher github))
-    #+END_SRC
+  #+END_SRC
 *** Writegood mode config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'writegood-mode)
-      (use-package writegood-mode
+  #+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package writegood-mode
         :config
           (add-hook 'fundamental-mode-hook 'writegood-mode)
           (add-hook 'latex-mode-hook 'writegood-mode))
     #+END_SRC
-*** Writeroom mode config
-#+BEGIN_SRC emacs-lisp :tangle :tangle yes
-  (quelpa 'writeroom-mode)
-#+END_SRC
 *** Company mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'company)
   (use-package company
     :config
     (progn
@@ -540,17 +547,8 @@ Mojo is my personal extension of the GNU Emacs global namespace.
             company-dabbrev-downcase nil)
       (global-company-mode t)))
 #+END_SRC
-*** Yaml mode config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'yaml-mode)
-    #+END_SRC
-*** Yasnippet config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'yasnippet)
-    #+END_SRC
 *** undo-tree config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'undo-tree)
   (use-package undo-tree
     :config
     ;;; Make zipped files obvious.
@@ -573,17 +571,11 @@ Mojo is my personal extension of the GNU Emacs global namespace.
         ad-do-it)))
 #+END_SRC
 *** Bind key config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'bind-key)
-      (use-package bind-key)
-    #+END_SRC
-*** Mode line in header config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'mode-line-in-hdeader)
+  (use-package bind-key)
 #+END_SRC
 *** Displaced yank config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa '(displaced-yank :repo "EricCrosson/displaced-yank" :fetcher github))
   (use-package displaced-yank
       :config
       (mapc (lambda (function)
@@ -627,20 +619,17 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 *** Powerline config
 That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee-d77b-45da-ac5c-b9bbb562.gif][Power⚡Line]] baby!
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'powerline)
   (use-package powerline
     :disabled t
     :config (powerline-default-theme))
 #+END_SRC
 *** Help extras conf
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa '(help-extras :repo "EricCrosson/help-extras" :fetcher github))
   (use-package help-extras
      :config (help-extras 1))
 #+END_SRC
 *** Goto last change conf
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'goto-last-change)
   (use-package goto-last-change
      :init (bind-key "C-c /" 'goto-last-change esc-mode-map))
 #+END_SRC
@@ -664,25 +653,21 @@ That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee
 #+END_SRC
 *** Unselectable buffer config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa '(unselectable-buffer :repo "EricCrosson/unselectable-buffer" :fetcher github))
   (use-package unselectable-buffer)
 #+END_SRC
 *** Dedicated buffer config
 My dedicated mode, not the melpa one
 TODO: expand on that
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa '(dedicated-buffer :repo "EricCrosson/dedicated-buffer" :fetcher github))
   (use-package dedicated-buffer)
 #+END_SRC
 *** Lua mode config
 Gotta love that [[http://awesome.naquadah.org/][awesome wm]]
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'lua-mode)
   (use-package lua-mode
     :mode "\\.lua$"
     :interpreter "lua")
 #+END_SRC
-
 *** Auto complete config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package auto-complete
@@ -702,11 +687,9 @@ Gotta love that [[http://awesome.naquadah.org/][awesome wm]]
 *** Spray config
 This mode is based on [[https://github.com/Miserlou/Glance-Bookmarklet][OpenSpritz]], a speedreading tutor.
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'spray)
   (use-package spray
     :commands spray-mode)
 #+END_SRC
-
 *** ibuffer config
 TODO: use-package this guy
 Modify ibuffer view to include human readable size information.
@@ -754,7 +737,6 @@ Mabye I'll include this one day, for now it can live in hibernation.
 
 *** Tea-time config
 #+BEGIN_SRC emacs-lisp :tangle no
-  (quelpa 'tea-time)
   (use-package tea-time
     :commands tea-time
     :config
@@ -781,7 +763,6 @@ Configure options for transparent handling of very large files.
 #+END_SRC
 *** Golden ratio config mode
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'golden-ratio)
   (use-package golden-ratio
     :init (after 'golden-ratio
             (add-to-list 'golden-ratio-extra-commands 'ace-window)))
@@ -794,7 +775,6 @@ Configure options for transparent handling of very large files.
 *** Web mode config
 TODO: disable autopair-mode for web-mode
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'web-mode)
   (use-package web-mode
     :mode "\\.jsp$"
     :mode "\\.html$")
@@ -811,7 +791,6 @@ TODO: disable autopair-mode for web-mode
 #+END_SRC
 *** FIC-mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'fic-mode)
   (use-package fic-mode
     :config (add-hook 'prog-mode-hook 'turn-on-fic-mode))
 #+END_SRC
@@ -859,7 +838,6 @@ TODO: turn this into a minor mode for toggling with =esc-mode=
 
 TODO : associate with =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'bury-successful-compilation)
   (use-package bury-successful-compilation
     :config (bury-successful-compilation 1))
 #+END_SRC
@@ -917,7 +895,6 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 #+END_SRC
 *** Idle highlight config
 #+BEGIN_SRC emacs-lisp :tangle no
-  (quelpa 'idle-highlight)
   (use-package idle-highlight
     :disabled t
     :config (setq-default idle-highlight-idle-time 10.0))
@@ -930,7 +907,6 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 #+END_SRC
 *** Ido config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'flx-ido)
   (use-package flx-ido
     :init (setq ido-save-directory-list-file (format "%s/ido.last" esc-meta-path))
     :config
@@ -955,7 +931,6 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 #+END_SRC
 *** Git gutter+ config
 #+BEGIN_SRC emacs-lisp :tangle no
-  (quelpa 'git-gutter+)
   (use-package git-gutter+
     :disabled t
     :config
@@ -972,12 +947,10 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 #+END_SRC
 *** Multiple cursors config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'multiple-cursors)
   (use-package multiple-cursors)
 #+END_SRC
 *** Visual Bookmark bm config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'bm)
   (use-package bm
     :commands bm-toggle bm-next bm-previous
     :config
@@ -990,7 +963,6 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 #+END_SRC
 *** Spotify config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'spotify)
   (use-package spotify
     :commands spotify-enable-song-notifications
     :config
@@ -1003,7 +975,6 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 #+END_SRC
 *** Ace config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'ace-jump-mode)
   (use-package ace-jump-mode
     :init
       (bind-key "C-c SPC" 'ace-jump-mode esc-mode-map)
@@ -1011,26 +982,22 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
       (bind-key "C-M-S-l" 'ace-jump-buffer esc-mode-map)
     :config (ace-jump-mode-enable-mark-sync))
 
-  (quelpa 'ace-window)
   (use-package ace-window
     :config (setq aw-keys (number-sequence 97 (+ 97 7))))
 #+END_SRC
 *** Git messenger config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'git-messenger)
   (use-package git-messenger
     :init (bind-key "C-c [" 'git-messenger:popup-message esc-mode-map))
 #+END_SRC
 *** Keyfreq mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'keyfreq)
   (use-package keyfreq
     :config (keyfreq-autosave-mode 1)
             (setq keyfreq-file "~/.emacs.d/meta/keyfreq"))
 #+END_SRC
 *** Browse kill ring config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'browse-kill-ring)
   (use-package browse-kill-ring
     :config
     (setq kill-ring-max 80)
@@ -1039,7 +1006,6 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
 *** Clipmon config
 TODO: conform to use-packages way of creating stubs
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'clipmon)
   (defvar clipmon--autoinsert " clipmon--autoinserted-this")
   (use-package clipmon)
 #+END_SRC
@@ -1049,14 +1015,12 @@ TODO: conform to use-packages way of creating stubs
 #+END_SRC
 *** Bitly config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'bitly)
   (autoload 'json-read "json.el")
   (use-package bitly
     :config (setq bitly-access-token "b4a5cd4e51df442ab97012cfc2764c599d6eabf8"))
 #+END_SRC
 *** Paradox config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'paradox)
   (use-package paradox
     :config
     (setq paradox-execute-asynchronously t
@@ -1065,21 +1029,18 @@ TODO: conform to use-packages way of creating stubs
 #+END_SRC
 *** Weather-mento config
 #+BEGIN_SRC emacs-lisp :tangle :tangle yes
-  (quelpa 'weather-mento)
   (setq weather-metno-location-name "Austin, Texas"
         weather-metno-location-latitude 30
         weather-metno-location-longitude 97)
 #+END_SRC
 *** Workgroups config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'workgroups)
   (use-package workgroups
     :disabled t
     :config (setq wg-morph-on nil))
 #+END_SRC
 *** Persp mode conf
 #+BEGIN_SRC emacs-lisp :tangle no
-  (quelpa 'persp-mode)
   (use-package persp-mode
     :disabled t
     :config
@@ -1088,17 +1049,15 @@ TODO: conform to use-packages way of creating stubs
 #+END_SRC
 *** Haskell mode conf
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'haskell-mode)
   (use-package haskell-mode
     :config
     (use-package haskell-indent
       :init (add-hook 'haskell-mode-hook 'haskell-indent-mode)))
 #+END_SRC
 *** Clean mode line conf
-    Take this opportunity to refresh the mode line. Inspiration from
-    [[http://www.masteringemacs.org/article/hiding-replacing-modeline-strings][Mastering Emacs]].
+Take this opportunity to refresh the mode line. Inspiration from
+[[http://www.masteringemacs.org/article/hiding-replacing-modeline-strings][Mastering Emacs]].
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa '(clean-mode-line :repo "EricCrosson/clean-mode-line" :fetcher github))
   (use-package clean-mode-line
     :config
     (setq clean-mode-line-alist
@@ -1113,7 +1072,6 @@ TODO: conform to use-packages way of creating stubs
 #+END_SRC
 *** Pretty lambdada config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'pretty-lambdada)
   (use-package pretty-lambdada
     :init (mapc (lambda (prettify-this-mode)
                   (add-hook prettify-this-mode 'pretty-lambda))
@@ -1122,24 +1080,14 @@ TODO: conform to use-packages way of creating stubs
                   enh-ruby-mode-hook
                   ruby-mode-hook)))
 #+END_SRC
-*** Bash completion config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'bash-completion)
-    #+END_SRC
-*** Markdown mode
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa 'markdown-mode)
-    #+END_SRC
 *** Magit config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'magit)
   (use-package magit
     :commands magit-status)
 #+END_SRC
 *** Expand region config
 [[http://spw.sdf.org/blog/tech/emacs/expandregionlines.html][Notes from the Library : /blog/tech/emacs/expandregionlines.html]]
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'expand-region)
   (use-package expand-region
     :init (bind-key "C-;" 'er/expand-region esc-mode-map)
     :config
@@ -1162,17 +1110,14 @@ TODO: conform to use-packages way of creating stubs
             (goto-char end)
             (end-of-line)
             (forward-char 1))))))
-
 #+END_SRC
 *** Autopair config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'autopair)
   (use-package autopair
     :commands autopair-global-mode)
 #+END_SRC
 *** Lexbind config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'lexbind-mode)
   (use-package lexbind-mode
     :init (add-hook 'emacs-lisp-mode-hook 'lexbind-mode))
 #+END_SRC
@@ -1201,7 +1146,6 @@ TODO: conform to use-packages way of creating stubs
 *** Helm config
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;; Helm
-  (quelpa 'helm)
   (use-package helm
     :init (after 'esc-mode
             (esc-keys
@@ -1210,7 +1154,6 @@ TODO: conform to use-packages way of creating stubs
 #+END_SRC
 *** Rainbow delimeters mode config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'rainbow-delimeters)
   (use-package rainbow-delimiters
     :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 #+END_SRC
@@ -1224,20 +1167,14 @@ TODO: conform to use-packages way of creating stubs
   (use-package windmove
     :config (windmove-default-keybindings))
 #+END_SRC
-*** Tagsgen config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (quelpa '(tagsgen :repo "EricCrosson/tagsgen" :fetcher github))
-    #+END_SRC
 *** Org cliplink config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'org-cliplink)
   (use-package org-cliplink
     :init (after 'esc-mode
             (esc-key "C-c C-M-l" 'org-cliplink)))
 #+END_SRC
 *** Dictionary config
 #+BEGIN_SRC emacs-lisp :tangle :tangle yes
-  (quelpa 'dictionary)
   (use-package dictionary
     :config
     (defun esc/dictionary-search ()
@@ -1258,7 +1195,6 @@ TODO: conform to use-packages way of creating stubs
 *** Unkillable scratch config
 TODO: integrate with =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'unkillable-scratch)
   (use-package unkillable-scratch
     :config
     (unkillable-scratch 1)
@@ -1269,19 +1205,18 @@ TODO: integrate with =esc-mode=
   (add-hook 'eval-expression-minibuffer-setup-hook 'eldoc-mode)
 #+END_SRC
 *** Org indent header config
-    TODO: use like =org-indent-mode=
+TODO: use like =org-indent-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package org-indent-header)
 #+END_SRC
 *** Dired config
-    TODO: keymaps go in =esc-mode=
+TODO: keymaps go in =esc-mode=
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package dired-details
     :config (dired-details-install)
     :init
     (use-package dired-x)
-    (quelpa 'dash)
-    (use-package dash
+  (use-package dash
       :init
       ;; Reload dired after making changes
       (put '--each 'lisp-indent-function 1)
@@ -1304,7 +1239,6 @@ TODO: integrate with =esc-mode=
 #+END_SRC
 *** Diminish config
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (quelpa 'diminish)
   (use-package diminish
     :config
     (after 'undo-tree-autoloads
@@ -1330,9 +1264,9 @@ TODO: integrate with =esc-mode=
     (after 'esc-mode (diminish 'esc-mode)))
 #+END_SRC
 *** Compilation buffer config
-    #+BEGIN_SRC emacs-lisp :tangle yes
-      (add-to-list 'same-window-buffer-names "*compilation*")
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-to-list 'same-window-buffer-names "*compilation*")
+#+END_SRC
 ** OS configuration
 Operating system-specific configurations take place here, within this
 massive =cond=.
