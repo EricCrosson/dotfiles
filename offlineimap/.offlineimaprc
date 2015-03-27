@@ -18,6 +18,12 @@ localrepository = esc-local
 remoterepository = esc-remote
 status_backend = sqlite
 
+# minutes between syncs
+autorefresh = 15
+# number of quick-syncs between update; does not update if the only
+# changes are to IMAP flags
+quick = 10
+
 [Repository esc-local]
 type = Maildir
 localfolders = ~/Maildir/esc
@@ -42,6 +48,12 @@ sslcacertfile = /etc/ssl/certs/ca-certificates.crt
 localrepository = gmail-local
 remoterepository = gmail-remote
 status_backend = sqlite
+
+# minutes between syncs
+autorefresh = 15
+# number of quick-syncs between update; does not update if the only
+# changes are to IMAP flags
+quick = 10
 
 [Repository gmail-local]
 type = Maildir
@@ -69,6 +81,12 @@ localrepository = utexas-local
 remoterepository = utexas-remote
 status_backend = sqlite
 
+# minutes between syncs
+autorefresh = 15
+# number of quick-syncs between update; does not update if the only
+# changes are to IMAP flags
+quick = 10
+
 [Repository utexas-local]
 type = Maildir
 localfolders = ~/Maildir/utexas
@@ -80,7 +98,7 @@ port = 993
 createfolders = false
 remotehost = imap.gmail.com
 remoteuser = eric.s.crosson@utexas.edu
-remotepasseval = getnetrc(machine='imap.gmail.com', login='eric.s.crosson@utexas.edu')
+# remotepasseval = getnetrc(machine='imap.gmail.com', login='eric.s.crosson@utexas.edu')
 nametrans = lambda foldername: re.sub ('^\[gmail\]', 'bak',
                                re.sub ('sent_mail', 'sent',
                                re.sub ('starred', 'flagged',
