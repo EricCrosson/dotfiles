@@ -525,6 +525,21 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 #+BEGIN_SRC emacs-lisp :tangle :tangle yes
   (quelpa 'writeroom-mode)
 #+END_SRC
+*** Company mode config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (quelpa 'company)
+  (use-package company
+    :config
+    (progn
+      (setf company-idle-delay 0
+            company-minimum-prefix-length 2
+            company-show-numbers t
+            company-selection-wrap-around t
+            company-dabbrev-ignore-case t
+            company-dabbrev-ignore-invisible t
+            company-dabbrev-downcase nil)
+      (global-company-mode t)))
+#+END_SRC
 *** Yaml mode config
     #+BEGIN_SRC emacs-lisp :tangle yes
       (quelpa 'yaml-mode)
@@ -671,6 +686,7 @@ Gotta love that [[http://awesome.naquadah.org/][awesome wm]]
 *** Auto complete config
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package auto-complete
+    :disabled t
     :commands global-auto-complete-mode
     :init
     (setq ac-comphist-file (format "%s/ac-comphist.dat" esc-meta-path))
