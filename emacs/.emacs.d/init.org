@@ -79,7 +79,7 @@ keep the list updated, just load all subdirectories and go.
 
 Use [[https://github.com/jwiegley/use-package][use-package]]
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (require 'use-package)
+  (eval-when-compile (require 'use-package))
   (use-package package
     :config
     (mapc (lambda (source) (add-to-list 'package-archives source) t)
