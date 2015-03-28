@@ -398,6 +398,8 @@ Mojo is my personal extension of the GNU Emacs global namespace.
     (esc-key "M-K"     'kill-sentence)
     (esc-key "C-c k"   'copy-line)
     (esc-key "M-k"     'pull-up-line)
+    ;; (esc-key "C-M-k" 'delete-kine) TODO: advise delete line to behave
+    ;; like kill line and give it a binding analagous to C-w's
 
     ;; Miscellaneous keybindings
     (esc-key "M-j"     'just-one-space) ; conflicts with some WMs/OSes
