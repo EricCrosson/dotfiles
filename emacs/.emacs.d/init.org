@@ -1496,24 +1496,15 @@ know?
   (message "All done, %s%s" (user-login-name) ".")
   ;;; .emacs.el ends here
 #+END_SRC
-* [2/18] TODOs
+* [0/6] TODOs
 ** TODO scratch buffer as consistent config file
   only emacs-lisp source blocks from the org file are loaded,
   naturally
 ** TODO gcov output parsed by emacs to hilight gdb code coverage
-** TODO /meta
-move recentf, other meta files into meta
-** TODO minibufer
-- [ ] disable M-n hydra
-** [0/1] Dired
-*** TODO human readable sizes in dired
-  First have to determine how to unhide information on demand
-  for definitions, not spell check
 ** [0/5] advice
 *** TODO tangling scripts adds execute permission
   (write-region "" nil custom-file)
 *** TODO finding tags
 look in dirs above for TAGS file and suggest it
-*** TODO org C-c ' to preserve window configuration?
 *** TODO C-h C-k takes you to org instead of .el
 *** TODO C-x M-r to save undo information
