@@ -33,7 +33,11 @@
     ;;; Code:
 #+END_SRC
 
-** Package configuration and Load path
+** Quelpa
+This section is not tangled by default, as it can cause problems on
+hosts behind a proxy. Also.. it can take some time to fully
+update. Oh, the joys of complex systems.
+
 Install [[https://github.com/quelpa/quelpa][quelpa]] if it doesn't exist yet
 #+BEGIN_SRC emacs-lisp :tangle no
   (unless (require 'quelpa nil 'noerror)
@@ -42,6 +46,74 @@ Install [[https://github.com/quelpa/quelpa][quelpa]] if it doesn't exist yet
       (eval-buffer)))
 #+END_SRC
 
+Install all packages -- useful for new hosts. Just remember to keep
+this list up-to-date
+#+BEGIN_SRC emacs-lisp :tangle no
+  (mapc (lambda (mode) (quelpa mode))
+        '(ac-haskell-process achievements ant apt-utils anzu cache
+          discover fullframe smartscan fold-this apt-utils-ido
+          archives asilea async auctex highlight-symbol use-package
+          auto-compile bliss-theme monochrome-theme
+          monochrome-theme writegood-mode writeroom-mode company
+          yaml-mode yasnippet undo-tree bind-key
+          mode-line-in-hdeader powerline goto-last-change github)
+          github) lua-mode spray tea-time golden-ratio web-mode
+          fic-mode bury-successful-compilation idle-highlight
+          flx-ido git-gutter+ multiple-cursors bm spotify
+          ace-jump-mode ace-window git-messenger keyfreq
+          browse-kill-ring clipmon bitly paradox weather-mento
+          workgroups persp-mode haskell-mode pretty-lambdada
+          bash-completion markdown-mode magit expand-region
+          autopair lexbind-mode helm rainbow-delimeters
+          org-cliplink dictionary unkillable-scratch dash diminish
+          autodisass-java-bytecode auto-overlays brainfuck-mode
+          broadcast capture cd-compile c-eldoc checkbox
+          cmake-font-lock cmake-mode color-theme connection
+          css-eldoc cssh curl-for-url default-text-scale
+          dired-details disaster disaster-arm doctags eldoc-eval
+          epl flycheck flycheck-package fpaste ghci-completion
+          git-commit-mode gitconfig-mode git-rebase-mode
+          git-timemachine gntp gnu-apl-mode gnupg gtags hide-lines
+          highlight highlight-thing htmlize hydra ibuffer-tramp
+          ibuffer-vc jist langdoc let-alist link litable
+          lorem-ipsum macrostep misc-cmds move-text multi
+          multiple-cursors names neotree noflet offlineimap
+          on-screen operate-on-number org org-eldoc package-build
+          package-safe-delete packed pdf-tools persistent-scratch
+          pkg-info plantuml-mode poker popup popwin quelpa request
+          rtos-dev-mode rtos-interrupt-generator rubocop ruby-mode
+          scratch shell-command smartrep smooth-scrolling spinner
+          ssh-config-mode ssh-tunnels sunshine symon synonyms
+          synosaurus tablist term-run tup-mode typing unfill vlf
+          xahk-mode))
+  (auto-package-update :repo "rranelli/auto-package-update.el" :fetcher github)
+#+END_SRC
+
+Custom modes are installed this way
+#+BEGIN_SRC emacs-lisp :tangle no
+  (mapc (lambda (mode) (quelpa `(,mode :repo ,(format "EricCrosson/%s" mode) :fetcher github)))
+        '(browse-cliplink
+          color-theme-stack
+          dedicated-buffer
+          ido-extras
+          mwheel-scroll-all
+          org-indent-header
+          displaced-yank
+          help-extras
+          unselectable-buffer
+          dedicated-buffer
+          clean-mode-line
+          tagsgen
+          org-jump-src-block
+          os-interaction
+          mojo
+          esc-mode
+          hide-mode-line
+          scroll-slight))
+#+END_SRC
+
+
+** Package configuration and Load path
 This is a neat trick I found to take away 99.9% of the headache when
 dealing with Emacs' load path. Assuming the user has placed every
 file, script and dependency in his or her =~/.emacs.d/= directory, this
@@ -247,73 +319,6 @@ tempt users to disable them.
       ;; todo: put on an idle-timer of 5 minutes
       (ignore-errors (auto-package-update-maybe)))
 #+END_SRC
-*** Miscellaneous modes config
-Install all packages -- useful for new hosts. Just remember to keep
-this list up-to-date
-#+BEGIN_SRC emacs-lisp :tangle no
-  (mapc (lambda (mode) (quelpa mode))
-        '(ac-haskell-process achievements ant apt-utils anzu cache
-          discover fullframe smartscan fold-this apt-utils-ido
-          archives asilea async auctex highlight-symbol use-package
-          auto-compile bliss-theme monochrome-theme
-          monochrome-theme writegood-mode writeroom-mode company
-          yaml-mode yasnippet undo-tree bind-key
-          mode-line-in-hdeader powerline goto-last-change github)
-          github) lua-mode spray tea-time golden-ratio web-mode
-          fic-mode bury-successful-compilation idle-highlight
-          flx-ido git-gutter+ multiple-cursors bm spotify
-          ace-jump-mode ace-window git-messenger keyfreq
-          browse-kill-ring clipmon bitly paradox weather-mento
-          workgroups persp-mode haskell-mode pretty-lambdada
-          bash-completion markdown-mode magit expand-region
-          autopair lexbind-mode helm rainbow-delimeters
-          org-cliplink dictionary unkillable-scratch dash diminish
-          autodisass-java-bytecode auto-overlays brainfuck-mode
-          broadcast capture cd-compile c-eldoc checkbox
-          cmake-font-lock cmake-mode color-theme connection
-          css-eldoc cssh curl-for-url default-text-scale
-          dired-details disaster disaster-arm doctags eldoc-eval
-          epl flycheck flycheck-package fpaste ghci-completion
-          git-commit-mode gitconfig-mode git-rebase-mode
-          git-timemachine gntp gnu-apl-mode gnupg gtags hide-lines
-          highlight highlight-thing htmlize hydra ibuffer-tramp
-          ibuffer-vc jist langdoc let-alist link litable
-          lorem-ipsum macrostep misc-cmds move-text multi
-          multiple-cursors names neotree noflet offlineimap
-          on-screen operate-on-number org org-eldoc package-build
-          package-safe-delete packed pdf-tools persistent-scratch
-          pkg-info plantuml-mode poker popup popwin quelpa request
-          rtos-dev-mode rtos-interrupt-generator rubocop ruby-mode
-          scratch shell-command smartrep smooth-scrolling spinner
-          ssh-config-mode ssh-tunnels sunshine symon synonyms
-          synosaurus tablist term-run tup-mode typing unfill vlf
-          xahk-mode))
-  (auto-package-update :repo "rranelli/auto-package-update.el" :fetcher github)
-#+END_SRC
-
-Custom modes are install this way
-#+BEGIN_SRC emacs-lisp :tangle no
-  (mapc (lambda (mode) (quelpa `(,mode :repo ,(format "EricCrosson/%s" mode) :fetcher github)))
-        '(browse-cliplink
-          color-theme-stack
-          dedicated-buffer
-          ido-extras
-          mwheel-scroll-all
-          org-indent-header
-          displaced-yank
-          help-extras
-          unselectable-buffer
-          dedicated-buffer
-          clean-mode-line
-          tagsgen
-          org-jump-src-block
-          os-interaction
-          mojo
-          esc-mode
-          hide-mode-line
-          scroll-slight))
-#+END_SRC
-
 *** Mojo config
 Mojo is my personal extension of the GNU Emacs global namespace.
 #+BEGIN_SRC emacs-lisp :tangle yes
