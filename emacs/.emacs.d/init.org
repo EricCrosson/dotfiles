@@ -341,7 +341,7 @@ Mojo is my personal extension of the GNU Emacs global namespace.
             display-time-mode
             column-number-mode
             global-hl-line-mode
-            display-battery-mode
+            ;; display-battery-mode
             autopair-global-mode
             auto-compression-mode
             global-on-screen-mode
