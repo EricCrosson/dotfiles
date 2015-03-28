@@ -1,3 +1,4 @@
+set editor=emacs -q
 set mbox_type=Maildir
 
 source "$HOME/.mutt/esc.account"
