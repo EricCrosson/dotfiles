@@ -53,7 +53,7 @@ this list up-to-date
         '(ac-haskell-process achievements ant apt-utils anzu cache
           discover fullframe smartscan fold-this apt-utils-ido
           archives asilea async auctex highlight-symbol use-package
-          auto-compile bliss-theme monochrome-theme
+          auto-compile bliss-theme monochrome-theme ctags-update
           monochrome-theme writegood-mode writeroom-mode company
           yaml-mode yasnippet undo-tree bind-key muttrc-mode
           mode-line-in-hdeader powerline goto-last-change github)
