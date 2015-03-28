@@ -146,7 +146,7 @@ keep the list updated, just load all subdirectories and go.
           (let ((default-directory elt))                  ;for easy
             (normal-top-level-add-to-load-path '("."))    ;recursive
             (normal-top-level-add-subdirs-to-load-path))) ;loading
-        `(,site-lisp-path ,elpa-path))
+        (list site-lisp-path elpa-path))
 #+END_SRC
 
 Use [[https://github.com/jwiegley/use-package][use-package]]
