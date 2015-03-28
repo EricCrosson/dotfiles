@@ -405,6 +405,7 @@ Mojo is my personal extension of the GNU Emacs global namespace.
     (esc-key "C-'"     'query-replace)
     (esc-key "C-?"     'undo-tree-visualize)
     (esc-key "C-M-z"   'edebug-defun)
+    (esc-key "C-c l h" 'insert-lisp-comment-header)
     ;; TODO: change sexp wrapping (esc-key i 'e. {}[]())
 
     ;; Programming bindings
