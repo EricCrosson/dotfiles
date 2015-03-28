@@ -48,27 +48,28 @@ file, script and dependency in his or her =~/.emacs.d/= directory, this
 block will ensure Emacs can find each file come load time. No need to
 keep the list updated, just load all subdirectories and go.
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (defcustom site-lisp-path nil
+  (defgroup esc-init nil
+    "Initialization parameters of esc's system."
+    :group 'init)
+
+  (defcustom site-lisp-path "~/.emacs.d/site-lisp/"
     "Path to esc's lisp library."
     :type 'path
     :options '("~/.emacs.d/site-lisp/")
-    :group 'esc-mode)
-  (setq site-lisp-path "~/.emacs.d/site-lisp/")
+    :group 'esc-init)
 
-  (defcustom esc-meta-path nil
+  (defcustom esc-meta-path "~/.emacs.d/meta"
     "Path to .emacs.d meta directory, for internal bookkeeping
   records."
     :type 'path
     :options '("~/.emacs.d/meta")
-    :group 'esc-mode)
-  (setq esc-meta-path "~/.emacs.d/meta")
+    :group 'esc-init)
 
-  (defcustom elpa-path nil
+  (defcustom elpa-path "~/.emacs.d/elpa"
     "Path to elpa directory."
     :type 'path
     :options '("~/.emacs.d/elpa")
-    :group 'esc-mode)
-  (setq elpa-path "~/.emacs.d/elpa")
+    :group 'esc-init)
 
   (mapc (lambda (elt)
           (let ((default-directory elt))                  ;for easy
