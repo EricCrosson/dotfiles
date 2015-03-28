@@ -1496,7 +1496,7 @@ know?
   (message "All done, %s%s" (user-login-name) ".")
   ;;; .emacs.el ends here
 #+END_SRC
-* [0/6] TODOs
+* [0/5] TODOs
 ** TODO scratch buffer as consistent config file
   only emacs-lisp source blocks from the org file are loaded,
   naturally
@@ -1507,4 +1507,3 @@ know?
 *** TODO finding tags
 look in dirs above for TAGS file and suggest it
 *** TODO C-h C-k takes you to org instead of .el
-*** TODO C-x M-r to save undo information
