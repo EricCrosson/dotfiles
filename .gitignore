@@ -90,3 +90,4 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/games/snow
 /emacs/.emacs.d/.sx/
 /emacs/.emacs.d/.litable-lists.el
+/emacs/.emacs.d/meta/
