@@ -559,7 +559,8 @@ Mojo is my personal extension of the GNU Emacs global namespace.
           company-dabbrev-ignore-invisible t
           company-dabbrev-downcase nil)
     (global-company-mode t)
-    (after 'diminish (diminish 'company-mode)))
+    (after 'diminish (diminish 'company-mode))
+    (after 'esc-mode (esc-key "M-/" 'company-dabbrev)))
 #+END_SRC
 *** undo-tree config
 #+BEGIN_SRC emacs-lisp :tangle yes
