@@ -112,7 +112,6 @@ Custom modes are installed this way
           scroll-slight))
 #+END_SRC
 
-
 ** Package configuration and Load path
 This is a neat trick I found to take away 99.9% of the headache when
 dealing with Emacs' load path. Assuming the user has placed every
