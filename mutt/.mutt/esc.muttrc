@@ -5,3 +5,9 @@ set postponed="=Drafts"
 
 set from=esc@ericcrosson.com
 set hostname="ericcrosson.com"
+
+# Mailboxes to show in the sidebar.
+mailboxes +/INBOX \
+          +/archive \
+          +/sent \
+          +/drafts \

@@ -1,7 +1,12 @@
 set folder=$HOME/Maildir/utexas
 set spoolfile=+/inbox
 
-set postponed="=Drafts"
+set postponed="=drafts"
 
 set from=eric.s.crosson@utexas.edu
 set hostname="utexas.edu"
+
+mailboxes +/inbox \
+          +/archive \
+          +/sent \
+          +/drafts \
