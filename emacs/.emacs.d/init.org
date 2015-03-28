@@ -55,7 +55,7 @@ this list up-to-date
           archives asilea async auctex highlight-symbol use-package
           auto-compile bliss-theme monochrome-theme
           monochrome-theme writegood-mode writeroom-mode company
-          yaml-mode yasnippet undo-tree bind-key
+          yaml-mode yasnippet undo-tree bind-key muttrc-mode
           mode-line-in-hdeader powerline goto-last-change github)
           github) lua-mode spray tea-time golden-ratio web-mode
           fic-mode bury-successful-compilation idle-highlight
@@ -678,6 +678,11 @@ My dedicated mode, not the melpa one
 TODO: expand on that
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package dedicated-buffer)
+#+END_SRC
+*** Muttrc mode config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package muttrc-mode
+    :mode "\\.muttrc$")
 #+END_SRC
 *** Lua mode config
 Gotta love that [[http://awesome.naquadah.org/][awesome wm]]
