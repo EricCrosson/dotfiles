@@ -221,6 +221,7 @@ a read; stop what you're doing and go take a look if you haven't.
 
 A macro to wrap code execution in those handy =*Messages*= style
 notifications.
+TODO: replace with the construct used by tsarsius in =map-progress=.
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
   (defmacro message-progress (message &rest body)
     "Message MESSAGE and run BODY. Then message MESSSAGE...done."
@@ -230,7 +231,6 @@ notifications.
        (progn ,@body)
        (message (concat ,message "...done"))))
 #+END_SRC
-
 ** User metadata
 Hello, My Name Is
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
@@ -598,6 +598,11 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 *** Bind key config
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
   (use-package bind-key)
+#+END_SRC
+*** Help find org config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package help-find-org
+     :config (help-find-org 1))
 #+END_SRC
 *** Displaced yank config
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
