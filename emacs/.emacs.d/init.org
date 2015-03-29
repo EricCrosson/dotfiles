@@ -1514,3 +1514,9 @@ know?
 *** TODO tangling scripts adds execute permission
   (write-region "" nil custom-file)
 *** TODO C-h C-k takes you to org instead of .el
+* work branch
+from travis ci, every push create a zipped bunudle of the new
+.emacs. Use the fact that travis ci won't have a proxy but work
+does. travis ci will push the zip to a branch of your repo on github
+and you can pull a constantly up-to-date fully-installed version from
+behind a proxy at any time
