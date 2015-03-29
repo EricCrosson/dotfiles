@@ -1505,10 +1505,7 @@ know?
   (message "All done, %s%s" (user-login-name) ".")
   ;;; .emacs.el ends here
 #+END_SRC
-* [0/3] TODOs
-** TODO scratch buffer as consistent config file
-  only emacs-lisp source blocks from the org file are loaded,
-  naturally
+* [0/2] TODOs
 ** TODO gcov output parsed by emacs to hilight gdb code coverage
 ** [0/5] advice
 *** TODO tangling scripts adds execute permission
