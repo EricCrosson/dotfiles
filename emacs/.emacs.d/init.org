@@ -1505,11 +1505,12 @@ know?
   (message "All done, %s%s" (user-login-name) ".")
   ;;; .emacs.el ends here
 #+END_SRC
-* [0/2] TODOs
+* TODOs
+** TODO tangling scripts adds execute permission
+(write-region "" nil custom-file)
+implement via advice
+* packages
 ** TODO gcov output parsed by emacs to hilight gdb code coverage
-** [0/5] advice
-*** TODO tangling scripts adds execute permission
-  (write-region "" nil custom-file)
 * TODO work branch
 from travis ci, every push create a zipped bunudle of the new
 .emacs. Use the fact that travis ci won't have a proxy but work
