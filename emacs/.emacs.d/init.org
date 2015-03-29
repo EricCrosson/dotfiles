@@ -1505,7 +1505,7 @@ know?
   (message "All done, %s%s" (user-login-name) ".")
   ;;; .emacs.el ends here
 #+END_SRC
-* [0/4] TODOs
+* [0/3] TODOs
 ** TODO scratch buffer as consistent config file
   only emacs-lisp source blocks from the org file are loaded,
   naturally
@@ -1513,8 +1513,7 @@ know?
 ** [0/5] advice
 *** TODO tangling scripts adds execute permission
   (write-region "" nil custom-file)
-*** TODO C-h C-k takes you to org instead of .el
-* work branch
+* TODO work branch
 from travis ci, every push create a zipped bunudle of the new
 .emacs. Use the fact that travis ci won't have a proxy but work
 does. travis ci will push the zip to a branch of your repo on github
