@@ -142,8 +142,8 @@ keep the list updated, just load all subdirectories and go.
     :options '("~/.emacs.d/elpa")
     :group 'esc-init)
 
-  (mapc (lambda (elt)
-          (let ((default-directory elt))                  ;for easy
+  (mapc (lambda (load-all-subdirs)
+          (let ((default-directory load-all-subdirs))     ;for easy
             (normal-top-level-add-to-load-path '("."))    ;recursive
             (normal-top-level-add-subdirs-to-load-path))) ;loading
         (list site-lisp-path elpa-path))
