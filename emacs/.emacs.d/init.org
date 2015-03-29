@@ -56,8 +56,8 @@ this list up-to-date
           auto-compile bliss-theme monochrome-theme ctags-update
           monochrome-theme writegood-mode writeroom-mode company
           yaml-mode yasnippet undo-tree bind-key muttrc-mode
-          mode-line-in-hdeader powerline goto-last-change github)
-          github) lua-mode spray tea-time golden-ratio web-mode
+          mode-line-in-hdeader powerline goto-last-change github
+          github lua-mode spray tea-time golden-ratio web-mode
           fic-mode bury-successful-compilation idle-highlight
           flx-ido git-gutter+ multiple-cursors bm spotify
           ace-jump-mode ace-window git-messenger keyfreq
