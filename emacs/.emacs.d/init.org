@@ -504,7 +504,6 @@ Mojo is my personal extension of the GNU Emacs global namespace.
         ("a" beginning-of-line "beg-ln")
         ("d" scroll-up "pg up")
         ("u" scroll-down "pg dn")
-        ("q" read-only-mode)
         ("/" goto-last-change "last-chng")
         ("." find-tag "tag")
         ("*" pop-tag-mark "pop-tag"))
@@ -1510,6 +1509,8 @@ know?
 ** TODO tangling scripts adds execute permission
 (write-region "" nil custom-file)
 implement via advice
+** TODO advise save-desktop
+to create the dir it's going to save in
 * packages
 ** TODO gcov output parsed by emacs to hilight gdb code coverage
 * TODO work branch
