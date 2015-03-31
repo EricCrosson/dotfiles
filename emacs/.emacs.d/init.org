@@ -315,7 +315,7 @@ tempt users to disable them.
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
   (use-package auto-package-update
     :config
-      (setq auto-package-update-interval 3)
+      (setq auto-package-update-interval 14)
       ;; todo: put on an idle-timer of 5 minutes
       (ignore-errors (auto-package-update-maybe)))
 #+END_SRC
