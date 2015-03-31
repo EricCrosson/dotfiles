@@ -570,7 +570,12 @@ Mojo is my personal extension of the GNU Emacs global namespace.
     (after 'diminish (diminish 'company-mode))
     (after 'esc-mode
       (esc-key "M-?" 'company-dabbrev)
-      (esc-key "M-/" 'dabbrev-expand)))
+      (esc-key "M-/" 'dabbrev-expand))
+
+    ;; Sometimes `company-mode' isn't the best option.
+    (defun turn-off-company-mode ()
+      (company-mode -1))
+    (add-hook 'shell-mode-hook 'turn-off-company-mode))
 #+END_SRC
 *** undo-tree config
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
