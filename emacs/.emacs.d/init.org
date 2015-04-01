@@ -575,7 +575,10 @@ Mojo is my personal extension of the GNU Emacs global namespace.
     ;; Sometimes `company-mode' isn't the best option.
     (defun turn-off-company-mode ()
       (company-mode -1))
-    (add-hook 'shell-mode-hook 'turn-off-company-mode))
+    (mapc (lambda (mode-hook)
+            (add-hook mode-hook 'turn-off-company-mode))
+          '(shell-mode-hook
+            gud-mode-hook)))
 #+END_SRC
 *** undo-tree config
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
