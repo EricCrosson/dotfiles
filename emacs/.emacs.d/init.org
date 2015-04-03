@@ -1610,6 +1610,8 @@ know?
 implement via advice
 ** TODO advise save-desktop
 to create the dir it's going to save in
+** TODO ido-switch-buffers hide from list
+buffers for asynchronous shell commands
 * packages
 ** TODO gcov output parsed by emacs to hilight gdb code coverage
 * TODO work branch
