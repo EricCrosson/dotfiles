@@ -446,7 +446,7 @@ Mojo is my personal extension of the GNU Emacs global namespace.
     (esc-key "<f10>" 'golden-ratio-mode)
 
     (esc-key "C-c C-;" 'execute-extended-command)
-    (esc-key "C-c f" 'esc/cvisit-favorite-dir)
+    (esc-key "C-c f" 'esc/visit-favorite-dir)
 
     (esc-key "C-x C-c" 'neotree-toggle) ;; no chance of accidental exit
 
