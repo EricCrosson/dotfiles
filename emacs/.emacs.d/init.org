@@ -884,6 +884,8 @@ TODO: disable autopair-mode for web-mode
         desktop-load-locked-desktop t     ;never freeze after crash
         backup-by-copying-when-linked t
         backup-by-copying-when-mismatch t)
+  (mkdir (car desktop-path) t)            ; ensure desktop-save dir exists
+  (desktop-save-mode 1)                   ;use desktop file
 #+END_SRC
 
 *** Savehist config
