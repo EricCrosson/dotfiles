@@ -873,6 +873,13 @@ TODO: disable autopair-mode for web-mode
 
 *** Save desktop config
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
+  (defadvice desktop-save-in-desktop-dir (around ensure-desktop-dir-exists activate)
+    "Ensure `desktop-dirname' exists before function
+  `desktop-save-in-desktop-dir' attempts to save the desktop
+  file."
+    (mkdir desktop-dirname t)
+    ad-do-it)
+
   (desktop-save-mode 1)                   ;use desktop file
   (setq desktop-path '("~/.emacs.d/meta/desktop/") ;local desktop files
         desktop-base-filename "default"
@@ -1604,12 +1611,10 @@ know?
 ** TODO tangling scripts adds execute permission
 (write-region "" nil custom-file)
 implement via advice
-** TODO advise save-desktop
+** VERIFY advise save-desktop
 to create the dir it's going to save in
 ** TODO ido-switch-buffers hide from list
 buffers for asynchronous shell commands
-* packages
-** TODO gcov output parsed by emacs to hilight gdb code coverage
 * TODO work branch
 from travis ci, every push create a zipped bunudle of the new
 .emacs. Use the fact that travis ci won't have a proxy but work
