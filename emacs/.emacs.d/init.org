@@ -1601,8 +1601,9 @@ know?
 ** Fin
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
   (setq initial-scratch-message
-	 (propertize "Don't\nPanic\n"
-		     'font-lock-face '(:height 10.0 :inherit variable-pitch)))
+         (concat (propertize "Don't\nPanic\n"
+                     'font-lock-face '(:height 10.0 :inherit variable-pitch))
+                 "\n"))
   (message "All done, %s%s" (user-login-name) ".")
   ;;; .emacs.el ends here
 #+END_SRC
