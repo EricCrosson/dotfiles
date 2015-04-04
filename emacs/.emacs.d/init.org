@@ -550,10 +550,6 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 #+END_SRC
 
 
-*** Hide mode line
-    #+BEGIN_SRC emacs-lisp :comments link :tangle yes
-  #+END_SRC
-
 *** Persistent scratch config
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
   (setq persistent-scratch-save-file (format "%s/persistent-scratch" esc-meta-path))
