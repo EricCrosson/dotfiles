@@ -1612,8 +1612,6 @@ know?
 ** TODO tangling scripts adds execute permission
 (write-region "" nil custom-file)
 implement via advice
-** VERIFY advise save-desktop
-to create the dir it's going to save in
 ** TODO ido-switch-buffers hide from list
 buffers for asynchronous shell commands
 * TODO work branch
