@@ -873,14 +873,12 @@ TODO: disable autopair-mode for web-mode
 
 *** Save desktop config
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
-  (defadvice desktop-save-in-desktop-dir (around ensure-desktop-dir-exists activate)
-    "Ensure `desktop-dirname' exists before function
-  `desktop-save-in-desktop-dir' attempts to save the desktop
-  file."
-    (mkdir desktop-dirname t)
-    ad-do-it)
+  (defadvice desktop-save-in-desktop-dir (before ensure-desktop-dir-exists activate)
+      "Ensure `desktop-dirname' exists before function
+    `desktop-save-in-desktop-dir' attempts to save the desktop
+    file."
+      (mkdir desktop-dirname t))
 
-  (desktop-save-mode 1)                   ;use desktop file
   (setq desktop-path '("~/.emacs.d/meta/desktop/") ;local desktop files
         desktop-base-filename "default"
         desktop-load-locked-desktop t     ;never freeze after crash
