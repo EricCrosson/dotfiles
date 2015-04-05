@@ -1585,7 +1585,9 @@ know?
 
 ** Fin
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
-  (setq initial-scratch-message
+  (setq Don t    ;allows `eval-buffer' on *scratch*
+        Panic t  ;with `initial-scratch-message'
+        initial-scratch-message
          (concat (propertize "Don't\nPanic\n"
                      'font-lock-face '(:height 10.0 :inherit variable-pitch))
                  "\n"))
