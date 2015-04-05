@@ -221,19 +221,6 @@ a read; stop what you're doing and go take a look if you haven't.
   `(eval-after-load ,mode
      '(progn ,@body)))
 #+END_SRC
-
-A macro to wrap code execution in those handy =*Messages*= style
-notifications.
-TODO: replace with the construct used by tsarsius in =map-progress=.
-#+BEGIN_SRC emacs-lisp :comments link :tangle yes
-  (defmacro message-progress (message &rest body)
-    "Message MESSAGE and run BODY. Then message MESSSAGE...done."
-    (declare (indent defun))
-    `(progn
-       (message ,message)
-       (progn ,@body)
-       (message (concat ,message "...done"))))
-#+END_SRC
 
 ** User metadata
 Hello, My Name Is
@@ -1410,14 +1397,13 @@ massive =cond=.
              (eq system-type 'cygwin))
 
          ;; Windows config
-         (message-progress "Loading Windows specific configuration..."
-           (setq w32-pass-lwindow-to-system nil
-                 w32-pass-rwindow-to-system nil
-                 w32-pass-apps-to-system nil
-                 w32-lwindow-modifier 'super ; Left Windows key
-                 w32-rwindow-modifier 'super ; Right Windows key
-                 w32-apps-modifier 'hyper)   ; Menu key
-           (require-package '(w32-symlinks))
+         (setq w32-pass-lwindow-to-system nil
+               w32-pass-rwindow-to-system nil
+               w32-pass-apps-to-system nil
+               w32-lwindow-modifier 'super ; Left Windows key
+               w32-rwindow-modifier 'super ; Right Windows key
+               w32-apps-modifier 'hyper)   ; Menu key
+         (require-package '(w32-symlinks)
 #+END_SRC
 
 Note: for GNU Emacs compiled for Microsoft, both of the below options
@@ -1442,11 +1428,10 @@ transparent use of symlinks.
 Begin Mac OS configuration
 
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
-         ((or (eq system-type 'darwin))
-          (message-progress "Loading Darwin specific configuration..."
-            (setq mac-command-modifier 'meta)
-            (setq mac-option-modifier 'super)
-            (setq ns-function-modifier 'hyper))))
+  ((or (eq system-type 'darwin))
+   (setq mac-command-modifier 'meta)
+   (setq mac-option-modifier 'super)
+   (setq ns-function-modifier 'hyper)))
 #+END_SRC
 
 ** org config
