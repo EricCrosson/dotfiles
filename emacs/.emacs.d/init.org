@@ -994,6 +994,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
   (use-package flx-ido
     :init (setq ido-save-directory-list-file (format "%s/ido.last" esc-meta-path))
     :config
+    (add-to-list 'ido-ignore-buffers "\\*Async Shell Command\\*")
     (ido-mode t)
     (ido-everywhere 1)
     (flx-ido-mode 1)
@@ -1599,8 +1600,6 @@ know?
 ** TODO tangling scripts adds execute permission
 (write-region "" nil custom-file)
 implement via advice
-** TODO ido-switch-buffers hide from list
-buffers for asynchronous shell commands
 * TODO work branch
 from travis ci, every push create a zipped bunudle of the new
 .emacs. Use the fact that travis ci won't have a proxy but work
