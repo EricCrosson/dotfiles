@@ -39,7 +39,7 @@ delay_to_stable_xorg=3
 # ((sleep $delay_to_stable_xorg); synergys) &
 
 # begin synergy server
-((sleep $delay_to_stable_xorg); synergyc --daemon --restart oblongoblin.local) &
+# ((sleep $delay_to_stable_xorg); synergyc --daemon --restart oblongoblin.local) &
 
 # exec dwm
 exec gnome-session
