@@ -492,8 +492,8 @@ Mojo is my personal extension of the GNU Emacs global namespace.
         ("r" smartscan-symbol-go-backward "i-r")
         ("h" backward-char "bk")
         ("l" forward-char "fw")
-        ("f" forward-page "fw.pg")
-        ("b" backward-page "bk.pg")
+        ("f" forward-page "fwpg")
+        ("b" backward-page "bkpg")
         ("n" next-line "next")
         ("p" previous-line "prev")
         ("e" end-of-line "end-ln")
@@ -1587,13 +1587,19 @@ know?
 #+END_SRC
 
 ** Fin
+Start the emacs server we got this far without error
+#+BEGIN_SRC emacs-lisp :comments link :tangle yes
+  (server-start)
+#+END_SRC
+
+Have a great day
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
   (setq Don t    ;allows `eval-buffer' on *scratch*
         Panic t  ;with `initial-scratch-message'
         initial-scratch-message
          (concat (propertize "Don't\nPanic\n"
                      'font-lock-face '(:height 10.0 :inherit variable-pitch))
-                 "\n"))
+                 "\n")) ;newline makes inserted text normal-sized
   (message "All done, %s%s" (user-login-name) ".")
   ;;; .emacs.el ends here
 #+END_SRC
@@ -1608,3 +1614,5 @@ from travis ci, every push create a zipped bunudle of the new
 does. travis ci will push the zip to a branch of your repo on github
 and you can pull a constantly up-to-date fully-installed version from
 behind a proxy at any time
+
+
