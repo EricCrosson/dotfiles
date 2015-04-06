@@ -844,7 +844,9 @@ TODO: disable autopair-mode for web-mode
 *** C config
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
   (use-package cc-mode
-    :init (setq ff-search-directories '("." "../inc" "../src"))
+    :init (setq ff-search-directories '("." "../inc" "../src"
+                                        ;; for ee445m
+                                        "../lib" "../../lib"))
     :config
     (use-package c++-mode :mode "\\.tcc$")
     (use-package c-eldoc
