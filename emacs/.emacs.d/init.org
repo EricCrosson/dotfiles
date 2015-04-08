@@ -279,7 +279,7 @@ GNU/Linux files can be.
   (setq-default indent-tabs-mode nil)
   (setq c-default-style "linux"
         c-basic-offset 4
-        tab-width
+        tab-width 4
         require-final-newline 'visit-save ;compliance
         comment-style 'indent)
 #+END_SRC
