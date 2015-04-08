@@ -275,11 +275,12 @@ GNU/Linux files can be.
 #+NAME: char-and-font-encoding
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
   ;; Char and font encoding
-  (set-buffer-file-coding-system 'unix)   ;Unix mode. Always
+  (set-buffer-file-coding-system 'unix)
+  (setq-default indent-tabs-mode nil)
   (setq c-default-style "linux"
         c-basic-offset 4
+        tab-width
         require-final-newline 'visit-save ;compliance
-        indent-tabs-mode nil
         comment-style 'indent)
 #+END_SRC
 
