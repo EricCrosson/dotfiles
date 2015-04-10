@@ -52,7 +52,7 @@ this list up-to-date
   (mapc (lambda (mode) (quelpa mode))
         '(ac-haskell-process achievements ant apt-utils anzu cache
           discover fullframe smartscan fold-this apt-utils-ido
-          wiki-summary
+          wiki-summary xahk-mode auto-package-update
           archives asilea async auctex highlight-symbol use-package
           auto-compile bliss-theme monochrome-theme ctags-update
           monochrome-theme writegood-mode writeroom-mode company
@@ -85,9 +85,7 @@ this list up-to-date
           rtos-dev-mode rtos-interrupt-generator rubocop ruby-mode
           scratch shell-command smartrep smooth-scrolling spinner
           ssh-config-mode ssh-tunnels sunshine symon synonyms
-          synosaurus tablist term-run tup-mode typing unfill vlf
-          xahk-mode))
-  (auto-package-update :repo "rranelli/auto-package-update.el" :fetcher github)
+          synosaurus tablist term-run tup-mode typing unfill vlf))
 #+END_SRC
 
 Custom modes are installed this way
