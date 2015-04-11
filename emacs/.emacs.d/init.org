@@ -72,7 +72,8 @@
 # -          ssh-config-mode ssh-tunnels sunshine symon synonyms
 # -          synosaurus tablist term-run tup-mode typing unfill vlf)
 
-#+BEGIN_SRC emacs-lisp :comments link :tangle yes
+TODO: load and install gracefully
+#+BEGIN_SRC emacs-lisp :comments link :tangle no
   (mapc (lambda (mode) (quelpa `(,mode :repo ,(format "EricCrosson/%s" mode) :fetcher github)))
         '(browse-cliplink
           color-theme-stack
