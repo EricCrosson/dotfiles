@@ -575,9 +575,13 @@ Mojo is my personal extension of the GNU Emacs global namespace.
   (use-package undo-tree
     :ensure t
     :config
-    ;;; Make zipped files obvious.
+    (setq undo-limit (* 1024 1024))
+    ;; todo: associate with esc-mode
+    (undo-tree-mode 1)
+    (setq undo-tree-auto-save-history t)
     (defadvice undo-tree-make-history-save-file-name
         (after undo-tree activate)
+      "Make zipped `undo-tree' files obvious."
       (setq ad-return-value (concat ad-return-value ".gz")))
 
     ;;; Thanks to
