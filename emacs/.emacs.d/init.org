@@ -1654,6 +1654,8 @@ Have a great day
 ** TODO tangling scripts adds execute permission
 (write-region "" nil custom-file)
 implement via advice
+** TODO advise zap-up-to-char
+if the last command was zap-up-to-char, don't ask me again (context: multiple-cursors)
 * TODO work branch
 from travis ci, every push create a zipped bunudle of the new
 .emacs. Use the fact that travis ci won't have a proxy but work
