@@ -771,7 +771,7 @@ This mode is based on [[https://github.com/Miserlou/Glance-Bookmarklet][OpenSpri
     :ensure t
     :commands spray-mode
     :config
-      (setq-default spray-wpm 750)
+      (setq-default spray-wpm 780)
       (defvar esc-spray-wpm-delta 10
         "Delta to apply to `spray-wpm' during on-the-fly wpm adjustments.")
       (defun spray-mode-increase-wpm ()
