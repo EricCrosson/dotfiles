@@ -418,7 +418,6 @@ Mojo is my personal extension of the GNU Emacs global namespace.
     ;;; Function keys
     (esc-key "C-c <f5>" 'copy-file-name-to-clipboard)
     (esc-key "<f5>"  'minibuffer-display-buffer-file-name)
-    (esc-key "<f6>"  'spray-mode)
     (esc-key "<f8>"  'follow-mode-80-char-compliant)
     (esc-key "<f9>"  'flyspell-buffer)
     (esc-key "<f10>" 'golden-ratio-mode)
@@ -430,6 +429,12 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 
     (after 'hydra
       (setq hydra-lv nil) ;; has never worked for me
+
+      (defhydra hydra-spray (esc-mode-map "<f6>")
+        "spray-mode"
+        ("s" spray-mode "spray (at point)")
+        ("j" spray-mode-decrease-wpm "decrease wpm")
+        ("k" spray-mode-increase-wpm "increase wpm"))
 
       (defhydra hydra-text-scale (esc-mode-map  "<f2>")
         "text-scale"
@@ -747,7 +752,16 @@ This mode is based on [[https://github.com/Miserlou/Glance-Bookmarklet][OpenSpri
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
   (use-package spray
     :ensure t
-    :commands spray-mode)
+    :commands spray-mode
+    :config
+      (setq-default spray-wpm 750)
+      (defvar esc-spray-wpm-delta 10
+        "Delta to apply to `spray-wpm' during on-the-fly wpm adjustments.")
+      (defun spray-mode-increase-wpm ()
+        (setq-default spray-wpm (+ spray-wpm esc-spray-wpm-delta)))
+      (defun spray-mode-decrease-wpm ()
+        (setq-default spray-wpm (- spray-wpm esc-spray-wpm-delta))))
+
 #+END_SRC
 
 *** ibuffer config
@@ -1288,6 +1302,11 @@ Take this opportunity to refresh the mode line. Inspiration from
     :init ; takes a while to need the get-out-of-jail-free button
     (after 'esc-mode
       (esc-key "C-x M-r" 'revert-buffer-no-confirm)))
+#+END_SRC
+
+TODO : advice mc zap-up-to-char
+#+BEGIN_SRC emacs-lisp :comments link :tangle yes
+
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :comments link :tangle no
