@@ -1033,7 +1033,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
     :init (setq ido-save-directory-list-file (format "%s/ido.last" esc-meta-path))
     :config
     (add-to-list 'ido-ignore-buffers "\\*Async Shell Command\\*")
-    (add-to-list 'ido-ignore-buffers "^\\*.*\\.*preprocessed\\*$")
+    (add-to-list 'ido-ignore-buffers "^\\*.*\\.*preprocessed\\*")
     (ido-mode t)
     (ido-everywhere 1)
     (flx-ido-mode 1)
