@@ -359,7 +359,8 @@ Mojo is my personal extension of the GNU Emacs global namespace.
       (fullframe paradox-list-packages paradox-quit-and-close)
       (esc-key "s-[" 'paradox-list-packages)
       (fullframe magit-status magit-mode-quit-window)
-      (esc-key "s-q" 'magit-status))
+      (esc-key "s-q" 'magit-status)
+      (fullframe spray-mode spray-quit))
 
     ;; todo: pull buffer management into another hydra
     ;; Buffer management
