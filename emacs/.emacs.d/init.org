@@ -656,7 +656,10 @@ Mojo is my personal extension of the GNU Emacs global namespace.
         (bind-key "C-M-;"  'yank-displaced-stars           esc-mode-map)
         (bind-key "C-M-:"  'yank-displaced-doxygen-comment esc-mode-map)
         (bind-key "C-M-="  'yank-displaced-equals          esc-mode-map)
-        (bind-key "C-M-`"  'yank-displaced-ticks           esc-mode-map)))
+        (bind-key "C-M-`"  'yank-displaced-ticks           esc-mode-map))
+      ;; todo:
+      ;; prefix to C-M-` should tick thing at point
+      )
 #+END_SRC
 
 *** Powerline config
