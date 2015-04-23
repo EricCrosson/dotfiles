@@ -410,6 +410,8 @@ Mojo is my personal extension of the GNU Emacs global namespace.
     (esc-key "<C-S-return>" 'open-line-above)
     (esc-key "C-M-O"        'split-line)
 
+    (esc-key "C-c d" 'dictionary-search)
+
     ;; Mark commands
     (esc-key "C-x m" 'pop-to-mark-command)
 
@@ -483,14 +485,12 @@ Mojo is my personal extension of the GNU Emacs global namespace.
       (esc-key "M-m M-m" 'back-to-indentation)
       (defhydra hydra-scroll-buffer (esc-mode-map "M-m")
         "cursor-movement"
-        ("j" scroll-slight-up "up")
-        ("k" scroll-slight-down "dw")
+        ("j" scroll-slight-up nil)
+        ("k" scroll-slight-down nil)
+        ("h" backward-char nil)
+        ("l" forward-char nil)
         ("s" smartscan-symbol-go-forward "i-f")
         ("r" smartscan-symbol-go-backward "i-r")
-        ("h" backward-char "bk")
-        ("l" forward-char "fw")
-        ("f" forward-page "fwpg")
-        ("b" backward-page "bkpg")
         ("n" next-line "next")
         ("p" previous-line "prev")
         ("e" end-of-line "end-ln")
@@ -499,7 +499,7 @@ Mojo is my personal extension of the GNU Emacs global namespace.
         ("u" scroll-down "pg dn")
         ("/" goto-last-change "last-chng")
         ("." find-tag "tag")
-        ("*" pop-tag-mark "pop-tag"))
+        ("*" pop-tag-mark "pop"))
 
       (defhydra hydra-window-adjustment (esc-mode-map "C-z")
         "window adjustment"
