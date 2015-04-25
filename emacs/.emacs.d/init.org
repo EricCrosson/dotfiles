@@ -378,6 +378,8 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 
     (esc-key "C-c y"   'middle-click-yank)
 
+    (esc-key "C-." 'swiper)
+
     ;; Backspace behavior
     (esc-key "C-<backspace>" 'backward-delete-word)
 
