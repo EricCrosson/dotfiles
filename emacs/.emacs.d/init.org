@@ -714,9 +714,12 @@ That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee
 
 *** Firestarter mode
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
-  (use-package firestarter
-    :ensure t
-    :config (firestarter-mode 1))
+    (use-package firestarter
+      :ensure t
+      :config
+      (firestarter-mode 1)
+      (after 'diminish
+        (diminish 'firestarter-mode)))
 #+END_SRC
 
 *** Unselectable buffer config
