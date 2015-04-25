@@ -711,12 +711,14 @@ That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee
   (use-package swiper
     :ensure t)
 #+END_SRC
+
 *** Firestarter mode
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
   (use-package firestarter
     :ensure t
     :config (firestarter-mode 1))
 #+END_SRC
+
 *** Unselectable buffer config
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
   (use-package unselectable-buffer)
