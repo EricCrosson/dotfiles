@@ -706,6 +706,11 @@ That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee
     :config (midnight-delay-set 'midnight-delay "5:00am"))
 #+END_SRC
 
+*** Swiper config
+#+BEGIN_SRC emacs-lisp :comments link :tangle yes
+  (use-package swiper
+    :ensure t)
+#+END_SRC
 *** Firestarter mode
 #+BEGIN_SRC emacs-lisp :comments link :tangle yes
   (use-package firestarter
