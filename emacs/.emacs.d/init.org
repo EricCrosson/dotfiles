@@ -449,14 +449,14 @@ Mojo is my personal extension of the GNU Emacs global namespace.
         ("." default-text-scale-increase "default-dec")
         ("," default-text-scale-decrease "default-inc"))
 
-      (defhydra hydra-eval (esc-mode-map "C-c C-e")
-        "eval"
-        ("r" eval-region "region")
-        ("b" eval-buffer "buffer")
-        ("s" eval-last-sexp "sexp")
-        ("d" eval-defun "defun")
-        ("b" edebug-defun "edebug")
-        ("p" esc/eval-and-replace "& replace"))
+      ;; (defhydra hydra-eval (esc-mode-map "C-c C-e")
+      ;;   "eval"
+      ;;   ("r" eval-region "region")
+      ;;   ("b" eval-buffer "buffer")
+      ;;   ("s" eval-last-sexp "sexp")
+      ;;   ("d" eval-defun "defun")
+      ;;   ("b" edebug-defun "edebug")
+      ;;   ("p" esc/eval-and-replace "& replace"))
 
       (defhydra hydra-error (esc-mode-map "M-g")
         "goto-error"
