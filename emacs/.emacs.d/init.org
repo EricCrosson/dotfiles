@@ -379,6 +379,7 @@ Mojo is my personal extension of the GNU Emacs global namespace.
     (esc-key "C-c y"   'middle-click-yank)
 
     (esc-key "C-." 'swiper)
+    (esc-key "M-]" 'firestarter)
 
     ;; Backspace behavior
     (esc-key "C-<backspace>" 'backward-delete-word)
@@ -534,6 +535,9 @@ Mojo is my personal extension of the GNU Emacs global namespace.
 
     (esc-mode 1))
 #+END_SRC
+
+#+RESULTS:
+: t
 
 
 *** Persistent scratch config
@@ -719,7 +723,7 @@ That's right, it's [[http://2.media.bustedtees.cvcdn.com/e/-/bustedtees.09c737ee
     (use-package firestarter
       :ensure t
       :config
-      (firestarter-mode 1)
+      ;; (firestarter-mode 1)
       (after 'diminish
         (diminish 'firestarter-mode)))
 #+END_SRC
