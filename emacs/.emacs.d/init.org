@@ -1057,6 +1057,7 @@ Sounded like a good idea thanks to [[http://orgmode.org/worg/org-tutorials/org-l
     (add-to-list 'ido-ignore-buffers "\\*Async Shell Command\\*")
     (add-to-list 'ido-ignore-buffers "^\\*.*\\.*preprocessed\\*")
     (ido-mode t)
+    (setq ido-use-virtual-buffers t)
     (ido-everywhere 1)
     (flx-ido-mode 1)
     (use-package ido-hacks
