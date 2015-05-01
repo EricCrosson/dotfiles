@@ -93,3 +93,5 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/meta/
 /emacs/.emacs.d/xkcd/
 /emacs/.emacs.d/request/
+*.gz
+/emacs/.emacs.d/abbrev.lst
