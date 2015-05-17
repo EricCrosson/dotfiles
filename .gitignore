@@ -95,3 +95,5 @@ emacs/.emacs.d/session.*
 /emacs/.emacs.d/request/
 *.gz
 /emacs/.emacs.d/abbrev.lst
+/emacs/.emacs.d/.git.bak/
+/emacs/.emacs.bak/

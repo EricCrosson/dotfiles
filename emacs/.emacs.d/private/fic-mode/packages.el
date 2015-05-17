@@ -1,0 +1,13 @@
+;;; packages.el --- fic-mode Layer packages File for Spacemacs
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; License: GPLv3
+
+(setq fic-mode-packages '(fic-mode))
+
+(defun fic-mode/init-fic-mode ()
+    "Initialize my package"
+  (use-package fic-mode
+    :config (add-hook 'prog-mode-hook 'turn-on-fic-mode))
+  )

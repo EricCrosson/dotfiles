@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-mkdir -p meta site-lisp/esc-lisp
-find . -type f -name '*.org' | xargs org-tangle

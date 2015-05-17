@@ -1,8 +1,0 @@
-This is the =load-path= for esc's GNU Emacs system.
-
-Anything that needs to be sourced can be found if it lies below this
-path. Lisp is in the lisp dir, haskell in the haskell dir. [[http://emacswiki.org/emacs/ELPA][Elpa]]
-contains the wonderful community packages I've grown used to, which
-are included in this repo to reduce bootstrap time on new hosts.
-
-This is where the nectar lies.
