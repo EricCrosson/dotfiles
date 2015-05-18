@@ -3,3 +3,5 @@
 This directory contains scripts for hosts running Arch Linux.
 
 Behold, Arch! He was #1!
+
+![alt tag](https://raw.github.com/EricCrosson/dotfiles/tree/master/bin/bin/arch/img/smitty.gif)
