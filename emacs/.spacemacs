@@ -44,6 +44,8 @@
      bury-successful-compilation
      unkillable-scratch
      swiper
+     focus
+     misc-cmds
      company
      chess
      writegood-mode
@@ -257,31 +259,33 @@ layers configuration."
                ((and cwd (file-exists-p cwd))
                 (dired cwd))
                (t
-                (message "I'm not sure which dir to view.")
-                ))))
+                (message "I'm not sure which dir to view.")))))
     "y"     'helm-M-x
     "bi"    'ibuffer
     "jd"    (defun join-line-below (&optional arg)
               (interactive "p")
               (dotimes (i arg) (join-line -1)))
     "js"    'just-one-space
-    
+
     "bf" 'follow-mode
     "bF" 'follow-delete-other-windows-and-split
 
     "med" 'edebug-defun
 
-    ;; todo: finish incorporating help-extras and properly get the group name to appear in guide key
+    ;; todo: finish incorporating help-extras and properly get the group name to
+    ;; appear in guide key
     "hff" 'find-function
     "hfv" 'find-variable
     ;; "hfk"
     "hfl" 'find-library
 
+    "rb" 'revert-buffer
     "xs" 'save-buffer
-    
+
     "bB"    'bury-buffer
     "cm"    'recompile
     )
+  (spacemacs/declare-prefix "hf" "help-find")
 
   ;; advise configuration-layer/create-layer to open existing layers.
   ;; (spacemacs|advise-commands 'configuration-layer/create-or-open
