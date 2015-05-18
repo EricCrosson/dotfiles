@@ -265,6 +265,20 @@ layers configuration."
               (interactive "p")
               (dotimes (i arg) (join-line -1)))
     "js"    'just-one-space
+    
+    "bf" 'follow-mode
+    "bF" 'follow-delete-other-windows-and-split
+
+    "med" 'edebug-defun
+
+    ;; todo: finish incorporating help-extras and properly get the group name to appear in guide key
+    "hff" 'find-function
+    "hfv" 'find-variable
+    ;; "hfk"
+    "hfl" 'find-library
+
+    "xs" 'save-buffer
+    
     "bB"    'bury-buffer
     "cm"    'recompile
     )
