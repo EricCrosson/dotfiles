@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+#
+## @file
+## @author Unknown
+## @brief Let it snow, let it snow, let it snow.
+## command's execution.
+## @copyright WTFPLv2
+## @version 1.0
+#
+#########
+# License: Unknown
+#########
+#
+## @details
+## @par Script abstract
+##
+## This script simulates falling snow in a terminal.
+##
+## @par Usage
+##
+## All arguments are ignored; invocation is all that matters for this
+## script.
+#
+## @addtogroup Goodies Fun extras
+
+## @var SNOW_LINES
+## @brief For internal use only.
+## @details Number of lines in the current terminal.
+## @ingroup Goodies
+declare -ri SNOW_LINES=$(tput lines)
+
+## @var SNOW_COLUMNS
+## @brief For internal use only.
+## @details Number of columns in the current terminal.
+## @ingroup Goodies
+declare -ri SNOW_COLUMNS=$(tput cols)
+
+## @var snowlakes
+## @brief For internal use only.
+## @details
+## @ingroup Goodies
+declare -A snow_currentflakes
+
+## @var snow_lastflakes
+## @brief For internal use only.
+## @details
+## @ingroup Goodies
+declare -A snow_lastflakes
+
+## @var SNOW_FLAKE
+## @brief For internal use only.
+## @details
+## @ingroup Goodies
+declare -r SNOW_FLAKE="❄"
+
+## @var TIME
+## @brief For internal use only.
+## @details Number of seconds between each frame.
+## @ingroup Goodies
+declare -r SNOW_TIME_DELTA=0.1
+
+## @fn snow_move_flake()
+## @brief For internal use only.
+## @details Create a new line of snow.
+## @ingroup Goodies
+snow_move_flake() {
+
+    if [ "${snow_currentflakes[$1]}" = "" ] || [ "${snow_currentflakes[$1]}" = "$SNOW_LINES" ]; then
+        snow_currentflakes[$1]=0
+    else
+        [ "${snow_lastflakes[$1]}" != "" ] && printf "\033[%s;%sH \033[1;1H " ${snow_lastflakes[$1]} $1
+    fi
+
+    printf "\033[%s;%sH${SNOW_FLAKE}\033[1;1H" ${snow_currentflakes[$1]} $1
+
+    snow_lastflakes[$1]=${snow_currentflakes[$1]}
+    snow_currentflakes[$1]=$((${snow_currentflakes[$1]}+1))
+}
+
+## @fn snow_advance_time()
+## @brief For internal use only.
+## @details Create a new line of snow.
+## @ingroup Goodies
+snow_advance_time() {
+
+    snow_move_flake $(($RANDOM % $SNOW_COLUMNS))
+
+    for x in "${!snow_lastflakes[@]}"; do
+        snow_move_flake "${x}"
+    done
+}
+
+clear				# clear screen
+tput civis			# hide cursor
+
+while true; do
+    snow_advance_time
+    sleep ${SNOW_TIME_DELTA}
+done

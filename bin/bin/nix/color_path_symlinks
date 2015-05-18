@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+#
+## @file
+## @author Eric Crosson <esc@ericcrosson.com>
+## @brief Script to colorize path symlinks in path names
+## command's execution.
+## @copyright WTFPLv2
+## @version 1.0
+#
+#########
+# License:
+#
+#             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#                    Version 2, December 2004
+#
+# Copyright (C) 2012 Eric Crosson
+#
+# Everyone is permitted to copy and distribute verbatim or modified
+# copies of this license document, and changing it is allowed as long
+# as the name is changed.
+#
+#            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+#
+#  0. You just DO WHAT THE FUCK YOU WANT TO.
+#
+#########
+#
+## @details
+## @par Script abstract
+##
+## This script colorizes paths symlinks in path names.
+##
+## @par Usage
+##
+## Simply invoke this script in the dir you want to see colorized.
+#
+## @addtogroup ColorPathSymlinks Script to colorize paths symlinks in path names
+
+## @var String COLOR_OFF
+## @brief Internal use only.
+## @details Reset STDOUT font color to default.
+## @ingroup ColorPathSymlinks
+declare -r COLOR_OFF="\e[0m";
+
+## @var String SYM_COLOR
+## @brief Internal use only.
+## @details Determine the color the OS identifies symlinks with.
+## @ingroup ColorPathSymlinks
+declare -r SYM_COLOR="\e[$(dircolors -p | grep 'symbolic link' | cut -d' ' -f 2)m";
+
+## @var String path
+## @brief Internal use only.
+## @details PWD that gets parsed (chopped) to generate @output
+## @ingroup ColorPathSymlinks
+declare path="$(pwd)/";
+
+## @var String output
+## @brief Internal use only.
+## @details Contains final script output (colorized path)
+## @ingroup ColorPathSymlinks
+declare output;
+unset output;
+
+## @var String path_sans_colors
+## @brief Internal use only.
+## @details Path (pwd) constructed without colors.
+## @ingroup ColorPathSymlinks
+declare path_sans_colors;
+unset path_sans_colors;
+
+while [[ ${path} ]]; do
+    output=${output}${path%%/*}
+    path_sans_colors=${path_sans_colors}${path%%/*}
+
+    [[ `find ${path_sans_colors} -maxdepth 0 -type l 2>/dev/null` ]] && \
+	output=${output%/*}/${SYM_COLOR}${output##*/}${COLOR_OFF}
+
+    output=${output}/		# add the trailing /
+    path_sans_colors=${path_sans_colors}/
+
+    if [[ $path =~ .*/.* ]]; then
+	path=${path#*/}		# examine the next dir
+    else
+	unset path		# no more dirs
+    fi
+done
+
+output=${output/"/home/$(whoami)"/"~"} # short paths
+echo -e ${output%/}		      # final value

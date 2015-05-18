@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+def extract_command(input_file, first_page, last_page)
+  "gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=#{first_page} -dLastPage=#{last_page}=#{input_file}p#{first_page}-#{last_page}.pdf #{input_file}"
+end

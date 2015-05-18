@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+#
+## @file
+## @author Eric Crosson <esc@ericcrosson.com>
+## @brief Wrap invocations to GNU Emacs
+## command's execution.
+## @copyright WTFPLv2
+## @version 1.0
+#
+#########
+# License:
+#
+#             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#                    Version 2, December 2004
+#
+# Copyright (C) 2015 Eric Crosson
+#
+# Everyone is permitted to copy and distribute verbatim or modified
+# copies of this license document, and changing it is allowed as long
+# as the name is changed.
+#
+#            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+#
+#  0. You just DO WHAT THE FUCK YOU WANT TO.
+#
+#########
+#
+## @details
+## @par Script abstract
+##
+## This script wraps invocations of GNU Emacs to ensure the advanced
+## features are accessably as quickly as possible.
+##
+## @par Usage
+##
+## e [h] [d|k|w|t] <file>
+##
+##   h    : print this help menu
+##   d    : ensure daemon is running
+##   k    : kill daemon
+##   w    : create new emacsclient window
+##   t    : create new emacsclient terminal
+##   file : file to open as buffer in new emacsclient instance
+##
+##   Note: commands that open a new instance of emacsclient ensure the
+##         daemon is running; that is /bin/emacs will never be used
+##         to open a file by this wrapper.
+##
+#
+## @addtogroup Emacs One to Rule Them All
+
+## @var HELP_EMACS_WRAPPER
+## @brief Contains script invocation information
+## @details Contains script invocation information and abstract.
+## @ingroup Emacs
+declare HELP_EMACS_WRAPPER
+HELP_EMACS_WRAPPER=$(cat <<'EOF'
+e [h] [d|k|w|t] <file>
+
+  h    : print this help menu
+  d    : ensure daemon is running
+  k    : kill daemon
+  w    : create new emacsclient window
+  t    : create new emacsclient terminal
+  file : file to open as buffer in new emacsclient instance
+
+  Note: commands that open a new instance of emacsclient ensure the
+        daemon is running; that is /bin/emacs will never be used
+        to open a file by this wrapper.
+
+EOF
+)
+
+## @fn e_run_daemon
+## @brief Ensure the emacs daemon is running
+## @ingroup Emacs
+e_run_daemon() {
+
+    # If the daemon isn't running, fire 'er up
+    [[ -z $(emacsclient -e '(message "Checking if daemon is alive")' 2>/dev/null) ]] && emacs --debug-init &
+}
+
+## @fn e_kill_daemon
+## @brief Kill the running emacs daemon
+## @ingroup Emacs
+e_kill_daemon() {
+
+    # See http://stackoverflow.com/a/2270603 for inspiration
+    emacsclient -e '(kill-emacs)'
+}
+
+## @fn e_new_window
+## @brief Create a new instance of emacsclient as an Xorg window
+## @ingroup Emacs
+e_new_window() {
+
+    e_run_daemon
+    emacsclient -nc $* &
+}
+
+## @fn e_new_terminal
+## @brief Create a new instance of emacsclient as a terminal
+## @ingroup Emacs
+e_new_terminal() {
+
+    e_run_daemon
+    emacsclient -nw $* &
+}
+
+# Obey command line arguments
+while true; do
+    case "${1}" in
+
+	h|--help)
+	    echo -e "${HELP_EMACS_WRAPPER}"
+	    exit
+	    ;;
+
+	d|--daemon)   e_run_daemon   ;;
+	k|--kill)     e_kill_daemon  ;;
+	w|--window)   shift; e_new_window   $* ;;
+	t|--terminal) shift; e_new_terminal $* ;;
+
+	""|--)
+	    shift
+	    break ;;
+    esac
+    shift
+done

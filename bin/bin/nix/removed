@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# This script is part of a bash library providing functions regarding
+# arrays.
+
+# This script in particular allows for the removal of one index of a
+# bash array.
+
+if [[ $1 == "--help" || $1 == "-h" ]]; then
+    echo 'NOT removed, remove-d. Like pushd and popd.'
+    echo "$(basename $0) index_to_remove array"
+    exit 1
+fi
+
+index=$1 && shift
+declare -a array=("${@}")
+echo "${array[@]:0:$index} ${array[@]:$(($index+1))}"

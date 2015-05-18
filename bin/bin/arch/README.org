@@ -1,0 +1,5 @@
+* Arch Linux bin directory
+
+This directory contains scripts for hosts running Arch Linux.
+
+Behold, Arch! He was #1!
