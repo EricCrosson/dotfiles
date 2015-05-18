@@ -2,10 +2,4 @@
 
 This directory contains scripts for hosts running Arch Linux.
 
-<<<<<<< HEAD
 Behold, Arch! [[https://raw.githubusercontent.com/EricCrosson/dotfiles/master/bin/bin/arch/img/smitty.gif][He was #1!]]
-=======
-Behold, Arch! He was #1!
-
-![alt tag](https://raw.github.com/EricCrosson/dotfiles/tree/master/bin/bin/arch/img/smitty.gif)
->>>>>>> ee371b0085161bcb38f54ce475a8b01a1b0421ec
