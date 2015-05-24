@@ -11,10 +11,9 @@
   (setq dired-details-propagate-flag nil)
 
   (after "dired-aux"
-    (unless (boundp dired-guess-shell-alist-user)
-      (setq dired-guess-shell-alist-user '())
-    (add-to-list 'dired-guess-shell-alist-user '("\\.mp4$" "vlc" "mplayer"))
-    (add-to-list 'dired-guess-shell-alist-user '("\\.pdf$" "evince"))
+    (setq dired-free-space-args "-Ph")
+    (setq dired-guess-shell-alist-user '(("\\.mp4$" "vlc" "mplayer")
+                                         ("\\.pdf$" "evince")))
     (add-to-list 'dired-compress-file-suffixes '("\\.zip$" "unzip")))
   (setq dired-listing-switches "-alhv")
   (setq dired-recursive-copies 'always)

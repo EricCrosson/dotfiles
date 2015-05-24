@@ -218,7 +218,6 @@ before layers configuration."
    mouse-yank-at-point t
    doc-view-continuous t
    ff-search-directories '("." "../inc" "../src"))
-  (add-to-list 'evil-emacs-state-modes 'git-commit-mode)
 
   ;; Char and font encoding
   (set-buffer-file-coding-system 'unix)
@@ -279,7 +278,7 @@ layers configuration."
     "bf" 'follow-mode
     "bF" 'follow-delete-other-windows-and-split
 
-    "med" 'edebug-defun
+    ;; "med" 'edebug-defun
 
     "od"   (defun xset-dim ()
              (interactive)
@@ -300,6 +299,8 @@ layers configuration."
     )
   (spacemacs/declare-prefix "hf" "help-find")
 
+  (add-to-list 'evil-emacs-state-modes 'git-commit-mode)
+  
   ;; advise configuration-layer/create-layer to open existing layers.
   ;; (spacemacs|advise-commands 'configuration-layer/create-or-open
   ;;                            '(configuration-layer/create-layer)
