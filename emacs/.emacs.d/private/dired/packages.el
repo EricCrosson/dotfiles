@@ -17,14 +17,14 @@
   (setq dired-listing-switches "-alhv")
   (setq dired-recursive-copies 'always)
   (after "ibuf-ext"
-    (add-to-list 'ibuffer-saved-filter-groups '("default" ("dired" (mode . dired-mode)))))
+    (add-to-list 'ibuffer-saved-filter-groups
+                 '("default" ("dired" (mode . dired-mode)))))
 
   ;; Allow running multiple async commands simultaneously
   (defadvice shell-command (after shell-in-new-buffer
                              (command &optional output-buffer error-buffer))
     (when (get-buffer "*Async Shell Command*")
-      (with-current-buffer "*Async Shell Command*"
-        (rename-uniquely))))
+      (with-current-buffer "*Async Shell Command*" (rename-uniquely))))
   (ad-activate 'shell-command)
 
   (setq dired-dwim-target t))
