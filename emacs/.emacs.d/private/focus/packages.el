@@ -9,5 +9,7 @@
 (defun focus/init-focus ()
   "Initialize `focus'."
   (use-package focus
-    :commands focus-mode)
-  )
+    :commands focus-mode
+    :config
+    (evil-leader/set-key
+      "of" 'focus-mode)))
