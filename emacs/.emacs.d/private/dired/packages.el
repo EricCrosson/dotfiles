@@ -27,4 +27,25 @@
       (with-current-buffer "*Async Shell Command*" (rename-uniquely))))
   (ad-activate 'shell-command)
 
-  (setq dired-dwim-target t))
+  (setq dired-dwim-target t)
+  (define-key dired-mode-map (kbd "<right>") 'dired-find-alternate-file)
+  (define-key dired-mode-map (kbd "<left>") (defun dired-find-parent-directory ()
+                                              (interactive)
+                                              (find-alternate-file "..")))
+  (defun dired-back-to-top ()
+    (interactive)
+    (beginning-of-buffer)
+    (search-forward "..")
+    (dired-next-line 1))
+
+  (define-key dired-mode-map
+    (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
+
+  (defun dired-jump-to-bottom ()
+    (interactive)
+    (end-of-buffer)
+    (dired-next-line -1))
+
+  (define-key dired-mode-map
+    (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom) 
+  )
