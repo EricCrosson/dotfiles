@@ -32,6 +32,17 @@
   (define-key dired-mode-map (kbd "<left>") (defun dired-find-parent-directory ()
                                               (interactive)
                                               (find-alternate-file "..")))
+
+  (evil-leader/set-key
+    "d" (defun dired-here ()
+          (interactive)
+          (let ((cwd (file-name-directory (or (buffer-file-name) ""))))
+            (cond
+             ((and cwd (file-exists-p cwd))
+              (dired cwd))
+             (t
+              (message "I'm not sure which dir to view."))))))
+
   (define-key dired-mode-map
     (vector 'remap 'beginning-of-buffer)
     (defun dired-back-to-top ()

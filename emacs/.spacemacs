@@ -259,25 +259,16 @@ layers configuration."
   (setq user-full-name "Eric Crosson"
         user-mail-address "esc@ericcrosson.com")
 
+  (load-file "/home/eric/workspace/mpsyt.el")
   (evil-leader/set-key
-    "d"     (defun dired-here ()
-              (interactive)
-              (let ((cwd (file-name-directory (or (buffer-file-name) ""))))
-              (cond
-               ((and cwd (file-exists-p cwd))
-                (dired cwd))
-               (t
-                (message "I'm not sure which dir to view.")))))
     "y"     'helm-M-x
     "bi"    'ibuffer
-    "jd"    (defun join-line-below (&optional arg)
-              (interactive "p")
-              (dotimes (i arg) (join-line -1)))
     "js"    'just-one-space
 
     "bf" 'follow-mode
     "bF" 'follow-delete-other-windows-and-split
 
+    ;; I really miss those eval bindings...
     ;; "med" 'edebug-defun
 
     "od"   (defun xset-dim ()
