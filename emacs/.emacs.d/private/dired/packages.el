@@ -4,11 +4,10 @@
 ;;
 ;;; License: GPLv3
 
-(defvar dired-packages '(dired-details+))
+(defvar dired-packages '(dired+))
 
-(defun dired/init-dired-details+ ()
-  "Initialize `dired-details+'."
-  (setq dired-details-propagate-flag nil)
+(defun dired/init-dired+ ()
+  "Initialize `dired+'."
 
   (after "dired-aux"
     (setq dired-free-space-args "-Ph")
