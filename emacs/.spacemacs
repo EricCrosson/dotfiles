@@ -2,6 +2,12 @@
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
+(defmacro after (mode &rest body)
+  "`eval-after-load' MODE evaluate BODY."
+  (declare (indent defun))
+  `(eval-after-load ,mode
+     '(progn ,@body)))
+
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration."
   (setq-default
@@ -63,6 +69,7 @@
      spray-mode
      weather-metno
      offlineimap
+     dired
      org-cliplink
      flx-ido
      visual-bookmark
@@ -183,6 +190,7 @@ before layers configuration."
   (setq
    ring-bell-function 'ignore
    disabled-command-function 'beep
+   vc-follow-symlinks t
    redisplay-dont-pause t
    frame-title-format '("emacs@" system-name ":%f") ;include path of frame
    display-time-load-average-threshold 0.6
@@ -210,6 +218,7 @@ before layers configuration."
    mouse-yank-at-point t
    doc-view-continuous t
    ff-search-directories '("." "../inc" "../src"))
+  (add-to-list 'evil-emacs-state-modes 'git-commit-mode)
 
   ;; Char and font encoding
   (set-buffer-file-coding-system 'unix)
@@ -271,6 +280,10 @@ layers configuration."
     "bF" 'follow-delete-other-windows-and-split
 
     "med" 'edebug-defun
+
+    "od"   (defun xset-dim ()
+             (interactive)
+             (shell-command "xset dpms force off"))
 
     ;; todo: finish incorporating help-extras and properly get the group name to
     ;; appear in guide key
