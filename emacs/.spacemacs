@@ -29,6 +29,13 @@
           git-magit-status-fullscreen t)
      markdown
      org
+     shell
+     emoji
+     games
+     eyebrowse
+     puppet
+     pandoc
+     semantic
      shell-scripts
      python
      ruby
@@ -280,15 +287,6 @@ layers configuration."
     "bF" 'follow-delete-other-windows-and-split
 
     "med" 'edebug-defun
-
-    "ast" (defun ansi-term-default-shell ()
-            (interactive)
-            (ansi-term(or explicit-shell-file-name
-                          (getenv "ESHELL")
-                          (getenv "SHELL")
-                          "/bin/sh")))
-    "asi" 'shell
-    "ase" 'eshell
 
     "od"  (defun xset-dim ()
             (interactive)
