@@ -9,9 +9,13 @@
 (defun dired/init-dired+ ()
   "Initialize `dired+'."
 
+  (setq diredp-hide-details-initially-flag t)
+  (use-package dired+)
+
   (after "dired-aux"
     (setq dired-free-space-args "-Ph")
-    (setq dired-guess-shell-alist-user '(("\\.mp4$" "vlc" "mplayer")
+    (setq dired-guess-shell-alist-user '(("\\.mp4$" "cvlc" "mplayer")
+                                         ("\\.mkv$" "cvlc" "mplayer")
                                          ("\\.pdf$" "evince" "zathura")))
     (add-to-list 'dired-compress-file-suffixes '("\\.zip$" "unzip")))
   (setq dired-listing-switches "-alhv")
@@ -27,12 +31,6 @@
       (with-current-buffer "*Async Shell Command*" (rename-uniquely))))
   (ad-activate 'shell-command)
 
-  (setq dired-dwim-target t)
-  (define-key dired-mode-map (kbd "<right>") 'dired-find-alternate-file)
-  (define-key dired-mode-map (kbd "<left>") (defun dired-find-parent-directory ()
-                                              (interactive)
-                                              (find-alternate-file "..")))
-
   (evil-leader/set-key
     "d" (defun dired-here ()
           (interactive)
@@ -43,17 +41,24 @@
              (t
               (message "I'm not sure which dir to view."))))))
 
-  (define-key dired-mode-map
-    (vector 'remap 'beginning-of-buffer)
-    (defun dired-back-to-top ()
-      (interactive)
-      (beginning-of-buffer)
-      (search-forward "..")
-      (dired-next-line 1)))
+  (setq dired-dwim-target t)
+  (after "dired"
+    (define-key dired-mode-map (kbd "<right>") 'dired-find-alternate-file)
+    (define-key dired-mode-map (kbd "<left>") (defun dired-find-parent-directory ()
+                                                (interactive)
+                                                (find-alternate-file "..")))
 
-  (define-key dired-mode-map
-    (vector 'remap 'end-of-buffer)
-    (defun dired-jump-to-bottom ()
-      (interactive)
-      (end-of-buffer)
-      (dired-next-line -1))))
+    (define-key dired-mode-map
+      (vector 'remap 'beginning-of-buffer)
+      (defun dired-back-to-top ()
+        (interactive)
+        (beginning-of-buffer)
+        (search-forward "..")
+        (dired-next-line 1)))
+
+    (define-key dired-mode-map
+      (vector 'remap 'end-of-buffer)
+      (defun dired-jump-to-bottom ()
+        (interactive)
+        (end-of-buffer)
+        (dired-next-line -1)))))

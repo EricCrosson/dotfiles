@@ -70,7 +70,8 @@
      weather-metno
      offlineimap
      dired
-     org-cliplink
+     org-extras
+     simplenote
      flx-ido
      visual-bookmark
      pretty-lambdada
@@ -252,6 +253,16 @@ before layers configuration."
         byte-compile-warnings '(not interactive-only free-vars))
   )
 
+(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+
+;; close the terminal buffer automatically on exit
+(defadvice term-sentinel (around my-advice-term-sentinel (proc msg) activate)
+  (if (memq (process-status proc) '(signal exit))
+      (let ((buffer (process-buffer proc)))
+        ad-do-it
+        (kill-buffer buffer))
+    ad-do-it))
+
 (defun dotspacemacs/config ()
   "Configuration function.
 This function is called at the very end of Spacemacs initialization after
@@ -268,12 +279,20 @@ layers configuration."
     "bf" 'follow-mode
     "bF" 'follow-delete-other-windows-and-split
 
-    ;; I really miss those eval bindings...
-    ;; "med" 'edebug-defun
+    "med" 'edebug-defun
 
-    "od"   (defun xset-dim ()
-             (interactive)
-             (shell-command "xset dpms force off"))
+    "ast" (defun ansi-term-default-shell ()
+            (interactive)
+            (ansi-term(or explicit-shell-file-name
+                          (getenv "ESHELL")
+                          (getenv "SHELL")
+                          "/bin/sh")))
+    "asi" 'shell
+    "ase" 'eshell
+
+    "od"  (defun xset-dim ()
+            (interactive)
+            (shell-command "xset dpms force off"))
 
     ;; todo: finish incorporating help-extras and properly get the group name to
     ;; appear in guide key
@@ -282,6 +301,7 @@ layers configuration."
     ;; "hfk"
     "hfl" 'find-library
 
+    "rn" 'revert-buffer-no-confirm
     "rb" 'revert-buffer
     "xs" 'save-buffer
 
@@ -291,7 +311,7 @@ layers configuration."
   (spacemacs/declare-prefix "hf" "help-find")
 
   (add-to-list 'evil-emacs-state-modes 'git-commit-mode)
-  
+
   ;; advise configuration-layer/create-layer to open existing layers.
   ;; (spacemacs|advise-commands 'configuration-layer/create-or-open
   ;;                            '(configuration-layer/create-layer)
