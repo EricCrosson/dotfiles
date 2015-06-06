@@ -15,4 +15,7 @@
     simplenote2-pull-buffer
     :init
     (setq simplenote2-email "simplenote@ericcrosson.com")
-    (simplenote2-setup)))
+    (simplenote2-setup)
+
+    (evil-leader/set-key
+      "os" 'simplenote2-browse)))
