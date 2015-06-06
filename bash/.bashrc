@@ -1,4 +1,3 @@
-
 # BASH initialization and customizations
 # Copyright (C) 2013 Eric Crosson
 #
@@ -31,7 +30,7 @@ set -o emacs                    # set Emacs bindings
 bind Space:magic-space          # replace any ! symbol on space
 
 # Exports
-export email='eric.s.crosson@gmail.com'
+export email='esc@ericcrosson.com'
 export EDITOR="emacsclient -ta "
 export VISUAL="emacsclient -ta "
 export BROWSER='chromium &2>/dev/null '
@@ -45,44 +44,9 @@ unset MAILCHECK
 export GEM_HOME=~/.gem
 export GEM_PATH=~/.gem
 
-# Fortune variables
-fortune_args="-s"
-unset no_fortune keep_it_clean
-
-# Operating system tests
-isArch(){
-    [[ $(uname -r |grep -io "arch\\|libre") ]] && \
-        return $true; return $false; }
-
-atWork(){
-    [[ $(hostname) == orpheus ]] && \
-        return $true; return $false; }
-
-# Execute getopt
-ARGS=$(getopt -o s -l "silent" -n ".bashrc" -- "$@");
-
-# Fail on bad arguments
-if [ $? -ne 0 ]; then
-    echo -e ""
-    exit 1
-fi
-
-eval set -- "${ARGS}";
-
-while true; do
-    case "${1}" in
-        -s|--silent) no_fortune=1 ;;
-        --) break ;;
-    esac
-    shift
-done
-
 # Source configs
-declare -r api=~/.config/bash/api 2>/dev/null
+declare -r api=~/.config/bash/api
 source ${api}/io
-for src in /etc/bashrc /usr/share/git/git-prompt.sh; do
-    source ${src} 2>/dev/null # no worries if dne
-done
 for src in ${api}/*; do source ${src}; done
 
 # Path setup
@@ -118,10 +82,6 @@ if atWork; then                 # Work settings
     pathAppend ${scripts}/centtech
 fi
 
-if [[ -z $no_fortune && $(which fortune 2>/dev/null) ]]; then
-    [ -z keep_it_clean ] && fortune_args="${fortune_args}a" # NSFW?
-    message $Green "$(fortune $fortune_args)\n"; fi
-
 # Source formatting script
 case $(uname -a) in
     *Linux*|*Darwin* )
@@ -137,27 +97,6 @@ case $(uname -a) in
         command_style=$reset_style'\033[1;29m' # bold black
         ;;
 esac
-
-# TODO: https://krash.be/node/25
-#       color PS1 based on exit code of previous command
-prompt_command() {
-    case $(uname -a) in
-        *Linux*|*Darwin* )
-            PS1=$(\cat <<EOF
-\[$status_style\]$fill\t\n\
-$(
-git branch &>/dev/null; [ $? -eq 0 ] &&
-  echo -n $(echo $(git status) | grep "nothing to commit" &> /dev/null 2>&1; \
-  [ $? -eq 0 ] && echo $Green$(__git_ps1 2>/dev/null "(%s)") || echo $IRed$(__git_ps1 2>/dev/null "{%s}"););
-)\
-\[$prompt_style\]${debian_chroot:+($debian_chroot)}\u@\h:$(color_path_symlinks)\$\[$command_style\]
-EOF
-            )
-            PS1="${PS1} "       # Add the space before user input
-            ;;
-    esac
-}
-PROMPT_COMMAND=prompt_command
 
 cd_func ()
 {
@@ -409,34 +348,3 @@ alias ,,,=_commacd_backward_forward
 complete -o filenames -F _commacd_forward_completion ,
 complete -o filenames -F _commacd_backward_completion ,,
 complete -o filenames -F _commacd_backward_forward_completion ,,,
-
-### Caveat- I have not found a way to make this code work if it is not
-### installed in one's .bashrc.
-
-# Prefixes to avoid namespace collisions
-esc_timer_start() {
-    esc_timer=${esc_timer:-$SECONDS} ;}
-
-esc_timer_stop() {
-    esc_timer_show=$(($SECONDS - $esc_timer))
-    unset esc_timer ; }
-
-# Convert integer seconds to days,HH:MM:SS
-esc_seconds_to_days() {
-    printf "%ddays,%02d:%02d:%02d" $(((($1/60)/60)/24))   \
-        $(((($1/60)/60)%24)) $((($1/60)%60)) $(($1%60)) | \
-        sed 's/^1days/1day/;s/^0days,\(00:\)*//;s/^0//' ; }
-
-# Install hooks where appropriate
-trap_add 'esc_timer_start' DEBUG
-PROMPT_COMMAND="${PROMPT_COMMAND}; esc_timer_stop"
-
-# The command to print our calculated information
-alias took='echo $(esc_seconds_to_days ${esc_timer_show})'
-
-### End official caveat ###
-
-org() {
-    pushd ~/org &> /dev/null
-    git-sync
-}
