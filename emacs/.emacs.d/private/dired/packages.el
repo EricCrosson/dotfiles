@@ -15,6 +15,7 @@
   (after "dired-aux"
     (setq dired-free-space-args "-Ph")
     (setq dired-guess-shell-alist-user '(("\\.mp4$" "cvlc" "mplayer")
+                                         ("\\.avi$" "cvlc" "mplayer")
                                          ("\\.mkv$" "cvlc" "mplayer")
                                          ("\\.pdf$" "evince" "zathura")
                                          ("\\.*$" "xdg-open")))
