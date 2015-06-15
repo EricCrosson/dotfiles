@@ -13,6 +13,9 @@
 ;; fixme -- dysfunctional
 (defun org-extras/init-org-download ()
   "Initialize `org-download'."
+  ;; misc org settings
+  (setq org-src-fontify-natively t)
+
   (use-package org-download
     :config
     (setq org-download-method 'directory
