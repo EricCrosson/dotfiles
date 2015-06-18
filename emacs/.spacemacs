@@ -1,6 +1,4 @@
 ;; -*- mode: dotspacemacs -*-
-;; This file is loaded by Spacemacs at startup.
-;; It must be stored in your home directory.
 
 (defmacro after (mode &rest body)
   "`eval-after-load' MODE evaluate BODY."
@@ -11,11 +9,8 @@
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration."
   (setq-default
-   ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (ie. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '()
-   ;; List of configuration layers to load. If it is the symbol `all' instead
-   ;; of a list then all discovered layers will be installed.
+   dotspacemacs-configuration-layer-path '("~/dotfiles/emacs/.emacs.d/private/")
    dotspacemacs-configuration-layers
    '(;; auto-completion
      better-defaults
@@ -104,10 +99,6 @@ an exhaustive list of all spacemacs configuration options."
    dotspacemacs-major-mode-leader-key ","
    ;; Major mode leader key accessible in `emacs state' and `insert state'
    dotspacemacs-major-mode-emacs-leader-key "C-M-m"
-   ;; The command key used for Evil commands (ex-commands) and
-   ;; Emacs commands (M-x).
-   ;; By default the command key is `:' so ex-commands are executed like in Vim
-   ;; with `:' and Emacs commands are executed with `<leader> :'.
    dotspacemacs-command-key ":"
    ;; If non nil the paste micro-state is enabled. While enabled pressing `p`
    ;; several times cycle between the kill ring content.
@@ -115,8 +106,6 @@ an exhaustive list of all spacemacs configuration options."
    dotspacemacs-guide-key-delay 0.4
    dotspacemacs-loading-progress-bar t
    dotspacemacs-fullscreen-at-startup nil
-   ;; If non nil `spacemacs/toggle-fullscreen' will not use native fullscreen.
-   ;; Use to disable fullscreen animations in OSX."
    dotspacemacs-fullscreen-use-non-native nil
    dotspacemacs-maximized-at-startup nil
    dotspacemacs-active-transparency 90
@@ -139,6 +128,10 @@ an exhaustive list of all spacemacs configuration options."
   (setq-default size-indication-mode t
                 indent-tabs-mode nil)
   (setq
+   sentence-end-double-space t
+   fill-french-nobreak-p t
+   fill-single-char-nobreak-p t
+   fill-single-word-nobreak-p t
    ring-bell-function 'ignore
    disabled-command-function 'beep
    vc-follow-symlinks t
