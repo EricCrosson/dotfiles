@@ -1,4 +1,4 @@
-startup_message off	# disable the startup screen
+startup_message off	    # disable the startup screen
 vbell off               # replace the screen flash with an audible bell
 
 defscrollback 15000     # keep n lines of the buffer
