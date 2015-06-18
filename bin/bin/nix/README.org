@@ -1,0 +1,4 @@
+* *nix binaries
+Yep, this includes Darwin.
+
+TODO: credit the devs whose scripts have landed in here.
