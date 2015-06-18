@@ -7,8 +7,7 @@
 (setq swiper-packages '(swiper))
 
 (defun swiper/init-swiper ()
-  "Initialize my package"
+  "Initialize `swiper'."
   (use-package swiper
-    :bind ("C-." . swiper)
-    :config (evil-leader/set-key "." 'swiper))
-  )
+    :config
+    (evil-leader/set-key "." 'swiper)))

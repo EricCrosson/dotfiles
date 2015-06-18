@@ -9,5 +9,14 @@
 (defun fic-mode/init-fic-mode ()
     "Initialize my package"
   (use-package fic-mode
-    :config (add-hook 'prog-mode-hook 'turn-on-fic-mode))
-  )
+    :config
+    (add-hook 'prog-mode-hook 'turn-on-fic-mode)
+
+    (spacemacs|add-toggle fic-mode
+                          :status fic-mode
+                          :on (fic-mode)
+                          :off (fic-mode -1)
+                          :documentation "FIC mode."
+                          :evil-leader "tP")
+    (spacemacs|diminish fic-mode " Ⓟ" " P")
+    ))

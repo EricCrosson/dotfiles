@@ -4,22 +4,17 @@
 ;;
 ;;; License: GPLv3
 
-(setq bliss-packages
-  '(
-    ;; package blisss go here
-    bliss-theme
-    )
-  )
+(setq bliss-packages '(bliss-theme))
 
 (defun bliss/init-bliss-theme ()
-  "Initialize my package"
+  "Initialize `bliss-theme'."
   (use-package bliss-theme
     :config
-    (eval-after-load 'bliss-theme
-      (mapc (lambda (data) (set-face-attribute (car data) nil
-                                        :underline  nil
-                                        :foreground 'unspecified
-                                        :background (cadr data)))
-          '((highlight "#333")
-            (region    "#444")))))
-  )
+    ;; (eval-after-load 'bliss-theme
+    ;;   (mapc (lambda (data) (set-face-attribute (car data) nil
+    ;;                                     :underline  nil
+    ;;                                     :foreground 'unspecified
+    ;;                                     :background (cadr data)))
+    ;;         '((highlight "#333")
+    ;;           (region    "#444"))))
+    ))
