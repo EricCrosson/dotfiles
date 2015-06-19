@@ -244,6 +244,7 @@ layers configuration."
   (spacemacs/declare-prefix "hf" "help-find")
 
   (add-to-list 'evil-emacs-state-modes 'git-commit-mode)
+  (add-to-list 'evil-emacs-state-modes 'shell-mode)
 
   (setq Don t    ;allows `eval-buffer' on *scratch*
         Panic t  ;with `initial-scratch-message'
