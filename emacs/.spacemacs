@@ -68,6 +68,7 @@
      offlineimap
      dired
      org-extras
+     ibuffer-extras
      simplenote
      flx-ido
      visual-bookmark
