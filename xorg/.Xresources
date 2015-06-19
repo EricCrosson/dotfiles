@@ -2,7 +2,6 @@
 !emacs*pointerColor: red
 emacs*font: -unknown-DejaVu Sans Mono-normal-normal-normal-*-11-*-*-*-m-0-iso10646-1
 
-xterm*highlightSelection: true
 xterm*color0:         rgb:19/19/19
 xterm*color8:         rgb:25/25/25
 !red
@@ -25,6 +24,12 @@ xterm*color6:         rgb:92/b1/9e
 xterm*color14:        rgb:a1/cd/cd
 !white
 xterm*color7:         rgb:ff/ff/ff
+
+xterm*reverseVideo:   on
+xterm*metaSendsEscape: true
+xterm*cursorColor: red
+xterm*pointerColor: red
+xterm*highlightSelection: true
 
 URxvt*termName: screen-256color
 URxvt*geometry: 240x84
@@ -63,12 +68,13 @@ URxvt*perl-ext-common:
 URxvt*perl-ext:
 URxvt*cursorColor: red
 URxvt*pointerColor: red
+URxvt.perl-ext-common: ...,font-size
 
-xterm*reverseVideo:   on
-
-xterm*metaSendsEscape: true
-xterm*cursorColor: red
-xterm*pointerColor: red
+! on the fly font-size adjustment
+URxvt.keysym.C-Up:     font-size:increase
+URxvt.keysym.C-Down:   font-size:decrease
+URxvt.keysym.C-S-Up:   font-size:incglobal
+URxvt.keysym.C-S-Down: font-size:decglobal
 
 xclock*Foreground:      white
 xclock*Background:      black
