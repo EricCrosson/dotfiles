@@ -1,10 +1,8 @@
-emacs*cursorColor: red
-emacs*pointerColor: red
-
+!emacs*cursorColor: red
+!emacs*pointerColor: red
 emacs*font: -unknown-DejaVu Sans Mono-normal-normal-normal-*-11-*-*-*-m-0-iso10646-1
 
 xterm*highlightSelection: true
-
 xterm*color0:         rgb:19/19/19
 xterm*color8:         rgb:25/25/25
 !red
@@ -52,10 +50,10 @@ URxvt*background: Black
 URxvt*foreground: White
 URxvt*colorUL: yellow
 URxvt*underlineColor: yellow
-!URxvt*font: -xos4-terminus-medium-*-*-*-14-*-*-*-*-*-iso8859-15,xft:terminus:pixelsize:12
-!URxvt*boldFont: -xos4-terminus-bold-*-*-*-14-*-*-*-*-*-iso8859-15,xft:terminus:bold:pixelsize:12
-!URxvt*italicFont: xft:Bitstream Vera Sans Mono:italic:autohint=true:pixelsize=12
-!URxvt*boldItalicFont: xft:Bitstream Vera Sans Mono:bold:italic:autohint=true:pixelsize=12
+URxvt.font:     xft:bitstream vera sans mono:size=7:antialias=true
+URxvt.boldFont: xft:bitstream vera sans mono:bold:size=7:antialias=true
+URxvt*italicFont: xft:bitstream vera sans mono:italic:autohint=true:pixelsize=9
+URxvt*boldItalicFont: xft:bitstream vera sans mono:bold:italic:autohint=true:pixelsize=7
 URxvt*saveLines: 0
 URxvt*buffered: true
 URxvt*hold: false
