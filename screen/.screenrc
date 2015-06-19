@@ -1,11 +1,11 @@
-startup_message off	# disable the startup screen
+startup_message off	    # disable the startup screen
 vbell off               # replace the screen flash with an audible bell
 
 defscrollback 15000     # keep n lines of the buffer
 altscreen on            # prevents the excessive output of programs > buffer
 markkeys "h=^b:j=^n:l=^f:$=^e:k=^p:0=^a"  # emacs keybindings for copy mode
 
-backtick 1 86400 86400 ruby -e "require 'date'; puts ((Date.today.yday.to_i-4)/365.25+(Date.today.year.to_i-1993)).round(5)" 2>/dev/null || echo "no ruby"
+backtick 1 86400 86400 ruby -e "require 'date'; puts '%.5f' % ((Date.today.yday.to_i-4)/365.25+(Date.today.year.to_i-1993))" 2>/dev/null || echo "no ruby"
 
 hardstatus on           # status line at the bottom
 hardstatus alwayslastline
@@ -21,7 +21,7 @@ multiuser on
 bind + resize +5
 bind - resize -5
 bind = resize =
-bind R source /home/eric/.screenrc
+bind R source $HOME/.screenrc
 
 ### direct access to many screens
 bind  ! select 11

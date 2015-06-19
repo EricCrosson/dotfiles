@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+ls -lABhp --group-directories-first --color=always $@

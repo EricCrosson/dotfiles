@@ -49,7 +49,7 @@ plugins=(git)
 
 # User configuration
 
-export PATH="$HOME/bin/linux:$HOME/bin/nix:$HOME/bin/arch:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/eric/bin/nix:/home/eric/.cask/bin:/home/eric/bin/zebulon:/home/eric/.gem/ruby/2.0.0/bin:/home/eric/bin/linux"
+export PATH="$PATH:$HOME/bin/linux:$HOME/bin/nix:$HOME/bin/arch:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:$HOME/bin/nix:$HOME/.cask/bin:$HOME/bin/zebulon:$HOME/.gem/ruby/2.0.0/bin:$HOME/bin/linux:$HOME/bin/ibm"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh

@@ -19,6 +19,14 @@
           company-dabbrev-downcase nil)
     (global-company-mode t)
 
+    (spacemacs|add-toggle company-mode
+                          :status company-mode
+                          :on (company-mode)
+                          :off (company-mode -1)
+                          :documentation "Company auto-completion."
+                          :evil-leader "ta")
+    (spacemacs|diminish company-mode " ⓐ" " a")
+
     ;; Sometimes `company-mode' isn't the best option.
     (defun turn-off-company-mode ()
       (company-mode -1))

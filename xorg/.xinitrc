@@ -41,6 +41,8 @@ delay_to_stable_xorg=3
 # begin synergy server
 # ((sleep $delay_to_stable_xorg); synergyc --daemon --restart oblongoblin.local) &
 
+xeyes &
+
 # exec dwm
 exec gnome-session
 # exec gnome-session --session=xmonad
