@@ -196,16 +196,7 @@ an exhaustive list of all spacemacs configuration options."
         compilation-save-buffers-predicate '(lambda () nil)
         byte-compile-warnings '(not interactive-only free-vars))
 
-  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-
-  ;; close the terminal buffer automatically on exit
-  ;; (defadvice term-sentinel (around my-advice-term-sentinel (proc msg) activate)
-  ;;   (if (memq (process-status proc) '(signal exit))
-  ;;       (let ((buffer (process-buffer proc)))
-  ;;         ad-do-it
-  ;;         (kill-buffer buffer))
-  ;;     ad-do-it))
-  )
+  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p))
 
 (defun dotspacemacs/config ()
   "Configuration function.
