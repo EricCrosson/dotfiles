@@ -203,7 +203,8 @@ an exhaustive list of all spacemacs configuration options."
   "Configuration function.
 This function is called at the very end of Spacemacs initialization after
 layers configuration."
-  (set-frame-font "-b&h-lucidatypewriter-bold-r-normal-sans-12-120-75-75-m-70-iso10646-1")
+  (set-frame-font
+   "-b&h-lucidatypewriter-bold-r-normal-sans-12-120-75-75-m-70-iso10646-1")
 
   (let ((mypst "/home/eric/workspace/mpsyt.el"))
     (when (file-exists-p mypst) (load-file mypst)))
