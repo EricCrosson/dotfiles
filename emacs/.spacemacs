@@ -205,7 +205,7 @@ layers configuration."
   (set-frame-font "-b&h-lucidatypewriter-bold-r-normal-sans-12-120-75-75-m-70-iso10646-1")
 
   (let ((mypst "/home/eric/workspace/mpsyt.el"))
-    (when (file-exists-p file) (load-file file)))
+    (when (file-exists-p mypst) (load-file mypst)))
 
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
