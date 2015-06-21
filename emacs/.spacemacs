@@ -130,6 +130,7 @@ an exhaustive list of all spacemacs configuration options."
   (setq-default size-indication-mode t
                 indent-tabs-mode nil)
   (setq
+   kill-whole-line t
    sentence-end-double-space t
    fill-french-nobreak-p t
    fill-single-char-nobreak-p t
