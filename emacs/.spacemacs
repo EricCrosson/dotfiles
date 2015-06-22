@@ -49,6 +49,7 @@
      company
      chess
      writegood-mode
+     ;; mpsyt
      bliss
      savehist
      twittering
@@ -62,6 +63,7 @@
      offlineimap
      dired
      org-extras
+     ibuffer-extras
      simplenote
      flx-ido
      visual-bookmark
@@ -128,6 +130,7 @@ an exhaustive list of all spacemacs configuration options."
   (setq-default size-indication-mode t
                 indent-tabs-mode nil)
   (setq
+   kill-whole-line t
    sentence-end-double-space t
    fill-french-nobreak-p t
    fill-single-char-nobreak-p t
@@ -194,25 +197,18 @@ an exhaustive list of all spacemacs configuration options."
         compilation-save-buffers-predicate '(lambda () nil)
         byte-compile-warnings '(not interactive-only free-vars))
 
-  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-
-  ;; close the terminal buffer automatically on exit
-  ;; (defadvice term-sentinel (around my-advice-term-sentinel (proc msg) activate)
-  ;;   (if (memq (process-status proc) '(signal exit))
-  ;;       (let ((buffer (process-buffer proc)))
-  ;;         ad-do-it
-  ;;         (kill-buffer buffer))
-  ;;     ad-do-it))
-  )
+  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p))
 
 (defun dotspacemacs/config ()
   "Configuration function.
 This function is called at the very end of Spacemacs initialization after
 layers configuration."
+
   (global-hl-line-mode -1)
 
-  ;; TODO: extract this into its own library
-  ;; (load-file "/home/eric/workspace/mpsyt.el")
+  (let ((mypst "/home/eric/workspace/mpsyt.el"))
+    (when (file-exists-p mypst) (load-file mypst)))
+
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
     "to"    'org-toggle-inline-images
@@ -243,6 +239,7 @@ layers configuration."
   (spacemacs/declare-prefix "hf" "help-find")
 
   (add-to-list 'evil-emacs-state-modes 'git-commit-mode)
+  (add-to-list 'evil-emacs-state-modes 'shell-mode)
 
   (setq Don t    ;allows `eval-buffer' on *scratch*
         Panic t  ;with `initial-scratch-message'
