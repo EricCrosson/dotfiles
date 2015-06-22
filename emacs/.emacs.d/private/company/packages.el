@@ -33,5 +33,6 @@
     (mapc (lambda (mode-hook)
             (add-hook mode-hook 'turn-off-company-mode))
           '(shell-mode-hook
+            org-mode-hook
             gud-mode-hook)))
   )
