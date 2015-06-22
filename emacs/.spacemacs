@@ -209,7 +209,7 @@ an exhaustive list of all spacemacs configuration options."
   "Configuration function.
 This function is called at the very end of Spacemacs initialization after
 layers configuration."
-  (set-frame-font "-b&h-lucidatypewriter-bold-r-normal-sans-12-120-75-75-m-70-iso10646-1")
+  (global-hl-line-mode -1)
 
   ;; TODO: extract this into its own library
   ;; (load-file "/home/eric/workspace/mpsyt.el")
@@ -270,15 +270,49 @@ layers configuration."
  '(custom-safe-themes
    (quote
     ("ea489f6710a3da0738e7dbdfc124df06a4e3ae82f191ce66c2af3e0a15e99b90" default)))
+ '(magit-use-overlays nil)
  '(org-agenda-files (quote ("~/org/ibm.org")))
  '(paradox-github-token t)
  '(ring-bell-function (quote ignore) t)
  '(safe-local-variable-values
    (quote
-    ((firestarter compile "make -k -j32 -C ~/workspace/ee445m-labs/build/")))))
+    ((eval when
+           (and
+            (buffer-file-name)
+            (file-regular-p
+             (buffer-file-name))
+            (string-match-p "^[^.]"
+                            (buffer-file-name)))
+           (emacs-lisp-mode)
+           (when
+               (fboundp
+                (quote flycheck-mode))
+             (flycheck-mode -1))
+           (unless
+               (featurep
+                (quote package-build))
+             (let
+                 ((load-path
+                   (cons ".." load-path)))
+               (require
+                (quote package-build))))
+           (package-build-minor-mode)
+           (set
+            (make-local-variable
+             (quote package-build-working-dir))
+            (expand-file-name "../working/"))
+           (set
+            (make-local-variable
+             (quote package-build-archive-dir))
+            (expand-file-name "../packages/"))
+           (set
+            (make-local-variable
+             (quote package-build-recipes-dir))
+            default-directory))
+     (firestarter compile "make -k -j32 -C ~/workspace/ee445m-labs/build/")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(font-lock-string-face ((t (:foreground "#99e1df")))))
+ )
