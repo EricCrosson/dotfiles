@@ -47,6 +47,9 @@ ENABLE_CORRECTION="false"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git)
 
+source /usr/bin/virtualenvwrapper.sh
+export PROJECT_HOME=~/workspace/
+
 # User configuration
 
 export PATH="$PATH:$HOME/bin/linux:$HOME/bin/nix:$HOME/bin/arch:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:$HOME/bin/nix:$HOME/.cask/bin:$HOME/bin/zebulon:$HOME/.gem/ruby/2.0.0/bin:$HOME/bin/linux:$HOME/bin/ibm"

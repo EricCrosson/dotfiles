@@ -44,6 +44,7 @@
      xkcd
      ;; begin custom layers
      bury-successful-compilation
+     sublimity
      unkillable-scratch
      swiper
      focus
