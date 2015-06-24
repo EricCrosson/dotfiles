@@ -12,11 +12,12 @@
    ;; Paths must have a trailing slash (ie. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '("~/dotfiles/emacs/.emacs.d/private/")
    dotspacemacs-configuration-layers
-   '(;; auto-completion
+   `(;; auto-completion
      better-defaults
      (git :variables
           git-gutter-use-fringe t
-          git-magit-status-fullscreen t)
+          git-magit-status-fullscreen t
+          git-use-magit-next t)
      markdown
      org
      shell
@@ -33,9 +34,10 @@
      markdown
      lua
      c-c++
-     irc
-     colors
-     auctex
+     ;; irc
+     (colors :variables
+             colors-enable-nyan-cat-progress-bar ,(display-graphic-p))
+     ;; auctex
      floobits
      restclient
      syntax-checking
@@ -49,7 +51,6 @@
      company
      chess
      writegood-mode
-     ;; mpsyt
      bliss
      savehist
      twittering
@@ -205,9 +206,23 @@ This function is called at the very end of Spacemacs initialization after
 layers configuration."
 
   (global-hl-line-mode -1)
+  (rainbow-mode 1)
 
-  (let ((mypst "/home/eric/workspace/mpsyt.el"))
-    (when (file-exists-p mypst) (load-file mypst)))
+  (setq helm-echo-input-in-header-line t)
+  (defun helm-hide-minibuffer-maybe ()
+    (when (with-helm-buffer helm-echo-input-in-header-line)
+      (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+        (overlay-put ov 'window (selected-window))
+        (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+                                `(:background ,bg-color :foreground ,bg-color)))
+        (setq-local cursor-type nil))))
+  (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
+
+  (let ((mypst (format "/home/%s/workspace/mpsyt.el" user-login-name)))
+    (when (file-exists-p mypst)
+      (load-file mypst)
+      (evil-leader/set-key
+        "oy" 'pc/mpsyt-url-dwim)))
 
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
