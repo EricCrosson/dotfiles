@@ -25,7 +25,11 @@
      games
      eyebrowse
      puppet
+     gtags
      pandoc
+     ansible
+     dockerfile
+     erc
      semantic
      shell-scripts
      python
