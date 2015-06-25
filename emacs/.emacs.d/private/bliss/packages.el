@@ -10,11 +10,6 @@
   "Initialize `bliss-theme'."
   (use-package bliss-theme
     :config
-    ;; (eval-after-load 'bliss-theme
-    ;;   (mapc (lambda (data) (set-face-attribute (car data) nil
-    ;;                                     :underline  nil
-    ;;                                     :foreground 'unspecified
-    ;;                                     :background (cadr data)))
-    ;;         '((highlight "#333")
-    ;;           (region    "#444"))))
-    ))
+    (after 'bliss-theme
+      (set-face-attribute 'highlight nil :underline  nil :foreground 'unspecified :background "#333")
+      (set-face-attribute 'region nil :underline  nil :foreground 'unspecified :background "#444"))))

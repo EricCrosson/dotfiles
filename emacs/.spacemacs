@@ -26,6 +26,7 @@
      eyebrowse
      puppet
      gtags
+     fasd
      pandoc
      ansible
      dockerfile
@@ -90,9 +91,8 @@ an exhaustive list of all spacemacs configuration options."
    dotspacemacs-startup-banner 'doge
    dotspacemacs-always-show-changelog t
    dotspacemacs-startup-lists '(recents projects bookmarks)
-   dotspacemacs-themes '(solarized-light
-                         bliss
-                         solarized-dark
+   dotspacemacs-themes '(bliss
+                         solarized-light
                          leuven)
    dotspacemacs-colorize-cursor-according-to-state t
    dotspacemacs-default-font '("DejaVu Sans Mono"
@@ -210,9 +210,11 @@ an exhaustive list of all spacemacs configuration options."
 This function is called at the very end of Spacemacs initialization after
 layers configuration."
 
-  (global-hl-line-mode -1)
-  (rainbow-mode 1)
+  (global-hl-line-mode nil)
+  (rainbow-mode t)
+  (nyan-mode t)
 
+  ;; this has not been working
   (setq helm-echo-input-in-header-line t)
   (defun helm-hide-minibuffer-maybe ()
     (when (with-helm-buffer helm-echo-input-in-header-line)
@@ -228,6 +230,21 @@ layers configuration."
       (load-file mypst)
       (evil-leader/set-key
         "oy" 'pc/mpsyt-url-dwim)))
+
+  ;; stupid that I have to fix this defun
+  (defun kill-this-buffer ()	; for the menu bar
+    "Kill the current buffer.
+ When called in the minibuffer, get out of the minibuffer
+using `abort-recursive-edit'."
+    (interactive)
+    (cond
+     ;; Don't do anything when `menu-frame' is not alive or visible
+     ;; (Bug#8184).
+     ;; ((not (menu-bar-menu-frame-live-and-visible-p)))
+     ((menu-bar-non-minibuffer-window-p)
+      (kill-buffer (current-buffer)))
+     (t
+      (abort-recursive-edit))))
 
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
