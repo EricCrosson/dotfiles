@@ -59,10 +59,9 @@ print_exit_code() {
 ## @ingroup PushNotify
 pushover_send_notification() {
 
-    curl -s -k                                 \
-	--proxy https://proxy-us.intel.com:911 \
+    curl -s -k                           \
 	--form-string "user=${USER_KEY}"       \
-	--form-string "token=${INTEL_TOKEN}"   \
+	--form-string "token=${APP_TOKEN}"     \
 	--form-string "title=${1}"             \
 	--form-string "message=${2}"           \
 	${PUSHOVER_URL}
@@ -92,11 +91,11 @@ declare -rl PUSHOVER_URL="https://api.pushover.net/1/messages.json";
 ## @ingroup PushNotify
 declare -r USER_KEY="uCSwKMjQH1SyuigpzrH25z6Q3tkUwj";
 
-## @var String INTEL_TOKEN
+## @var String APP_TOKEN
 ## @brief Internal use only.
 ## @details esc's token corresponding to the Intel notifications.
 ## @ingroup PushNotify
-declare -r INTEL_TOKEN="aNEYQVEb9yQWdg9piYCCpx9uxoRmsF";
+declare -r APP_TOKEN="aNMqmC6KzK5wag3fd7tKYecwLEPrvU";
 
 ## @var String PWD
 ## @brief Internal use only.
