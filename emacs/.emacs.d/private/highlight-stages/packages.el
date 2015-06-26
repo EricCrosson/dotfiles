@@ -10,4 +10,5 @@
   "Initialize `highlight-stages'."
   (use-package highlight-stages
     :config
-    (highlight-stages-global-mode t)))
+    (highlight-stages-global-mode t)
+    (add-hook 'prog-mode-hook 'highlight-parentheses-mode)))
