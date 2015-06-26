@@ -51,6 +51,7 @@
      bury-successful-compilation
      sublimity
      unkillable-scratch
+     highlight-stages
      swiper
      focus
      misc-cmds
