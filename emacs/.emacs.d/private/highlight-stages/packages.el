@@ -11,4 +11,5 @@
   (use-package highlight-stages
     :config
     (highlight-stages-global-mode t)
+    (spacemacs|diminish highlight-parentheses-mode " ⓟ" " p")
     (add-hook 'prog-mode-hook 'highlight-parentheses-mode)))
