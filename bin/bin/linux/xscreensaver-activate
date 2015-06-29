@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [[ -z $(ps -e | grep xscreensaver) ]]; then
+   xscreensaver -no-splash &
+fi
+
+sudo killall gnome-screensaver
+xscreensaver-command -a
