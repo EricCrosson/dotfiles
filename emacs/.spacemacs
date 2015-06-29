@@ -30,6 +30,7 @@
      emoji
      games
      eyebrowse
+     pcre2el
      puppet
      gtags
      fasd
