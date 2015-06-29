@@ -14,6 +14,12 @@
    dotspacemacs-configuration-layers
    `(;; auto-completion
      better-defaults
+    (auto-completion :variables
+                      auto-completion-return-key-behavior 'complete
+                      auto-completion-tab-key-behavior 'cycle
+                      auto-completion-complete-with-key-sequence "jk"
+                      auto-completion-enable-help-tooltip t
+                      auto-completion-enable-sort-by-usage t)
      (git :variables
           git-gutter-use-fringe t
           git-magit-status-fullscreen t
@@ -53,7 +59,6 @@
      swiper
      focus
      misc-cmds
-     company
      chess
      writegood-mode
      bliss
@@ -241,6 +246,17 @@ using `abort-recursive-edit'."
       (kill-buffer (current-buffer)))
      (t
       (abort-recursive-edit))))
+
+  (global-company-mode)
+  (setq company-show-numbers t)
+  (defun turn-off-company-mode ()
+    (company-mode -1))
+  (mapc (lambda (mode-hook)
+          (add-hook mode-hook 'turn-off-company-mode))
+        '(shell-mode-hook
+          org-mode-hook
+          sh-mode-hook
+          gud-mode-hook))
 
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
