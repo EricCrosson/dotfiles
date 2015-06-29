@@ -258,6 +258,8 @@ using `abort-recursive-edit'."
           sh-mode-hook
           gud-mode-hook))
 
+  (add-to-list 'auto-mode-alist '("\\.offlineimap" . conf-mode))
+
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
     "to"    'org-toggle-inline-images
