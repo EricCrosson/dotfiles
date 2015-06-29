@@ -39,7 +39,6 @@
      markdown
      lua
      c-c++
-     ;; irc
      (colors :variables
              colors-enable-nyan-cat-progress-bar ,(display-graphic-p))
      ;; auctex
@@ -47,7 +46,6 @@
      restclient
      syntax-checking
      xkcd
-     ;; begin custom layers
      bury-successful-compilation
      sublimity
      unkillable-scratch
@@ -66,7 +64,6 @@
      tea-time
      dictionary
      fic-mode
-     ;; spray-mode
      weather-metno
      offlineimap
      dired
@@ -78,7 +75,7 @@
      pretty-lambdada
      browse-web)
 
-   dotspacemacs-excluded-packages '()
+   ;; dotspacemacs-excluded-packages '()
    dotspacemacs-delete-orphan-packages t))
 
 (defun dotspacemacs/init ()
@@ -88,7 +85,7 @@ initialization before layers configuration. This defun contains
 an exhaustive list of all spacemacs configuration options."
   (setq-default
    dotspacemacs-editing-style 'vim
-   dotspacemacs-verbose-loading nil
+   ;; dotspacemacs-verbose-loading t
    dotspacemacs-startup-banner 'doge
    dotspacemacs-always-show-changelog t
    dotspacemacs-startup-lists '(recents projects bookmarks)
@@ -114,19 +111,20 @@ an exhaustive list of all spacemacs configuration options."
    dotspacemacs-enable-paste-micro-state t
    dotspacemacs-guide-key-delay 0.4
    dotspacemacs-loading-progress-bar t
-   dotspacemacs-fullscreen-at-startup nil
-   dotspacemacs-fullscreen-use-non-native nil
-   dotspacemacs-maximized-at-startup nil
+   ;; dotspacemacs-fullscreen-at-startup t
+   ;; dotspacemacs-fullscreen-use-non-native t
+   ;; dotspacemacs-maximized-at-startup t
    dotspacemacs-active-transparency 90
    dotspacemacs-inactive-transparency 90
    dotspacemacs-mode-line-unicode-symbols t
    dotspacemacs-smooth-scrolling t
    ;; If non-nil smartparens-strict-mode will be enabled in programming modes.
-   dotspacemacs-smartparens-strict-mode nil
+   ;; dotspacemacs-smartparens-strict-mode nil
    ;; If non nil advises quit functions to keep server open when quitting.
-   dotspacemacs-persistent-server nil
+   ;; dotspacemacs-persistent-server t
    dotspacemacs-search-tools '("ag" "pt" "ack" "grep")
-   dotspacemacs-default-package-repository nil)
+   ;; dotspacemacs-default-package-repository t
+   )
 
   ;; User initialization goes here
   (setq user-full-name "Eric Crosson"
@@ -239,9 +237,6 @@ layers configuration."
 using `abort-recursive-edit'."
     (interactive)
     (cond
-     ;; Don't do anything when `menu-frame' is not alive or visible
-     ;; (Bug#8184).
-     ;; ((not (menu-bar-menu-frame-live-and-visible-p)))
      ((menu-bar-non-minibuffer-window-p)
       (kill-buffer (current-buffer)))
      (t
@@ -276,8 +271,9 @@ using `abort-recursive-edit'."
     "cm"    'recompile)
   (spacemacs/declare-prefix "hf" "help-find")
 
-  (add-to-list 'evil-emacs-state-modes 'git-commit-mode)
-  (add-to-list 'evil-emacs-state-modes 'shell-mode)
+  (mapc (lambda (mode) (add-to-list 'evil-emacs-state-modes mode))
+        '(git-commit-mode
+          shell-mode))
 
   (setq Don t    ;allows `eval-buffer' on *scratch*
         Panic t  ;with `initial-scratch-message'
