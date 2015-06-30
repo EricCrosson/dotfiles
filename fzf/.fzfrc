@@ -60,7 +60,7 @@ fkill() {
 # fbr - checkout git branch (including remote branches)
 fbr() {
   local branches branch
-  branches=$(git branch --all | grep -v HEAD) &&
+  branches=$(git branch | grep -v HEAD) &&
   branch=$(echo "$branches" |
            fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
   git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
@@ -72,7 +72,7 @@ fco() {
   tags=$(
     git tag | awk '{print "\x1b[31;1mtag\x1b[m\t" $1}') || return
   branches=$(
-    git branch --all | grep -v HEAD             |
+    git branch | grep -v HEAD             |
     sed "s/.* //"    | sed "s#remotes/[^/]*/##" |
     sort -u          | awk '{print "\x1b[34;1mbranch\x1b[m\t" $1}') || return
   target=$(
