@@ -56,6 +56,6 @@ done
 
 ${debug} git checkout $target_branch || _error "checkout of $target_branch failed"
 ${debug} git cherry-pick $sha || _error "cherry-pick of $sha failed"
-[[ -n $push_target_branch ]] && ${debug} git push origin $target_branch || _error "push of $target_branch failed"
+[[ -n $push_target_branch ]] && (${debug} git push origin $target_branch || _error "push of $target_branch failed")
 ${debug} git checkout $current_branch || _error "checkout of $current_branch failed"
-[[ -n $push_current_branch ]] && ${debug} git push origin $current_branch || _error "push of $current_branch failed"
+[[ -n $push_current_branch ]] && (${debug} git push origin $current_branch || _error "push of $current_branch failed")
