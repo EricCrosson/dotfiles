@@ -50,7 +50,6 @@ fcs() {
         echo -n $(echo "$commit" | sed "s/ .*//")
 }
 
-
 while true; do
     # exit if a fzf command has given bad input
     [[ -z $sha || -z $target_branch ]] && _error "bad data from fzf"
