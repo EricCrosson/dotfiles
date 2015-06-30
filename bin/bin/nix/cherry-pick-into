@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+_error() {
+    echo "Error: $1"
+    exit ${2:-1}
+}
+
+current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+target_branch=master
+
+while true; do
+    case $1 in
+        p) # push the current branch as well as target branch
+            push_current_branch=1
+            shift ;;
+        *) break ;;
+    esac
+done
+
+sha=$1
+shift
+
+if [[ $# -ne 0 ]]; then
+    target_branch=$1
+    shift
+fi
+
+git checkout $target_branch
+git cherry-pick $sha
+git push origin $target_branch
+git checkout $current_branch
+[[ -n $push_current_branch ]] && push origin $current_branch
