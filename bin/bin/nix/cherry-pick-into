@@ -34,13 +34,21 @@ _finish() {
 }
 trap _finish EXIT
 
+fbranch() {
+    local branches branch
+    branches=$(git branch | grep -v HEAD) &&
+        branch=$(echo "$branches" |
+                        fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
+    echo -n $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+}
+
 while true; do
     # exit if a fzf command has given bad input
     [[ -z $sha || -z $target_branch ]] && _error "bad data from fzf"
     case $1 in
         h|help)   _help ;;
         s|sha)    sha=$(fcs) ;;
-        b|branch) target_branch=$(fbr) ;;
+        b|branch) target_branch=$(fbranch) ;;
         d|debug)  debug=echo ;;
         pp)       push_current_branch=1
                   push_target_branch=1 ;;
