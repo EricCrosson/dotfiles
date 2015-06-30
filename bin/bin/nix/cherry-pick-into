@@ -1,5 +1,4 @@
 #!/usr/bin/env zsh
-source $HOME/dotfiles/fzf/.fzfrc
 
 # verify we are inside a git repo
 [[ -z $(git rev-parse --is-inside-work-tree 2>/dev/null) ]] && _error "not inside a git repo" 2
@@ -41,6 +40,16 @@ fbranch() {
                         fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
     echo -n $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
 }
+
+# fcs - get git commit sha
+fcs() {
+    [[ -z $(git rev-parse --is-inside-work-tree 2>/dev/null) ]] && return
+    local commits commit
+    commits=$(git log --color=always --pretty=oneline --abbrev-commit --reverse) &&
+        commit=$(echo "$commits" | fzf --tac +s +m -e --ansi --reverse) &&
+        echo -n $(echo "$commit" | sed "s/ .*//")
+}
+
 
 while true; do
     # exit if a fzf command has given bad input
