@@ -4,54 +4,55 @@
 # - trap premature exit and end on $current_branch
 # - fail at any point in the git workflow if a non-standard exit occurs
 
+# verify we are inside a git repo
+[[ -z $(git rev-parse --is-inside-work-tree 2>/dev/null) ]] && _error "not inside a git repo" 2
+
+# display help and exit on no args
+[[ $# -ne 1 ]] && _help
+
+declare -r current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+target_branch=master
+sha=$(git log --pretty=oneline | head -n1 | awk '{print $1}')
+
 _error() {
     echo "Error: $1"
     exit ${2:-1}
 }
 
-# uncomment the below line for dbeug mode
-# debug=echo
-
-# verify we are inside a git repo
-[[ -z $(git rev-parse --is-inside-work-tree 2>/dev/null) ]] && _error "not inside a git repo" 2
-
-declare -r current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
-target_branch=master
-
-while true; do
-    case $1 in
-        h|help) # print help and exit
-            cat <<EOF
-$0: [h|d] [p|pp] sha <target-branch>
+_help() {
+    cat <<EOF
+$0: [h|d] [p|pp] <b> <s>
 
   h   | help
   d   | debug
 
-  p   | push target
-  pp  | push target and current
+  b   | branch             select target branch
+  s   | sha                select target sha
 
-  sha | sha to cherry-pick
+  p   |                    push target
+  pp  |                    push target and current
 EOF
-            exit ;;
-        d|debug) # debug mode enabled
-            debug=echo ;;
-        pp) # push the current branch as well as target branch
-            push_current_branch=1
-            push_target_branch=1 ;;
-        p) # push the target branch only
-            push_target_branch=1 ;;
-        *) break ;;
+    exit
+}
+
+_finish() {
+    git checkout $current_branch
+}
+trap _finish EXIT
+
+while true; do
+    case $1 in
+        h|help)   _help ;;
+        s|sha)    sha=$(fcs) ;;
+        b|branch) target_branch=$(fbr) ;;
+        d|debug)  debug=echo ;;
+        pp)       push_current_branch=1
+                  push_target_branch=1 ;;
+        p)        push_target_branch=1 ;;
+        *)        break ;;
     esac
     shift
 done
-
-sha=$1
-shift
-
-if [[ $# -ne 0 ]]; then
-    target_branch=$1
-    shift
-fi
 
 ${debug} git checkout $target_branch || _error "checkout of $target_branch failed"
 ${debug} git cherry-pick $sha || _error "cherry-pick of $sha failed"
