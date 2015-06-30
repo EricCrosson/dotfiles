@@ -33,6 +33,7 @@ _finish() {
 }
 trap _finish EXIT
 
+### fzf functions
 fbranch() {
     local branches branch
     branches=$(git branch | grep -v HEAD) &&
@@ -41,21 +42,21 @@ fbranch() {
     echo -n $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
 }
 
-# fcs - get git commit sha
-fcs() {
+fsha() {
     [[ -z $(git rev-parse --is-inside-work-tree 2>/dev/null) ]] && return
     local commits commit
     commits=$(git log --color=always --pretty=oneline --abbrev-commit --reverse) &&
         commit=$(echo "$commits" | fzf --tac +s +m -e --ansi --reverse) &&
         echo -n $(echo "$commit" | sed "s/ .*//")
 }
+### end fzf functions
 
 while true; do
     # exit if a fzf command has given bad input
     [[ -z $sha || -z $target_branch ]] && _error "bad data from fzf"
     case $1 in
         h|help)   _help ;;
-        s|sha)    sha=$(fcs) ;;
+        s|sha)    sha=$(fsha) ;;
         b|branch) target_branch=$(fbranch) ;;
         d|debug)  debug=echo ;;
         pp)       push_current_branch=1
