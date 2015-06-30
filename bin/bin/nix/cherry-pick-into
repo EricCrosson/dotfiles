@@ -57,14 +57,22 @@ ${debug} git cherry-pick $sha
 [[ $? -eq 0 ]] || _error "cherry-pick of $sha failed"
 
 if [[ -n $push_target_branch ]]; then
-    ${debug} git push origin $target_branch
-    [[ $? -eq 0 ]] || _error "push of $target_branch failed"
+    ${debug} git push --quiet origin $target_branch
+    if [[ $? -eq 0 ]]; then
+        echo "Branch $target_branch pushed successfully"
+    else
+        _error "push of $target_branch failed"
+    fi
 fi
 
 ${debug} git checkout $current_branch
 [[ $? -eq 0 ]] || _error "checkout of $current_branch failed"
 
 if [[ -n $push_current_branch ]]; then
-    ${debug} git push origin $current_branch
-    [[ $? -eq 0 ]] || _error "push of $current_branch failed"
+    ${debug} git push --quiet origin $current_branch
+    if [[ $? -eq 0 ]]; then
+        echo "Branch $current_branch pushed successfully"
+    else
+        _error "push of $current_branch failed"
+    fi
 fi
