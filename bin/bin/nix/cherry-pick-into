@@ -6,6 +6,7 @@
 declare -r current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
 target_branch=master
 sha=$(git log --pretty=oneline | head -n1 | awk '{print $1}')
+unset no_cherry_pick push_target_branch push_current_branch
 
 _error() {
     echo "Error: $1"
@@ -14,13 +15,14 @@ _error() {
 
 _help() {
     cat <<EOF
-$0: [h|d] [p|pp] <b> <s>
+$0: [h|d] [p|pp] <b> <s|n>
 
   h   | help
   d   | debug
 
   b   | branch             select target branch
   s   | sha                select target sha
+  n   | no-sha             don't cherry pick anything
 
   p   |                    push target
   pp  |                    push target and current
@@ -57,6 +59,7 @@ while true; do
     case $1 in
         h|help)   _help ;;
         s|sha)    sha=$(fsha) ;;
+        n|no-sha) no_cherry_pick=1 ;;
         b|branch) target_branch=$(fbranch) ;;
         d|debug)  debug=echo ;;
         pp)       push_current_branch=1
@@ -70,8 +73,10 @@ done
 ${debug} git checkout --quiet $target_branch
 [[ $? -eq 0 ]] || _error "checkout of $target_branch failed"
 
-${debug} git cherry-pick $sha
-[[ $? -eq 0 ]] || _error "cherry-pick of $sha failed"
+if [[ -z $no_cherry_pick ]]; then
+    ${debug} git cherry-pick $sha
+    [[ $? -eq 0 ]] || _error "cherry-pick of $sha failed"
+fi
 
 if [[ -n $push_target_branch ]]; then
     ${debug} git push --quiet origin $target_branch
