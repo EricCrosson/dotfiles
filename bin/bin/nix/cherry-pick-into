@@ -35,6 +35,10 @@ _finish() {
 }
 trap _finish EXIT
 
+_fcheck() {
+    [[ -z $(which fzf) ]] && _error "fzf not installed" 2
+}
+
 ### fzf functions
 fbranch() {
     local branches branch
@@ -58,9 +62,11 @@ while true; do
     [[ -z $sha || -z $target_branch ]] && _error "bad data from fzf"
     case $1 in
         h|help)   _help ;;
-        s|sha)    sha=$(fsha) ;;
+        s|sha)    _fcheck
+                  sha=$(fsha) ;;
         n|no-sha) no_cherry_pick=1 ;;
-        b|branch) target_branch=$(fbranch) ;;
+        b|branch) _fcheck
+                  target_branch=$(fbranch) ;;
         d|debug)  debug=echo ;;
         pp)       push_current_branch=1
                   push_target_branch=1 ;;
