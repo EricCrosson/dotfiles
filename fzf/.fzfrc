@@ -155,7 +155,7 @@ fzf-locate-widget() {
     local selected
     if selected=$(locate / | fzf -q "$LBUFFER"); then
         LBUFFER=$selected
-    fi  
+    fi
     zle redisplay
 }
 zle     -N    fzf-locate-widget
