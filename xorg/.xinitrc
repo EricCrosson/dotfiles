@@ -19,32 +19,12 @@ xset r rate 200 60
 
 [[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
 
-### Begin the applications that should begin with Xorg
-delay_to_stable_xorg=3
-
-# axe caps lock
-((sleep $delay_to_stable_xorg; /home/eric/bin/linux/xmap-ctrl-nocaps.sh)) &
-
 # TODO: put these somewhere, don't keep them here for reference
-# begin xscreensaver
-# ((sleep $delay_to_stable_xorg); xscreensaver -no-splash) &
-
-# prevent RSI
-# ((sleep $delay_to_stable_xorg); xwrits breaktime=3:00 typetime=57:00 +finger +breakclock) &
-
 # expose X session to VNC
 # ((sleep $delay_to_stable_xorg); x11vnc -display :0 -forever -passwd raptor -bg ) &
 
-# begin synergy server
-# ((sleep $delay_to_stable_xorg); synergys) &
-
-# begin synergy server
-# ((sleep $delay_to_stable_xorg); synergyc --daemon --restart oblongoblin.local) &
-
-xeyes &
-
 # exec dwm
+# exec i3
 exec gnome-session
-# exec gnome-session --session=xmonad
 # exec xmonad
 # exec awesome
