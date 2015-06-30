@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 
+# TODOs
+# - trap premature exit and end on $current_branch
+# - prevent fcs from opening in a non-git repo
+
 _error() {
     echo "Error: $1"
     exit ${2:-1}
 }
+
+# verify we are inside a git repo
+[[ -z $(git rev-parse --is-inside-work-tree 2>/dev/null) ]] && _error "not inside a git repo" 2
 
 current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
 target_branch=master
