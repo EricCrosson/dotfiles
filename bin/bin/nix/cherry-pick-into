@@ -21,6 +21,9 @@ target_branch=master
 
 while true; do
     case $1 in
+        d|debug) # debug mode enabled
+            debug=echo
+            shift ;;
         pp) # push the current branch as well as target branch
             push_current_branch=1
             push_target_branch=1;
