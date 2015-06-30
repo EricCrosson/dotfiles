@@ -2,7 +2,6 @@
 
 # TODOs
 # - trap premature exit and end on $current_branch
-# - prevent fcs from opening in a non-git repo
 # - fail at any point in the git workflow if a non-standard exit occurs
 
 _error() {
