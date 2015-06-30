@@ -6,7 +6,7 @@
 declare -r verbosity='--quiet'
 declare -r current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
 target_branch=master
-sha=$(git log --pretty=oneline | head -n1 | awk '{print $1}')
+sha=$(git log --pretty=oneline --abbrev-commit | head -n1 | awk '{print $1}')
 unset no_cherry_pick push_target_branch push_current_branch
 
 _error() {
