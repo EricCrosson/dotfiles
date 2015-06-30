@@ -82,8 +82,7 @@ ${debug} git checkout ${verbosity} $target_branch
 if [[ -z $no_cherry_pick ]]; then
     ${debug} git cherry-pick $sha
     # TODO: determine when a merge conflict has happened, and suspend the script
-    # into the background, ready to resume with `fg` (or something equally
-    # badass)
+    # into the background, ready to resume with `fg` (or something)
     [[ $? -eq 0 ]] || _error "cherry-pick of $sha failed"
 fi
 
