@@ -63,7 +63,8 @@ alias cpipp='cherry-pick-into pp $(fcs) '
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='emacs'
+    # fix your emacsclient
+  export EDITOR='vim'
 fi
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
