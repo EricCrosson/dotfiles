@@ -3,6 +3,7 @@
 # verify we are inside a git repo
 [[ -z $(git rev-parse --is-inside-work-tree 2>/dev/null) ]] && _error "not inside a git repo" 2
 
+declare -r verbosity='--quiet'
 declare -r current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
 target_branch=master
 sha=$(git log --pretty=oneline | head -n1 | awk '{print $1}')
@@ -75,7 +76,7 @@ while true; do
     shift
 done
 
-${debug} git checkout --quiet $target_branch
+${debug} git checkout ${verbosity} $target_branch
 [[ $? -eq 0 ]] || _error "checkout of $target_branch failed"
 
 if [[ -z $no_cherry_pick ]]; then
@@ -84,7 +85,7 @@ if [[ -z $no_cherry_pick ]]; then
 fi
 
 if [[ -n $push_target_branch ]]; then
-    ${debug} git push --quiet origin $target_branch
+    ${debug} git push ${verbosity} origin $target_branch
     if [[ $? -eq 0 ]]; then
         echo "Branch $target_branch pushed successfully"
     else
@@ -92,11 +93,11 @@ if [[ -n $push_target_branch ]]; then
     fi
 fi
 
-${debug} git checkout --quiet $current_branch
+${debug} git checkout ${verbosity} $current_branch
 [[ $? -eq 0 ]] || _error "checkout of $current_branch failed"
 
 if [[ -n $push_current_branch ]]; then
-    ${debug} git push --quiet origin $current_branch
+    ${debug} git push ${verbosity} origin $current_branch
     if [[ $? -eq 0 ]]; then
         echo "Branch $current_branch pushed successfully"
     else
