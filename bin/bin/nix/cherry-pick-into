@@ -50,7 +50,7 @@ while true; do
     shift
 done
 
-${debug} git checkout $target_branch
+${debug} git checkout --quiet $target_branch
 [[ $? -eq 0 ]] || _error "checkout of $target_branch failed"
 
 ${debug} git cherry-pick $sha
