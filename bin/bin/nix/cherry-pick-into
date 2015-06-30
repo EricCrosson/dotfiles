@@ -9,6 +9,9 @@ _error() {
     exit ${2:-1}
 }
 
+# uncomment the below line for dbeug mode
+# debug=echo
+
 # verify we are inside a git repo
 [[ -z $(git rev-parse --is-inside-work-tree 2>/dev/null) ]] && _error "not inside a git repo" 2
 
@@ -17,8 +20,12 @@ target_branch=master
 
 while true; do
     case $1 in
-        p) # push the current branch as well as target branch
+        pp) # push the current branch as well as target branch
             push_current_branch=1
+            push_target_branch=1;
+            shift ;;
+        p) # push the target branch only
+            push_target_branch=1;
             shift ;;
         *) break ;;
     esac
@@ -32,8 +39,8 @@ if [[ $# -ne 0 ]]; then
     shift
 fi
 
-git checkout $target_branch
-git cherry-pick $sha
-git push origin $target_branch
-git checkout $current_branch
-[[ -n $push_current_branch ]] && push origin $current_branch
+${debug} git checkout $target_branch
+${debug} git cherry-pick $sha
+[[ -n $push_target_branch ]] && ${debug} git push origin $target_branch
+${debug} git checkout $current_branch
+[[ -n $push_current_branch ]] && ${debug} git push origin $current_branch
