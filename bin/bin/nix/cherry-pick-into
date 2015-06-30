@@ -65,7 +65,7 @@ if [[ -n $push_target_branch ]]; then
     fi
 fi
 
-${debug} git checkout $current_branch
+${debug} git checkout --quiet $current_branch
 [[ $? -eq 0 ]] || _error "checkout of $current_branch failed"
 
 if [[ -n $push_current_branch ]]; then
