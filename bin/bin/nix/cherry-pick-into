@@ -34,17 +34,15 @@ $0: [h|d] [p|pp] sha <target-branch>
 EOF
             exit ;;
         d|debug) # debug mode enabled
-            debug=echo
-            shift ;;
+            debug=echo ;;
         pp) # push the current branch as well as target branch
             push_current_branch=1
-            push_target_branch=1
-            shift ;;
+            push_target_branch=1 ;;
         p) # push the target branch only
-            push_target_branch=1
-            shift ;;
+            push_target_branch=1 ;;
         *) break ;;
     esac
+    shift
 done
 
 sha=$1
