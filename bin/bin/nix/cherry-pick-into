@@ -16,20 +16,33 @@ _error() {
 # verify we are inside a git repo
 [[ -z $(git rev-parse --is-inside-work-tree 2>/dev/null) ]] && _error "not inside a git repo" 2
 
-current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+declare -r current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
 target_branch=master
 
 while true; do
     case $1 in
+        h|help) # print help and exit
+            cat <<EOF
+$0: [h|d] [p|pp] sha <target-branch>
+
+  h   | help
+  d   | debug
+
+  p   | push target
+  pp  | push target and current
+
+  sha | sha to cherry-pick
+EOF
+            exit ;;
         d|debug) # debug mode enabled
             debug=echo
             shift ;;
         pp) # push the current branch as well as target branch
             push_current_branch=1
-            push_target_branch=1;
+            push_target_branch=1
             shift ;;
         p) # push the target branch only
-            push_target_branch=1;
+            push_target_branch=1
             shift ;;
         *) break ;;
     esac
@@ -43,8 +56,8 @@ if [[ $# -ne 0 ]]; then
     shift
 fi
 
-${debug} git checkout $target_branch
-${debug} git cherry-pick $sha
-[[ -n $push_target_branch ]] && ${debug} git push origin $target_branch
-${debug} git checkout $current_branch
-[[ -n $push_current_branch ]] && ${debug} git push origin $current_branch
+${debug} git checkout $target_branch || _error "checkout of $target_branch failed"
+${debug} git cherry-pick $sha || _error "cherry-pick of $sha failed"
+[[ -n $push_target_branch ]] && ${debug} git push origin $target_branch || _error "push of $target_branch failed"
+${debug} git checkout $current_branch || _error "checkout of $current_branch failed"
+[[ -n $push_current_branch ]] && ${debug} git push origin $current_branch || _error "push of $current_branch failed"
