@@ -36,11 +36,42 @@ _finish() {
 }
 trap _finish EXIT
 
+### git control functions
+_checkout() {
+    ${debug} git checkout ${verbosity} $1
+    if [[ $? -ne 0 ]]; then
+        _error "checkout of $1 failed"
+    fi
+    chmod 644 ~/.ssh/config &>/dev/null
+}
+
+# TODO: bash variable indirection to determine $1 from $2
+_push() {
+    if [[ -n $1 ]]; then
+        ${debug} git push ${verbosity} origin $2
+        if [[ $? -eq 0 ]]; then
+            echo "Branch $2 pushed successfully"
+        else
+            _error "push of $2 failed"
+        fi
+    fi
+}
+
+_cherry_pick() {
+    if [[ -z $no_cherry_pick ]]; then
+        ${debug} git cherry-pick $1
+        # TODO: determine when a merge conflict has happened, and suspend the script
+        # into the background, ready to resume with `fg` (or something)
+        [[ $? -eq 0 ]] || _error "cherry-pick of $1 failed"
+    fi
+}
+### end git control functions
+
+### fzf functions
 _fcheck() {
     [[ -z $(which fzf) ]] && _error "fzf not installed" 2
 }
 
-### fzf functions
 fbranch() {
     local branches branch
     branches=$(git branch | grep -v HEAD) &&
@@ -76,33 +107,8 @@ while true; do
     shift
 done
 
-${debug} git checkout ${verbosity} $target_branch
-[[ $? -eq 0 ]] || _error "checkout of $target_branch failed"
-
-if [[ -z $no_cherry_pick ]]; then
-    ${debug} git cherry-pick $sha
-    # TODO: determine when a merge conflict has happened, and suspend the script
-    # into the background, ready to resume with `fg` (or something)
-    [[ $? -eq 0 ]] || _error "cherry-pick of $sha failed"
-fi
-
-if [[ -n $push_target_branch ]]; then
-    ${debug} git push ${verbosity} origin $target_branch
-    if [[ $? -eq 0 ]]; then
-        echo "Branch $target_branch pushed successfully"
-    else
-        _error "push of $target_branch failed"
-    fi
-fi
-
-${debug} git checkout ${verbosity} $current_branch
-[[ $? -eq 0 ]] || _error "checkout of $current_branch failed"
-
-if [[ -n $push_current_branch ]]; then
-    ${debug} git push ${verbosity} origin $current_branch
-    if [[ $? -eq 0 ]]; then
-        echo "Branch $current_branch pushed successfully"
-    else
-        _error "push of $current_branch failed"
-    fi
-fi
+_checkout $target_branch
+_cherry_pick $sha
+_push $push_target_branch $target_branch
+_checkout $current_branch
+_push $push_current_branch $current_branch
