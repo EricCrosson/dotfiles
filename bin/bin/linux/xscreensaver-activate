@@ -3,6 +3,7 @@
 # ensure the gnome-screensaver beast stayeth slayed
 hunt-gnome-screensaver &
 
-[[ -z $(ps -e | grep "^xscreensaver$") ]] && xscreensaver -no-splash &
+[[ -z $(ps -e | grep "\bxscreensaver\b") ]] && xscreensaver -no-splash &
 
+sleep 1
 xscreensaver-command -a
