@@ -8,7 +8,7 @@ declare -r verbosity='--quiet'
 declare -r current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
 target_branch=master
 sha=$(git log --pretty=oneline --abbrev-commit | head -n1 | awk '{print $1}')
-unset push_target_branch push_current_branch
+unset push_target_branch push_current_branch no_cherry_pick
 
 _error() {
     echo "Error: $1"
@@ -61,7 +61,7 @@ _push() {
 }
 
 _cherry_pick() {
-    if [[ -n $1 ]]; then
+    if [[ -z $no_cherry_pick ]]; then
         ${debug} git cherry-pick $1
         # TODO: determine when a merge conflict has happened, and suspend the script
         # into the background, ready to resume with `fg` (or something)
@@ -97,7 +97,7 @@ while true; do
         h|help)   _help ;;
         s|sha)    _fcheck
                   sha=$(fsha) ;;
-        n|no-sha) sha="" ;;
+        n|no-sha) no_cherry_pick=1 ;;
         b|branch) _fcheck
                   target_branch=$(fbranch) ;;
         d|debug)  debug=echo ;;
