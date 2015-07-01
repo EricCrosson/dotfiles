@@ -65,7 +65,10 @@ _cherry_pick() {
         ${debug} git cherry-pick $1
         # TODO: determine when a merge conflict has happened, and suspend the script
         # into the background, ready to resume with `fg` (or something)
-        [[ $? -eq 0 ]] || _error "cherry-pick of $1 failed"
+        if [[ $? -eq 0 ]]; then
+            local on_branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+            _error "cherry-pick of $1 in branch $on_branch failed"
+        fi
     fi
 }
 ### end git control functions
