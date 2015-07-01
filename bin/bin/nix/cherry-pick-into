@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # verify we are inside a git repo
-[[ -z $(git rev-parse --is-inside-work-tree 2>/dev/null) ]] && _error "not inside a git repo" 2
+[[ -z $(git rev-parse --is-inside-work-tree 2>/dev/null) ]] && _error "not inside a git repo" 4
 
 declare -r verbosity='--quiet'
 declare -r current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
