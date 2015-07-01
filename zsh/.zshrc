@@ -50,6 +50,7 @@ export PATH="$HOME/bin/nix:$HOME/bin/linux:$HOME/bin:/usr/lib64/qt-3.3/bin:/usr/
 source $ZSH/oh-my-zsh.sh
 source /usr/bin/virtualenvwrapper.sh
 eval "$(fasd --init auto)"
+unalias d
 
 alias gs='git status '
 alias yum='sudo yum '
@@ -75,3 +76,9 @@ if [ -f ~/.fzf.zsh ]; then
     source ~/dotfiles/fzf/.fzfrc
     alias f='fzf'
 fi
+
+export VERBOSE_CD=1
+# TODO: replace cd with this neophyte
+d() {
+    cd "$@" && ([[ -n $VERBOSE_CD && -n "$@" ]] && l)
+}
