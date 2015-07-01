@@ -110,6 +110,9 @@ while true; do
     shift
 done
 
+[[ "$target_branch" == "$current_branch" ]] && \
+    _error "target_branch and current_branch cannot match: currently $target_branch" 3
+
 _checkout $target_branch
 _cherry_pick $sha
 _push "target_branch"
