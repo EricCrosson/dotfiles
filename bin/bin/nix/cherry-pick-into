@@ -40,7 +40,7 @@ trap _finish EXIT
 ### git control functions
 _checkout() {
     ${debug} git checkout ${verbosity} $1
-    [[ $? -ne 0 ]] && _error "checkout of $1 failed"
+    [[ $? -eq 0 ]] || _error "checkout of $1 failed"
     chmod 644 ~/.ssh/config &>/dev/null
 }
 
