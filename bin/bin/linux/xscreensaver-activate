@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-[[ -z $(ps -e | grep xscreensaver) ]] && xscreensaver -no-splash &
-
 # ensure the gnome-screensaver beast stayeth slayed
 hunt-gnome-screensaver &
+
+[[ -z $(ps -e | grep "^xscreensaver$") ]] && xscreensaver -no-splash &
 
 xscreensaver-command -a
