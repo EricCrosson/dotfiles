@@ -76,6 +76,7 @@ _fcheck() {
 }
 
 fbranch() {
+    _fcheck
     local branches branch
     branches=$(git branch | grep -v HEAD) &&
         branch=$(echo "$branches" |
@@ -84,6 +85,7 @@ fbranch() {
 }
 
 fsha() {
+    _fcheck
     local commits commit
     commits=$(git log --color=always --pretty=oneline --abbrev-commit --reverse) &&
         commit=$(echo "$commits" | fzf --tac +s +m -e --ansi --reverse) &&
@@ -95,11 +97,9 @@ while true; do
     [[ -z $sha || -z $target_branch ]] && _error "bad selection from fzf"
     case $1 in
         h|help)   _help ;;
-        s|sha)    _fcheck
-                  sha=$(fsha) ;;
+        s|sha)    sha=$(fsha) ;;
         n|no-sha) no_cherry_pick=1 ;;
-        b|branch) _fcheck
-                  target_branch=$(fbranch) ;;
+        b|branch) target_branch=$(fbranch) ;;
         d|debug)  debug=echo ;;
         q|quiet)  exec > /dev/null ;;
         pp)       push_current_branch=1
