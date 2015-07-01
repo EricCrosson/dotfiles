@@ -45,7 +45,7 @@ _checkout() {
     chmod 644 ~/.ssh/config &>/dev/null
 }
 
-# TODO: bash variable indirection to determine $1 from $2
+# TODO: bash variable indirection to determine $2 from $1
 _push() {
     if [[ -n $2 ]]; then
         ${debug} git push ${verbosity} origin $1
