@@ -77,6 +77,5 @@ if tty -s; then
 else
     # non-interactive shell
     xmon_screen_invocation "urxvt -e"
-    # TODO: abstract esc's favorite terminal emulator, as some
-    # environments esc uses currently don't have xterm installed
+    # TODO: abstract esc's favorite terminal emulator
 fi
