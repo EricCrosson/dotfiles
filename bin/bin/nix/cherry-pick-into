@@ -47,8 +47,6 @@ _checkout() {
 
 # TODO: bash variable indirection to determine $1 from $2
 _push() {
-    echo "$@"
-    return
     if [[ -n $2 ]]; then
         ${debug} git push ${verbosity} origin $1
         if [[ $? -eq 0 ]]; then
@@ -110,7 +108,7 @@ while true; do
 done
 
 _checkout $target_branch
-# _cherry_pick $sha
+_cherry_pick $sha
 _push $target_branch $push_target_branch
 _checkout $current_branch
 _push $current_branch $push_current_branch
