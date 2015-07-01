@@ -19,7 +19,7 @@ _help() {
 $0: [h|d] [p|pp] <b> <s|n>
 
   h   | help               print this message
-  d   | debug              be verbose about actions taken
+  d   | debug              echo git actions instead
 
   b   | branch             select target branch
   s   | sha                select target sha
