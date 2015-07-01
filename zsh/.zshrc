@@ -52,10 +52,6 @@ source /usr/bin/virtualenvwrapper.sh
 eval "$(fasd --init auto)"
 unalias d
 
-alias gs='git status '
-alias yum='sudo yum '
-alias cpi=cherry-pick-into
-
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
@@ -82,3 +78,7 @@ export VERBOSE_CD=1
 d() {
     cd "$@" && ([[ -n $VERBOSE_CD && -n "$@" ]] && l)
 }
+
+alias gs='git status '
+alias yum='sudo yum '
+alias cpi=cherry-pick-into
