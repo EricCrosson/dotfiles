@@ -45,14 +45,17 @@ _checkout() {
     chmod 644 ~/.ssh/config &>/dev/null
 }
 
-# TODO: bash variable indirection to determine $2 from $1
 _push() {
-    if [[ -n $2 ]]; then
-        ${debug} git push ${verbosity} origin $1
+    local target tmp push_target
+    target=${!1}
+    tmp=push_$1
+    push_target=${!tmp}
+    if [[ -n $push_target ]]; then
+        ${debug} git push ${verbosity} origin $target
         if [[ $? -eq 0 ]]; then
-            echo "Branch $1 pushed successfully"
+            echo "Branch $target pushed successfully"
         else
-            _error "push of $1 failed"
+            _error "push of $target failed"
         fi
     fi
 }
@@ -109,6 +112,6 @@ done
 
 _checkout $target_branch
 _cherry_pick $sha
-_push $target_branch $push_target_branch
+_push "target_branch"
 _checkout $current_branch
-_push $current_branch $push_current_branch
+_push "current_branch"
