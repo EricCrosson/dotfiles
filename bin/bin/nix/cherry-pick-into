@@ -102,7 +102,7 @@ while true; do
         b|branch) _fcheck
                   target_branch=$(fbranch) ;;
         d|debug)  debug=echo ;;
-        q|quiet)  exec > /dev/null ;; 
+        q|quiet)  exec > /dev/null ;;
         pp)       push_current_branch=1
                   push_target_branch=1 ;;
         p)        push_target_branch=1 ;;
