@@ -90,7 +90,7 @@ fsha() {
 
 while true; do
     # exit if a fzf command has given bad input
-    [[ -z $sha || -z $target_branch ]] && _error "bad data from fzf"
+    [[ -z $sha || -z $target_branch ]] && _error "bad selection from fzf"
     case $1 in
         h|help)   _help ;;
         s|sha)    _fcheck
