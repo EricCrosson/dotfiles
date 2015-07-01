@@ -92,7 +92,6 @@ fsha() {
 ### end fzf functions
 
 while true; do
-    # exit if a fzf command has given bad input
     [[ -z $sha || -z $target_branch ]] && _error "bad selection from fzf"
     case $1 in
         h|help)   _help ;;
