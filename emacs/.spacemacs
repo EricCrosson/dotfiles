@@ -10,7 +10,7 @@
   "Configuration Layers declaration."
   (setq-default
    ;; Paths must have a trailing slash (ie. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '("~/dotfiles/emacs/.emacs.d/private/")
+   dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
    `(;; auto-completion
      better-defaults
@@ -24,6 +24,8 @@
           git-gutter-use-fringe t
           git-magit-status-fullscreen t
           git-use-magit-next t)
+     github
+     version-control
      markdown
      org
      shell
@@ -48,7 +50,7 @@
      c-c++
      (colors :variables
              colors-enable-nyan-cat-progress-bar ,(display-graphic-p))
-     ;; auctex
+     latex
      floobits
      restclient
      syntax-checking
@@ -94,6 +96,7 @@ an exhaustive list of all spacemacs configuration options."
    ;; dotspacemacs-verbose-loading t
    dotspacemacs-startup-banner 'doge
    dotspacemacs-always-show-changelog t
+   dotspacemacs-auto-save-file-location 'cache
    dotspacemacs-startup-lists '(recents projects bookmarks)
    dotspacemacs-themes '(bliss
                          solarized-light
@@ -291,8 +294,7 @@ using `abort-recursive-edit'."
   (spacemacs/declare-prefix "hf" "help-find")
 
   (mapc (lambda (mode) (add-to-list 'evil-emacs-state-modes mode))
-        '(git-commit-mode
-          shell-mode))
+        '(shell-mode))
 
   (setq Don t    ;allows `eval-buffer' on *scratch*
         Panic t  ;with `initial-scratch-message'
