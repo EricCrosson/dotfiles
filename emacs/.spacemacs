@@ -294,7 +294,8 @@ using `abort-recursive-edit'."
   (spacemacs/declare-prefix "hf" "help-find")
 
   (mapc (lambda (mode) (add-to-list 'evil-emacs-state-modes mode))
-        '(shell-mode))
+        '(shell-mode
+          text-mode))
 
   (setq Don t    ;allows `eval-buffer' on *scratch*
         Panic t  ;with `initial-scratch-message'
