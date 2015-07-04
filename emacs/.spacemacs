@@ -263,6 +263,7 @@ using `abort-recursive-edit'."
           gud-mode-hook))
 
   (add-to-list 'auto-mode-alist '("\\.offlineimap" . conf-mode))
+  (diminish 'helm-gtags-mode)
 
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
