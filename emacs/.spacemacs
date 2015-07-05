@@ -10,7 +10,7 @@
   "Configuration Layers declaration."
   (setq-default
    ;; Paths must have a trailing slash (ie. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '()
+   ;; dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
    `(;; auto-completion
      better-defaults
