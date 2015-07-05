@@ -184,7 +184,7 @@ an exhaustive list of all spacemacs configuration options."
   (set-buffer-file-coding-system 'unix)
 
   ;; Backup settings
-  (push '("." . "~/.config/.emacs.d/") backup-directory-alist)
+  (push '("~/.config/.emacs.d/") backup-directory-alist)
 
   ;; Make windmove work in org-mode:
   (add-hook 'org-shiftup-final-hook 'windmove-up)
