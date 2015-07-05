@@ -293,7 +293,6 @@ using `abort-recursive-edit'."
     "bB"    'bury-buffer
     "cm"    'recompile
 
-    ;; eyebrowse
     "1" 'eyebrowse-switch-to-window-config-1
     "2" 'eyebrowse-switch-to-window-config-2
     "3" 'eyebrowse-switch-to-window-config-3
