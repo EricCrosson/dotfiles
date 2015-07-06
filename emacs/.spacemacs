@@ -280,8 +280,7 @@ using `abort-recursive-edit'."
 
     "od"  (defun xset-dim () (interactive) (shell-command "xset dpms force off"))
 
-    ;; todo: finish incorporating help-extras and properly get the group name to
-    ;; appear in guide key
+    ;; todo: finish incorporating help-extras
     "hff" 'find-function
     "hfv" 'find-variable
     "hfk" 'find-function-on-key
