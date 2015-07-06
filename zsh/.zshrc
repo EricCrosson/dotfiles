@@ -82,3 +82,6 @@ d() {
 alias gs='git status '
 alias yum='sudo yum '
 alias cpi=cherry-pick-into
+
+# avoid submitting these commands into the shell's history
+alias nautilus=' nautilus'
