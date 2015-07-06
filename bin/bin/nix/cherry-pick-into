@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Written 2015-06-29
 
+# TODO: consider error-handling with git cherry-pick --abort
+
 [[ -z $(git rev-parse --is-inside-work-tree 2>/dev/null) ]] && \
     _error "not inside a git repo" 4
 
