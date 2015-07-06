@@ -254,6 +254,7 @@ using `abort-recursive-edit'."
   (global-company-mode)
   (setq company-show-numbers t)
   (defun turn-off-company-mode ()
+    (interactive)
     (company-mode -1))
   (mapc (lambda (mode-hook)
           (add-hook mode-hook 'turn-off-company-mode))
