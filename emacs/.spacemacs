@@ -10,7 +10,7 @@
   "Configuration Layers declaration."
   (setq-default
    ;; Paths must have a trailing slash (ie. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '()
+   ;; dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
    `(;; auto-completion
      better-defaults
@@ -184,7 +184,7 @@ an exhaustive list of all spacemacs configuration options."
   (set-buffer-file-coding-system 'unix)
 
   ;; Backup settings
-  (push '("." . "~/.config/.emacs.d/") backup-directory-alist)
+  (push '("~/.config/.emacs.d/") backup-directory-alist)
 
   ;; Make windmove work in org-mode:
   (add-hook 'org-shiftup-final-hook 'windmove-up)
@@ -291,11 +291,23 @@ using `abort-recursive-edit'."
     "xs" 'save-buffer
 
     "bB"    'bury-buffer
-    "cm"    'recompile)
+    "cm"    'recompile
+
+    "1" 'eyebrowse-switch-to-window-config-1
+    "2" 'eyebrowse-switch-to-window-config-2
+    "3" 'eyebrowse-switch-to-window-config-3
+    "4" 'eyebrowse-switch-to-window-config-4
+    "5" 'eyebrowse-switch-to-window-config-5
+    "6" 'eyebrowse-switch-to-window-config-6
+    "7" 'eyebrowse-switch-to-window-config-7
+    "8" 'eyebrowse-switch-to-window-config-8
+    "9" 'eyebrowse-switch-to-window-config-9
+    "0" 'eyebrowse-switch-to-window-config-0)
   (spacemacs/declare-prefix "hf" "help-find")
 
   (mapc (lambda (mode) (add-to-list 'evil-emacs-state-modes mode))
-        '(shell-mode))
+        '(shell-mode
+          text-mode))
 
   (setq Don t    ;allows `eval-buffer' on *scratch*
         Panic t  ;with `initial-scratch-message'
