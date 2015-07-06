@@ -252,16 +252,17 @@ using `abort-recursive-edit'."
       (abort-recursive-edit))))
 
   (global-company-mode)
-  (setq company-show-numbers t)
-  (defun turn-off-company-mode ()
-    (interactive)
-    (company-mode -1))
-  (mapc (lambda (mode-hook)
-          (add-hook mode-hook 'turn-off-company-mode))
-        '(shell-mode-hook
-          org-mode-hook
-          sh-mode-hook
-          gud-mode-hook))
+  (after 'company
+    (setq company-show-numbers t)
+    (defun turn-off-company-mode ()
+      (interactive)
+      (company-mode -1))
+    (mapc (lambda (mode-hook)
+            (add-hook mode-hook 'turn-off-company-mode))
+          '(shell-mode-hook
+            org-mode-hook
+            sh-mode-hook
+            gud-mode-hook)))
 
   (add-to-list 'auto-mode-alist '("\\.offlineimap" . conf-mode))
   (after 'helm-gtags-mode (diminish 'helm-gtags-mode))
