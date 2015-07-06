@@ -268,15 +268,14 @@ using `abort-recursive-edit'."
 
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
-    "to"    'org-toggle-inline-images
-    "y"     'helm-M-x
-    "bi"    'ibuffer
-    "js"    'just-one-space
+    "to" 'org-toggle-inline-images
+    "y"  'helm-M-x
+    "bi" 'ibuffer
+    "js" 'just-one-space
+    "med" 'edebug-defun
 
     "bf" 'follow-mode
     "bF" 'follow-delete-other-windows-and-split
-
-    "med" 'edebug-defun
 
     "od"  (defun xset-dim () (interactive) (shell-command "xset dpms force off"))
 
