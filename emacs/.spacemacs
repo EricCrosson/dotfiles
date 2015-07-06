@@ -290,8 +290,8 @@ using `abort-recursive-edit'."
     "rb" 'revert-buffer
     "xs" 'save-buffer
 
-    "bB"    'bury-buffer
-    "cm"    'recompile
+    "bB" 'bury-buffer
+    "cm" 'recompile
 
     "1" 'eyebrowse-switch-to-window-config-1
     "2" 'eyebrowse-switch-to-window-config-2
