@@ -283,7 +283,7 @@ using `abort-recursive-edit'."
     ;; appear in guide key
     "hff" 'find-function
     "hfv" 'find-variable
-    ;; "hfk"
+    "hfk" 'find-function-on-key
     "hfl" 'find-library
 
     "rn" 'revert-buffer-no-confirm
