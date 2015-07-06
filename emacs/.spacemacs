@@ -222,7 +222,6 @@ layers configuration."
   (rainbow-mode t)
   (nyan-mode t)
 
-  ;; this has not been working
   (setq helm-echo-input-in-header-line t)
   (defun helm-hide-minibuffer-maybe ()
     (when (with-helm-buffer helm-echo-input-in-header-line)
