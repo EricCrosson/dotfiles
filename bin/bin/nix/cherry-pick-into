@@ -14,7 +14,7 @@ unset push_target_branch push_current_branch no_cherry_pick
 
 # Error code determined dynamically, based on stack trace
 _error() {
-    err=0
+    local err=0
     for i in ${BASH_LINENO[@]}; do
         let err+=$i
     done
