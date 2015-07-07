@@ -131,9 +131,8 @@ an exhaustive list of all spacemacs configuration options."
    ;; dotspacemacs-smartparens-strict-mode nil
    ;; If non nil advises quit functions to keep server open when quitting.
    ;; dotspacemacs-persistent-server t
-   dotspacemacs-search-tools '("ag" "pt" "ack" "grep")
    ;; dotspacemacs-default-package-repository t
-   )
+   dotspacemacs-search-tools '("ag" "pt" "ack" "grep"))
 
   ;; User initialization goes here
   (setq user-full-name "Eric Crosson"
