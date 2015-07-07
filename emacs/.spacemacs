@@ -14,7 +14,7 @@
    dotspacemacs-configuration-layers
    `(;; auto-completion
      better-defaults
-    (auto-completion :variables
+     (auto-completion :variables
                       auto-completion-return-key-behavior 'complete
                       auto-completion-tab-key-behavior 'cycle
                       auto-completion-complete-with-key-sequence "jk"
@@ -25,6 +25,7 @@
           git-magit-status-fullscreen t
           git-use-magit-next t)
      github
+     diff-hl
      version-control
      markdown
      org
