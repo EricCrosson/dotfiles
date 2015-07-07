@@ -12,8 +12,7 @@
    ;; Paths must have a trailing slash (ie. `~/.mycontribs/')
    ;; dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
-   `(;; auto-completion
-     better-defaults
+   `(better-defaults
      (auto-completion :variables
                       auto-completion-return-key-behavior 'complete
                       auto-completion-tab-key-behavior 'cycle
