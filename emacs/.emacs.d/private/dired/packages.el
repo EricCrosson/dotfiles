@@ -18,6 +18,8 @@
                                          ("\\.avi$" "cvlc" "mplayer")
                                          ("\\.mkv$" "cvlc" "mplayer")
                                          ("\\.pdf$" "evince" "zathura")
+                                         ("\\.tar.bz2" "tar jxvf")
+                                         ("\\.tar.gz" "tar xzvf")
                                          ("\\.*$" "xdg-open")))
     (add-to-list 'dired-compress-file-suffixes '("\\.zip$" "unzip")))
   (setq dired-listing-switches "-alhv")
