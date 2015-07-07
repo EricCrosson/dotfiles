@@ -221,6 +221,8 @@ layers configuration."
   (rainbow-mode t)
   (nyan-mode t)
 
+  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+
   (setq helm-echo-input-in-header-line t)
   (defun helm-hide-minibuffer-maybe ()
     (when (with-helm-buffer helm-echo-input-in-header-line)
