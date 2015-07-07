@@ -242,7 +242,7 @@ layers configuration."
   ;; stupid that I have to fix this defun
   (defun kill-this-buffer ()	; for the menu bar
     "Kill the current buffer.
- When called in the minibuffer, get out of the minibuffer
+When called in the minibuffer, get out of the minibuffer
 using `abort-recursive-edit'."
     (interactive)
     (cond
