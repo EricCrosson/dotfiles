@@ -57,6 +57,7 @@
      xkcd
      bury-successful-compilation
      sublimity
+     key-chord
      unkillable-scratch
      highlight-stages
      swiper
@@ -316,7 +317,6 @@ using `abort-recursive-edit'."
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
     "to" 'org-toggle-inline-images
-    "y"  'helm-M-x
     "bi" 'ibuffer
     "js" 'just-one-space
     "med" 'edebug-defun
