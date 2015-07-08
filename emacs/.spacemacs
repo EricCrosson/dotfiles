@@ -57,7 +57,7 @@
      xkcd
      bury-successful-compilation
      sublimity
-     key-chord
+     ;; key-chord
      unkillable-scratch
      highlight-stages
      swiper
