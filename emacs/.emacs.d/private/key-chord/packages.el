@@ -12,4 +12,4 @@
     :config
     (key-chord-mode 1)
     ;; TODO; remove this mapping inside of helm
-    (key-chord-define-global "jk" 'helm-M-x)))
+    (key-chord-define-global "jo" 'helm-M-x)))
