@@ -251,6 +251,36 @@ using `abort-recursive-edit'."
      (t
       (abort-recursive-edit))))
 
+  (after 'ibuffer
+    (setq ibuffer-saved-filter-groups
+          (list (cons "Default"
+                      (append
+                       (mapcar (lambda (it)
+                                 (let ((name (file-name-nondirectory
+                                              (directory-file-name it))))
+                                   `(,name (filename . ,(expand-file-name it)))))
+                               projectile-known-projects)
+                       `(("Org" (mode . org-mode))
+                         ("Dired" (mode . dired-mode))
+                         ("IRC" (mode . erc-mode))
+                         ("Emacs"
+                          (or (name . "\\*Messages\\*")
+                              (name . "\\*Compile-Log\\*")
+                              (name . "\\*scratch\\*")
+                              (name . "\\*spacemacs\\*")
+                              (name . "\\*emacs\\*")))
+                         ("Terminal" (or (name . "\\*ansi-term\\*")
+                                         (name . "\\*eshell\\*")))
+                         ("Magit" (name . "\\*magit"))
+                         ("Help" (name . "\\*Help\\*"))
+                         ("Helm" (name . "\\*helm"))
+                         )))))
+    (add-hook 'ibuffer-mode-hook 'ibuffer-auto-mode)
+    (add-hook 'ibuffer-mode-hook
+              (defun ibuffer-switch-to-default-filter-group ()
+                (interactive)
+                (ibuffer-switch-to-saved-filter-groups "Default"))))
+
   (global-company-mode)
   (after 'company
     (setq company-show-numbers t)
