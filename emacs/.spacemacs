@@ -251,6 +251,12 @@ using `abort-recursive-edit'."
      (t
       (abort-recursive-edit))))
 
+  (add-hook 'focus-out-hook
+            (defun save-all-buffers ()
+              (interactive)
+              ;; OPTIONAL: consider dropping to normal mode
+              (save-some-buffers t)))
+
   (after 'ibuffer
     (setq ibuffer-saved-filter-groups
           (list (cons "Default"
