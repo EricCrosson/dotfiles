@@ -8,7 +8,9 @@
 
 (defun org-extras/init-org-cliplink ()
   "Initialize `org-cliplink'."
-  (use-package org-cliplink))
+  (use-package org-cliplink
+    :config
+    (evil-leader/set-key "oc" 'org-cliplink)))
 
 ;; fixme -- dysfunctional
 (defun org-extras/init-org-download ()
