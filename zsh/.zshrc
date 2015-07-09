@@ -41,7 +41,7 @@ HIST_STAMPS="yyyy-mm-dd"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git battery)
+plugins=(git battery nyan)
 
 # User configuration
 export PATH="$HOME/bin/nix:$HOME/bin/linux:$HOME/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/ibm/c4eb/bin:/usr/kerberos/bin"
