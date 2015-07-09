@@ -133,9 +133,19 @@ an exhaustive list of all spacemacs configuration options."
    ;; If non nil advises quit functions to keep server open when quitting.
    ;; dotspacemacs-persistent-server t
    ;; dotspacemacs-default-package-repository t
-   dotspacemacs-search-tools '("ag" "pt" "ack" "grep"))
+   dotspacemacs-search-tools '("ag" "pt" "ack" "grep")))
 
-  ;; User initialization goes here
+(defun dotspacemacs/config ()
+  "Configuration function.
+This function is called at the very end of Spacemacs initialization after
+layers configuration."
+
+  (global-hl-line-mode nil)
+  (rainbow-mode t)
+  (nyan-mode t)
+
+  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+
   (setq user-full-name "Eric Crosson"
         user-mail-address "esc@ericcrosson.com")
 
@@ -168,8 +178,8 @@ an exhaustive list of all spacemacs configuration options."
                                      kill-buffer-query-functions)
    search-whitespace-regexp "[ \t\r\n]+"
    minibuffer-prompt-properties '(read-only t
-                                  point-entered minibuffer-avoid-prompt
-                                  face minibuffer-prompt)
+                                            point-entered minibuffer-avoid-prompt
+                                            face minibuffer-prompt)
    c-default-style "linux"
    c-basic-offset 4
    tab-width 4
@@ -211,18 +221,7 @@ an exhaustive list of all spacemacs configuration options."
         compilation-save-buffers-predicate '(lambda () nil)
         byte-compile-warnings '(not interactive-only free-vars))
 
-  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p))
-
-(defun dotspacemacs/config ()
-  "Configuration function.
-This function is called at the very end of Spacemacs initialization after
-layers configuration."
-
-  (global-hl-line-mode nil)
-  (rainbow-mode t)
-  (nyan-mode t)
-
-  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
   (setq helm-echo-input-in-header-line t)
   (defun helm-hide-minibuffer-maybe ()
