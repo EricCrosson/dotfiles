@@ -186,7 +186,6 @@ layers configuration."
    require-final-newline 'visit-save
    comment-style 'indent
    x-select-enable-clipboard t       ;global clipboard
-   mouse-yank-at-point t             ;I will not touch vermin
    doc-view-continuous t
    ff-search-directories '("." "../inc" "../src"))
 
@@ -212,6 +211,8 @@ layers configuration."
   (when (boundp 'desktop-path) (mkdir (car desktop-path) t))
   (desktop-save-mode 1)
 
+  ;; I will not touch vermin
+  (setq mouse-yank-at-point t)
   (mouse-avoidance-mode 'exile)
 
   ;; compilation preferences
