@@ -152,6 +152,7 @@ layers configuration."
   (put 'overwrite-mode 'disabled t)       ;There shall be no 'insert'
   (fset 'yes-or-no-p 'y-or-n-p)           ;change yes-no to y-n
   (setq-default size-indication-mode t
+                auto-save-default nil
                 indent-tabs-mode nil)
   (setq
    kill-whole-line t
@@ -168,7 +169,6 @@ layers configuration."
    dabbrev-case-replace nil
    display-buffer-reuse-frames t
    remote-file-name-inhibit-cache t
-   auto-save-default nil
    large-file-warning-threshold nil
    save-interprogram-paste-before-kill t
    set-mark-command-repeat-pop t
