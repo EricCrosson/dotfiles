@@ -35,7 +35,6 @@
      pcre2el
      puppet
      gtags
-     fasd
      pandoc
      ansible
      dockerfile
@@ -52,6 +51,7 @@
              colors-enable-nyan-cat-progress-bar ,(display-graphic-p))
      latex
      floobits
+     arduino
      restclient
      syntax-checking
      xkcd
@@ -133,15 +133,26 @@ an exhaustive list of all spacemacs configuration options."
    ;; If non nil advises quit functions to keep server open when quitting.
    ;; dotspacemacs-persistent-server t
    ;; dotspacemacs-default-package-repository t
-   dotspacemacs-search-tools '("ag" "pt" "ack" "grep"))
+   dotspacemacs-search-tools '("ag" "pt" "ack" "grep")))
 
-  ;; User initialization goes here
+(defun dotspacemacs/config ()
+  "Configuration function.
+This function is called at the very end of Spacemacs initialization after
+layers configuration."
+
+  (global-hl-line-mode nil)
+  (rainbow-mode t)
+  (nyan-mode t)
+
+  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+
   (setq user-full-name "Eric Crosson"
         user-mail-address "esc@ericcrosson.com")
 
   (put 'overwrite-mode 'disabled t)       ;There shall be no 'insert'
   (fset 'yes-or-no-p 'y-or-n-p)           ;change yes-no to y-n
   (setq-default size-indication-mode t
+                auto-save-default nil
                 indent-tabs-mode nil)
   (setq
    kill-whole-line t
@@ -158,7 +169,6 @@ an exhaustive list of all spacemacs configuration options."
    dabbrev-case-replace nil
    display-buffer-reuse-frames t
    remote-file-name-inhibit-cache t
-   auto-save-default nil
    large-file-warning-threshold nil
    save-interprogram-paste-before-kill t
    set-mark-command-repeat-pop t
@@ -168,15 +178,14 @@ an exhaustive list of all spacemacs configuration options."
                                      kill-buffer-query-functions)
    search-whitespace-regexp "[ \t\r\n]+"
    minibuffer-prompt-properties '(read-only t
-                                  point-entered minibuffer-avoid-prompt
-                                  face minibuffer-prompt)
+                                            point-entered minibuffer-avoid-prompt
+                                            face minibuffer-prompt)
    c-default-style "linux"
    c-basic-offset 4
    tab-width 4
    require-final-newline 'visit-save
    comment-style 'indent
    x-select-enable-clipboard t       ;global clipboard
-   mouse-yank-at-point t             ;I will not touch vermin
    doc-view-continuous t
    ff-search-directories '("." "../inc" "../src"))
 
@@ -202,6 +211,8 @@ an exhaustive list of all spacemacs configuration options."
   (when (boundp 'desktop-path) (mkdir (car desktop-path) t))
   (desktop-save-mode 1)
 
+  ;; I will not touch vermin
+  (setq mouse-yank-at-point t)
   (mouse-avoidance-mode 'exile)
 
   ;; compilation preferences
@@ -211,18 +222,7 @@ an exhaustive list of all spacemacs configuration options."
         compilation-save-buffers-predicate '(lambda () nil)
         byte-compile-warnings '(not interactive-only free-vars))
 
-  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p))
-
-(defun dotspacemacs/config ()
-  "Configuration function.
-This function is called at the very end of Spacemacs initialization after
-layers configuration."
-
-  (global-hl-line-mode nil)
-  (rainbow-mode t)
-  (nyan-mode t)
-
-  (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
   (setq helm-echo-input-in-header-line t)
   (defun helm-hide-minibuffer-maybe ()
