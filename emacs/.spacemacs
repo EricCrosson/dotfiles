@@ -35,7 +35,6 @@
      pcre2el
      puppet
      gtags
-     fasd
      pandoc
      ansible
      dockerfile
