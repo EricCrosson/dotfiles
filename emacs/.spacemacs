@@ -51,6 +51,7 @@
              colors-enable-nyan-cat-progress-bar ,(display-graphic-p))
      latex
      floobits
+     arduino
      restclient
      syntax-checking
      xkcd
