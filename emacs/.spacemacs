@@ -258,35 +258,36 @@ using `abort-recursive-edit'."
               ;; OPTIONAL: consider dropping to normal mode
               (save-some-buffers t)))
 
-  (after 'ibuffer
-    (setq ibuffer-saved-filter-groups
-          (list (cons "Default"
-                      (append
-                       (mapcar (lambda (it)
-                                 (let ((name (file-name-nondirectory
-                                              (directory-file-name it))))
-                                   `(,name (filename . ,(expand-file-name it)))))
-                               projectile-known-projects)
-                       `(("Org" (mode . org-mode))
-                         ("Dired" (mode . dired-mode))
-                         ("IRC" (mode . erc-mode))
-                         ("Emacs"
-                          (or (name . "\\*Messages\\*")
-                              (name . "\\*Compile-Log\\*")
-                              (name . "\\*scratch\\*")
-                              (name . "\\*spacemacs\\*")
-                              (name . "\\*emacs\\*")))
-                         ("Terminal" (or (name . "\\*ansi-term\\*")
-                                         (name . "\\*eshell\\*")))
-                         ("Magit" (name . "\\*magit"))
-                         ("Help" (name . "\\*Help\\*"))
-                         ("Helm" (name . "\\*helm"))
-                         )))))
-    (add-hook 'ibuffer-mode-hook 'ibuffer-auto-mode)
-    (add-hook 'ibuffer-mode-hook
-              (defun ibuffer-switch-to-default-filter-group ()
-                (interactive)
-                (ibuffer-switch-to-saved-filter-groups "Default"))))
+  (after 'projectile
+    (after 'ibuffer
+      (setq ibuffer-saved-filter-groups
+            (list (cons "Default"
+                        (append
+                         (mapcar (lambda (it)
+                                   (let ((name (file-name-nondirectory
+                                                (directory-file-name it))))
+                                     `(,name (filename . ,(expand-file-name it)))))
+                                 projectile-known-projects)
+                         `(("Org" (mode . org-mode))
+                           ("Dired" (mode . dired-mode))
+                           ("IRC" (mode . erc-mode))
+                           ("Emacs"
+                            (or (name . "\\*Messages\\*")
+                                (name . "\\*Compile-Log\\*")
+                                (name . "\\*scratch\\*")
+                                (name . "\\*spacemacs\\*")
+                                (name . "\\*emacs\\*")))
+                           ("Terminal" (or (name . "\\*ansi-term\\*")
+                                           (name . "\\*eshell\\*")))
+                           ("Magit" (name . "\\*magit"))
+                           ("Help" (name . "\\*Help\\*"))
+                           ("Helm" (name . "\\*helm"))
+                           )))))
+      (add-hook 'ibuffer-mode-hook 'ibuffer-auto-mode)
+      (add-hook 'ibuffer-mode-hook
+                (defun ibuffer-switch-to-default-filter-group ()
+                  (interactive)
+                  (ibuffer-switch-to-saved-filter-groups "Default")))))
 
   (define-key (current-global-map) [remap save-buffers-kill-terminal]
     (defun kill-emacs-psych-out ()
