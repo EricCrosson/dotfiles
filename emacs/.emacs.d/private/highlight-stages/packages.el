@@ -11,6 +11,7 @@
   (use-package highlight-stages
     :config
     (highlight-stages-global-mode t)
+    ;; TODO: diminish Stg in the mode line properly
     (after 'highlight-parentheses
       (spacemacs|diminish highlight-parentheses-mode " ⓟ" " p"))
     (add-hook 'prog-mode-hook 'highlight-parentheses-mode)))
