@@ -15,7 +15,7 @@
                 (interactive)
                 (evil-leader/set-key
                   "ml" 'org-cliplink
-                  
+
                   "mti" 'org-clock-in
                   "mto" 'org-clock-out
                   "mtl" 'org-clock-in-last
