@@ -72,6 +72,7 @@
      midnight
      tea-time
      dictionary
+     vagrant
      fic-mode
      weather-metno
      offlineimap
