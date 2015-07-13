@@ -10,7 +10,10 @@
   "Initialize `org-cliplink'."
   (use-package org-cliplink
     :config
-    (evil-leader/set-key "oc" 'org-cliplink)))
+    (add-hook 'org-mode-hook
+              (defun org-mode/define-org-cliplink-leader-keys ()
+                (interactive)
+                (evil-leader/set-key "ml" 'org-cliplink)))))
 
 ;; fixme -- dysfunctional
 (defun org-extras/init-org-download ()
