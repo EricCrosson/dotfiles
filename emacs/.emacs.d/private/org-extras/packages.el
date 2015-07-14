@@ -10,7 +10,18 @@
   "Initialize `org-cliplink'."
   (use-package org-cliplink
     :config
-    (evil-leader/set-key "oc" 'org-cliplink)))
+    (add-hook 'org-mode-hook
+              (defun org-mode/define-org-cliplink-leader-keys ()
+                (interactive)
+                (evil-leader/set-key
+                  "ml" 'org-cliplink
+
+                  "mti" 'org-clock-in
+                  "mto" 'org-clock-out
+                  "mtl" 'org-clock-in-last
+                  "mtc" 'org-clock-cancel
+                  "mtg" 'org-clock-goto
+                  "mtd" 'org-clock-display)))))
 
 ;; fixme -- dysfunctional
 (defun org-extras/init-org-download ()

@@ -72,6 +72,7 @@
      midnight
      tea-time
      dictionary
+     vagrant
      fic-mode
      weather-metno
      offlineimap
@@ -332,6 +333,7 @@ using `abort-recursive-edit'."
 
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
+    "y" 'helm-M-x
     "to" 'org-toggle-inline-images
     "bi" 'ibuffer
     "js" 'just-one-space
