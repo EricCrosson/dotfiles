@@ -58,9 +58,9 @@
      bury-successful-compilation
      sublimity
      ;; key-chord
+     multiple-cursors
      unkillable-scratch
      highlight-stages
-     swiper
      focus
      misc-cmds
      chess
