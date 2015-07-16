@@ -58,6 +58,7 @@
      bury-successful-compilation
      sublimity
      ;; key-chord
+     olivetti
      multiple-cursors
      unkillable-scratch
      highlight-stages
