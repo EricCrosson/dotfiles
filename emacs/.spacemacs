@@ -258,7 +258,6 @@ using `abort-recursive-edit'."
   (add-hook 'focus-out-hook
             (defun save-all-buffers ()
               (interactive)
-              ;; OPTIONAL: consider dropping to normal mode
               (save-some-buffers t)))
 
   (after 'projectile
