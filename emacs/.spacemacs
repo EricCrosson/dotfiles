@@ -260,6 +260,7 @@ using `abort-recursive-edit'."
               (interactive)
               (save-some-buffers t)))
 
+  ;; TODO: configuration layer 'ibuffer-by-project'
   (after 'projectile
     (after 'ibuffer
       (setq ibuffer-saved-filter-groups
@@ -283,12 +284,10 @@ using `abort-recursive-edit'."
                                            (name . "\\*eshell\\*")))
                            ("Magit" (name . "\\*magit"))
                            ("Help" (name . "\\*Help\\*"))
-                           ("Helm" (name . "\\*helm"))
-                           )))))
+                           ("Helm" (name . "\\*helm")))))))
       (add-hook 'ibuffer-mode-hook 'ibuffer-auto-mode)
       (add-hook 'ibuffer-mode-hook
                 (defun ibuffer-switch-to-default-filter-group ()
-                  (interactive)
                   (ibuffer-switch-to-saved-filter-groups "Default")))))
 
   (define-key (current-global-map) [remap save-buffers-kill-terminal]
