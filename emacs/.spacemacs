@@ -316,11 +316,12 @@ using `abort-recursive-edit'."
             gud-mode-hook)))
 
   (add-to-list 'auto-mode-alist '("\\.offlineimap" . conf-mode))
-  (after 'helm-gtags-mode (diminish 'helm-gtags-mode))
+  (after 'helm-gtags (diminish 'helm-gtags-mode))
 
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
     "y" 'helm-M-x
+    "si" 'helm-semantic-or-imenu
     "to" 'org-toggle-inline-images
     "bi" 'ibuffer
     "js" 'just-one-space
