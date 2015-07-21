@@ -59,7 +59,7 @@
      bury-successful-compilation
      sublimity
      ;; key-chord
-     ;; airline-theme
+     airline-theme
      olivetti
      multiple-cursors
      unkillable-scratch

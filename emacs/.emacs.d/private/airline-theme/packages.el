@@ -12,5 +12,6 @@
     :config
     (after 'airline-light
       (setq-default airline-display-directory nil
-                    airline-cursor-colors nil))
+                    ;; airline-cursor-colors nil
+                    ))
     (load-theme 'airline-light)))
