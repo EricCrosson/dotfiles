@@ -256,9 +256,10 @@ using `abort-recursive-edit'."
       (abort-recursive-edit))))
 
   (add-hook 'focus-out-hook
-            (defun save-all-buffers ()
+            (defun save-current-buffer-if-needed ()
               (interactive)
-              (save-some-buffers t)))
+              (when (and (buffer-file-name) (buffer-modified-p))
+                (save-buffer))))
 
   ;; TODO: configuration layer 'ibuffer-by-project'
   (after 'projectile
