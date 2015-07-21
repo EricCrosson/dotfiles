@@ -59,6 +59,7 @@
      bury-successful-compilation
      sublimity
      ;; key-chord
+     ;; airline-theme
      olivetti
      multiple-cursors
      unkillable-scratch
@@ -404,7 +405,7 @@ using `abort-recursive-edit'."
    [default default default italic underline success warning error])
  '(custom-safe-themes
    (quote
-    ("ea489f6710a3da0738e7dbdfc124df06a4e3ae82f191ce66c2af3e0a15e99b90" default)))
+    ("356f57a98f35c8ead5a349408cab69f8d4d92baea131e9531611d0d82190fedf" "ea489f6710a3da0738e7dbdfc124df06a4e3ae82f191ce66c2af3e0a15e99b90" default)))
  '(magit-use-overlays nil)
  '(org-agenda-files (quote ("~/org/ibm.org")))
  '(paradox-github-token t)
@@ -450,4 +451,6 @@ using `abort-recursive-edit'."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:foreground "#C5C8C6" :background "#191919"))))
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
