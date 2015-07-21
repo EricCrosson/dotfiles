@@ -313,7 +313,19 @@ using `abort-recursive-edit'."
           '(shell-mode-hook
             org-mode-hook
             sh-mode-hook
-            gud-mode-hook)))
+            gud-mode-hook))
+    (defun company-quickhelp--show ()
+      (company-quickhelp--ensure-compatibility)
+      (company-quickhelp--cancel-timer)
+      (let* ((selected (nth company-selection company-candidates))
+             (doc (company-quickhelp--doc selected))
+             (ovl company-pseudo-tooltip-overlay)
+             (overlay-width (* (frame-char-width) (if ovl (overlay-get ovl 'company-width) 0)))
+             (overlay-position (* (frame-char-width) (- (if ovl (overlay-get ovl 'company-column) 1) 1)))
+             (x-gtk-use-system-tooltips nil))
+        (when (and ovl doc)
+          (with-no-warnings
+            (pos-tip-show doc nil (overlay-start ovl) nil 300 80 nil (+ overlay-width overlay-position) 1))))))
 
   (add-to-list 'auto-mode-alist '("\\.offlineimap" . conf-mode))
   (after 'helm-gtags (diminish 'helm-gtags-mode))
