@@ -361,6 +361,9 @@ using `abort-recursive-edit'."
     "Fc" 'make-frame-command
     "Fd" 'delete-frame
 
+    "<SPC>" 'avy-goto-char
+    "," 'avy-goto-char-2
+
     "1" 'eyebrowse-switch-to-window-config-1
     "2" 'eyebrowse-switch-to-window-config-2
     "3" 'eyebrowse-switch-to-window-config-3
