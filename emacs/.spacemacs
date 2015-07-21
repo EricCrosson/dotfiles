@@ -330,6 +330,9 @@ using `abort-recursive-edit'."
   (add-to-list 'auto-mode-alist '("\\.offlineimap" . conf-mode))
   (after 'helm-gtags (diminish 'helm-gtags-mode))
 
+  (defvar xorg/sleep-delay 0.8
+    "Seconds to sleep before forcing xorg off with dpms.")
+
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
     "y" 'helm-M-x
@@ -342,7 +345,7 @@ using `abort-recursive-edit'."
     "bf" 'follow-mode
     "bF" 'follow-delete-other-windows-and-split
 
-    "od"  (defun xset-dim () (interactive) (shell-command "xset dpms force off"))
+    "od"  (defun xset-dim () (interactive) (shell-command (format "sleep %s && xset dpms force off" xorg/sleep-delay)))
 
     "hff" 'find-function
     "hfv" 'find-variable
