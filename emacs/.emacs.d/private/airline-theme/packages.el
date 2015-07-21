@@ -8,10 +8,4 @@
 
 (defun airline-theme/init-airline-themes ()
   "Initialize `airline-themes'."
-  (use-package airline-themes
-    :config
-    (after 'airline-light
-      (setq-default airline-display-directory nil
-                    ;; airline-cursor-colors nil
-                    ))
-    (load-theme 'airline-light)))
+  (use-package airline-themes))

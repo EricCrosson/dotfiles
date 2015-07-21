@@ -59,7 +59,6 @@
      bury-successful-compilation
      sublimity
      ;; key-chord
-     airline-theme
      olivetti
      multiple-cursors
      unkillable-scratch
@@ -86,7 +85,8 @@
      flx-ido
      visual-bookmark
      pretty-lambdada
-     browse-web)
+     browse-web
+     airline-theme)
 
    ;; dotspacemacs-excluded-packages '()
    dotspacemacs-delete-orphan-packages t))
@@ -379,6 +379,8 @@ using `abort-recursive-edit'."
   (mapc (lambda (mode) (add-to-list 'evil-emacs-state-modes mode))
         '(shell-mode
           text-mode))
+
+  (load-theme 'airline-light)
 
   (setq Don t    ;allows `eval-buffer' on *scratch*
         Panic t  ;with `initial-scratch-message'
