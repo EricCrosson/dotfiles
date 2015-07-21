@@ -344,7 +344,6 @@ using `abort-recursive-edit'."
 
     "od"  (defun xset-dim () (interactive) (shell-command "xset dpms force off"))
 
-    ;; todo: finish incorporating help-extras
     "hff" 'find-function
     "hfv" 'find-variable
     "hfk" 'find-function-on-key
