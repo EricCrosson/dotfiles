@@ -294,10 +294,8 @@ using `abort-recursive-edit'."
   (define-key (current-global-map) [remap save-buffers-kill-terminal]
     (defun kill-emacs-psych-out ()
       (interactive)
-      (if (not (boundp 'die))
-          (message "I'm sorry %s, I'm afraid I can't do that."
-                   (or (user-login-name) "Dave"))
-        (kill-emacs))))
+      (message "I'm sorry %s, I'm afraid I can't do that."
+               (or (user-login-name) "Dave")))))
 
   (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
     "Avoid informing me of 'active processes exist'ing when killing emacs."
