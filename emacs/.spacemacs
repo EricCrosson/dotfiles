@@ -228,6 +228,28 @@ layers configuration."
 
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
+  (defvar spacemacs--default-smooth-scrolling-padding 5
+    "Default number of lines to pad smooth scrolling with.")
+  (defun toggle-smooth-scrolling-padding (&optional arg)
+    "Toggle smooth scrolling padding. If ARG is positive, enable
+    padding regardless of the current state. If ARG is negative,
+    disable padding regardless of the current state."
+    (interactive)
+    (cond ((null arg)
+           (cond ((eq scroll-margin spacemacs--default-smooth-scrolling-padding)
+                  (setq-local scroll-margin 0))
+                 ((eq scroll-margin 0)
+                  (setq-local scroll-margin spacemacs--default-smooth-scrolling-padding))))
+          ((< 0 arg)
+           (setq-local scroll-margin spacemacs--default-smooth-scrolling-padding))
+          ((> 0 arg)
+           (setq-local scroll-margin 0))))
+
+  (mapc (lambda (hook) (add-hook hook 'toggle-smooth-scrolling-padding))
+        '(eshell-mode-hook
+          term-mode-hook
+          erc-mode-hook))
+
   (setq helm-echo-input-in-header-line t)
   (defun helm-hide-minibuffer-maybe ()
     (when (with-helm-buffer helm-echo-input-in-header-line)
