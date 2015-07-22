@@ -146,7 +146,7 @@ layers configuration."
 
   (global-hl-line-mode nil)
   (rainbow-mode t)
-  (nyan-mode t)
+  ;; (nyan-mode t)
 
   (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
 
