@@ -230,6 +230,7 @@ layers configuration."
 
   (defvar spacemacs--default-smooth-scrolling-padding 5
     "Default number of lines to pad smooth scrolling with.")
+
   (defun toggle-smooth-scrolling-padding (&optional arg)
     "Toggle smooth scrolling padding. If ARG is positive, enable
     padding regardless of the current state. If ARG is negative,
