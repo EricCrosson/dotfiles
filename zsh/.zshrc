@@ -44,8 +44,7 @@ HIST_STAMPS="yyyy-mm-dd"
 plugins=(git battery nyan)
 
 # User configuration
-export PATH="$HOME/bin/nix:$HOME/bin/linux:$HOME/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/ibm/c4eb/bin:/usr/kerberos/bin"
-# export MANPATH="/usr/local/man:$MANPATH"
+export PATH="$HOME/bin/nix:$HOME/bin/linux:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$HOME/.gem/ruby/2.2.0/bin:$PATH"
 
 source $ZSH/oh-my-zsh.sh
 source /usr/bin/virtualenvwrapper.sh

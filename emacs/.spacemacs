@@ -29,7 +29,7 @@
      markdown
      org
      shell
-     evil-extra-text-objects
+     ;; evil-extra-text-objects
      emoji
      games
      eyebrowse
@@ -69,6 +69,7 @@
      writegood-mode
      bliss
      savehist
+     ;; unselectable-buffer
      twittering
      engine-mode
      midnight
