@@ -371,7 +371,8 @@ using `abort-recursive-edit'."
     "bf" 'follow-mode
     "bF" 'follow-delete-other-windows-and-split
 
-    "od"  (defun xset-dim () (interactive) (shell-command (format "sleep %s && xset dpms force off" xorg/sleep-delay)))
+    "od" (defun xset-dim () (interactive) (shell-command (format "sleep %s && xset dpms force off" xorg/sleep-delay)))
+    "id" (defun insert-date () (interactive) (insert (format-time-string "%Y-%m-%d")))
 
     "hff" 'find-function
     "hfv" 'find-variable
