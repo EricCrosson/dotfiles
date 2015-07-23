@@ -262,6 +262,7 @@ layers configuration."
                                 `(:background ,bg-color :foreground ,bg-color)))
         (setq-local cursor-type nil))))
   (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
+  (helm-autoresize-mode 1)
 
   (let ((mypst (format "/home/%s/workspace/mpsyt.el" user-login-name)))
     (when (file-exists-p mypst)
