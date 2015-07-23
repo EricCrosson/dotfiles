@@ -1,0 +1,4 @@
+* Big Blue
+
+Here lies a collection of simple scripts used to reduce the amount of input I
+must manually enter into my computer.

@@ -86,7 +86,8 @@
      flx-ido
      visual-bookmark
      pretty-lambdada
-     browse-web)
+     browse-web
+     airline-theme)
 
    ;; dotspacemacs-excluded-packages '()
    dotspacemacs-delete-orphan-packages t))
@@ -146,7 +147,7 @@ layers configuration."
 
   (global-hl-line-mode nil)
   (rainbow-mode t)
-  (nyan-mode t)
+  ;; (nyan-mode t)
 
   (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
 
@@ -228,6 +229,29 @@ layers configuration."
 
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
+  (defvar spacemacs--default-smooth-scrolling-padding 5
+    "Default number of lines to pad smooth scrolling with.")
+
+  (defun toggle-smooth-scrolling-padding (&optional arg)
+    "Toggle smooth scrolling padding. If ARG is positive, enable
+    padding regardless of the current state. If ARG is negative,
+    disable padding regardless of the current state."
+    (interactive)
+    (cond ((null arg)
+           (cond ((eq scroll-margin spacemacs--default-smooth-scrolling-padding)
+                  (setq-local scroll-margin 0))
+                 ((eq scroll-margin 0)
+                  (setq-local scroll-margin spacemacs--default-smooth-scrolling-padding))))
+          ((< 0 arg)
+           (setq-local scroll-margin spacemacs--default-smooth-scrolling-padding))
+          ((> 0 arg)
+           (setq-local scroll-margin 0))))
+
+  (mapc (lambda (hook) (add-hook hook 'toggle-smooth-scrolling-padding))
+        '(eshell-mode-hook
+          term-mode-hook
+          erc-mode-hook))
+
   (setq helm-echo-input-in-header-line t)
   (defun helm-hide-minibuffer-maybe ()
     (when (with-helm-buffer helm-echo-input-in-header-line)
@@ -257,9 +281,10 @@ using `abort-recursive-edit'."
       (abort-recursive-edit))))
 
   (add-hook 'focus-out-hook
-            (defun save-all-buffers ()
+            (defun save-current-buffer-if-needed ()
               (interactive)
-              (save-some-buffers t)))
+              (when (and (buffer-file-name) (buffer-modified-p))
+                (save-buffer))))
 
   ;; TODO: configuration layer 'ibuffer-by-project'
   (after 'projectile
@@ -294,17 +319,15 @@ using `abort-recursive-edit'."
   (define-key (current-global-map) [remap save-buffers-kill-terminal]
     (defun kill-emacs-psych-out ()
       (interactive)
-      (if (not (boundp 'die))
-          (message "I'm sorry %s, I'm afraid I can't do that."
-                   (or (user-login-name) "Dave")))
-      (kill-emacs)))
+      (message "I'm sorry %s, I'm afraid I can't do that."
+               (or (user-login-name) "Dave"))))
 
   (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
     "Avoid informing me of 'active processes exist'ing when killing emacs."
     (flet ((process-list ())) ad-do-it))
 
-  (global-company-mode)
   (after 'company
+    (global-company-mode)
     (setq company-show-numbers t)
     (defun turn-off-company-mode ()
       (interactive)
@@ -314,10 +337,25 @@ using `abort-recursive-edit'."
           '(shell-mode-hook
             org-mode-hook
             sh-mode-hook
-            gud-mode-hook)))
+            gud-mode-hook))
+    (defun company-quickhelp--show ()
+      (company-quickhelp--ensure-compatibility)
+      (company-quickhelp--cancel-timer)
+      (let* ((selected (nth company-selection company-candidates))
+             (doc (company-quickhelp--doc selected))
+             (ovl company-pseudo-tooltip-overlay)
+             (overlay-width (* (frame-char-width) (if ovl (overlay-get ovl 'company-width) 0)))
+             (overlay-position (* (frame-char-width) (- (if ovl (overlay-get ovl 'company-column) 1) 1)))
+             (x-gtk-use-system-tooltips nil))
+        (when (and ovl doc)
+          (with-no-warnings
+            (pos-tip-show doc nil (overlay-start ovl) nil 300 80 nil (+ overlay-width overlay-position) 1))))))
 
   (add-to-list 'auto-mode-alist '("\\.offlineimap" . conf-mode))
   (after 'helm-gtags (diminish 'helm-gtags-mode))
+
+  (defvar xorg/sleep-delay 0.8
+    "Seconds to sleep before forcing xorg off with dpms.")
 
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
@@ -331,9 +369,8 @@ using `abort-recursive-edit'."
     "bf" 'follow-mode
     "bF" 'follow-delete-other-windows-and-split
 
-    "od"  (defun xset-dim () (interactive) (shell-command "xset dpms force off"))
+    "od"  (defun xset-dim () (interactive) (shell-command (format "sleep %s && xset dpms force off" xorg/sleep-delay)))
 
-    ;; todo: finish incorporating help-extras
     "hff" 'find-function
     "hfv" 'find-variable
     "hfk" 'find-function-on-key
@@ -349,6 +386,9 @@ using `abort-recursive-edit'."
     "Fc" 'make-frame-command
     "Fd" 'delete-frame
 
+    "<SPC>" 'avy-goto-char
+    "," 'avy-goto-char-2
+
     "1" 'eyebrowse-switch-to-window-config-1
     "2" 'eyebrowse-switch-to-window-config-2
     "3" 'eyebrowse-switch-to-window-config-3
@@ -363,6 +403,8 @@ using `abort-recursive-edit'."
   (mapc (lambda (mode) (add-to-list 'evil-emacs-state-modes mode))
         '(shell-mode
           text-mode))
+
+  (load-theme 'airline-light)
 
   (setq Don t    ;allows `eval-buffer' on *scratch*
         Panic t  ;with `initial-scratch-message'
@@ -389,7 +431,7 @@ using `abort-recursive-edit'."
    [default default default italic underline success warning error])
  '(custom-safe-themes
    (quote
-    ("ea489f6710a3da0738e7dbdfc124df06a4e3ae82f191ce66c2af3e0a15e99b90" default)))
+    ("356f57a98f35c8ead5a349408cab69f8d4d92baea131e9531611d0d82190fedf" "ea489f6710a3da0738e7dbdfc124df06a4e3ae82f191ce66c2af3e0a15e99b90" default)))
  '(magit-use-overlays nil)
  '(org-agenda-files (quote ("~/org/ibm.org")))
  '(paradox-github-token t)
@@ -435,4 +477,6 @@ using `abort-recursive-edit'."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:foreground "#C5C8C6" :background "#191919"))))
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
