@@ -7,8 +7,9 @@
 (setq fic-mode-packages '(fic-mode))
 
 (defun fic-mode/init-fic-mode ()
-    "Initialize my package"
+  "Initialize my package"
   (use-package fic-mode
+    :defer t
     :config
     (add-hook 'prog-mode-hook 'turn-on-fic-mode)
 
@@ -18,5 +19,4 @@
                           :off (fic-mode -1)
                           :documentation "FIC mode."
                           :evil-leader "tP")
-    (spacemacs|diminish fic-mode " Ⓟ" " P")
-    ))
+    (spacemacs|diminish fic-mode " Ⓟ" " P")))

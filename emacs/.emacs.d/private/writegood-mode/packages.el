@@ -7,15 +7,13 @@
 (setq writegood-mode-packages '(writegood-mode))
 
 (defun writegood-mode/init-wrotegood-mode ()
-  "Initialize my package"
-   (use-package writegood-mode
-        :config
-        (mapc
-         (lambda (hook)
-           (add-hook hook 'writegood-mode))
-         ;; Activate `writegood-mode' with the following modes:
-         '(fundamental-mode-hook
-           org-mode-hook
-           text-mode-hook
-           latex-mode-hook)))
-  )
+  "Initialize `writegood-mode'."
+  (use-package writegood-mode
+    :defer t
+    :config
+    (mapc (lambda (hook) (add-hook hook 'writegood-mode))
+          ;; Activate `writegood-mode' with the following modes:
+          '(fundamental-mode-hook
+            org-mode-hook
+            text-mode-hook
+            latex-mode-hook))))

@@ -9,8 +9,8 @@
 (defun misc-cmds/init-misc-cmds ()
   "Initialize `misc-cmds'."
   (use-package misc-cmds
+    :defer t
     :commands revert-buffer-no-confirm
     :config
     (evil-leader/set-key
-      "rn" 'revert-buffer-no-confirm))
-  )
+      "rn" 'revert-buffer-no-confirm)))

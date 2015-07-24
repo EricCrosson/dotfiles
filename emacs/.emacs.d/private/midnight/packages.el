@@ -9,5 +9,5 @@
 (defun midnight/init-midnight ()
   "Initialize my package"
   (use-package midnight
-    :config (midnight-delay-set 'midnight-delay "5:00am"))
-  )
+    :defer t
+    :config (midnight-delay-set 'midnight-delay "5:00am")))

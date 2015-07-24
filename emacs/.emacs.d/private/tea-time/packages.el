@@ -9,6 +9,7 @@
 (defun tea-time/init-tea-time ()
   "Initialize `tea-time'."
   (use-package tea-time
+    :defer t
     :commands tea-time
     :config
     (use-package notifications

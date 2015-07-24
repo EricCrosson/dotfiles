@@ -15,5 +15,6 @@
 (defun arduino/init-arduino-mode ()
   "Initialize `arduino-mode'."
   (use-package arduino-mode
+    :defer t
     :commands (arduino-mode)
     :mode "\\.ino\\*"))

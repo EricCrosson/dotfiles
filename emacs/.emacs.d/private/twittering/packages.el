@@ -9,11 +9,11 @@
 (defun twittering/init-twittering-mode ()
   "Initialize `twittering-mode'."
   (use-package twittering-mode
+    :defer t
     :commands twit
     :init
     (spacemacs/declare-prefix "aS" "social")
     (evil-leader/set-key
       "aSt" 'twit)
     :config
-    (setq twittering-use-master-password t))
-  )
+    (setq twittering-use-master-password t)))

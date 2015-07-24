@@ -9,6 +9,7 @@
 
 (defun unkillable-scratch/init-unkillable-scratch ()
   "Initialize my package"
-  (use-package unkillable-scratch :config
-    (setq unkillable-scratch-behavior 'bury))
-  )
+  (use-package unkillable-scratch
+    :defer t
+    :config
+    (setq unkillable-scratch-behavior 'bury)))

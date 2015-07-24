@@ -9,6 +9,7 @@
 (defun chess/init-chess ()
   "Initialize package chess."
   (use-package chess
+    :defer t
     :config
     (evil-leader/set-key
       "agcc" 'chess
@@ -22,5 +23,4 @@
       "agcf" 'chess-display-force
       "agca" 'chess-display-accept
       "agcr" 'chess-display-resign
-      "agce" 'chess-display-create))
-  )
+      "agce" 'chess-display-create)))

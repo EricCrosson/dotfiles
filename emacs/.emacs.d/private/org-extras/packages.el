@@ -9,6 +9,7 @@
 (defun org-extras/init-org-cliplink ()
   "Initialize `org-cliplink'."
   (use-package org-cliplink
+    :defer t
     :config
     (add-hook 'org-mode-hook
               (defun org-mode/define-org-cliplink-leader-keys ()
@@ -30,6 +31,7 @@
   (setq org-src-fontify-natively t)
 
   (use-package org-download
+    :defer t
     :config
     (setq org-download-method 'directory
           org-download-image-dir "img")))

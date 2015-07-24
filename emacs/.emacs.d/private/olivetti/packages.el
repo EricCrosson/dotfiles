@@ -9,5 +9,6 @@
 (defun olivetti/init-olivetti ()
   "Initialize `olivetti'."
   (use-package olivetti
+    :defer t
     :config
     (evil-leader/set-key "oo" 'olivetti-mode)))

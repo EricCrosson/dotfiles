@@ -12,12 +12,13 @@
 (defun flx-ido/init-ido-hacks ()
   "Initialize my package"
   (use-package ido-hacks
-      :config (ido-hacks-mode 1))
-  )
+    :defer t
+    :config (ido-hacks-mode 1)))
 
 (defun flx-ido/init-flx-ido ()
   "Initialize my package"
-    (use-package flx-ido
+  (use-package flx-ido
+    :defer t
     :config
     (add-to-list 'ido-ignore-buffers "\\*Async Shell Command\\*")
     (add-to-list 'ido-ignore-buffers "^\\*.*\\.*preprocessed\\*")
@@ -31,10 +32,10 @@
     (setq ido-create-new-buffer 'always
           ido-file-extensions-order '(".org" ".el"
                                       ".c" ".c"
-                                      ".dox" ".txt")))
-    )
+                                      ".dox" ".txt"))))
 
 (defun flx-ido/init-ido-vertical-mode ()
   "Initialize my package"
-    (use-package ido-vertical-mode
+  (use-package ido-vertical-mode
+    :defer t
     :config (ido-vertical-mode 1)))

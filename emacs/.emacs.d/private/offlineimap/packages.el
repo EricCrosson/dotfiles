@@ -9,7 +9,7 @@
 (defun offlineimap/init-offlineimap ()
   "Initialize my package"
   (use-package offlineimap
+    :defer t
     :config
     (evil-leader/set-key
-      "amo" 'offlineimap))
-  )
+      "amo" 'offlineimap)))

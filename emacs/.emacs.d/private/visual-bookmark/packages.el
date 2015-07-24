@@ -9,11 +9,10 @@
 (defun visual-bookmark/init-bm ()
   "Initialize my package"
   (use-package bm
+    :defer t
     :commands bm-toggle bm-next bm-previous
     :config
     (evil-leader/set-key
       "md" bm-toggle
       "mp" bm-previous
-      "mn" bm-next)
-    )
-  )
+      "mn" bm-next)))

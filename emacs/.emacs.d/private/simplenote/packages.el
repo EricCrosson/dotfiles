@@ -9,6 +9,7 @@
 (defun simplenote/init-simplenote2 ()
   "Initialize `simplenote2'."
   (use-package simplenote2
+    :defer t
     :commands
     simplenote2-browse
     simplenote2-push-buffer

@@ -9,6 +9,7 @@
 (defun highlight-stages/init-highlight-stages ()
   "Initialize `highlight-stages'."
   (use-package highlight-stages
+    :defer t
     :config
     (highlight-stages-global-mode t)
     ;; TODO: diminish Stg in the mode line properly

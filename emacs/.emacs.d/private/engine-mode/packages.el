@@ -9,6 +9,7 @@
 (defun engine-mode/init-engine-mode ()
   "Initialize my package"
   (use-package engine-mode
+    :defer t
     :config
     (defengine duckduckgo "https://duckduckgo.com/?q=%s")
     (defengine github "https://github.com/search?ref=simplesearch&q=%s")
@@ -16,5 +17,4 @@
     (evil-leader/set-key
       "swd" 'engine/search-duckduckgo
       "swh" 'engine/search-github
-      "swy" 'engine/search-youtube))
-  )
+      "swy" 'engine/search-youtube)))

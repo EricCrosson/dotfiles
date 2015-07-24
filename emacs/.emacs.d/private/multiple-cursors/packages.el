@@ -9,6 +9,7 @@
 (defun multiple-cursors/init-multiple-cursors ()
   "Initialize `multiple-cursors'."
   (use-package multiple-cursors
+    :defer t
     :config
     (defvar jc/mc-search--last-term nil)
     (defun jc/mc-search (search-command)

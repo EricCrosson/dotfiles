@@ -10,4 +10,5 @@
 (defun bury-successful-compilation/init-bury-successful-compilation ()
   "Initialize bury successful compilation."
   (use-package bury-successful-compilation
+    :defer t
     :config (bury-successful-compilation 1)))
