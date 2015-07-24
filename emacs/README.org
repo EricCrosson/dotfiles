@@ -1,4 +1,0 @@
-* GNU Emacs
-
-There once was a time, when my relationship with Emacs required exploring, and
-finessing. Now, there is [[https://github.com/syl20bnr/spacemacs][spacemacs]].
