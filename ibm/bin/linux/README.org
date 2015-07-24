@@ -1,3 +1,0 @@
-* Big Blue's GNU/Linux scripts
-
-These scripts were invoked from RHEL 5.
