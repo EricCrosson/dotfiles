@@ -332,15 +332,13 @@ using `abort-recursive-edit'."
   (after 'company
     (global-company-mode)
     (setq company-show-numbers t)
-    (defun turn-off-company-mode ()
-      (interactive)
-      (company-mode -1))
     (mapc (lambda (mode-hook)
-            (add-hook mode-hook 'turn-off-company-mode))
-          '(shell-mode-hook
-            org-mode-hook
-            sh-mode-hook
-            gud-mode-hook))
+            (add-hook mode-hook 'spacemacs|disable-company))
+          '(shell-mode
+            eshell-mode
+            org-mode
+            sh-mode
+            gud-mode))
     (defun company-quickhelp--show ()
       (company-quickhelp--ensure-compatibility)
       (company-quickhelp--cancel-timer)
