@@ -32,6 +32,7 @@
      ;; evil-extra-text-objects
      emoji
      games
+     ranger
      eyebrowse
      pcre2el
      puppet
