@@ -332,8 +332,8 @@ using `abort-recursive-edit'."
   (after 'company
     (global-company-mode)
     (setq company-show-numbers t)
-    (mapc (lambda (mode-hook)
-            (add-hook mode-hook 'spacemacs|disable-company))
+    (mapc (lambda (mode)
+            (spacemacs|disable-company mode))
           '(shell-mode
             eshell-mode
             org-mode
