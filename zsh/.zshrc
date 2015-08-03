@@ -38,7 +38,7 @@ HIST_STAMPS="yyyy-mm-dd"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
-# C-M-, (copy-earlier-word) cycles backward through words of the command you've
+# M-, (copy-earlier-word) cycles backward through words of the command you've
 # accessed with M-. (insert-last-word)
 autoload copy-earlier-word && zle -N copy-earlier-word && bindkey '^[,' copy-earlier-word
 
