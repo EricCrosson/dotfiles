@@ -432,7 +432,7 @@ using `abort-recursive-edit'."
    [default default default italic underline success warning error])
  '(custom-safe-themes
    (quote
-    ("356f57a98f35c8ead5a349408cab69f8d4d92baea131e9531611d0d82190fedf" "ea489f6710a3da0738e7dbdfc124df06a4e3ae82f191ce66c2af3e0a15e99b90" default)))
+    ("e87a2bd5abc8448f8676365692e908b709b93f2d3869c42a4371223aab7d9cf8" "356f57a98f35c8ead5a349408cab69f8d4d92baea131e9531611d0d82190fedf" "ea489f6710a3da0738e7dbdfc124df06a4e3ae82f191ce66c2af3e0a15e99b90" default)))
  '(magit-use-overlays nil)
  '(org-agenda-files (quote ("~/org/ibm.org")))
  '(paradox-github-token t)
