@@ -1,3 +1,4 @@
+# -*- mode: sh; -*-
 
 _zero="${BASH_SOURCE[0]}"
 _zero="$(basename ${_zero%.sh})"
