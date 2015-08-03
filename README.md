@@ -2,5 +2,3 @@ dotfiles [![GNU GPL](http://img.shields.io/:license-gpl3-blue.svg)](http://www.g
 ========
 
 Configurations managed by [GNU Stow](http://www.gnu.org/software/stow/).
-
-Each project contains its own readme.
