@@ -45,7 +45,8 @@ export GEM_HOME=~/.gem
 export GEM_PATH=~/.gem
 
 # Source configs
-declare -r api=~/.config/bash/api
+config=$HOME/dotfiles/bash/.config/bash
+declare -r api=${config}/api
 source ${api}/io
 for src in ${api}/*; do source ${src}; done
 
@@ -57,8 +58,6 @@ pathAppend ${scripts}/$(hostname);
 loadFile ${aliases}/global # Global aliases
 case $(uname -a) in                # OS-specific settings
     *Linux* )
-        isArch && loadFile ${user_init_d}/arch
-
         pathAppend ~/.gem/ruby/2.0.0/bin
         pathAppend ${scripts}/linux
         loadFile ${aliases}/linux ;;
@@ -75,12 +74,6 @@ esac
 # Add Ruby gem bin dir to $PATH
 ruby_base=$HOME/.gem/ruby
 [[ -d ${ruby_base} ]] && pathAppend ${ruby_base}/$(\ls -1 ${ruby_base} | tail -n1)/bin
-
-if atWork; then                 # Work settings
-    keep_it_clean=1
-    loadFile ${aliases}/centtech
-    pathAppend ${scripts}/centtech
-fi
 
 # Source formatting script
 case $(uname -a) in
