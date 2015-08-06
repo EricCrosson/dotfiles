@@ -64,7 +64,8 @@
       (defun dired-back-to-top ()
         (interactive)
         (beginning-of-buffer)
-        (search-forward "..")
+        (unless (search-forward ".." nil 'noerror)
+          (beginning-of-buffer))
         (dired-next-line 1)))
 
     (define-key dired-mode-map
