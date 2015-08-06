@@ -12,6 +12,12 @@
   (setq diredp-hide-details-initially-flag t)
   (use-package dired+
     :defer t)
+  (use-package dired-x
+    :defer t
+    :config
+    (setq-default dired-omit-files-p t)
+    (setq dired-omit-files
+          (concat dired-omit-files "\\|\\.pyc$")))
 
   (after "dired-aux"
     (setq dired-free-space-args "-Ph")
