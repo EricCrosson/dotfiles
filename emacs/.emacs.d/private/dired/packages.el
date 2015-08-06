@@ -10,7 +10,8 @@
   "Initialize `dired+'."
 
   (setq diredp-hide-details-initially-flag t)
-  (use-package dired+)
+  (use-package dired+
+    :defer t)
 
   (after "dired-aux"
     (setq dired-free-space-args "-Ph")
