@@ -369,6 +369,9 @@ using `abort-recursive-edit'."
     "bf" 'follow-mode
     "bF" 'follow-delete-other-windows-and-split
 
+    ;; TODO: autoload these defuns
+    "ot" (defun trash-empty () (interactive) (call-process "trash-empty"))
+
     "od" (defun xset-dim () (interactive) (shell-command (format "sleep %s && xset dpms force off" xorg/sleep-delay)))
     "id" (defun insert-date () (interactive) (insert (format-time-string "%Y-%m-%d")))
 
