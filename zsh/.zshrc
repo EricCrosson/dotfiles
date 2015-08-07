@@ -38,6 +38,10 @@ HIST_STAMPS="yyyy-mm-dd"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# M-, (copy-earlier-word) cycles backward through words of the command you've
+# accessed with M-. (insert-last-word)
+autoload copy-earlier-word && zle -N copy-earlier-word && bindkey '^[,' copy-earlier-word
+
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Add wisely, as too many plugins slow down shell startup.
