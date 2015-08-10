@@ -30,6 +30,8 @@
      org
      shell
      ;; evil-extra-text-objects
+     django
+     ruby-on-rails
      emoji
      games
      ranger
