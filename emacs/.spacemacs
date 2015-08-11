@@ -150,7 +150,6 @@ layers configuration."
 
   (global-hl-line-mode nil)
   (rainbow-mode t)
-  (spacemacs/toggle-fill-column-indicator-on)
   ;; (nyan-mode t)
 
   (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
