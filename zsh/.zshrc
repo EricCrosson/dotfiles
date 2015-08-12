@@ -51,8 +51,8 @@ plugins=(git battery nyan colored-man)
 export PATH="$HOME/bin/nix:$HOME/bin/linux:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$HOME/.gem/ruby/2.2.0/bin:$PATH"
 
 source $ZSH/oh-my-zsh.sh
-source /usr/bin/virtualenvwrapper.sh
-eval "$(fasd --init auto)"
+[ -f /usr/bin/virtualenvwrapper.sh ] && source /usr/bin/virtualenvwrapper.sh
+[ -f /usr/bin/local/virtualenvwrapper.sh ] && source /usr/bin/local/virtualenvwrapper.sh
 unalias d
 
 # You may need to manually set your language environment
