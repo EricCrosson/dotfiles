@@ -368,6 +368,7 @@ using `abort-recursive-edit'."
     "js" 'just-one-space
     "med" 'edebug-defun
 
+    "bc" 'whitespace-cleanup
     "bf" 'follow-mode
     "bF" 'follow-delete-other-windows-and-split
 
