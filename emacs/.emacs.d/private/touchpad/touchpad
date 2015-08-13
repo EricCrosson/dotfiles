@@ -1,0 +1,16 @@
+;;; touchpad.el -- control the thinkpad touchpad
+;; Author: Eric Crosson
+;; Date: 2015-08-13
+;; Version: 0.0.1
+
+(defun turn-off-trackpad (&optional frame)
+  (interactive)
+  (shell-command "xinput --disable \"SynPS/2 Synaptics TouchPad\""))
+
+(defun turn-on-trackpad (&optional frame)
+  (interactive)
+  (shell-command "xinput --enable \"SynPS/2 Synaptics TouchPad\""))
+
+;; (add-hook 'focus-in-hook #'turn-off-mouse)
+;; (add-hook 'focus-out-hook #'turn-on-mouse)
+;; (add-hook 'delete-frame-functions #'turn-on-mouse)
