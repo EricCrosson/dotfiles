@@ -12,7 +12,7 @@
 	cm = commit -m
 	ac = !git add . && git commit
 	acm = !git add . && git commit -m
-	l = log --graph --all --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
+	l = log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
 	ll = log --stat --abbrev-commit
 	d = diff --color-words
 	dh = diff --color-words head
