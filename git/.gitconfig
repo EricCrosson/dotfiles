@@ -1,8 +1,19 @@
 [user]
 	email = esc@ericcrosson.com
 	name = Eric Crosson
-	email = ecrosso@us.ibm.com
 [color]
 	ui = auto
+	interactive = auto
 [push]
 	default = simple
+[alias]
+	s = status
+	c = commit
+	cm = commit -m
+	ac = !git add . && git commit
+	acm = !git add . && git commit -m
+	l = log --graph --all --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
+	ll = log --stat --abbrev-commit
+	d = diff --color-words
+	dh = diff --color-words head
+	alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\\t => \\2/' | sort
