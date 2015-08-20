@@ -422,6 +422,7 @@ using `abort-recursive-edit'."
     "8" 'eyebrowse-switch-to-window-config-8
     "9" 'eyebrowse-switch-to-window-config-9
     "0" 'eyebrowse-switch-to-window-config-0)
+  (define-key company-active-map (kbd "C-w") 'evil-delete-backward-word)
 
   (mapc (lambda (mode) (add-to-list 'evil-emacs-state-modes mode))
         '(shell-mode
