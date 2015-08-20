@@ -107,16 +107,16 @@ fsha() {
 while true; do
     [[ -z $sha || -z $target_branch ]] && _error "bad selection from fzf"
     case $1 in
-        h|help)   _help ;;
-        s|sha)    sha=$(fsha) ;;
-        n|no-sha) no_cherry_pick=1 ;;
-        b|branch) target_branch=$(fbranch) ;;
-        d|debug)  debug=echo ;;
-        q|quiet)  exec > /dev/null ;;
-        pp)       push_current_branch=1
-                  push_target_branch=1 ;;
-        p)        push_target_branch=1 ;;
-        *)        break ;;
+        h|help|-h|--help)   _help ;;
+        s|sha)               sha=$(fsha) ;;
+        n|no-sha)            no_cherry_pick=1 ;;
+        b|branch)            target_branch=$(fbranch) ;;
+        d|debug)             debug=echo ;;
+        q|quiet)             exec > /dev/null ;;
+        pp)                  push_current_branch=1
+                             push_target_branch=1 ;;
+        p)                   push_target_branch=1 ;;
+        *)                   break ;;
     esac
     shift
 done
