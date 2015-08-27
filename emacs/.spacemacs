@@ -30,6 +30,8 @@
      org
      shell
      ;; evil-extra-text-objects
+     django
+     ruby-on-rails
      emoji
      games
      ranger
@@ -161,7 +163,7 @@ layers configuration."
                 auto-save-default nil
                 indent-tabs-mode nil)
   (setq
-   next-line-add-newlines t
+                                        ; next-line-add-newlines t
    kill-whole-line t
    sentence-end-double-space t
    fill-french-nobreak-p t
@@ -358,6 +360,22 @@ using `abort-recursive-edit'."
   (defvar xorg/sleep-delay 0.0
     "Seconds to sleep before forcing xorg off with dpms.")
 
+  ;; copy vim's mouse behavior
+  (defun my-move-cursor (event)
+    (interactive "e")
+    ;; (mouse-set-point event)
+    (let (event ov)
+      (track-mouse
+        (while (progn
+                 (setq event (read-event))
+                 (or (mouse-movement-p event)
+                     (memq (car-safe event) '(switch-frame select-window))))
+          ;; (mouse-set-point event)
+          (if ov (move-overlay ov (point)  (1+ (point)))
+            (setq ov (make-overlay (point) (1+ (point))))
+            (overlay-put ov 'face 'match))))
+      (when ov (delete-overlay ov))))
+
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
     "y" 'helm-M-x
@@ -366,6 +384,7 @@ using `abort-recursive-edit'."
     "js" 'just-one-space
     "med" 'edebug-defun
 
+    "bc" 'whitespace-cleanup
     "bf" 'follow-mode
     "bF" 'follow-delete-other-windows-and-split
 
@@ -403,6 +422,10 @@ using `abort-recursive-edit'."
     "8" 'eyebrowse-switch-to-window-config-8
     "9" 'eyebrowse-switch-to-window-config-9
     "0" 'eyebrowse-switch-to-window-config-0)
+
+  (after 'company
+    (define-key company-active-map (kbd "C-w") 'evil-delete-backward-word))
+
 
   (mapc (lambda (mode) (add-to-list 'evil-emacs-state-modes mode))
         '(shell-mode
