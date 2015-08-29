@@ -426,7 +426,7 @@ using `abort-recursive-edit'."
   (after 'company
     (define-key company-active-map (kbd "C-w") 'evil-delete-backward-word))
 
-  (mapc (lambda (mode) (add-to-list 'evil-emacs-state-modes mode))
+  (mapc (lambda (mode) (add-to-list 'evil-insert-state-modes mode))
         '(shell-mode
           text-mode))
 
