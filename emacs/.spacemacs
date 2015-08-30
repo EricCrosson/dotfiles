@@ -95,6 +95,8 @@
    ;; dotspacemacs-excluded-packages '()
    dotspacemacs-delete-orphan-packages t))
 
+;; TODO: add conf mode for screenrc files
+
 (defun dotspacemacs/init ()
   "Initialization function.
 This function is called at the very startup of Spacemacs
