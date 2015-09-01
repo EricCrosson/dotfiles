@@ -394,7 +394,8 @@ using `abort-recursive-edit'."
     "ot" (defun trash-empty () (interactive) (call-process "trash-empty"))
 
     "od" (defun xset-dim () (interactive) (shell-command (format "sleep %s && xset dpms force off" xorg/sleep-delay)))
-    "id" (defun insert-date () (interactive) (insert (format-time-string "%Y-%m-%d")))
+    "id" (defun insert-date () (interactive) (insert (format-time-string "%F")))
+    "iD" (defun insert-human-date () (interactive) (insert (format-time-string "%A %B %d, %Y")))
 
     "hff" 'find-function
     "hfv" 'find-variable
