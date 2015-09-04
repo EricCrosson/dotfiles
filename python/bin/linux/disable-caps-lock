@@ -7,17 +7,22 @@
 # Thanks to http://askubuntu.com/a/80301
 
 import sys
+import argparse
 from ctypes import *
 
 
 def disable_caps_lock():
-    """Disable an active caps lock."""
+    """Turn caps lock off.
+
+    This will have no effect if caps lock is already off.
+
+    """
     X11 = cdll.LoadLibrary('libX11.so.6')
     display = X11.XOpenDisplay(None)
     X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0))
     X11.XCloseDisplay(display)
 
 
-# TODO: accept --help
 if __name__ == '__main__':
+    argparse.ArgumentParser(description='Disable caps lock').parse_args()
     sys.exit(disable_caps_lock())
