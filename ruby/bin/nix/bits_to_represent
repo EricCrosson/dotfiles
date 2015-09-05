@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# Written by Eric Crosson
+# 2014-09-05
 
 # OPTIONAL todo: enable support for list input
 # OPTIONAL todo: enable support for smallest programming data type to hold input
