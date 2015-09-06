@@ -21,6 +21,8 @@
 #
 #########
 
+"""Set the xorg repeat rate to esc's favorite."""
+
 import sys
 import argparse
 from subprocess import call

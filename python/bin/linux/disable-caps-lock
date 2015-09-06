@@ -25,6 +25,8 @@
 #
 #########
 
+"""Disable caps lock."""
+
 import os
 import sys
 import argparse
