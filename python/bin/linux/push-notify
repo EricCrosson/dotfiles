@@ -1,0 +1,125 @@
+#!/usr/bin/env python
+# Written by Eric Crosson
+# 2015-09-06
+
+#########
+# License:
+#
+#             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#                    Version 2, December 2004
+#
+# Copyright (C) 2015 Eric Crosson
+#
+# Everyone is permitted to copy and distribute verbatim or modified
+# copies of this license document, and changing it is allowed as long
+# as the name is changed.
+#
+#            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+#
+#  0. You just DO WHAT THE FUCK YOU WANT TO.
+#
+#########
+
+"""
+
+This script wraps a shell command and sends a pushover notification when:
+  - the command begins execution, noting pwd and the command that has begin; and
+  - the command finishes execution, noting the command's exit code.
+
+"""
+
+import os
+import sys
+import yaml
+import time
+import argparse
+
+
+LastTransmission = 0
+
+
+class DependencyException(Exception):
+    pass
+
+
+def pushover_source_credentials():
+    """Read pushover credentials from project-specific yaml resource file."""
+    cred_file = '%s/res/pushover.yml' % os.path.dirname(__file__)
+    handle = open(cred_file)
+    dictionary = yaml.safe_load(handle)
+    handle.close()
+    return dictionary
+
+
+def pushover_ensure_transmission_delay():
+    """Ensure a minimum of two seconds have elapsed between successive pushover
+    transmissions.
+
+    This is an experimental value that seems to completely eradicate weirdness
+    caused by rapid server pings. This could be technology implemented on
+    pushover servers to prohibit spam.
+
+    """
+
+    while time.time() <= LastTransmission + 2:
+        time.sleep(0.1)
+
+    LastTransmission = time.time()
+
+
+def pushover_notify(credentials, title, message):
+    """Send notification via pushover.
+
+    :param:   credentials    credentials from yaml resource file
+    :param:   title          title of pushover message to send
+    :param:   message        message of pushover message to send
+    :return:  exit code of curl command that invokes pushover notifications
+
+    """
+    if call(['which', 'curl']):
+        raise DependencyException('missing dependency: install curl')
+
+    command = ['curl', '-s', '-k',
+               '--form-string', 'user=%s' % credentials['user_key'],
+               '--form-string', 'token=%s' % credentials['app_token'],
+               '--form-string', 'title=%s' % title,
+               '--form-string', 'message=%s' % message,
+               credentials['pushover_url']]
+
+    pushover_ensure_transmission_delay()
+    return call(command)
+
+
+
+def pushover_wrap(command_shellwords, credentials):
+    """Wrap a shell command with pushover notifications, containing
+       - command to be run, and
+       - exit code
+
+    :param:  command_shellwords   array containing shell command to wrap
+    :return: exit code of command_shellwords
+
+    """
+    pushover_notify(credentials,
+                    'Action invoked: %s' % os.getcwd(),
+                    command_shellwords.join(' '))
+
+    exit_code = call(command_shellwords)
+    print('Exit code: %s' % exit_code)
+
+    pushover_notify(credentials,
+                    'Action completed: %s' % os.getcwd(),
+                    'Exit code: %s' % exit_code)
+
+    return exit_code
+
+
+if __name__ == '__main__':
+    # TODO; add argparse example
+    argparse \
+        .ArgumentParser(description='Wrap a shell command and send a pushover notification with exit code.') \
+        .parse_args()
+    creds = pushover_source_credentials()
+    creds['app_token'] = creds['app_tokens']['ibm']
+    sys.exit(pushover_wrap(sys.argv, creds))
