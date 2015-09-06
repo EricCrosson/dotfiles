@@ -6,6 +6,7 @@
 #
 # Thanks to http://askubuntu.com/a/80301
 
+import os
 import sys
 import argparse
 from ctypes import *
@@ -23,6 +24,14 @@ def disable_caps_lock():
     X11.XCloseDisplay(display)
 
 
+def running_ubuntu():
+    """Return true if the current OS is a version of Ubuntu."""
+    return 'ubuntu' in os.uname().release
+
+
 if __name__ == '__main__':
     argparse.ArgumentParser(description='Disable caps lock').parse_args()
+    if not running_ubuntu():
+        print('Only Ubuntu is currently supported')
+        sys.exit(1)
     sys.exit(disable_caps_lock())
