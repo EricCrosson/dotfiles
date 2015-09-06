@@ -21,6 +21,8 @@
 #
 #########
 
+# TODO: add helpstring
+
 # Convert +number+ from +radix_old+ to +radix_new+.
 def rprint(number, radix_old, radix_new)
   number.to_i(radix_old.to_i).to_s(radix_new.to_i).upcase
