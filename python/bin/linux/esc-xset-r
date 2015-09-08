@@ -30,10 +30,11 @@ from subprocess import call
 INITIAL_DELAY = 200
 REPEAT_DELAY = 60
 
+
 def esc_xset_r():
     """Set the xorg repeat rate to esc's favorite."""
     esc_xset_command = 'xset r rate %s %s' % (INITIAL_DELAY, REPEAT_DELAY)
-    call(esc_xset_command.split())
+    return call(esc_xset_command.split())
 
 
 if __name__ == '__main__':

@@ -65,9 +65,9 @@ xmon_screen_invocation() {
     # If a screen based on the deault name already exists, attach to
     # it. If it doesn't exist yet, create one and attach to it.
     if [[ $(screen -ls | grep "[0-9]*.${xmon_name}") ]]; then
-	$1 "screen -x ${xmon_name}"
+        $1 "screen -x ${xmon_name}"
     else
-	$1 "screen -S ${xmon_name}"
+        $1 "screen -S ${xmon_name}"
     fi
 }
 
