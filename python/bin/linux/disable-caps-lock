@@ -45,14 +45,14 @@ def disable_caps_lock():
     X11.XCloseDisplay(display)
 
 
-def running_ubuntu():
+def running_distro(distribution):
     """Return true if the current OS is a version of Ubuntu."""
-    return 'ubuntu' in os.uname().release
+    return distribution.lower() in os.uname().release.lower()
 
 
 if __name__ == '__main__':
     argparse.ArgumentParser(description='Disable caps lock').parse_args()
-    if not running_ubuntu():
+    if not running_distro('ubuntu'):
         print('Only Ubuntu is currently supported')
         sys.exit(1)
     sys.exit(disable_caps_lock())
