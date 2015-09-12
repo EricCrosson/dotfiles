@@ -143,7 +143,8 @@ an exhaustive list of all spacemacs configuration options."
    ;; If non nil advises quit functions to keep server open when quitting.
    ;; dotspacemacs-persistent-server t
    ;; dotspacemacs-default-package-repository t
-   dotspacemacs-search-tools '("ag" "pt" "ack" "grep")))
+   dotspacemacs-search-tools '("ag" "pt" "ack" "grep")
+   dotspacemacs-which-key-position 'right))
 
 (defun dotspacemacs/config ()
   "Configuration function.
