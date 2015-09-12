@@ -9,7 +9,7 @@ backtick 1 86400 86400 ruby -e "require 'date'; puts '%.5f' % ((Date.today.yday.
 
 hardstatus on           # status line at the bottom
 hardstatus alwayslastline
-hardstatus string "%{.kW}%-w%{.rW}%f%n %t%{-}%+w %=%{..r} %{..c}[%H %l] %{..g} %m/%d %c %{..y} | %1` "
+hardstatus string "%{.kW}%-w%{.rW}%f%n %t%{-}%+w %=%{..r}%{..c}[%H %l] %{..g} %m/%d %c %{..y} | %1` "
 
 ### For multiuser screen sharing
 multiuser on
