@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+# Eric Crosson
+# 2015-08-31
+#
+# This script disables an active caps lock.
+#
+# Thanks to http://askubuntu.com/a/80301
+
+#########
+# License:
+#
+#             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#                    Version 2, December 2004
+#
+# Copyright (C) 2004 Eric Crosson <esc@ericcrosson.com>
+#
+# Everyone is permitted to copy and distribute verbatim or modified
+# copies of this license document, and changing it is allowed as long
+# as the name is changed.
+#
+#            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+#
+#  0. You just DO WHAT THE FUCK YOU WANT TO.
+#
+#########
+
+"""Disable caps lock."""
+
+import os
+import sys
+import argparse
+from ctypes import *
+
+
+def disable_caps_lock():
+    """Turn caps lock off.
+
+    This will have no effect if caps lock is already off.
+
+    """
+    X11 = cdll.LoadLibrary('libX11.so.6')
+    display = X11.XOpenDisplay(None)
+    X11.XkbLockModifiers(display, c_uint(0x0100), c_uint(2), c_uint(0))
+    X11.XCloseDisplay(display)
+
+
+def running_distro(distribution):
+    """Return true if the current OS is a version of Ubuntu."""
+    return distribution.lower() in os.uname().release.lower()
+
+
+if __name__ == '__main__':
+    argparse.ArgumentParser(description='Disable caps lock').parse_args()
+    if not running_distro('ubuntu'):
+        print('Only Ubuntu is currently supported')
+        sys.exit(1)
+    sys.exit(disable_caps_lock())

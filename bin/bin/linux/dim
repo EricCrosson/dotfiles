@@ -1,1 +1,0 @@
-xset dpms force off

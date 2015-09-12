@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# ensure the gnome-screensaver beast stayeth slayed
-hunt-gnome-screensaver &
-
 sudo killall gnome-screensaver
 [[ -z $(ps -e | grep "\bxscreensaver\b") ]] && xscreensaver -no-splash &
 

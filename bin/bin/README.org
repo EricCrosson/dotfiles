@@ -1,5 +1,0 @@
-* bin
-
-Here lies the collection of scripts that have made it into my
-toolbox. Each dir is named in the context in which I find it useful to
-have in my =$PATH=.

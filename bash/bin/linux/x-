@@ -93,7 +93,7 @@ done
 source_esc_xorg_config_files() {
 
     for src in $(ls -1 $(dirname $(readlink -e "$0"))/esc-x!(*.*)); do
-	${execute} ${src} 2>/dev/null
+        ${execute} ${src} 2>/dev/null
     done
 }
 

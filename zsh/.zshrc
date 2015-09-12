@@ -94,3 +94,6 @@ alias cpi=cherry-pick-into
 # avoid submitting these commands into the shell's history
 alias nautilus=' nautilus'
 alias powertop=' sudo powertop'
+
+alias pdown='shutdown -h now'
+alias sudo='sudo '

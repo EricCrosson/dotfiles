@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+# Written by Eric Crosson
+# 2015-09-06
+
+#########
+# License:
+#
+#             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#                    Version 2, December 2004
+#
+# Copyright (C) 2004 Eric Crosson <esc@ericcrosson.com>
+#
+# Everyone is permitted to copy and distribute verbatim or modified
+# copies of this license document, and changing it is allowed as long
+# as the name is changed.
+#
+#            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+#
+#  0. You just DO WHAT THE FUCK YOU WANT TO.
+#
+#########
+
+"""Set the xorg repeat rate to esc's favorite."""
+
+import sys
+import argparse
+from subprocess import call
+
+INITIAL_DELAY = 200
+REPEAT_DELAY = 60
+
+
+def esc_xset_r():
+    """Set the xorg repeat rate to esc's favorite."""
+    esc_xset_command = 'xset r rate %s %s' % (INITIAL_DELAY, REPEAT_DELAY)
+    return call(esc_xset_command.split())
+
+
+if __name__ == '__main__':
+    argparse \
+        .ArgumentParser(description="Set the xorg keyboard repeat rate to esc's favorite") \
+        .parse_args()
+    sys.exit(esc_xset_r())

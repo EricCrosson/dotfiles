@@ -44,7 +44,7 @@
 ## @brief Internal use only.
 ## @details Location of X kbd map sans Caps Lock.
 ## @ingroup XmapnocapsUsage
-declare -rl modified_xmap=esc-xmap-nocaps.map
+declare -rl modified_xmap=res/esc-xmap-nocaps.map
 
 ## @fn modify_xmap
 ## @brief modify current Xorg map to value of modified_xmap

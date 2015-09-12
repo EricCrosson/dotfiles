@@ -6,7 +6,7 @@ require 'fileutils'
 input = ARGF.read
 file = "/tmp/#{Digest::MD5.hexdigest input}.emacs-pager"
 
-File.open(file, 'w') {|f| f.write(input)}
+File.open(file, 'w') { |f| f.write(input) }
 
 puts 'reading into emacs...'
 
