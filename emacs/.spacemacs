@@ -214,14 +214,8 @@ layers configuration."
   (add-hook 'org-shiftright-final-hook 'windmove-right)
   (windmove-default-keybindings)
 
-  ;; Enable save desktop
-  (setq desktop-base-filename "default"
-        desktop-load-locked-desktop t     ;never freeze after crash
-        backup-by-copying-when-linked t
-        backup-by-copying-when-mismatch t)
-  ;; ensure desktop-save dir exists
-  (when (boundp 'desktop-path) (mkdir (car desktop-path) t))
   (desktop-save-mode 1)
+  (desktop-read)
 
   ;; I will not touch vermin
   (setq mouse-yank-at-point t)
