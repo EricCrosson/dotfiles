@@ -78,7 +78,7 @@ def pushover_notify(credentials, title, message):
     :return:  exit code of curl command that invokes pushover notifications
 
     """
-    if call(['which', 'curl'], stdout=open(os.devnull, 'w')):
+    if call('which curl'.split(), stdout=open(os.devnull, 'w')):
         raise DependencyException('missing dependency: install curl')
 
     pushover_ensure_transmission_delay()
