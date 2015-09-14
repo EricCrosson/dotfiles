@@ -11,7 +11,6 @@ from subprocess import call
 
 
 def tags_generate(directory):
-    print("Using directory %s" % directory)
     command = 'find %s -regex ".*\.[cChH]\(pp\)?" -print | etags -' % directory
     return call(command.split())
 
