@@ -24,17 +24,17 @@
 """
 
 This script wraps a shell command and sends a pushover notification when:
-  - the command begins execution, noting pwd and the command that has begin; and
+  - the command begins execution, noting pwd and the started command; and
   - the command finishes execution, noting the command's exit code.
 
 """
 
 import os
 import sys
-import yaml
-import time
 import argparse
+from yaml import safe_load
 from subprocess import call
+from time import time, sleep
 
 
 LastTransmission = 0
@@ -48,13 +48,13 @@ def pushover_source_credentials():
     """Read pushover credentials from project-specific yaml resource file."""
     cred_file = '%s/res/pushover.yml' % os.path.dirname(__file__)
     handle = open(cred_file)
-    dictionary = yaml.safe_load(handle)
+    dictionary = safe_load(handle)
     handle.close()
     return dictionary
 
 
-def pushover_ensure_transmission_delay():
-    """Ensure a minimum of two seconds have elapsed between successive pushover
+def pushover_ensure_transmission_delay(delay = 2):
+    """Ensure a number of seconds have elapsed between successive pushover
     transmissions.
 
     This is an experimental value that seems to completely eradicate weirdness
@@ -62,12 +62,11 @@ def pushover_ensure_transmission_delay():
     pushover servers to prohibit spam.
 
     """
-
     global LastTransmission
-    while time.time() <= LastTransmission + 2:
-        time.sleep(0.1)
+    while time() <= LastTransmission + delay:
+        sleep(0.1)
 
-    LastTransmission = time.time()
+    LastTransmission = time()
 
 
 def pushover_notify(credentials, title, message):
@@ -82,15 +81,14 @@ def pushover_notify(credentials, title, message):
     if call(['which', 'curl'], stdout=open(os.devnull, 'w')):
         raise DependencyException('missing dependency: install curl')
 
+    pushover_ensure_transmission_delay()
+
     command = ['curl', '-s', '-k',
                '--form-string', 'user=%s' % credentials['user_key'],
                '--form-string', 'token=%s' % credentials['app_token'],
                '--form-string', 'title=%s' % title,
                '--form-string', 'message=%s' % message,
                credentials['pushover_url']]
-
-    pushover_ensure_transmission_delay()
-
     exit_code = call(command)
     print('')
     return exit_code
