@@ -166,7 +166,6 @@ layers configuration."
                 auto-save-default nil
                 indent-tabs-mode nil)
   (setq
-                                        ; next-line-add-newlines t
    kill-whole-line t
    sentence-end-double-space t
    fill-french-nobreak-p t
