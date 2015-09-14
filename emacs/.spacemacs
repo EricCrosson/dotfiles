@@ -214,6 +214,7 @@ layers configuration."
   (add-hook 'org-shiftright-final-hook 'windmove-right)
   (windmove-default-keybindings)
 
+  (setq desktop-load-locked-desktop t)
   (desktop-save-mode 1)
   (desktop-read)
 
