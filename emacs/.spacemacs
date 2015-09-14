@@ -388,9 +388,18 @@ using `abort-recursive-edit'."
     ;; TODO: autoload these defuns
     "ot" (defun trash-empty () (interactive) (call-process "trash-empty"))
 
-    "od" (defun xset-dim () (interactive) (shell-command (format "sleep %s && xset dpms force off" xorg/sleep-delay)))
-    "id" (defun insert-date () (interactive) (insert (format-time-string "%F")))
-    "iD" (defun insert-human-date () (interactive) (insert (format-time-string "%A %B %e, %Y")))
+    "od" (defun xset-dim ()
+           (interactive)
+           (shell-command
+            (format "sleep %s && xset dpms force off" xorg/sleep-delay)))
+
+    "id" (defun insert-date ()
+           (interactive)
+           (insert (format-time-string "%F")))
+
+    "iD" (defun insert-human-date ()
+           (interactive)
+           (insert (format-time-string "%A %B %e, %Y")))
 
     "hff" 'find-function
     "hfv" 'find-variable
@@ -399,7 +408,6 @@ using `abort-recursive-edit'."
 
     "rn" 'revert-buffer-no-confirm
     "rb" 'revert-buffer
-    "xs" 'save-buffer
 
     "bB" 'bury-buffer
     "cm" 'recompile
