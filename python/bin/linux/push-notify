@@ -120,7 +120,6 @@ def pushover_wrap(command_shellwords, credentials):
 
 
 if __name__ == '__main__':
-    print(os.getcwd())
     parser = argparse.ArgumentParser(
         description='Wrap command, send pushover notification w/ exit code',
         epilog='pushover shell_command cmd_arg1 cmd_arg2\n')
