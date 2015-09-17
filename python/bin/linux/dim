@@ -4,6 +4,8 @@
 
 """Turn off the xorg display."""
 
+# TODO: add license
+
 from sys import exit
 from time import sleep
 from subprocess import call
