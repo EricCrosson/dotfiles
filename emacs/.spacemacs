@@ -373,6 +373,13 @@ using `abort-recursive-edit'."
             (overlay-put ov 'face 'match))))
       (when ov (delete-overlay ov))))
 
+  ;; use /* */ for c comments instead of //
+  (mapc (lambda (mode)
+          (add-hook mode (lambda () (setq comment-start "/* "
+                                          comment-end " */"))))
+        '(c-mode-hook
+          c++-mode-hook))
+
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
     "y" 'helm-M-x
