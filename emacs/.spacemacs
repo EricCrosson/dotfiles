@@ -165,6 +165,7 @@ layers configuration."
   (setq-default size-indication-mode t
                 auto-save-default nil
                 indent-tabs-mode nil)
+  (add-hook 'prog-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
   (setq
                                         ; next-line-add-newlines t
    kill-whole-line t
