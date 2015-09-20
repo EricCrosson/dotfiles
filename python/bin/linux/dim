@@ -1,0 +1,26 @@
+#!/usr/bin/env python
+# Written by Eric Crosson
+# 2015-09-07
+
+"""Turn off the xorg display."""
+
+# TODO: add license
+
+from sys import exit
+from time import sleep
+from subprocess import call
+from argparse import ArgumentParser
+
+
+def dpms_off(delay = 0):
+    """Turn off the xorg display."""
+    sleep(float(delay))
+    return call('xset dpms force off'.split())
+
+
+if __name__ == '__main__':
+    parser = ArgumentParser(description='Turn off the xorg display')
+    parser.add_argument('-d', '--delay', default=0,
+                        help='float seconds to delay before dimming display')
+    args, unknown = parser.parse_known_args()
+    exit(dpms_off(args.delay))

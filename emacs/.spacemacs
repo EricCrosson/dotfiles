@@ -167,7 +167,6 @@ layers configuration."
                 indent-tabs-mode nil)
   (add-hook 'prog-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
   (setq
-                                        ; next-line-add-newlines t
    kill-whole-line t
    sentence-end-double-space t
    fill-french-nobreak-p t
@@ -215,14 +214,9 @@ layers configuration."
   (add-hook 'org-shiftright-final-hook 'windmove-right)
   (windmove-default-keybindings)
 
-  ;; Enable save desktop
-  (setq desktop-base-filename "default"
-        desktop-load-locked-desktop t     ;never freeze after crash
-        backup-by-copying-when-linked t
-        backup-by-copying-when-mismatch t)
-  ;; ensure desktop-save dir exists
-  (when (boundp 'desktop-path) (mkdir (car desktop-path) t))
+  (setq desktop-load-locked-desktop t)
   (desktop-save-mode 1)
+  (desktop-read)
 
   ;; I will not touch vermin
   (setq mouse-yank-at-point t)
@@ -380,6 +374,13 @@ using `abort-recursive-edit'."
             (overlay-put ov 'face 'match))))
       (when ov (delete-overlay ov))))
 
+  ;; use /* */ for c comments instead of //
+  (mapc (lambda (mode)
+          (add-hook mode (lambda () (setq comment-start "/* "
+                                          comment-end " */"))))
+        '(c-mode-hook
+          c++-mode-hook))
+
   (global-set-key (kbd "M-x") 'helm-M-x)
   (evil-leader/set-key
     "y" 'helm-M-x
@@ -395,9 +396,18 @@ using `abort-recursive-edit'."
     ;; TODO: autoload these defuns
     "ot" (defun trash-empty () (interactive) (call-process "trash-empty"))
 
-    "od" (defun xset-dim () (interactive) (shell-command (format "sleep %s && xset dpms force off" xorg/sleep-delay)))
-    "id" (defun insert-date () (interactive) (insert (format-time-string "%F")))
-    "iD" (defun insert-human-date () (interactive) (insert (format-time-string "%A %B %e, %Y")))
+    "od" (defun xset-dim ()
+           (interactive)
+           (shell-command
+            (format "sleep %s && xset dpms force off" xorg/sleep-delay)))
+
+    "id" (defun insert-date ()
+           (interactive)
+           (insert (format-time-string "%F")))
+
+    "iD" (defun insert-human-date ()
+           (interactive)
+           (insert (format-time-string "%A %B %e, %Y")))
 
     "hff" 'find-function
     "hfv" 'find-variable
@@ -406,7 +416,6 @@ using `abort-recursive-edit'."
 
     "rn" 'revert-buffer-no-confirm
     "rb" 'revert-buffer
-    "xs" 'save-buffer
 
     "bB" 'bury-buffer
     "cm" 'recompile

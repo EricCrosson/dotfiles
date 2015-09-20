@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Written by Eric Crosson
+# 2015-09-17
+
+lowriter --convert-to pdf $@
