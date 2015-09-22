@@ -109,7 +109,8 @@ an exhaustive list of all spacemacs configuration options."
    dotspacemacs-always-show-changelog t
    dotspacemacs-auto-save-file-location 'cache
    dotspacemacs-startup-lists '(recents projects bookmarks)
-   dotspacemacs-themes '(bliss
+   dotspacemacs-themes '(spacemacs-dark
+                         bliss
                          solarized-light
                          leuven)
    dotspacemacs-colorize-cursor-according-to-state t
