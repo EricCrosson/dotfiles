@@ -16,4 +16,5 @@
 	ll = log --stat --abbrev-commit
 	d = diff --color-words
 	dh = diff --color-words head
+        br = branch
 	alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\\t => \\2/' | sort
