@@ -10,10 +10,8 @@
   "Initialize `dired+'."
 
   (setq diredp-hide-details-initially-flag t)
-  (use-package dired+
-    :defer t)
+  (use-package dired+)
   (use-package dired-x
-    :defer t
     :config
     (setq-default dired-omit-files-p t)
     (setq dired-omit-files
