@@ -12,8 +12,9 @@ from argparse import ArgumentParser
 
 def sound_bell(times = 1):
     """Sound the terminal bell."""
-    for iteration in range(times):
+    for iteration in range(int(times)):
         print('\a')
+        sleep(0.2)
     return times
 
 
@@ -22,4 +23,6 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--times', default=1,
                         help='number of times to ring the bell')
     args, unknown = parser.parse_known_args()
+    if unknown:
+        args.times = unknown[0]
     exit(sound_bell(args.times))
