@@ -10,15 +10,33 @@ import argparse
 from subprocess import call
 
 
+def is_language_file(file, *file_extensions):
+    """todo: document"""
+    known_languages = {'c': ['c', 'h'],
+                       'cpp': ['c', 'h', 'cpp', 'hpp'],
+                       'c++': ['c', 'h', 'cpp', 'hpp']}
+    file = file.lower()
+    for ext in file_extensions:
+        possible_matches = known_languages[ext]
+        for possible_match in possible_matches:
+            if file.endswith('.%s' % possible_match):
+                return True
+    return False
+
+
 def tags_generate(directory):
     """Generate etags in directory."""
-    command = 'find %s -regex ".*\.[cChH]\(pp\)?" -print | etags -' % directory
-    return call(command.split())
+    print(directory)
+    source_files = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if is_language_file(file, 'c', 'c++'):
+                source_files.append(os.path.join(root, file))
+    return call(['etags'] + source_files)
 
 
 if __name__ == '__main__':
-    print(sys.argv)
     args, unknown = argparse. \
-                    ArgumentParser(description='Generate tags for c/cpp files')\
-                    .parse_known_args()
+                    ArgumentParser(description='Generate tags for c/cpp files'). \
+                    parse_known_args()
     sys.exit(tags_generate(unknown if unknown else os.getcwd()))
