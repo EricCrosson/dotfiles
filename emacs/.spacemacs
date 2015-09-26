@@ -430,7 +430,6 @@ using `abort-recursive-edit'."
     "1" 'eyebrowse-switch-to-window-config-1
     "2" 'eyebrowse-switch-to-window-config-2
     "3" 'eyebrowse-switch-to-window-config-3
-    "4" 'eyebrowse-switch-to-window-config-4
     "5" 'eyebrowse-switch-to-window-config-5
     "6" 'eyebrowse-switch-to-window-config-6
     "7" 'eyebrowse-switch-to-window-config-7
@@ -474,7 +473,7 @@ using `abort-recursive-edit'."
    (quote
     ("e87a2bd5abc8448f8676365692e908b709b93f2d3869c42a4371223aab7d9cf8" "356f57a98f35c8ead5a349408cab69f8d4d92baea131e9531611d0d82190fedf" "ea489f6710a3da0738e7dbdfc124df06a4e3ae82f191ce66c2af3e0a15e99b90" default)))
  '(magit-use-overlays nil)
- '(org-agenda-files (quote ("~/org/ibm.org")))
+ '(org-agenda-files (quote ("~/workspace/classes/his320r/notes.org")))
  '(paradox-github-token t)
  '(ring-bell-function (quote ignore) t)
  '(safe-local-variable-values
