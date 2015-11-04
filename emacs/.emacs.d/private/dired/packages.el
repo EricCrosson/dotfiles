@@ -31,7 +31,7 @@
                                          ("\\.zip" "dtrx -n --one=here")
                                          ("\\.*$" "xdg-open")))
     (add-to-list 'dired-compress-file-suffixes '("\\.zip$" "unzip")))
-  (setq dired-listing-switches "-alhv")
+  (setq dired-listing-switches "-lhv")
   (setq dired-recursive-copies 'always)
   (after "ibuf-ext"
     (add-to-list 'ibuffer-saved-filter-groups
