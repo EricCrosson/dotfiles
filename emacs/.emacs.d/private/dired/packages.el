@@ -56,13 +56,15 @@
 
   (setq dired-dwim-target t)
   (after "dired"
+    (defun dired-find-parent-directory ()
+      (interactive)
+      (find-alternate-file ".."))
     (define-key dired-mode-map (kbd "<right>") 'dired-find-alternate-file)
-    (define-key dired-mode-map (kbd "<left>") (defun dired-find-parent-directory ()
-                                                (interactive)
-                                                (find-alternate-file "..")))
+    (define-key dired-mode-map (vector 'remap 'evil-forward-char) 'dired-find-alternate-file)
+    (define-key dired-mode-map (kbd "<left>") 'dired-find-parent-directory)
+    (define-key dired-mode-map (vector 'remap 'evil-backward-char) 'dired-find-parent-directory)
 
-    (define-key dired-mode-map
-      (vector 'remap 'beginning-of-buffer)
+    (define-key dired-mode-map (vector 'remap 'beginning-of-buffer)
       (defun dired-back-to-top ()
         (interactive)
         (beginning-of-buffer)
@@ -70,8 +72,7 @@
           (beginning-of-buffer))
         (dired-next-line 1)))
 
-    (define-key dired-mode-map
-      (vector 'remap 'end-of-buffer)
+    (define-key dired-mode-map (vector 'remap 'end-of-buffer)
       (defun dired-jump-to-bottom ()
         (interactive)
         (end-of-buffer)
