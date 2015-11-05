@@ -109,7 +109,8 @@ an exhaustive list of all spacemacs configuration options."
    dotspacemacs-always-show-changelog t
    dotspacemacs-auto-save-file-location 'cache
    dotspacemacs-startup-lists '(recents projects bookmarks)
-   dotspacemacs-themes '(bliss
+   dotspacemacs-themes '(spacemacs-dark
+                         bliss
                          solarized-light
                          leuven)
    dotspacemacs-colorize-cursor-according-to-state t
@@ -151,9 +152,12 @@ an exhaustive list of all spacemacs configuration options."
 This function is called at the very end of Spacemacs initialization after
 layers configuration."
 
+  (add-to-list 'auto-mode-alist '("\\.urdf\\'" . xml-mode))
+  (add-to-list 'auto-mode-alist '("\\.launch\\'" . xml-mode))
   (global-hl-line-mode nil)
   (rainbow-mode t)
-  ;; (nyan-mode t)
+  (nyan-mode t)
+  (setq evil-move-beyond-eol t)
 
   (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
 
@@ -473,7 +477,7 @@ using `abort-recursive-edit'."
    (quote
     ("e87a2bd5abc8448f8676365692e908b709b93f2d3869c42a4371223aab7d9cf8" "356f57a98f35c8ead5a349408cab69f8d4d92baea131e9531611d0d82190fedf" "ea489f6710a3da0738e7dbdfc124df06a4e3ae82f191ce66c2af3e0a15e99b90" default)))
  '(magit-use-overlays nil)
- '(org-agenda-files (quote ("~/org/ibm.org")))
+ '(org-agenda-files (quote ("~/workspace/classes/his320r/notes.org")))
  '(paradox-github-token t)
  '(ring-bell-function (quote ignore) t)
  '(safe-local-variable-values

@@ -7,9 +7,8 @@
 (setq savehist-packages '(savehist))
 
 (defun savehist/init-savehist ()
-  "Initialize my package"
+  "Initialize `savehist'."
   (use-package savehist
-    :defer t
     :config
     (setq savehist-save-minibuffer-history 1)
     (setq savehist-additional-variables
