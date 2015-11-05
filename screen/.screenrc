@@ -5,11 +5,16 @@ defscrollback 15000     # keep n lines of the buffer
 altscreen on            # prevents the excessive output of programs > buffer
 markkeys "h=^b:j=^n:l=^f:$=^e:k=^p:0=^a"  # emacs keybindings for copy mode
 
-backtick 1 86400 86400 ruby -e "require 'date'; puts '%.5f' % ((Date.today.yday.to_i-4)/365.25+(Date.today.year.to_i-1993))" 2>/dev/null || echo "no ruby"
+backtick 1 86400 86400 ruby -e "require 'date'; puts '%.4f' % ((Date.today.yday.to_i-4)/365.25+(Date.today.year.to_i-1993))" 2>/dev/null || echo "no ruby"
+backtick 3 60 60 $HOME/bin/linux/get_short_loadavg
+backtick 4 35 35 $HOME/bin/linux/get_cputemp
+backtick 5 35 35 $HOME/bin/linux/get_freemem
+backtick 6 35 35 $HOME/bin/linux/get_freeswap
+# backtick 7 35 35 $HOME/bin/linux/get_volume
 
 hardstatus on           # status line at the bottom
 hardstatus alwayslastline
-hardstatus string "%{.kW}%-w%{.rW}%f%n %t%{-}%+w %=%{..r}%{..c} [%H %l] %{..g} %m/%d %c %{..y} %1` "
+hardstatus string "%{.kW}%-w%{.rW}%f%n %t%{-}%+w %=%{..m}[%H %3` %4`]%{..c}[Mem: %5` %6`]%{..g}[%m/%d %c]%{..y}[%1`]"
 
 ### For multiuser screen sharing
 multiuser on
