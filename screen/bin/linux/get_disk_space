@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+df -h 2>/dev/null | grep /$ | awk '{print $4}'

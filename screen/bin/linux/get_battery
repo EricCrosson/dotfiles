@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+percent=$(acpi | grep Battery | head -n1 | awk '{print $4}' | tr -d ,.)
+[[ $(acpi | grep Battery | head -n1 | grep Charging) ]] && charging="+" #"⚡"
+echo "${percent}${charging} "

@@ -1,0 +1,2 @@
+#!/bin/bash
+free -mh | grep Swap | awk '{print $4}'
