@@ -147,14 +147,16 @@ an exhaustive list of all spacemacs configuration options."
    dotspacemacs-search-tools '("ag" "pt" "ack" "grep")
    dotspacemacs-which-key-position 'right))
 
-(defun dotspacemacs/config ()
+(defun dotspacemacs/user-config ()
   "Configuration function.
 This function is called at the very end of Spacemacs initialization after
 layers configuration."
 
+  (add-to-list 'auto-mode-alist '("\\.urdf\\'" . xml-mode))
+  (add-to-list 'auto-mode-alist '("\\.launch\\'" . xml-mode))
   (global-hl-line-mode nil)
   (rainbow-mode t)
-  ;; (nyan-mode t)
+  (nyan-mode t)
   (setq evil-move-beyond-eol t)
 
   (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
@@ -431,6 +433,7 @@ using `abort-recursive-edit'."
     "1" 'eyebrowse-switch-to-window-config-1
     "2" 'eyebrowse-switch-to-window-config-2
     "3" 'eyebrowse-switch-to-window-config-3
+    "4" 'eyebrowse-switch-to-window-config-4
     "5" 'eyebrowse-switch-to-window-config-5
     "6" 'eyebrowse-switch-to-window-config-6
     "7" 'eyebrowse-switch-to-window-config-7
