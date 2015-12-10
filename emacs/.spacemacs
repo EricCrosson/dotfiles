@@ -30,8 +30,8 @@
      org
      shell
      ;; evil-extra-text-objects
-     django
-     ruby-on-rails
+     ;; django
+     ;; ruby-on-rails
      emoji
      games
      ranger
@@ -54,7 +54,7 @@
      (colors :variables
              colors-enable-nyan-cat-progress-bar ,(display-graphic-p))
      latex
-     floobits
+     ;; floobits
      arduino
      restclient
      syntax-checking
@@ -68,7 +68,7 @@
      highlight-stages
      focus
      misc-cmds
-     chess
+     ;; chess
      writegood-mode
      bliss
      savehist
@@ -220,7 +220,7 @@ layers configuration."
 
   (setq desktop-load-locked-desktop t)
   (desktop-save-mode 1)
-  (desktop-read)
+  (ignore-errors (desktop-read))
 
   ;; I will not touch vermin
   (setq mouse-yank-at-point t)
