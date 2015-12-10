@@ -97,3 +97,4 @@ alias powertop=' sudo powertop'
 
 alias pdown='shutdown -h now'
 alias sudo='sudo '
+alias l='ls -lahv '
