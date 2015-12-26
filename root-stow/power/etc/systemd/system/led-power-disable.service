@@ -1,0 +1,10 @@
+[Unit]
+Description=Silence HD
+After=suspend.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/eric/bin/linux/led-disable-power
+
+[Install]
+WantedBy=suspend.target basic.target
