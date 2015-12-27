@@ -2,6 +2,7 @@
 *.o
 *.gz
 *~
+/gnome/.local
 /emacs/.emacs.d/quelpa
 /emacs/.emacs.d/ac-comphist.dat
 /emacs/.emacs.d/session.*
