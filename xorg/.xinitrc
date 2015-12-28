@@ -18,13 +18,14 @@ gconftool-2 --type string --set /apps/gnome-power-manager/buttons/lid_ac "nothin
 xset r rate 200 60
 
 [[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
-
-# TODO: put these somewhere, don't keep them here for reference
-# expose X session to VNC
-# ((sleep $delay_to_stable_xorg); x11vnc -display :0 -forever -passwd raptor -bg ) &
+feh --bg-scale $HOME/.config/bspwm/wallpapers/wallpaper.png
 
 # exec dwm
 # exec i3
 exec gnome-session
 # exec xmonad
 # exec awesome
+
+sxhkd &
+urxvt &
+exec bspwm
