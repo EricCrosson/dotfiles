@@ -52,7 +52,7 @@ export PATH="$HOME/bin/nix:$HOME/bin/linux:$HOME/bin:/usr/local/bin:/usr/bin:/bi
 
 source $ZSH/oh-my-zsh.sh
 [ -f /usr/bin/virtualenvwrapper.sh ] && source /usr/bin/virtualenvwrapper.sh
-[ -f /usr/bin/local/virtualenvwrapper.sh ] && source /usr/bin/local/virtualenvwrapper.sh
+[ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh
 unalias d
 
 # You may need to manually set your language environment
@@ -98,3 +98,4 @@ alias powertop=' sudo powertop'
 alias pdown='shutdown -h now'
 alias sudo='sudo '
 alias l='ls -lahv '
+export EDITOR=$(which vim)
