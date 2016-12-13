@@ -8,7 +8,7 @@ source $HOME/.zgen/zgen.zsh
 
 # if the init scipt doesn't exist
 if ! zgen saved; then
-    echo "Creating a zgen save"
+    # echo "Creating a zgen save"
 
     # zgen oh-my-zsh
 
@@ -19,10 +19,6 @@ if ! zgen saved; then
     # zgen load zsh-users/zsh-syntax-highlighting
 
     # bulk load
-    zgen loadall <<EOPLUGINS
-        zsh-users/zsh-history-substring-search
-        zsh-users/zsh-completions src
-EOPLUGINS
 
     # theme
     zgen load bhilburn/powerlevel9k powerlevel9k.zsh-theme
@@ -33,6 +29,8 @@ fi
 
 # Re-compile the zgen bundle if any listed file changes on disk
 ZGEN_RESET_ON_CHANGE=(${HOME}/.zshrc ${HOME}/.zshrc.local)
+
+bindkey -e
 
 # M-, (copy-earlier-word) cycles backward through words of the command you've
 # accessed with M-. (insert-last-word)
