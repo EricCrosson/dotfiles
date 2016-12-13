@@ -1,39 +1,47 @@
 # woohoo, the future is now
 export TERM="xterm-256color"
 
-source $HOME/.antigen/antigen.zsh
+if [[ ! -f $HOME/.zgen/zgen.zsh ]]; then
+    git clone https://github.com/tarjoilija/zgen.git "${HOME}/.zgen"
+fi
+source $HOME/.zgen/zgen.zsh
 
-antigen use oh-my-zsh
+# if the init scipt doesn't exist
+if ! zgen saved; then
+    echo "Creating a zgen save"
 
-# favorite acolytes
-antigen bundles <<EOBUNDLES
-  git
-  pip
+    # zgen oh-my-zsh
 
-  zsh-users/zsh-syntax-highlighting
-EOBUNDLES
+    # plugins
+    zgen oh-my-zsh plugins/git
+    zgen oh-my-zsh plugins/pip
+    zgen oh-my-zsh plugins/sudo
+    # zgen load zsh-users/zsh-syntax-highlighting
 
-# configure theme
-antigen theme bhilburn/powerlevel9k powerlevel9k
+    # bulk load
+    zgen loadall <<EOPLUGINS
+        zsh-users/zsh-history-substring-search
+        zsh-users/zsh-completions src
+EOPLUGINS
 
-# apply configurations
-antigen apply
+    # theme
+    zgen load bhilburn/powerlevel9k powerlevel9k.zsh-theme
+
+    # save all to init script
+    zgen save
+fi
+
+# Re-compile the zgen bundle if any listed file changes on disk
+ZGEN_RESET_ON_CHANGE=(${HOME}/.zshrc ${HOME}/.zshrc.local)
 
 # M-, (copy-earlier-word) cycles backward through words of the command you've
 # accessed with M-. (insert-last-word)
 autoload copy-earlier-word && zle -N copy-earlier-word && bindkey '^[,' copy-earlier-word
 
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git battery nyan colored-man)
-
 # User configuration
 export PATH="$HOME/bin/nix:$HOME/bin/linux:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
 
 source $(which virtualenvwrapper.sh) 2>/dev/null
-
-# unalias d
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
@@ -64,3 +72,5 @@ alias powertop='sudo powertop'
 alias pdown='shutdown -h now'
 alias sudo='sudo '
 alias l='ls -lahv '
+
+[ -f $HOME/vault/slack-notify ] && source $HOME/vault/slack-notify
