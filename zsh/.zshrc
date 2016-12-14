@@ -63,7 +63,7 @@ function serve {
 alias gs='git status '
 
 # avoid submitting these commands into the shell's history
-alias nautilus=' nautilus'
+alias nautilus=' nautilus '
 
 alias powertop='sudo powertop'
 
