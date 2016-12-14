@@ -71,4 +71,16 @@ alias pdown='shutdown -h now'
 alias sudo='sudo '
 alias l='ls -lahv '
 
+# pseudo programs
+function bell() {
+    tput smcup  # activate alternate screen
+    tput civis  # invisible cursor
+    for i in $(seq 1 ${1:-1}); do
+        echo -e '\a'
+	sleep 0.125
+    done
+    tput cnorm  # normal cursor
+    tput rmcup  # activate alternate screen
+}
+
 [ -f $HOME/vault/slack-notify ] && source $HOME/vault/slack-notify
