@@ -1,6 +1,3 @@
-# woohoo, the future is now
-export TERM="xterm-256color"
-
 if [[ ! -f $HOME/.zgen/zgen.zsh ]]; then
     git clone https://github.com/tarjoilija/zgen.git "${HOME}/.zgen"
 fi
@@ -10,22 +7,37 @@ source $HOME/.zgen/zgen.zsh
 if ! zgen saved; then
     # echo "Creating a zgen save"
 
-    # zgen oh-my-zsh
-
     # plugins
+    zgen oh-my-zsh
     zgen oh-my-zsh plugins/git
+    zgen oh-my-zsh plugins/docker
+    zgen oh-my-zsh plugins/docker-compose
+    zgen oh-my-zsh plugins/screen
     zgen oh-my-zsh plugins/pip
     zgen oh-my-zsh plugins/sudo
-    # zgen load zsh-users/zsh-syntax-highlighting
 
-    # bulk load
+    # zgen load zsh-users/zsh-syntax-highlighting  # has bugs
+    # zgen load peterhurford/git-it-on.zsh  # doesn't work with gitlab
+
+    zgen load unixorn/autoupdate-zgen
+
+    zgen load chrissicool/zsh-256color
+
+    # completions
+    zgen load zsh-users/zsh-completions src
+    zgen load zsh-users/zsh-autosuggestions
+    zgen load zsh-users/zsh-history-substring-search
+    zgen load robsis/zsh-completion-generator
 
     # theme
     zgen load bhilburn/powerlevel9k powerlevel9k.zsh-theme
+    zgen load joel-porquet/zsh-dircolors-solarized.git
 
     # save all to init script
     zgen save
 fi
+
+zmodload zsh/terminfo
 
 # Re-compile the zgen bundle if any listed file changes on disk
 ZGEN_RESET_ON_CHANGE=(${HOME}/.zshrc ${HOME}/.zshrc.local)
