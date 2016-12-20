@@ -145,3 +145,5 @@ alias sd='cd -- '    # list directories
 
 # Lastly, load machine-specific init scripts
 loadFile ${user_init_d}/$(hostname) 2>/dev/null # don't care if dne
+
+source $HOME/vault/slack-notify
