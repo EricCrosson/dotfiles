@@ -12,9 +12,49 @@
 	cm = commit -m
 	ac = !git add . && git commit
 	acm = !git add . && git commit -m
+
 	l = log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
-	ll = log --stat --abbrev-commit
+        lg = !"git lg1"
+        lga = !"git lg1 --all"
+        lg2a = !"git lg2-specific --all"
+        lg3a = !"git lg3-specific --all"
+        lg1 = !"git lg1-specific"
+        lg2 = !"git lg2-specific"
+        lg3 = !"git lg3-specific"
+        lg1-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(black)%s%C(reset) %C(dim black)- %an%C(reset)%C(auto)%d%C(reset)'
+        lg2-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset)%n''          %C(black)%s%C(reset) %C(dim black)- %an%C(reset)'
+        lg3-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset) %C(bold cyan)(committed: %cD)%C(reset) %C(auto)%d%C(reset)%n''          %C(black)%s%C(reset)%n''          %C(dim black)- %an <%ae> %C(reset) %C(dim black)(committer: %cn <%ce>)%C(reset)'
+
 	d = diff --color-words
 	dh = diff --color-words head
         br = branch
 	alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\\t => \\2/' | sort
+        ls = log --oneline --abbrev-commit --all --graph --decorate --color
+
+        # revert
+        rv = checkout --
+        # merging
+        ours = checkout --ours --
+        theirs = checkout --theirs --
+        # stashing
+        sl = stash list
+        sa = stash apply
+        ss = stash save
+[url "git@nebuchadnezzar.shoretel.com:"]
+    insteadOf = "neb:"
+    PushInsteadOf = "neb:"
+    # example: git clone neb:ecrosson/confluent
+[url "https://nebuchadnezzar.shoretel.com/"]
+    insteadOf = "heb:"
+    PushInsteadOf = "heb:"
+    # example: git clone neb/ecrosson/confluent
+[url "git@github.com:"]
+    insteadOf = "gh:"
+    PushInsteadOf = "gh:"
+[url "git@gitlab.com:"]
+    insteadOf = "gl:"
+    PushInsteadOf = "gl:"
+[core]
+        editor = vim
+        excludesfile = /home/eric/.gitignore_global
+
