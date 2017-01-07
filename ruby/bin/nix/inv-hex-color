@@ -8,7 +8,7 @@
 
 
 def invert_hex_color(color)
-  return color.tr("0123456789ABCDEF","FEDCBA9876543210")
+  return color.upcase.tr("0123456789ABCDEF","FEDCBA9876543210")
 end
 
 def main
