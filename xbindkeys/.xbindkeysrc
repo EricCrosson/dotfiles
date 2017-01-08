@@ -57,8 +57,8 @@
 
 #dmenu
 "dmenu_run"
-    m:0x8 + c:64
-    Alt + Alt_L 
+    m:0x8 + c:69
+    Alt + F3 
 
 #
 # End of xbindkeys configuration
