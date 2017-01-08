@@ -20,6 +20,9 @@ autoload copy-earlier-word && zle -N copy-earlier-word && bindkey '^[,' copy-ear
 # User configuration
 export PATH="$HOME/bin/nix:$HOME/bin/linux:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
 
+# rust configuration
+export PATH="$HOME/.cargo/bin:$PATH"
+
 source $(which virtualenvwrapper.sh) 2>/dev/null
 
 # Preferred editor for local and remote sessions
@@ -149,4 +152,11 @@ if ! zplug check; then
 fi
 # Then, source plugins and add commands to $PATH
 zplug load
+
+#####################################################################
+# post-config
+#####################################################################
+
+setopt auto_cd
+cdpath=($HOME/workspace)
 
