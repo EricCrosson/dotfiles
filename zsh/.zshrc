@@ -61,6 +61,7 @@ function bell() {
 }
 
 [ -f $HOME/vault/slack-notify ] && source $HOME/vault/slack-notify
+[ -f $HOME/vault/slack-token-quarc ] && source $HOME/vault/slack-token-quarc
 
 #####################################################################
 # completions
@@ -159,7 +160,6 @@ zplug load
 
 setopt auto_cd
 cdpath=($HOME/workspace)
-
 
 export NVM_DIR="/home/eric/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
