@@ -46,9 +46,9 @@
     m:0x1c + c:37
     Control+Alt+Mod2 + Control_L 
 
-"nautilus"
-    m:0x1c + c:41
-    Control+Alt+Mod2 + f 
+# "nautilus"
+#     m:0x1c + c:41
+#     Control+Alt+Mod2 + f 
 
 #invert screen
 "inv"
