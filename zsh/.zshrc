@@ -137,7 +137,7 @@ zplug "marzocchi/zsh-notify"
 zplug "plugins/git",   from:oh-my-zsh
 zplug "chrissicool/zsh-256color"
 
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
+# zplug "zsh-users/zsh-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-history-substring-search"
