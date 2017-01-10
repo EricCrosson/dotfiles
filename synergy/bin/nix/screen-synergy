@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Written by Eric Crosson
+# 2017-01-10
+#
+# This program invokes synergy (for use by a controlling screen session).
+#
+#
+# Requirements:
+#
+# 1. expects env to contain ${SYNERGY_HOST} pointing to a synergy server
+
+readonly synergy_config="${HOME}/bin/nix/configure-synergy"
+source ${synergy_config}
+
+synergyc --no-daemon --name $(hostname) --restart ${SYNERGY_HOST}
