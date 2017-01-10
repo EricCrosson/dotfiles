@@ -9,6 +9,7 @@
 [alias]
 	s = status
 	c = commit
+        co = checkout
 	cm = commit -m
 	ac = !git add . && git commit
 	acm = !git add . && git commit -m
