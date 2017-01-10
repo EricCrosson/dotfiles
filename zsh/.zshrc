@@ -106,6 +106,9 @@ compdef _tex platex
 # cd search path
 cdpath=($HOME)
 
+# dircolors on completed entries
+zstyle ':completion:*' list-colors 'di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+
 zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cputime,command"
 
 #####################################################################
@@ -123,7 +126,8 @@ source $HOME/.zplug/init.zsh
 zplug "zplug/zplug"
 
 # theme
-# zplug "joel-porquet/zsh-dircolors-solarized.git"
+# zplug "joel-porquet/zsh-dircolors-solarized"
+# zplug "z1sun/solarized-man"
 zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
 
 zplug "plugins/git",   from:oh-my-zsh
