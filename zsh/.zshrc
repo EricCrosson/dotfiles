@@ -60,6 +60,7 @@ function bell() {
 }
 
 [ -f $HOME/vault/slack-notify ] && source $HOME/vault/slack-notify
+[ -f $HOME/vault/confluent ] && source $HOME/vault/confluent
 [ -f $HOME/vault/slack-token-quarc ] && source $HOME/vault/slack-token-quarc
 
 #####################################################################
