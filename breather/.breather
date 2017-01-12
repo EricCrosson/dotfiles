@@ -1,0 +1,24 @@
+module.exports.settings = {
+  "duration": "25",
+  "location": "Austin,us",
+  "lang": "en"
+}
+
+module.exports.pre = function() {
+  // var applescript = require("applescript")
+
+  // var twitter = 'tell application "Finder" to set visible of process "Twitter" to false'
+  // , limechat = 'tell application "Finder" to set visible of process "LimeChat" to false'
+
+  // applescript.execString( twitter, function(err, rtn) {} )
+  // applescript.execString( limechat, function(err, rtn) {} )
+  // applescript.execString( 'display dialog "Time to take a break!" with title "Breather" with icon caution buttons {"Continue…"}', function(err, rtn) {} )
+}
+
+module.exports.post = function() {
+  // var exec = require('child_process').exec, child;
+
+  // child = exec('notify-send "Pencils down!" "Go take a break.  I said move!" --icon=dialog-information',
+  //   function (error, stdout, stderr) { });
+}
+
