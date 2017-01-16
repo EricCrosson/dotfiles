@@ -144,7 +144,7 @@ zplug "hlissner/zsh-autopair", defer:2
 # zplug "joel-porquet/zsh-dircolors-solarized.git"
 # zplug "rutchkiwi/copyzshell"
 # zplug "caarlos0/git-add-remote"
-zplug "peterhurford/git-it-on.zsh"                  # open cur repo in browser
+# zplug "peterhurford/git-it-on.zsh"                  # open cur repo in browser
 # zplug "bric3/nice-exit-code"
 # zplug "srijanshetty/node.plugin.zsh", defer:2       # load node if present
 # zplug "dijitalmunky/nvm-auto"                       # `nvm use $(cat .nvmrc)`
