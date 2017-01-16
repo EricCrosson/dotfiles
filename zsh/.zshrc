@@ -2,6 +2,8 @@
 # config
 #####################################################################
 
+# export TERM="xterm-256color"
+
 # kill-word stops at directory delimeter
 autoload -U select-word-style
 select-word-style bash
@@ -120,36 +122,74 @@ if [[ ! -d ~/.zplug ]]; then
   git clone https://github.com/zplug/zplug ~/.zplug
   source ~/.zplug/init.zsh && zplug update --self
 fi
-source $HOME/.zplug/init.zsh
+source ${HOME}/.zplug/init.zsh
 
-# Let zplug manage zplug
-zplug "zplug/zplug"
+zplug "zplug/zplug", hook-build:'zplug --self-manage'
 
-# theme
-# zplug "joel-porquet/zsh-dircolors-solarized"
-# zplug "z1sun/solarized-man"
-zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
+zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme, as:theme
 
+zplug "plugins/pip",   from:oh-my-zsh
 zplug "plugins/git",   from:oh-my-zsh
+zplug "plugins/git",   from:oh-my-zsh
+zplug "plugins/sudo",   from:oh-my-zsh
 zplug "plugins/docker",   from:oh-my-zsh
 zplug "plugins/screen",   from:oh-my-zsh
-zplug "plugins/pip",   from:oh-my-zsh
-zplug "plugins/sudo",   from:oh-my-zsh
-
-zplug "marzocchi/zsh-notify"
-
-zplug "plugins/git",   from:oh-my-zsh
-zplug "chrissicool/zsh-256color"
+zplug "plugins/colored-man-pages", from:oh-my-zsh
 
 # zplug "zsh-users/zsh-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-autosuggestions"
 zplug "zsh-users/zsh-history-substring-search"
 zplug "robsis/zsh-completion-generator"
+zplug "tarruda/zsh-autosuggestions"                 # ->auto-fu
 
-zplug "tarruda/zsh-autosuggestions" # ->auto-fu
+zplug "arzzen/calc.plugin.zsh"
+zplug "chrissicool/zsh-256color"
+zplug "marzocchi/zsh-notify"
+zplug "supercrabtree/k"
+zplug "hlissner/zsh-autopair", defer:2
+# zplug "joel-porquet/zsh-dircolors-solarized.git"
+# zplug "rutchkiwi/copyzshell"
+# zplug "caarlos0/git-add-remote"
+zplug "peterhurford/git-it-on.zsh"                  # open cur repo in browser
+zplug "bric3/nice-exit-code"
+zplug "srijanshetty/node.plugin.zsh"                # load node if present
+zplug "dijitalmunky/nvm-auto"                       # `nvm use $(cat .nvmrc)`
+zplug "ericcrosson/smart-cd"
+# zplug "willghatch/zsh-snippets"                     # snippets
+zplug "peterhurford/up.zsh"
+zplug "tarrasch/zsh-colors"
+# zplug "oknowton/zsh-dwim"  # works but throws error
+zplug "hcgraf/zsh-sudo"
+zplug "jreese/zsh-titles"
+zplug "tarrasch/zsh-functional"
+# zplug "hchbaw/zce.zsh"
+# zplug "sharat87/pip-app", as:command, use:'(*).sh', rename-to:'$1'
+# zplug "michaelaquilina/zsh-autoswitch-virtualenv"  # wasn't functional
 
+zplug "stedolan/jq", as:command, from:gh-r, rename-to:jq
 zplug "junegunn/fzf-bin", from:gh-r, as:command, rename-to:fzf
+zplug "b4b4r07/httpstat", as:command, use:'(*).sh', rename-to:'$1'
+zplug "b4b4r07/ssh-keyreg", as:command, use:bin     # add ssh key to github
+zplug "ericcrosson/fzf-git-cloner", as:command, use:cloner
+
+zplug "vifon/deer", use:deer                        # inspired by ranger
+zle -N deer
+bindkey '\ek' deer
+
+## screensaver
+zstyle ":morpho" screen-saver "zmandelbrot"
+                                        # select screen saver "zmorpho"; available: zmorpho, zmandelbrot, zblank, pmorpho
+                                        # this  can also be a command, e.g. "cmatrix"
+zstyle ":morpho" arguments "-s"         # arguments given to screen saver program; -s - every key press ends
+zstyle ":morpho" delay "290"            # 5 minutes before screen saver starts
+zstyle ":morpho" check-interval "60"    # check every 1 minute if to run screen saver
+
+## emojis
+zplug "jhawthorn/fzy", as:command, rename-to:fzy, \
+    hook-build:"make && sudo make install"
+zplug "mrowa44/emojify", as:command, use:emojify
+zplug "b4b4r07/emoji-cli", on:"junegunn/fzf-bin", if:'(( $+commands[jq] ))'
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check; then
@@ -165,5 +205,4 @@ zplug load
 setopt auto_cd
 cdpath=($HOME/workspace)
 
-export NVM_DIR="/home/eric/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
