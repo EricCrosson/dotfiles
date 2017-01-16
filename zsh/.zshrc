@@ -10,9 +10,6 @@ select-word-style bash
 
 zmodload zsh/terminfo
 
-# Re-compile the zgen bundle if any listed file changes on disk
-ZGEN_RESET_ON_CHANGE=(${HOME}/.zshrc ${HOME}/.zshrc.local)
-
 bindkey -e
 
 # M-, (copy-earlier-word) cycles backward through words of the command you've
@@ -34,11 +31,6 @@ else
   export EDITOR='vim'
 fi
 
-function serve {
-    port="${1:-3000}"
-    ruby -r webrick -e "s = WEBrick::HTTPServer.new(:Port => ${port}, :DocumentRoot => Dir.pwd); trap('INT') { s.shutdown }; s.start"
-}
-
 alias gs='git status '
 
 # avoid submitting these commands into the shell's history
@@ -51,6 +43,11 @@ alias sudo='sudo '
 alias l='ls -lahv '
 
 # pseudo programs
+function serve {
+    port="${1:-3000}"
+    ruby -r webrick -e "s = WEBrick::HTTPServer.new(:Port => ${port}, :DocumentRoot => Dir.pwd); trap('INT') { s.shutdown }; s.start"
+}
+
 function bell() {
     tput smcup  # activate alternate screen
     tput civis  # invisible cursor
@@ -105,9 +102,6 @@ compdef '_files -g "*.hs"' runhaskell
 compdef _man w3mman
 compdef _tex platex
 
-# cd search path
-cdpath=($HOME)
-
 # dircolors on completed entries
 zstyle ':completion:*' list-colors 'di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
 
@@ -130,11 +124,10 @@ zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme, as:theme
 
 zplug "plugins/pip",   from:oh-my-zsh
 zplug "plugins/git",   from:oh-my-zsh
-zplug "plugins/git",   from:oh-my-zsh
 zplug "plugins/sudo",   from:oh-my-zsh
 zplug "plugins/docker",   from:oh-my-zsh
 zplug "plugins/screen",   from:oh-my-zsh
-zplug "plugins/colored-man-pages", from:oh-my-zsh
+# zplug "plugins/colored-man-pages", from:oh-my-zsh
 
 # zplug "zsh-users/zsh-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-completions"
@@ -145,56 +138,56 @@ zplug "tarruda/zsh-autosuggestions"                 # ->auto-fu
 
 zplug "arzzen/calc.plugin.zsh"
 zplug "chrissicool/zsh-256color"
-zplug "marzocchi/zsh-notify"
+# zplug "marzocchi/zsh-notify"
 zplug "supercrabtree/k"
 zplug "hlissner/zsh-autopair", defer:2
 # zplug "joel-porquet/zsh-dircolors-solarized.git"
 # zplug "rutchkiwi/copyzshell"
 # zplug "caarlos0/git-add-remote"
 zplug "peterhurford/git-it-on.zsh"                  # open cur repo in browser
-zplug "bric3/nice-exit-code"
-zplug "srijanshetty/node.plugin.zsh"                # load node if present
-zplug "dijitalmunky/nvm-auto"                       # `nvm use $(cat .nvmrc)`
+# zplug "bric3/nice-exit-code"
+# zplug "srijanshetty/node.plugin.zsh", defer:2       # load node if present
+# zplug "dijitalmunky/nvm-auto"                       # `nvm use $(cat .nvmrc)`
 zplug "ericcrosson/smart-cd"
 # zplug "willghatch/zsh-snippets"                     # snippets
 zplug "peterhurford/up.zsh"
-zplug "tarrasch/zsh-colors"
+# zplug "tarrasch/zsh-colors"
 # zplug "oknowton/zsh-dwim"  # works but throws error
-zplug "hcgraf/zsh-sudo"
+# zplug "hcgraf/zsh-sudo"
 zplug "jreese/zsh-titles"
-zplug "tarrasch/zsh-functional"
+# zplug "tarrasch/zsh-functional"
 # zplug "hchbaw/zce.zsh"
 # zplug "sharat87/pip-app", as:command, use:'(*).sh', rename-to:'$1'
 # zplug "michaelaquilina/zsh-autoswitch-virtualenv"  # wasn't functional
 
-zplug "stedolan/jq", as:command, from:gh-r, rename-to:jq
 zplug "junegunn/fzf-bin", from:gh-r, as:command, rename-to:fzf
-zplug "b4b4r07/httpstat", as:command, use:'(*).sh', rename-to:'$1'
-zplug "b4b4r07/ssh-keyreg", as:command, use:bin     # add ssh key to github
+zplug "b4b4r07/zsh-gomi", as:command, use:bin/gomi, on:junegunn/fzf-bin
+# zplug "stedolan/jq", as:command, from:gh-r, rename-to:jq
+# zplug "b4b4r07/httpstat", as:command, use:'(*).sh', rename-to:'$1'
+# zplug "b4b4r07/ssh-keyreg", as:command, use:bin     # add ssh key to github
 zplug "ericcrosson/fzf-git-cloner", as:command, use:cloner
+
 
 zplug "vifon/deer", use:deer                        # inspired by ranger
 zle -N deer
 bindkey '\ek' deer
 
 ## screensaver
-zstyle ":morpho" screen-saver "zmandelbrot"
-                                        # select screen saver "zmorpho"; available: zmorpho, zmandelbrot, zblank, pmorpho
-                                        # this  can also be a command, e.g. "cmatrix"
-zstyle ":morpho" arguments "-s"         # arguments given to screen saver program; -s - every key press ends
-zstyle ":morpho" delay "290"            # 5 minutes before screen saver starts
-zstyle ":morpho" check-interval "60"    # check every 1 minute if to run screen saver
+# zstyle ":morpho" screen-saver "zmandelbrot"
+#                                         # select screen saver "zmorpho"; available: zmorpho, zmandelbrot, zblank, pmorpho
+#                                         # this  can also be a command, e.g. "cmatrix"
+# zstyle ":morpho" arguments "-s"         # arguments given to screen saver program; -s - every key press ends
+# zstyle ":morpho" delay "290"            # 5 minutes before screen saver starts
+# zstyle ":morpho" check-interval "60"    # check every 1 minute if to run screen saver
 
 ## emojis
-zplug "jhawthorn/fzy", as:command, rename-to:fzy, \
-    hook-build:"make && sudo make install"
-zplug "mrowa44/emojify", as:command, use:emojify
-zplug "b4b4r07/emoji-cli", on:"junegunn/fzf-bin", if:'(( $+commands[jq] ))'
+# zplug "jhawthorn/fzy", as:command, rename-to:fzy, \
+#     hook-build:"make && sudo make install"
+# zplug "mrowa44/emojify", as:command, use:emojify
+# zplug "b4b4r07/emoji-cli", on:"junegunn/fzf-bin", if:'(( $+commands[jq] ))'
 
 # Install plugins if there are plugins that have not been installed
-if ! zplug check; then
-  zplug install
-fi
+! zplug check && zplug install
 # Then, source plugins and add commands to $PATH
 zplug load
 
@@ -204,5 +197,3 @@ zplug load
 
 setopt auto_cd
 cdpath=($HOME/workspace)
-
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
