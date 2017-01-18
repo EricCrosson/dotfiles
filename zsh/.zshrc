@@ -168,6 +168,9 @@ zplug "b4b4r07/zsh-gomi", as:command, use:bin/gomi, on:junegunn/fzf-bin
 # zplug "b4b4r07/ssh-keyreg", as:command, use:bin     # add ssh key to github
 zplug "ericcrosson/fzf-git-cloner", as:command, use:cloner
 
+# git secret
+# zplug "sobolevn/git-secret"
+# https://sobolevn.github.io/git-secret/#installation
 
 zplug "vifon/deer", use:deer                        # inspired by ranger
 zle -N deer
