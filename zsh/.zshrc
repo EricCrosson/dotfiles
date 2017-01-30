@@ -63,6 +63,8 @@ function bell() {
 [ -f $HOME/vault/confluent ] && source $HOME/vault/confluent
 [ -f $HOME/vault/slack-token-quarc ] && source $HOME/vault/slack-token-quarc
 
+[ -f $HOME/.nvm/nvm.sh ] && source $HOME/.nvm/nvm.sh
+
 #####################################################################
 # completions
 #####################################################################
