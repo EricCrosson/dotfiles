@@ -33,6 +33,7 @@ fi
 
 alias gs='git status '
 
+# FIXME: use this with the histignore variables
 # avoid submitting these commands into the shell's history
 alias nautilus=' nautilus '
 
