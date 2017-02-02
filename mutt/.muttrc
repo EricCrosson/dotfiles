@@ -7,7 +7,7 @@
 source "$HOME/.mutt/esc.muttrc"
 
 # Global Configuration -------------------------------
-set editor="emacs -q"
+set editor="vim"
 set mbox_type=Maildir
 set wait_key = no        # shut up, mutt
 set mbox_type = Maildir  # mailbox type

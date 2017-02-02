@@ -7,7 +7,7 @@
 # imap.utmail.com imap.gmail.com          imap.gmail.com
 
 [general]
-accounts = esc,gmail,utexas
+accounts = esc,gmail
 # maxsyncaccounts = 3
 
 #

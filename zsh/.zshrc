@@ -169,6 +169,7 @@ zplug "b4b4r07/zsh-gomi", as:command, use:bin/gomi, on:junegunn/fzf-bin
 # zplug "b4b4r07/httpstat", as:command, use:'(*).sh', rename-to:'$1'
 # zplug "b4b4r07/ssh-keyreg", as:command, use:bin     # add ssh key to github
 zplug "ericcrosson/fzf-git-cloner", as:command, use:cloner
+# zplug "b4b4r07/pkill.sh", as:command, use:'pkill.sh', rename-to:'pk'
 
 # git secret
 # zplug "sobolevn/git-secret"
@@ -203,3 +204,6 @@ zplug load
 
 setopt auto_cd
 cdpath=($HOME/workspace)
+
+export NVM_DIR="/home/eric/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
