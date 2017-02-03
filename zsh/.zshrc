@@ -171,6 +171,7 @@ zplug "b4b4r07/zsh-gomi", as:command, use:bin/gomi, on:junegunn/fzf-bin
 # zplug "b4b4r07/ssh-keyreg", as:command, use:bin     # add ssh key to github
 zplug "ericcrosson/fzf-git-cloner", as:command, use:cloner
 # zplug "b4b4r07/pkill.sh", as:command, use:'pkill.sh', rename-to:'pk'
+zplug "lukechilds/zsh-better-npm-completion", defer:2
 
 # git secret
 # zplug "sobolevn/git-secret"
