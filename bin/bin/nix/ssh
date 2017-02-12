@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Written by Eric Crosson
+# 2017-02-12
+#
+# This program will run `ssh-copy-id` before `ssh` if public key
+# authentication has not been configured yet.
+
+keyHasBeenCopied() {
+    /usr/bin/ssh -q \
+                 -o StrictHostKeyChecking=no \
+                 -o PubKeyAuthentication=yes \
+                 -o PasswordAuthentication=no \
+                 "$@" \
+                 "ls >/dev/null </dev/null" \
+        &>/dev/null
+}
+
+main() {
+    if ! $(keyHasBeenCopied "$@"); then
+        ssh-copy-id "$@" &>/dev/null
+    fi
+    /usr/bin/ssh "$@"
+}
+
+main "$@"
