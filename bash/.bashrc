@@ -143,7 +143,9 @@ alias cd='cd_func '
 alias bd='cd - '     # Back Directory
 alias sd='cd -- '    # list directories
 
+alias gst='git status '
+
 # Lastly, load machine-specific init scripts
 loadFile ${user_init_d}/$(hostname) 2>/dev/null # don't care if dne
 
-source $HOME/vault/slack-notify
+[[ -e $HOME/vault/slack-notify ]] && source $HOME/vault/slack-notify

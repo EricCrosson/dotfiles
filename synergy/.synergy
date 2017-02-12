@@ -1,0 +1,31 @@
+section: screens
+    ECROSSON-450:
+    pollux:
+end
+
+section: aliases
+    ECROSSON-450:
+        thinkpad
+end
+
+section: links
+    ECROSSON-450:
+        left = pollux
+        right = pollux
+    pollux:
+        left = thinkpad
+        right = thinkpad
+end
+
+section: options
+    # Absolute jumps
+    keystroke(Alt+1)   = switchToScreen(ECROSSON-450)
+    keystroke(Alt+2)   = switchToScreen(pollux)
+    # keystroke(Alt+3)   = switchToScreen(boxer)
+
+    # Relative jumps
+    keystroke(Alt+h)   = switchInDirection(left)
+    keystroke(Alt+j)   = switchInDirection(down)
+    keystroke(Alt+k)   = switchInDirection(up)
+    keystroke(Alt+l)   = switchInDirection(right)
+end

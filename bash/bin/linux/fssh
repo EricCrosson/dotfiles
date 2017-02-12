@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-chmod 644 ~/.ssh/config

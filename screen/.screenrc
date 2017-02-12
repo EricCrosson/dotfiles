@@ -17,7 +17,7 @@ backtick 9 300 300 $HOME/bin/linux/get_battery
 
 hardstatus on           # status line at the bottom
 hardstatus alwayslastline
-hardstatus string "%{.kW}%-w%{.rW}%f%n %t%{-}%+w %=%{..c}[%9`%2`@%H %4`]%{..g}M(%5` %6`) D(%8`)%{..y}[%1`]"
+hardstatus string "%{.kW}%-w%{.yW}%f%n %t%{-}%+w %=%{..g}[%9`%2`@%H %4`]%{..m}M(%5` %6`) D(%8`)%{..y}[%1`]"
 # %{..g}[%m/%d %c] # can be accessed with <leader> t
 
 ### For multiuser screen sharing
