@@ -22,3 +22,6 @@ set showtabline=2
 set colorcolumn=80
 set nowrap
 " set number
+
+" Spell checking and auto-wrapping to got commit messages
+autocmd Filetype gitcommit setlocal spell textwidth=72
