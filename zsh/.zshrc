@@ -27,6 +27,9 @@ export PATH="$HOME/bin/nix:$HOME/bin/linux:$HOME/bin:/usr/local/bin:/usr/bin:/bi
 # rust configuration
 export PATH="$HOME/.cargo/bin:$PATH"
 
+# gem configuration
+export PATH="$HOME/.gem/bin:$PATH"
+
 source $(which virtualenvwrapper.sh) 2>/dev/null
 
 # Preferred editor for local and remote sessions
