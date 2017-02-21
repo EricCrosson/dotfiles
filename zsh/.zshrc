@@ -4,6 +4,7 @@
 
 # export TERM="xterm-256color"
 
+export HISTSIZE=1000
 # kill-word stops at directory delimeter
 autoload -U select-word-style
 select-word-style bash
