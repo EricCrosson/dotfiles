@@ -5,6 +5,10 @@
 # export TERM="xterm-256color"
 
 export HISTSIZE=1000
+
+# export SMART_CD_LS_COMMAND="k --human"
+export SMART_CD_ONLY_IF_FITS="true"
+
 # kill-word stops at directory delimeter
 autoload -U select-word-style
 select-word-style bash
