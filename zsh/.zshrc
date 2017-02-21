@@ -133,7 +133,9 @@ source ${HOME}/.zplug/init.zsh
 
 zplug "zplug/zplug", hook-build:'zplug --self-manage'
 
-zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme, as:theme
+# POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
+#zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme, as:theme
+zplug "frmendes/geometry", as:theme
 
 zplug "plugins/pip",   from:oh-my-zsh
 zplug "plugins/git",   from:oh-my-zsh
