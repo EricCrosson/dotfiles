@@ -28,7 +28,7 @@ export PATH="$HOME/bin/nix:$HOME/bin/linux:$HOME/bin:/usr/local/bin:/usr/bin:/bi
 export PATH="$HOME/.cargo/bin:$PATH"
 
 # gem configuration
-export PATH="$HOME/.gem/bin:$PATH"
+# export PATH="$HOME/.gem/bin:$PATH"
 
 source $(which virtualenvwrapper.sh) 2>/dev/null
 
