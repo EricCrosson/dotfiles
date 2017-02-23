@@ -215,6 +215,7 @@ zplug load
 # post-config
 #####################################################################
 
+set -k  # Set INTERACTIVE_COMMENTS to ignore after '#'
 setopt auto_cd
 cdpath=($HOME/workspace)
 
