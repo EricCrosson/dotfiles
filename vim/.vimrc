@@ -25,3 +25,15 @@ set nowrap
 
 " Spell checking and auto-wrapping to got commit messages
 autocmd Filetype gitcommit setlocal spell textwidth=72
+
+" === Plug
+" Specify a directory for plugins (for Neovim: ~/.local/share/nvim/plugged)
+call plug#begin('~/.vim/plugged')
+
+Plug 'kristijanhusak/vim-hybrid-material'
+
+" Initialize plugin system
+call plug#end()
+
+set background=dark
+colorscheme hybrid_reverse
