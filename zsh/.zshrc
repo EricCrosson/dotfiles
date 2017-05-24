@@ -28,9 +28,17 @@ export PATH="$HOME/bin/nix:$HOME/bin/linux:$HOME/bin:/usr/local/bin:/usr/bin:/bi
 export PATH="$HOME/.cargo/bin:$PATH"
 
 # gem configuration
-# export PATH="$HOME/.gem/bin:$PATH"
+export PATH="$HOME/.gem/bin:$PATH"
+
+# golang configuration
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/workspace/golang
+export PATH=$PATH:$GOPATH/bin
 
 source $(which virtualenvwrapper.sh) 2>/dev/null
+
+# Qt configuration
+export PATH="/opt/Qt/5.8/gcc_64/bin:$PATH"
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
@@ -51,6 +59,7 @@ alias pdown='shutdown -h now'
 alias sudo='sudo '
 alias l='ls -lahv '
 # alias k='k --human --almost-all '
+alias s='screen '
 
 # pseudo programs
 function serve {
@@ -217,7 +226,7 @@ zplug load
 
 set -k  # Set INTERACTIVE_COMMENTS to ignore after '#'
 setopt auto_cd
-cdpath=($HOME/workspace)
+# cdpath=($HOME/workspace)
 
 export NVM_DIR="${HOME}/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
@@ -227,3 +236,7 @@ PERL5LIB="/home/eric/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
 PERL_LOCAL_LIB_ROOT="/home/eric/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
 PERL_MB_OPT="--install_base \"/home/eric/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/home/eric/perl5"; export PERL_MM_OPT;
+source /home/eric/.repo-scripts.conf
+
+# added by travis gem
+[ -f /home/eric/.travis/travis.sh ] && source /home/eric/.travis/travis.sh

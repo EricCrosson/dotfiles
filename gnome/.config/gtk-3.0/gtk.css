@@ -1,6 +1,6 @@
 /* shrink headebars */
 headerbar {
-    min-height: 0;
+    /* min-height: 0; */
     padding-left: 2px; /* same as childrens vertical margins for nicer proportions */
     padding-right: 2px;
     padding-top: 1px;
@@ -17,7 +17,7 @@ headerbar separator {
 
 /* shrink ssd titlebars */
 .default-decoration {
-    min-height: 0; /* let the entry and button drive the titlebar size */
+    /* min-height: 0; let the entry and button drive the titlebar size */
     padding-left: 2px; /* same as childrens vertical margins for nicer proportions */
     padding-right: 2px;
     padding-top: 1px;
@@ -25,6 +25,6 @@ headerbar separator {
 }
 
 .default-decoration .titlebutton {
-    min-height: 8; /* tweak these two props to reduce button size */
-    min-width: 8;
+    /* min-height: 8; tweak these two props to reduce button size */
+    /* min-width: 8; */
 }

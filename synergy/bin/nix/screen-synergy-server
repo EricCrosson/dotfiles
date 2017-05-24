@@ -5,4 +5,6 @@
 # This program invokes synergy server (for use by a controlling screen
 # session).
 
+# TODO: kill USR1 to restart
+
 synergys -c ${HOME}/.synergy -f

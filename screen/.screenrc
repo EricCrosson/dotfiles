@@ -26,6 +26,10 @@ multiuser on
 ### Do I feel like preventing anybody from writing in my terminals?
 # writelock on
 
+### clear the scrollback history
+# http://stackoverflow.com/a/13160702
+bind 'C' eval "clear" "scrollback 0" "scrollback 15000"
+
 ### resize keybindings
 bind + resize +5
 bind - resize -5

@@ -1,5 +1,5 @@
 [user]
-	email = esc@ericcrosson.com
+	email = ecrosson@shoretel.com
 	name = Eric Crosson
 [color]
 	ui = auto
@@ -34,18 +34,29 @@
 	alias = !git config --list | grep \"alias\\\\.\" | sed \"s/alias\\\\.\\\\([^=]*\\\\)=\\\\(.*\\\\)/\\\\1\\\\\\t => \\\\2/\" | sort
 	ls = log --oneline
 
-	# revert
+	ll = log --graph --pretty=format:\"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset\" --abbrev-commit
+	undo-commit = reset --soft HEAD~1
 	rv = checkout --
+
 	# merging
 	ours = checkout --ours --
 	theirs = checkout --theirs --
+
 	# stashing
 	sl = stash list
 	sa = stash apply
 	ss = stash save
+
+        # submodules
+        sm = submodule
+        sa = submodule add
+        si = submodule init
+        su = submodule update
+
+        # GitLab specific
+        # example: git mr upstream 5
 	mr = !sh -c 'git fetch $1 merge-requests/$2/head:mr-$1-$2 && git checkout mr-$1-$2' -
-	ll = log --graph --pretty=format:\"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset\" --abbrev-commit
-	undo-commit = reset --soft HEAD~1
+
 [url "git@nebuchadnezzar.shoretel.com:"]
 	insteadOf = "neb:"
 	PushInsteadOf = "neb:"

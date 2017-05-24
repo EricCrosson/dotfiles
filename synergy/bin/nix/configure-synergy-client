@@ -4,4 +4,4 @@
 #
 # This program configures synergy.
 
-export SYNERGY_HOST=boxer
+export SYNERGY_HOST=10.160.30.48

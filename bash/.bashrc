@@ -149,3 +149,8 @@ alias gst='git status '
 loadFile ${user_init_d}/$(hostname) 2>/dev/null # don't care if dne
 
 [[ -e $HOME/vault/slack-notify ]] && source $HOME/vault/slack-notify
+export PATH=/opt/depot_tools:${PATH}
+export GIT_REPO=10.17.1.17
+export P4PORT=10.160.0.30:1667
+export P4USER=ecrosson
+export P4CLIENT=ecrosson-pollux

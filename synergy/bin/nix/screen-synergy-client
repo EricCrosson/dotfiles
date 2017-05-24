@@ -10,6 +10,8 @@
 #
 # 1. expects env to contain ${SYNERGY_HOST} pointing to a synergy server
 
+# TODO: kill USR1 to restart
+
 readonly synergy_config="${HOME}/bin/nix/configure-synergy-client"
 source ${synergy_config}
 
