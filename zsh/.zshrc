@@ -46,8 +46,7 @@ if [[ -n $SSH_CONNECTION ]]; then
 else
   export EDITOR='vim'
 fi
-
-alias gs='git status '
+alias v='vim '
 
 # FIXME: use this with the histignore variables
 # avoid submitting these commands into the shell's history
