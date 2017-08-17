@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Written by Eric Crosson
+# 2017-03-10
+#
+# Run ctop
+
+docker run \
+       -it \
+       -v /var/run/docker.sock:/var/run/docker.sock \
+       quay.io/vektorlab/ctop:latest
