@@ -8,11 +8,36 @@
 	default = simple
 [alias]
 	s = status
-	c = commit
+	c = checkout
 	co = checkout
+	k = commit
+	ca = commit --all
 	cm = commit -m
-	ac = remote add
+	cam = commit --all -m
 	acm = !git add . && git commit -m
+
+	a = add
+	al = add all
+
+	p = push
+	prum = pull --rebase upstream master
+	pom = push origin master
+
+        rem = remote
+	rema = remote add
+	remr = remote rename
+	remg = remote get-url
+
+	b = branch
+
+	r = rebase
+	rc = rebase --continue
+	ra = rebase --abort
+
+	f = fetch
+	fa = fetch --all
+
+	le = ledger
 
 	cl = clone
 
@@ -30,7 +55,6 @@
 
 	d = diff --color-words
 	dh = diff --color-words head
-	br = branch
 	alias = !git config --list | grep \"alias\\\\.\" | sed \"s/alias\\\\.\\\\([^=]*\\\\)=\\\\(.*\\\\)/\\\\1\\\\\\t => \\\\2/\" | sort
 	ls = log --oneline
 
@@ -57,6 +81,9 @@
         # example: git mr upstream 5
 	mr = !sh -c 'git fetch $1 merge-requests/$2/head:mr-$1-$2 && git checkout mr-$1-$2' -
 
+	# BFG repo-cleaner
+	bfg = !java -jar $HOME/workspace/git-bfg-repo-cleaner/bfg-1.12.15.jar
+
 [url "git@nebuchadnezzar.shoretel.com:"]
 	insteadOf = "neb:"
 	PushInsteadOf = "neb:"
@@ -64,7 +91,7 @@
 [url "https://nebuchadnezzar.shoretel.com/"]
 	insteadOf = "heb:"
 	PushInsteadOf = "heb:"
-	# example: git clone neb/ecrosson/confluent
+	# example: git clone heb/ecrosson/confluent
 [url "git@github.com:"]
 	insteadOf = "gh:"
 	PushInsteadOf = "gh:"
