@@ -1,1 +1,58 @@
-../../../bash/bin/linux/esc-xmap-nocaps
+#!/usr/bin/env bash
+#
+## @file
+## @author Eric Crosson <esc@ericcrosson.com>
+## @brief Modify current X sessions's kbd map to exclude Caps Lock.
+## @copyright WTFPLv2
+## @version 1.0
+#
+#########
+# License:
+#
+#             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#                    Version 2, December 2004
+#
+# Copyright (C) 2014 Eric Crosson <sam@hocevar.net>
+#
+# Everyone is permitted to copy and distribute verbatim or modified
+# copies of this license document, and changing it is allowed as long
+# as the name is changed.
+#
+#            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+#   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+#
+#  0. You just DO WHAT THE FUCK YOU WANT TO.
+#
+#########
+#
+## @details
+## @par Script abstract
+##
+## This script will modify the current X session's kbd map to exclude
+## Caps Lock. Any existing Caps Locks will be replaced with Left
+## Control.
+##
+## @note This library will only modify keyboard settings in
+## Xorg. Sorry Wayland users, you've beaten me to the punch.
+##
+## @par Usage
+## Only script invocation matters; all arguments will be ignored.
+#
+## @defgroup XmapnocapsUsage
+
+## @var modified_xmap Path to xmap description sans Caps Lock
+## @brief Internal use only.
+## @details Location of X kbd map sans Caps Lock.
+## @ingroup XmapnocapsUsage
+declare -rl modified_xmap=res/esc-xmap-nocaps.map
+
+## @fn modify_xmap
+## @brief modify current Xorg map to value of modified_xmap
+## @details modify current Xorg map to value of modified_xmap
+## @ingroup XmapnocapsUsage
+modify_xmap () {
+
+    setxkbmap -option ctrl:nocaps
+}
+
+modify_xmap

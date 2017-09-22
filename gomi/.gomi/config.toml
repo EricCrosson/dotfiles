@@ -1,7 +1,0 @@
-# Interpret if name matches the shell file name pattern
-ignore_files = [
-  ".DS_Store",
-  "*~",
-]
-
-gomi_size = 10000000000 # 10 GB

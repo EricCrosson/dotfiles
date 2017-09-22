@@ -23,10 +23,10 @@
 	prum = pull --rebase upstream master
 	pom = push origin master
 
-        rem = remote
-	rema = remote add
-	remr = remote rename
-	remg = remote get-url
+        r = remote
+	rn = remote add
+	rr = remote rename
+	rg = remote get-url
 
 	b = branch
 
@@ -73,6 +73,7 @@
 
         # submodules
         sm = submodule
+        sms = submodule status
         sa = submodule add
         si = submodule init
         su = submodule update

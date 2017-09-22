@@ -1,1 +1,5 @@
-../../../bash/bin/linux/esc-xset-m
+#!/usr/bin/env bash
+#
+# Set mouse sensitivity
+
+xset m 7/3 0

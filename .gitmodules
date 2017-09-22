@@ -1,3 +1,0 @@
-[submodule "bin/bin/nix/.speedread"]
-	path = bin/bin/nix/.speedread
- 	url = https://github.com/pasky/speedread.git

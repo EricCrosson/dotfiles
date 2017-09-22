@@ -22,13 +22,16 @@ bindkey -e
 autoload copy-earlier-word && zle -N copy-earlier-word && bindkey '^[,' copy-earlier-word
 
 # User configuration
-export PATH="$HOME/bin/nix:$HOME/bin/linux:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
+export PATH="$HOME/bin/nix:$HOME/bin/darwin:$HOME/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
 
 # rust configuration
 export PATH="$HOME/.cargo/bin:$PATH"
 
 # gem configuration
 export PATH="$HOME/.gem/bin:$PATH"
+
+# python configuration
+export PATH="$HOME/Library/Python/2.7/bin:$PATH"
 
 # golang configuration
 export PATH=$PATH:/usr/local/go/bin
@@ -80,8 +83,6 @@ function bell() {
 [ -f $HOME/vault/slack-notify ] && source $HOME/vault/slack-notify
 [ -f $HOME/vault/confluent ] && source $HOME/vault/confluent
 [ -f $HOME/vault/slack-token-quarc ] && source $HOME/vault/slack-token-quarc
-
-[ -f $HOME/.nvm/nvm.sh ] && source $HOME/.nvm/nvm.sh
 
 #####################################################################
 # completions
@@ -151,6 +152,8 @@ zplug "plugins/sudo",   from:oh-my-zsh
 zplug "plugins/docker",   from:oh-my-zsh
 zplug "plugins/screen",   from:oh-my-zsh
 # zplug "plugins/colored-man-pages", from:oh-my-zsh
+
+zplug "MichaelAquilina/zsh-you-should-use"
 
 # zplug "zsh-users/zsh-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-completions"
@@ -227,15 +230,23 @@ set -k  # Set INTERACTIVE_COMMENTS to ignore after '#'
 setopt auto_cd
 # cdpath=($HOME/workspace)
 
-export NVM_DIR="${HOME}/.nvm"
+if [ -e "${HOME}/.nvm/nvm.sh" ]; then
+	NVM_DIR="${HOME}/.nvm"
+elif [ $(which brew) ]; then
+	NVM_DIR=$(brew --prefix nvm)
+fi
+export NVM_DIR
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+nvm use --delete-prefix v8.0.0 --silent
 
 PATH="/home/eric/perl5/bin${PATH:+:${PATH}}"; export PATH;
 PERL5LIB="/home/eric/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
 PERL_LOCAL_LIB_ROOT="/home/eric/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
 PERL_MB_OPT="--install_base \"/home/eric/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/home/eric/perl5"; export PERL_MM_OPT;
-source /home/eric/.repo-scripts.conf
 
 # added by travis gem
 [ -f /home/eric/.travis/travis.sh ] && source /home/eric/.travis/travis.sh
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
