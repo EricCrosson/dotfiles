@@ -43,7 +43,7 @@ path=("${HOME}/.cargo/bin" $path)  # rust
 
 ##
 # Ruby configuration
-path=("${HOME}/.gem/bin" $path)  # ruby
+path=("${HOME}/.gem/bin" $path)
 [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
 ##
 
@@ -62,10 +62,12 @@ source "$(which virtualenvwrapper.sh)" 2>/dev/null
 # TODO: move aliases somewhere else, source in a shell-independent manner, like
 # direnv (on github).
 alias l='ls -lahv '
+alias g='git '
 alias v='vim '
 alias s='screen '
 alias sudo='sudo '
 
+# TODO: implementation bleeding, pull this functionality into package
 [ -f "${HOME}/vault/slack-notify" ] && source "${HOME}/vault/slack-notify"
 
 #####################################################################
@@ -137,12 +139,14 @@ zplug "frmendes/geometry", as:theme
 zplug "chrissicool/zsh-256color"
 zplug "jreese/zsh-titles"
 
+# TODO: wrap in a darwin-guard
+zplug "plugins/osx",   from:oh-my-zsh
+
 zplug "plugins/git",   from:oh-my-zsh
 zplug "plugins/sudo",   from:oh-my-zsh
 zplug "plugins/docker",   from:oh-my-zsh
-# zplug "plugins/pip",   from:oh-my-zsh
-# zplug "plugins/screen",   from:oh-my-zsh
-# zplug "plugins/colored-man-pages", from:oh-my-zsh
+zplug "plugins/pip",   from:oh-my-zsh
+zplug "plugins/colored-man-pages", from:oh-my-zsh
 
 zplug "MichaelAquilina/zsh-you-should-use"
 
