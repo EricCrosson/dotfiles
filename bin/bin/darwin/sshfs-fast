@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-# Written by Eric Crosson
-# 2017-04-14
-#
-# Sshfs, trading security for speed.
-
-sshfs -o Ciphers=arcfour -o Compression=no "$@"
