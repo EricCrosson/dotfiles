@@ -69,6 +69,11 @@ alias s='screen '
 alias sudo='sudo '
 alias o='open '
 
+mc() {
+	mkdir -p -- "$1" &&
+		cd -P -- "$1"
+}
+
 # TODO: implementation bleeding, pull this functionality into package
 [ -f "${HOME}/vault/slack-notify" ] && source "${HOME}/vault/slack-notify"
 
