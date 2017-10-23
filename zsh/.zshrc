@@ -39,6 +39,7 @@ path=("${HOME}/bin" $path)
 path=("${HOME}/bin/nix" $path)
 path=("${HOME}/bin/darwin" $path)
 path=("${HOME}/.cargo/bin" $path)  # rust
+path=("${HOME}/Library/Python/2.7/bin" $path)
 ##
 
 ##
@@ -56,7 +57,7 @@ path=("${GOPATH}/bin" $path)
 
 ##
 # Python configuration
-source "$(which virtualenvwrapper.sh)" 2>/dev/null
+PATH=~/Library/Python/2.7/bin:$PATH source "$(which virtualenvwrapper.sh)" 2>/dev/null
 ##
 
 # TODO: move aliases somewhere else, source in a shell-independent manner, like
@@ -66,6 +67,7 @@ alias g='git '
 alias v='vim '
 alias s='screen '
 alias sudo='sudo '
+alias o='open '
 
 # TODO: implementation bleeding, pull this functionality into package
 [ -f "${HOME}/vault/slack-notify" ] && source "${HOME}/vault/slack-notify"
@@ -142,8 +144,13 @@ zplug "jreese/zsh-titles"
 # TODO: wrap in a darwin-guard
 zplug "plugins/osx",   from:oh-my-zsh
 
+zplug "plugins/docker",   from:oh-my-zsh
+zplug "plugins/docker-compose",   from:oh-my-zsh
+# zplug "plugins/emoji",   from:oh-my-zsh
+zplug "plugins/golang",   from:oh-my-zsh
 zplug "plugins/git",   from:oh-my-zsh
-zplug "plugins/sudo",   from:oh-my-zsh
+zplug "plugins/github",   from:oh-my-zsh
+zplug "plugins/gitignore",   from:oh-my-zsh
 zplug "plugins/docker",   from:oh-my-zsh
 zplug "plugins/pip",   from:oh-my-zsh
 zplug "plugins/colored-man-pages", from:oh-my-zsh
@@ -195,5 +202,3 @@ zplug load
 
 ##
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-path+=("${HOME}/.rvm/bin")
-##
