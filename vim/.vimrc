@@ -32,6 +32,9 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'kristijanhusak/vim-hybrid-material'
 
+" Wakatime config
+Plug 'wakatime/vim-wakatime'
+
 " Initialize plugin system
 call plug#end()
 
