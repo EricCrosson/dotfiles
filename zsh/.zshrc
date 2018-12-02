@@ -1,6 +1,7 @@
 #####################################################################
 # config
 #####################################################################
+# TODO: consider tangling, same as emacs.d
 
 ##
 # General configuration
@@ -23,41 +24,29 @@ autoload copy-earlier-word && \
 if [[ -n "${SSH_CONNECTION}" ]]; then
   export EDITOR='vim'
 else
+  # TODO: set to emacs-client
   export EDITOR='vim'
 fi
 ##
 
 ##
-# Path configuration
-path+=('/usr/local/bin')
-path+=('/usr/bin')
-path+=('/bin')
-path+=('/usr/local/sbin')
-path+=('/usr/sbin')
-path+=('/sbin')
-path=("${HOME}/bin" $path)
-path=("${HOME}/bin/nix" $path)
-path=("${HOME}/bin/darwin" $path)
-path=("${HOME}/.cargo/bin" $path)  # rust
-path=("${HOME}/Library/Python/2.7/bin" $path)
+# fpath configuration
+fpath=("${HOME}/.zsh_functions" $fpath)
 ##
-
-##
-# Ruby configuration
-path=("${HOME}/.gem/bin" $path)
-[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
-##
-
 ##
 # Golang configuration
 export GOPATH="${HOME}/workspace/golang"
-path+=('/usr/local/go/bin')
 path=("${GOPATH}/bin" $path)
 ##
 
 ##
 # Python configuration
 PATH=~/Library/Python/2.7/bin:$PATH source "$(which virtualenvwrapper.sh)" 2>/dev/null
+##
+
+##
+# Goss configuration
+export GOSS_PATH=/usr/local/bin/goss
 ##
 
 # TODO: move aliases somewhere else, source in a shell-independent manner, like
@@ -68,14 +57,14 @@ alias v='vim '
 alias s='screen '
 alias sudo='sudo '
 alias o='open '
+alias glances='glances --theme-white '
+alias ssh='ssh -t '
+alias cmc='coinmarketcap '
 
 mc() {
-	mkdir -p -- "$1" &&
-		cd -P -- "$1"
+    mkdir -p -- "$1" &&
+        cd -P -- "$1"
 }
-
-# TODO: implementation bleeding, pull this functionality into package
-[ -f "${HOME}/vault/slack-notify" ] && source "${HOME}/vault/slack-notify"
 
 #####################################################################
 # completions
@@ -83,7 +72,7 @@ mc() {
 
 # Enable completions
 if [ -d ~/.zsh/comp ]; then
-    fpath=(~/.zsh/comp $fpath)
+    fpath=("${HOME}/.zsh/comp" $fpath)
     autoload -U ~/.zsh/comp/*(:t)
 fi
 
@@ -138,7 +127,7 @@ if [[ ! -d ~/.zplug ]]; then
   git clone https://github.com/zplug/zplug ~/.zplug
   source ~/.zplug/init.zsh && zplug update --self
 fi
-source ${HOME}/.zplug/init.zsh
+source "${HOME}/.zplug/init.zsh"
 
 zplug "zplug/zplug", hook-build:'zplug --self-manage'
 
@@ -151,7 +140,6 @@ zplug "plugins/osx",   from:oh-my-zsh
 
 zplug "plugins/docker",   from:oh-my-zsh
 zplug "plugins/docker-compose",   from:oh-my-zsh
-# zplug "plugins/emoji",   from:oh-my-zsh
 zplug "plugins/golang",   from:oh-my-zsh
 zplug "plugins/git",   from:oh-my-zsh
 zplug "plugins/github",   from:oh-my-zsh
@@ -195,6 +183,7 @@ zplug load
 ##
 
 ##
+# TODO: isolatte
 # Tiny Care-Terminal
 # List of accounts to read the last tweet from, comma separated
 # # The first in the list is read by the party parrot.
@@ -204,12 +193,12 @@ export TTC_BOTS='tinycarebot,selfcare_bot,magicrealismbot'
 # export TTC_SAY_BOX='cat'
 #
 # # List of folders to look into for `git` commits, comma separated.
-export TTC_REPOS='~/.emacs.d,~/dotfiles,~/workspace'
+export TTC_REPOS='~/.emacs.d,~/dotfiles,~/workspace,~/workspace/golang/src'
 #
 # # The max directory-depth to look for git repositories in
 # # the directories defined with `TTC_REPOS`. Note that the deeper
 # # the directory depth, the slower the results will be fetched.
-export TTC_REPOS_DEPTH=2
+export TTC_REPOS_DEPTH=3
 #
 # # Which method is to be used to read the git commits ('gitstandup' | 'gitlog').
 # # If you're having problems seeing your commits in the dahsboard, set
@@ -234,7 +223,7 @@ export TTC_UPDATE_INTERVAL=20
 # # Turn off terminal title
 # export TTC_TERMINAL_TITLE=false
 #
-[ -f ~/vault/tiny-care-terminal ] && source ~/vault/tiny-care-terminal
+[ -f "${HOME}/vault/tiny-care-terminal" ] && source "${HOME}/vault/tiny-care-terminal"
 ##
 
 #####################################################################
@@ -250,3 +239,8 @@ export TTC_UPDATE_INTERVAL=20
 
 ##
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+
+export NVM_DIR="$HOME/.nvm"
+source "/usr/local/opt/nvm/nvm.sh"
+
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/opt/X11/lib/pkgconfig
