@@ -33,15 +33,11 @@ fi
 # fpath configuration
 fpath=("${HOME}/.zsh_functions" $fpath)
 ##
-##
-# Golang configuration
-export GOPATH="${HOME}/workspace/golang"
-path=("${GOPATH}/bin" $path)
-##
 
 ##
 # Python configuration
-PATH=~/Library/Python/2.7/bin:$PATH source "$(which virtualenvwrapper.sh)" 2>/dev/null
+# PATH=~/Library/Python/2.7/bin:$PATH source "$(which virtualenvwrapper.sh)" 2>/dev/null
+source "$(which virtualenvwrapper.sh)" 2>/dev/null
 ##
 
 ##
@@ -172,7 +168,7 @@ zplug "peterhurford/up.zsh"
 # zplug "stedolan/jq", as:command, from:gh-r, rename-to:jq
 # zplug "b4b4r07/httpstat", as:command, use:'(*).sh', rename-to:'$1'
 # zplug "b4b4r07/ssh-keyreg", as:command, use:bin     # add ssh key to github
-# zplug "lukechilds/zsh-better-npm-completion", defer:2
+zplug "lukechilds/zsh-better-npm-completion", defer:2
 
 zplug "vifon/deer", use:deer                        # inspired by ranger
 zle -N deer
@@ -243,4 +239,4 @@ export TTC_UPDATE_INTERVAL=20
 export NVM_DIR="$HOME/.nvm"
 source "/usr/local/opt/nvm/nvm.sh"
 
-export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/opt/X11/lib/pkgconfig
+export -U PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/opt/X11/lib/pkgconfig

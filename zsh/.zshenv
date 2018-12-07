@@ -1,5 +1,7 @@
 source ~/perl5/perlbrew/etc/bashrc
 
+export GOPATH="${HOME}/workspace/golang"
+
 ##
 # Path configuration
 path+=('/usr/local/bin')
@@ -10,7 +12,8 @@ path+=('/usr/sbin')
 path+=('/sbin')
 
 # golang
-path+=('/usr/local/go/bin')
+path=('/usr/local/go/bin' $path)
+path=("${GOPATH}/bin" $path)
 
 # rust
 path=("${HOME}/.cargo/bin" $path)
