@@ -12,7 +12,7 @@ zmodload zsh/terminfo                    #
 ##
 # Use bash-style navigation
 bindkey -e                               # use bash input mode
-autoload -U select-word-style            # kill-word stops at directory delimeter
+# autoload -U select-word-style            # kill-word stops at directory delimeter
 setopt interactivecomments               # bash-style comments
 autoload copy-earlier-word && \
 	zle -N copy-earlier-word && \
@@ -34,17 +34,6 @@ fi
 fpath=("${HOME}/.zsh_functions" $fpath)
 ##
 
-##
-# Python configuration
-# PATH=~/Library/Python/2.7/bin:$PATH source "$(which virtualenvwrapper.sh)" 2>/dev/null
-source "$(which virtualenvwrapper.sh)" 2>/dev/null
-##
-
-##
-# Goss configuration
-export GOSS_PATH=/usr/local/bin/goss
-##
-
 # TODO: move aliases somewhere else, source in a shell-independent manner, like
 # direnv (on github).
 alias l='ls -lahv '
@@ -61,6 +50,8 @@ mc() {
     mkdir -p -- "$1" &&
         cd -P -- "$1"
 }
+
+alias qutebrowser='/Applications/qutebrowser.app/Contents/MacOS/qutebrowser '
 
 #####################################################################
 # completions
@@ -131,6 +122,11 @@ zplug "frmendes/geometry", as:theme
 zplug "chrissicool/zsh-256color"
 zplug "jreese/zsh-titles"
 
+export NVM_DIR="/usr/local/opt/nvm"
+export NVM_LAZY_LOAD=true
+zplug "lukechilds/zsh-nvm"
+zplug "lukechilds/zsh-better-npm-completion", defer:2
+
 # TODO: wrap in a darwin-guard
 zplug "plugins/osx",   from:oh-my-zsh
 
@@ -144,10 +140,11 @@ zplug "plugins/docker",   from:oh-my-zsh
 zplug "plugins/pip",   from:oh-my-zsh
 zplug "plugins/colored-man-pages", from:oh-my-zsh
 
+# TODO: can this be defered?
 zplug "MichaelAquilina/zsh-you-should-use"
 
 zplug "zsh-users/zsh-completions"
-zplug "zsh-users/zsh-autosuggestions"
+zplug "zsh-users/zsh-autosuggestions"  # does incur a slowdown, esp during paste
 zplug "zsh-users/zsh-history-substring-search"
 zplug "robsis/zsh-completion-generator"
 
@@ -168,7 +165,6 @@ zplug "peterhurford/up.zsh"
 # zplug "stedolan/jq", as:command, from:gh-r, rename-to:jq
 # zplug "b4b4r07/httpstat", as:command, use:'(*).sh', rename-to:'$1'
 # zplug "b4b4r07/ssh-keyreg", as:command, use:bin     # add ssh key to github
-zplug "lukechilds/zsh-better-npm-completion", defer:2
 
 zplug "vifon/deer", use:deer                        # inspired by ranger
 zle -N deer
@@ -225,18 +221,5 @@ export TTC_UPDATE_INTERVAL=20
 #####################################################################
 # post-config
 #####################################################################
-
-# if [ -e "${HOME}/.nvm/nvm.sh" ]; then
-# 	export NVM_DIR="${HOME}/.nvm"
-# elif [ "$(which brew)" ]; then
-# 	export NVM_DIR="$(brew --prefix nvm)"
-# fi
-# [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-
-##
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-
-export NVM_DIR="$HOME/.nvm"
-source "/usr/local/opt/nvm/nvm.sh"
 
 export -U PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/opt/X11/lib/pkgconfig
