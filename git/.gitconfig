@@ -1,6 +1,7 @@
 [user]
-	email = eric.s.crosson@gmail.com
+	email = eric.s.crosson@utexas.edu
 	name = Eric Crosson
+	username = ericcrosson
 [color]
 	ui = auto
 	interactive = auto
@@ -21,6 +22,7 @@
 
 	p = push
 	prum = pull --rebase upstream master
+	prom = pull --rebase origin master
 	pom = push origin master
 
         r = remote
@@ -85,23 +87,25 @@
 	# BFG repo-cleaner
 	bfg = !java -jar $HOME/workspace/git-bfg-repo-cleaner/bfg-1.12.15.jar
 
-[url "git@nebuchadnezzar.shoretel.com:"]
-	insteadOf = "neb:"
-	PushInsteadOf = "neb:"
-	# example: git clone neb:ecrosson/confluent
-[url "https://nebuchadnezzar.shoretel.com/"]
-	insteadOf = "heb:"
-	PushInsteadOf = "heb:"
-	# example: git clone heb/ecrosson/confluent
 [url "git@github.com:"]
 	insteadOf = "gh:"
 	PushInsteadOf = "gh:"
+	# example: git clone gh:ericcrosson/emacs.d
 [url "git@gitlab.com:"]
 	insteadOf = "gl:"
 	PushInsteadOf = "gl:"
+	# example: git clone gh/ericcrosson/emacs.d
 [core]
 	editor = vim
 	excludesfile = /home/eric/.gitignore_global
+	autocrlf = false
 
 [rerere]
 	enabled = true
+[github]
+	user = EricCrosson
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
