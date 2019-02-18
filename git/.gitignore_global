@@ -1,2 +1,4 @@
 *~undo-tree~.gz
 .projectile
+node_modules/
+.DS_Store

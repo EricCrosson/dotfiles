@@ -52,6 +52,7 @@ mc() {
 }
 
 alias qutebrowser='/Applications/qutebrowser.app/Contents/MacOS/qutebrowser '
+alias timer='termdown '
 
 #####################################################################
 # completions
