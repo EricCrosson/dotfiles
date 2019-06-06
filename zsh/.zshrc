@@ -119,7 +119,13 @@ source "${HOME}/.zplug/init.zsh"
 
 zplug "zplug/zplug", hook-build:'zplug --self-manage'
 
-zplug "frmendes/geometry", as:theme
+# zplug "frmendes/geometry", as:theme
+
+PURE_CMD_MAX_EXEC_TIME=3
+PURE_NODE_ENABLED=0
+zplug "mafredri/zsh-async"
+zplug "esc-zsh/lambda-pure"
+
 zplug "chrissicool/zsh-256color"
 zplug "jreese/zsh-titles"
 
