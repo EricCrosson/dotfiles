@@ -129,7 +129,7 @@ zplug "esc-zsh/lambda-pure"
 zplug "chrissicool/zsh-256color"
 zplug "jreese/zsh-titles"
 
-export NVM_DIR="/usr/local/opt/nvm"
+export NVM_DIR="${HOME}/.local/opt/nvm"
 export NVM_LAZY_LOAD=true
 zplug "lukechilds/zsh-nvm"
 zplug "lukechilds/zsh-better-npm-completion", defer:2

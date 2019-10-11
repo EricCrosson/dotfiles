@@ -38,5 +38,5 @@ Plug 'wakatime/vim-wakatime'
 " Initialize plugin system
 call plug#end()
 
-set background=dark
-colorscheme hybrid_reverse
+" set background=dark
+" colorscheme hybrid_reverse
