@@ -3,7 +3,7 @@
 	name = Eric Crosson
 	username = ericcrosson
 [color]
-	ui = auto
+	ui = true
 	interactive = auto
 [push]
 	default = simple
@@ -99,6 +99,7 @@
 	editor = vim
 	excludesfile = /home/eric/.gitignore_global
 	autocrlf = false
+	pager = diff-so-fancy | less --tabs=4 -RFX
 
 [rerere]
 	enabled = true
@@ -109,3 +110,18 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold reverse
+	newNormal = green bold
+	newHighlight = green bold reverse
+[color "diff"]
+	meta = 11
+	frag = magenta bold
+	commit = yellow bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
+[diff-so-fancy]
+	markEmptyLines = false
+	changeHunkIndicators = true

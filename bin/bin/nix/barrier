@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Written by Eric Crosson
+# 2016-10-26
+#
+# Act as a synchronization barrier in a shell context.
+#
+# Arguments:
+# an integer (no args is equivalent to passing `1`)
+#     - describes number of broadcasts to wait for
+# a list of hosts (may be length 1)
+#     - hosts to notify that barrier has been reached
+
+# set -e
+# set -x
+
+declare -r default_port=64926
+declare -r port=${PORT:-${default_port}}
+
+printHelp() {
+    cat <<EOF
+
+    Usage: $0 <count>|hosts
+
+    where
+      count    (defaults to 0) is the number of broadcasts to listen
+               for before proceeding
+      hosts    is a list of hosts to broadcast to before proceeding
+
+EOF
+    exit 1
+}
+
+listenMode() {
+    for i in $(seq 1 $1); do
+        nc -l ${port}
+    done
+}
+
+broadcastMode() {
+    for host in "$@"; do
+        echo | nc ${host} ${port}
+    done
+}
+
+main() {
+    while true; do
+        case "$1" in
+            -h|--help) printHelp ;;
+            --) shift; break ;;
+            *) break ;;
+        esac
+    done
+
+    if [[ "$#" -eq 0 ]]; then
+        listenMode 1
+    elif [[ $1 =~ ^-?[0-9]+$ ]]; then
+        listenMode $1
+    else
+        broadcastMode "$@"
+    fi
+}
+
+
+main "$@"
+

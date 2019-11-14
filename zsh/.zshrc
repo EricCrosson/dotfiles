@@ -160,6 +160,8 @@ zplug "supercrabtree/k"
 zplug "ericcrosson/smart-cd"
 zplug "tarrasch/zsh-functional"
 
+# zplug "esc-zsh/zsh-dirnav"  # useless on osx because ctrl-right/left already bound
+
 # zplug "marzocchi/zsh-notify"
 # zplug "rutchkiwi/copyzshell"
 # zplug "willghatch/zsh-snippets"
@@ -180,6 +182,8 @@ bindkey '\ek' deer
 ! zplug check && zplug install
 zplug load
 ##
+
+export DOCKER_BUILDKIT=1
 
 ##
 # TODO: isolatte
@@ -230,3 +234,4 @@ export TTC_UPDATE_INTERVAL=20
 #####################################################################
 
 export -U PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/opt/X11/lib/pkgconfig
+eval "$(direnv hook zsh)"
