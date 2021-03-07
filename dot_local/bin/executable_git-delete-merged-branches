@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+IFS=$'\n\t'
+
+# TODO: either create an interactive prompt or a flag to show the
+# branches that will be deleted
+
+git branch --merged | grep -v "\*" | xargs -n 1 git branch -d

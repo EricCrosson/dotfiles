@@ -1,0 +1,223 @@
+#####################################################################
+# config
+#####################################################################
+
+# zmodload zsh/zprof
+
+##
+# General configuration
+export HISTSIZE=10000                    # retain a reasonable history
+zmodload zsh/terminfo                    #
+##
+
+##
+# Use bash-style navigation
+bindkey -e                               # use bash input mode
+# autoload -U select-word-style            # kill-word stops at directory delimeter
+setopt interactivecomments               # bash-style comments
+autoload copy-earlier-word && \
+	zle -N copy-earlier-word && \
+	bindkey '^[,' copy-earlier-word  # cycle through last-words with M-.
+##
+
+##
+# Editor for local and remote sessions
+if [[ -n "${SSH_CONNECTION}" ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='vim'
+fi
+##
+
+alias l='ls -lahv '
+alias v='vim '
+alias s='screen '
+alias sudo='sudo '
+alias ssh='ssh -t '
+alias a='ambs '
+alias ar='ambr '
+alias c='chezmoi '
+alias o='open '
+alias g='git '
+alias gdc='git diff --cached '
+alias j='jira '
+alias rg='rg --smart-case '
+alias d='docker '
+
+if command -v 'hub' &>/dev/null; then
+    alias git='hub '
+fi
+
+# This post outlines what it takes to default to GNU make on macOS
+# https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
+# alias make='gmake '
+
+mc() {
+    mkdir -p -- "$1" &&
+        cd -P -- "$1"
+}
+
+[ -f ~/.local/share/zsh/screen ] && source ~/.local/share/zsh/screen
+
+#####################################################################
+# completions
+#####################################################################
+
+# Enable completions
+if [ -d ~/.zsh/comp ]; then
+    fpath=("${HOME}/.zsh/comp" $fpath)
+    autoload -U ~/.zsh/comp/*(:t)
+fi
+
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:messages' format '%d'
+zstyle ':completion:*:descriptions' format '%d'
+zstyle ':completion:*:options' verbose yes
+zstyle ':completion:*:values' verbose yes
+zstyle ':completion:*:options' prefix-needed yes
+# Use cache completion
+# apt-get, dpkg (Debian), rpm (Redhat), urpmi (Mandrake), perl -M,
+# bogofilter (zsh 4.2.1 >=), fink, mac_apps...
+zstyle ':completion:*' use-cache true
+zstyle ':completion:*:default' menu select=1
+zstyle ':completion:*' matcher-list \
+    '' \
+    'm:{a-z}={A-Z}' \
+    'l:|=* r:|[.,_-]=* r:|=* m:{a-z}={A-Z}'
+# sudo completions
+zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin \
+    /usr/sbin /usr/bin /sbin /bin /usr/X11R6/bin
+zstyle ':completion:*' menu select
+zstyle ':completion:*' keep-prefix
+zstyle ':completion:*' completer _oldlist _complete _match _ignored \
+    _approximate _list _history
+
+# Update compinit only once a day
+# https://gist.github.com/ctechols/ca1035271ad134841284#gistcomment-2308206
+autoload -Uz compinit
+
+for dump in ~/.zcompdump(N.mh+24); do
+  compinit
+done
+
+compinit -C
+
+# Original complete functions
+compdef '_files -g "*.hs"' runhaskell
+compdef _man w3mman
+compdef _tex platex
+
+# dircolors on completed entries
+zstyle ':completion:*' list-colors 'di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
+
+zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cputime,command"
+
+#####################################################################
+# plugins
+#####################################################################
+
+##
+# Configure zplug packages
+export SMART_CD_ONLY_IF_FITS="true"
+# export SMART_CD_LS_COMMAND="k --human"
+##
+
+##
+# Bootstrap zplug
+if [[ ! -d ~/.zplug ]]; then
+  git clone https://github.com/zplug/zplug ~/.zplug
+  source ~/.zplug/init.zsh && zplug update --self
+fi
+source "${HOME}/.zplug/init.zsh"
+
+zplug "zplug/zplug", hook-build:'zplug --self-manage'
+
+PURE_CMD_MAX_EXEC_TIME=3
+PURE_NODE_ENABLED=0
+PURE_GIT_PULL=0
+
+zplug "mafredri/zsh-async"
+zplug "esc-zsh/lambda-pure"
+
+zplug "sobolevn/wakatime-zsh-plugin"
+
+# Disabled 2021-01-06 for speed, not sure what effects we'll see
+# zplug "chrissicool/zsh-256color"
+
+zplug "jreese/zsh-titles"
+
+zplug "lukechilds/zsh-nvm"
+zplug "lukechilds/zsh-better-npm-completion", defer:2
+
+# TODO: load this without triggering the auto-loading of nvm
+# zplug "esc-zsh/zsh-auto-nvm-use", defer:2
+
+# TODO: wrap in a darwin-guard
+zplug "plugins/osx",   from:oh-my-zsh
+
+zplug "plugins/docker", from:oh-my-zsh
+zplug "plugins/docker-compose", from:oh-my-zsh
+zplug "plugins/golang", from:oh-my-zsh
+zplug "plugins/git", from:oh-my-zsh
+zplug "plugins/github", from:oh-my-zsh
+zplug "plugins/gitignore", from:oh-my-zsh
+zplug "plugins/pip", from:oh-my-zsh
+zplug "plugins/colored-man-pages", from:oh-my-zsh
+
+zplug "MichaelAquilina/zsh-you-should-use", defer:2
+
+zplug "zsh-users/zsh-completions"
+zplug "zsh-users/zsh-autosuggestions"  # does incur a slowdown, esp during paste
+zplug "zsh-users/zsh-history-substring-search"
+zplug "robsis/zsh-completion-generator"
+
+zplug "hlissner/zsh-autopair", defer:2
+zplug "supercrabtree/k", defer:2
+zplug "ericcrosson/smart-cd"
+
+# Never got much use, so disabled
+# zplug "tarrasch/zsh-functional"
+
+forgit_log=gl
+forgit_stash_show=gs
+zplug "wfxr/forgit", defer:2
+
+# zplug "esc-zsh/zsh-dirnav"  # useless on osx because ctrl-right/left already bound
+
+# commands
+zplug "peterhurford/up.zsh"
+
+! zplug check && zplug install
+zplug load
+##
+
+#####################################################################
+# fzf config
+#####################################################################
+
+export FZF_DEFAULT_COMMAND='fd --type f'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type d'
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+bindkey '^X^T' fzf-file-widget
+bindkey '^T' transpose-chars
+
+#####################################################################
+# pyenv config
+#####################################################################
+
+if command -v pyenv >/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+    if command -v pyenv-virtualenv >/dev/null 2>&1; then
+        eval "$(pyenv virtualenv-init -)"
+    fi
+fi
+
+#####################################################################
+# post-config
+#####################################################################
+
+eval "$(direnv hook zsh)"
+
+# zprof

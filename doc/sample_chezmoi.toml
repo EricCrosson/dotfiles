@@ -1,0 +1,20 @@
+[data]
+    [data.user]
+        name = "Eric Crosson"
+        email = "eric.s.crosson@utexas.edu"
+
+    [data.github]
+        # from https://github.com/settings/tokens
+        forge_token = ""
+
+    [data.wakatime]
+        api_key = ""
+
+    [data.stratos]
+        [data.stratos.dev.aws]
+            access_key_id = ""
+            secret_access_key = ""
+
+        [data.stratos.prod.aws]
+            access_key_id = ""
+            secret_access_key = ""

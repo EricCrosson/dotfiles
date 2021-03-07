@@ -1,0 +1,130 @@
+[user]
+    email = {{ .user.email }}
+    name = {{ .user.name }}
+
+[init]
+    defaultBranch = master
+
+[github]
+    user = {{ .user.email }}
+
+[color]
+    ui = true
+    interactive = auto
+
+[push]
+    default = simple
+
+[pull]
+    rebase = true
+
+[rerere]
+    enabled = true
+
+[alias]
+    s = status
+    c = checkout
+    co = checkout
+    k = commit
+    ca = commit --all
+    cm = commit -m
+    cam = commit --all -m
+    acm = !git add . && git commit -m
+
+    a = add
+    al = add all
+
+    p = push
+    prum = pull --rebase upstream master
+    prom = pull --rebase origin master
+    pom = push origin master
+
+    r = remote
+    rn = remote add
+    rr = remote rename
+    rg = remote get-url
+
+    b = branch
+
+    r = rebase
+    rc = rebase --continue
+    ra = rebase --abort
+
+    f = fetch
+    fa = fetch --all
+
+    le = ledger
+
+    cl = clone
+
+    l = log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
+    lg = !"git lg1"
+    lga = !"git lg1 --all"
+    lg2a = !"git lg2-specific --all"
+    lg3a = !"git lg3-specific --all"
+    lg1 = !"git lg1-specific"
+    lg2 = !"git lg2-specific"
+    lg3 = !"git lg3-specific"
+    lg1-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(black)%s%C(reset) %C(dim black)- %an%C(reset)%C(auto)%d%C(reset)'
+    lg2-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(auto)%d%C(reset)%n''          %C(black)%s%C(reset) %C(dim black)- %an%C(reset)'
+    lg3-specific = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset) %C(bold cyan)(committed: %cD)%C(reset) %C(auto)%d%C(reset)%n''          %C(black)%s%C(reset)%n''          %C(dim black)- %an <%ae> %C(reset) %C(dim black)(committer: %cn <%ce>)%C(reset)'
+
+    d = diff --color-words
+    dh = diff --color-words head
+    alias = !git config --list | grep \"alias\\\\.\" | sed \"s/alias\\\\.\\\\([^=]*\\\\)=\\\\(.*\\\\)/\\\\1\\\\\\t => \\\\2/\" | sort
+    ls = log --oneline
+
+    ll = log --graph --pretty=format:\"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset\" --abbrev-commit
+    undo-commit = reset --soft HEAD~1
+    rv = checkout --
+
+    # merging
+    ours = checkout --ours --
+    theirs = checkout --theirs --
+
+    # stashing
+    sl = stash list
+    sa = stash apply
+    ss = stash save
+
+[url "git@github.com:"]
+    insteadOf = "gh:"
+    PushInsteadOf = "gh:"
+    # example: git clone gh:ericcrosson/dotfiles
+
+[core]
+    editor = vim
+    excludesfile = ~/.gitignore_global
+    autocrlf = false
+    pager = diff-so-fancy | less --tabs=4 -RFX
+
+[color "diff-highlight"]
+    oldNormal = red bold
+    oldHighlight = red bold reverse
+    newNormal = green bold
+    newHighlight = green bold reverse
+
+[color "diff"]
+    meta = 11
+    frag = magenta bold
+    commit = yellow bold
+    old = red bold
+    new = green bold
+    whitespace = red reverse
+
+[diff-so-fancy]
+    markEmptyLines = false
+    changeHunkIndicators = true
+
+[git-up "fetch"]
+    prune = true
+    all = false
+[git-up "push"]
+    auto = false
+    all = false
+    tags = false
+[git-up "rebase"]
+    auto = true
+    show-hashes = false
+[git-up "updates"]
+    check = false

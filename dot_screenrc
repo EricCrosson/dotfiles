@@ -1,0 +1,52 @@
+startup_message off     # disable the startup screen
+vbell off               # replace the screen flash with an audible bell
+term xterm-256color
+termcapinfo xterm* ti@:te@
+
+defscrollback 15000     # keep n lines of the buffer
+altscreen on            # prevents the excessive output of programs > buffer
+markkeys "h=^b:j=^n:l=^f:$=^e:k=^p:0=^a"  # emacs keybindings for copy mode
+
+backtick 1 8640 8640 ruby -e "require 'date'; puts '%.4f' % ((Date.today.yday.to_i-4)/365.25+(Date.today.year.to_i-1993))" 2>/dev/null || echo "no ruby"
+# backtick 2 0 0 sh -c 'screen -ls | grep --color=no -o "$PPID[^[:space:]]*" | cut -d"." -f2'
+# backtick 3 60 60 $HOME/bin/linux/get_short_loadavg
+# backtick 4 60 60 $HOME/bin/linux/get_cputemp
+# backtick 5 60 60 $HOME/bin/linux/get_freemem
+# backtick 6 60 60 $HOME/bin/linux/get_freeswap
+# backtick 7 600 600 $HOME/bin/linux/get_volume
+# backtick 8 600 600 $HOME/bin/linux/get_disk_space
+# backtick 9 300 300 $HOME/bin/linux/get_battery
+
+hardstatus on           # status line at the bottom
+hardstatus alwayslastline
+hardstatus string "%{.kW}%-w%{.yW}%f%n %t%{-}%+w %=%{..g}[@%H]%{..m}%{..y}[%1`]"
+# hardstatus string "%{.kW}%-w%{.yW}%f%n %t%{-}%+w %=%{..g}[%9`%2`@%H %4`]%{..m}M(%5` %6`) D(%8`)%{..y}[%1`]"
+# %{..g}[%m/%d %c] # can be accessed with <leader> t
+
+### For multiuser screen sharing
+multiuser on
+
+### Do I feel like preventing anybody from writing in my terminals?
+# writelock on
+
+### clear the scrollback history
+# http://stackoverflow.com/a/13160702
+bind 'C' eval "clear" "scrollback 0" "scrollback 15000"
+
+### resize keybindings
+bind + resize +5
+bind - resize -5
+bind = resize =
+bind R source $HOME/.screenrc
+
+### direct access to many screens
+bind  ! select 11
+bind  @ select 12
+bind \# select 13
+bind  $ select 14
+bind  % select 15
+bind \^ select 16
+bind  & select 17
+bind  * select 18
+bind  ( select 19
+bind  ) select 10

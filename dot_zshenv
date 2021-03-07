@@ -1,0 +1,73 @@
+##
+# Terminal emulator configuration
+export TERM=xterm-kitty
+export HOMEBREW_INSTALL_BADGE="☕"
+##
+
+##
+# Bash configuration --
+# ensure bash is installed with brew (brew install bash)
+path=("/usr/local/bin" $path)
+##
+
+##
+# Node.js configuration
+export NVM_LAZY_LOAD=true
+export NVM_DIR="${HOME}/.local/opt/nvm"
+##
+
+##
+# Docker configuration
+export DOCKER_BUILDKIT=1
+##
+
+##
+# Golang configuration
+path+=("${HOME}/go/bin")
+##
+
+##
+# Rust configuration
+path+=("${HOME}/.cargo/bin")
+##
+
+##
+# Python configuration
+alias pip='pip3 '
+path+=("${HOME}/Library/Python/${$(python3 --version | cut -d' ' -f2)%.*}/bin")
+##
+
+##
+# Global PATH configuration
+path+=('/usr/local/sbin')
+path+=('/usr/local/opt/awscli@1/bin')
+path+=('/usr/local/opt/helm@2/bin')
+path+=("${HOME}/Library/Python/2.7/bin")
+path=("${HOME}/.local/bin" $path)
+##
+
+##
+# Brew configuration
+path+=('/home/linuxbrew/.linuxbrew/bin')
+##
+
+##
+# GNU binaries
+#
+# MacOS Note: to prioritize GNU Make in $PATH, you must also execute the
+# following:
+#
+# ``` sh
+# sudo cp /etc/zprofile /etc/zshenv
+# sudo mv /etc/zprofile /etc/zprofile.bak
+# ```
+#
+# This sets the system path as early as possible, so we can prepend to
+# it here
+#
+# Source:
+# https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
+path=("$(brew --prefix)/opt/make/libexec/gnubin" $path)
+##
+
+export -U PATH

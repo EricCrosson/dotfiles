@@ -1,0 +1,9 @@
+*~undo-tree~.gz
+.projectile
+node_modules/
+.DS_Store
+.dir-locals.el
+.envrc
+*.~*~
+.log/
+.yo-rc.json

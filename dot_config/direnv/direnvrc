@@ -1,0 +1,65 @@
+# See https://github.com/direnv/direnv/issues/73#issuecomment-174295790
+# and https://github.com/direnv/direnv/issues/73#issuecomment-343891007
+
+readonly user_alias_dir="${HOME}/.local/state/direnv/aliases"
+readonly user_functions_dir="${HOME}/.local/state/direnv/functions"
+
+is_alias_workspace_clean=false
+
+# @example
+# export_alias l "ls -lAh"
+export_alias() {
+
+  local name="${1}"
+  shift
+  local alias_dir="${user_alias_dir}/${PWD}"
+
+  # clean alias_dir
+  if [ "${is_alias_workspace_clean}" = false ]
+  then
+    is_alias_workspace_clean=true
+    rm -rf "${alias_dir}"
+    mkdir -p "${alias_dir}"
+    PATH_add "${alias_dir}"
+  fi
+
+  local target="${alias_dir}/${name}"
+  echo "#!/usr/bin/env bash" > "${target}"
+  echo "$@ \"\$@\"" >> "${target}"
+  chmod +x "${target}"
+}
+
+is_function_workspace_clean=false
+
+# See https://github.com/direnv/direnv/issues/73#issuecomment-152284914
+#
+# @example
+# foo() {
+#   echo foo
+# }
+# export_function foo
+export_function() {
+
+  local name="${1}"
+  shift
+  local functions_dir="${user_functions_dir}/${PWD}"
+
+  # clean functions_dir
+  if [ "${is_function_workspace_clean}" = false ]
+  then
+    is_function_workspace_clean=true
+    rm -rf "${functions_dir}"
+    mkdir -p "${functions_dir}"
+    PATH_add "${functions_dir}"
+  fi
+
+  # write function as a script
+  local target="${functions_dir}/${name}"
+  if declare -f "${name}" >/dev/null
+  then
+    echo "#!/usr/bin/env bash" > "${target}"
+    declare -f "${name}" >> "${target}" 2>/dev/null
+    echo "${name}" '"$@"' >> "${target}"
+    chmod +x "${target}"
+  fi
+}
