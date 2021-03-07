@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-# Written by Eric Crosson
-# 2017-01-10
-#
-# This program configures synergy.
-
-export SYNERGY_HOST=10.160.30.48

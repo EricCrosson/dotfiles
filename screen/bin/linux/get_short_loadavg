@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-cat /proc/loadavg | cut -d' ' -f1 | sed 's/^0*//'

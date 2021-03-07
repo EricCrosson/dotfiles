@@ -1,5 +1,0 @@
-#!/bin/bash
-# Written by Eric Crosson
-# 2018-11-09
-
-open -a "Desktop Dimmer"

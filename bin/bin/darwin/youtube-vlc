@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-# Written by Eric Crosson
-# 2018-11-29
-
-readonly url="${1}"
-youtube-dl "${url}" -o - | vlc -

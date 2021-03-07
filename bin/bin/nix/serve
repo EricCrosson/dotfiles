@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-# Serve up current dir as a web server.
-
-port="${1:-3000}"                                                           
-ruby -r webrick -e "s = WEBrick::HTTPServer.new(:Port => ${port}, :DocumentRoot => Dir.pwd); trap('INT') { s.shutdown }; s.start"
