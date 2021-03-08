@@ -29,20 +29,21 @@ else
 fi
 ##
 
-alias l='ls -lahv '
-alias v='vim '
-alias s='screen '
-alias sudo='sudo '
-alias ssh='ssh -t '
 alias a='ambs '
 alias ar='ambr '
 alias c='chezmoi '
-alias o='open '
-alias g='git '
-alias gdc='git diff --cached '
-alias j='jira '
-alias rg='rg --smart-case '
 alias d='docker '
+alias fd='fdfind '
+alias gdc='git diff --cached '
+alias g='git '
+alias j='jira '
+alias l='ls -lahv '
+alias o='open '
+alias rg='rg --smart-case '
+alias s='screen '
+alias ssh='ssh -t '
+alias sudo='sudo '
+alias v='vim '
 
 if command -v 'hub' &>/dev/null; then
     alias git='hub '
@@ -149,8 +150,7 @@ zplug "jreese/zsh-titles"
 zplug "lukechilds/zsh-nvm"
 zplug "lukechilds/zsh-better-npm-completion", defer:2
 
-# TODO: load this without triggering the auto-loading of nvm
-# zplug "esc-zsh/zsh-auto-nvm-use", defer:2
+zplug "esc-zsh/zsh-auto-nvm-use", defer:2
 
 # TODO: wrap in a darwin-guard
 zplug "plugins/osx",   from:oh-my-zsh
