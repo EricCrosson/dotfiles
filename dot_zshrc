@@ -195,9 +195,9 @@ zplug load
 # fzf config
 #####################################################################
 
-export FZF_DEFAULT_COMMAND='fd --type f'
+export FZF_DEFAULT_COMMAND='fdfind --type f'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND='fd --type d'
+export FZF_ALT_C_COMMAND='fdfind --type d'
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 bindkey '^X^T' fzf-file-widget
