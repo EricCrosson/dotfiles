@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: lexical-scoping
+# key: lex
+# --
+-*- lexical-binding: t; -*-

@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: process.exit
+# key: pe
+# --
+process.exit(1$0)

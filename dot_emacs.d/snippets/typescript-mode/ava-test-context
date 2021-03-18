@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: ava-test-context
+# key: testcontext
+# --
+import anyTest, { TestInterface, ExecutionContext } from 'ava'
+
+interface TestContext {
+    // TODO: describe me
+}
+
+const test = anyTest as TestInterface<TestContext>;

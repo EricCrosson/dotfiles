@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: namespace-debug
+# key: nsdebug
+# --
+namespace debug {
+    $0
+}

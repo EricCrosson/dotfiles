@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: architectural-decision
+# key: /*ad
+# --
+/**
+ * Architectural Decision
+ *
+ * $0
+ */

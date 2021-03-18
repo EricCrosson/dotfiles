@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: @return
+# key: ar
+# type: command
+# --
+(yas/expand-snippet
+  (format "* @return <$0>"))

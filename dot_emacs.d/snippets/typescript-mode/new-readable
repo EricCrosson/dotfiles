@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: new-readable
+# key: newReadable
+# --
+new Readable({
+    // objectMode: true,
+    read() {
+        this.push(null)$0
+    }
+})

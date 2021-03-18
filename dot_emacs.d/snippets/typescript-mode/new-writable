@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: new-writable
+# key: newWritable
+# --
+new Writable({
+    // objectMode: true,
+    write($0chunk: string, _: string, callback: (error?: Error | null) => void) {
+        callback()
+    }
+})

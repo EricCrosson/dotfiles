@@ -1,0 +1,11 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: new-transform
+# key: newTransform
+# --
+new Transform({
+    // objectMode: true,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    transform($0chunk: string, _: string, callback: (error?: Error, data?: any) => void) {
+        callback()
+    }
+})

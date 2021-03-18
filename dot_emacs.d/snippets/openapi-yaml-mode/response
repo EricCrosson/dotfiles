@@ -1,0 +1,9 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: response
+# key: response
+# --
+description: TODO Request was successful
+content:
+  application/json:
+    schema:
+      $ref: '#/components/schemas/TODO'

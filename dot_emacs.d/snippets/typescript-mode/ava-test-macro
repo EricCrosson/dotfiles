@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: ava-test-macro
+# key: testmacro
+# --
+const macro = (t: any, $0) => {
+
+}
+macro.title = (_ = '', ) => ``

@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: constructor
+# key: ctor
+# --
+constructor($0) {
+
+}

@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: eslint-disable
+# key: eslint
+# --
+// eslint-disable-next-line @typescript-eslint/

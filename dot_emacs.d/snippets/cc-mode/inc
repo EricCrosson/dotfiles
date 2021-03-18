@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: include
+# key: inc
+# type: command
+# --
+(yas/expand-snippet
+  (format "#include <$0>"))

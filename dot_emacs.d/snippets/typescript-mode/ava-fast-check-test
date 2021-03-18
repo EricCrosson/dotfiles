@@ -1,0 +1,15 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: ava-fast-check-test
+# key: testp
+# --
+testProp(
+    '$0',
+    [],
+    (t) => {
+
+    },
+    {
+        verbose: true,
+        numRuns: 100
+    }
+)

@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: ava-test.cb
+# key: test.cb
+# --
+test.cb('$0', t => {
+
+})

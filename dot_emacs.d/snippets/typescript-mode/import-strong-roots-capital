@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: import-strong-roots-capital
+# key: importsrc
+# --
+import $1 from '@strong-roots-capital/$0'

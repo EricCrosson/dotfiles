@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: io-ts-type-of
+# key: type
+# --
+type $1 = t.TypeOf<typeof $1>;

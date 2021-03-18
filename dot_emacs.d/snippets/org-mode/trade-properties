@@ -1,0 +1,13 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: trade-properties
+# key: trade
+# --
+:PROPERTIES:
+:TRADEPAIR:
+:CHART:
+:TRIGGER:
+:POSITION-SIZE:  S
+:ENTRY:
+:PROFIT:
+:STOP:
+:END:

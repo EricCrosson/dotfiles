@@ -1,0 +1,15 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: io-ts-brand
+# key: brand
+# --
+export interface $1Brand {
+    readonly $1: unique symbol;
+}
+
+export const $1 = t.brand(
+    $2,
+    (a): a is t.Branded<$3, $1Brand> => $0,
+    '$1'
+)
+
+export type $1 = t.TypeOf<typeof $1>;

@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: header-ifndef-wrapper
+# key: ifndef
+# type: command
+# --
+(let ((file (format "%s_H" (upcase (file-name-base (buffer-file-name)))))
+      (final "$0"))
+  (yas/expand-snippet
+    (s-lex-format
+    "#ifndef ${file}
+#define ${file}
+
+${final}
+
+#endif // ${file}
+")))

@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: import-fs
+# key: importfs
+# --
+import * as fs from 'fs'

@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: import-most
+# key: importmo
+# --
+import * as most from 'most'

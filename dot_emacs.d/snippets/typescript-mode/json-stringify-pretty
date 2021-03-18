@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: JSON.stringify (pretty)
+# key: jsp
+# --
+JSON.stringify($0, null, 4)

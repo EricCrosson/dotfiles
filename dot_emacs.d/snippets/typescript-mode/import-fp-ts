@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: import-fp-ts
+# key: importfp
+# --
+import { $1 } from 'fp-ts/$0'

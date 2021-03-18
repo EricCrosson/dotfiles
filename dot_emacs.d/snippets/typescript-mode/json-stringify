@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: JSON.stringify
+# key: js
+# --
+JSON.stringify($0)

@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: ava-test-only
+# key: test.only
+# --
+test.only('$0', t => {
+
+})

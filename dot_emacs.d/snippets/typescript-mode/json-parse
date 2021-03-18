@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: JSON.parse
+# key: jp
+# --
+JSON.parse($0)

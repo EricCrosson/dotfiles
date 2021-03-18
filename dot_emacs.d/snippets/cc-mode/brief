@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: @brief
+# key: ab
+# type: command
+# --
+(yas/expand-snippet
+  (format "* @brief <$0>"))
