@@ -1,18 +1,21 @@
 ##
 # Terminal emulator configuration
-export TERM=xterm-kitty
+# TODO: eric, move this back to xterm-kitty
+export TERM=xterm-256color
 export HOMEBREW_INSTALL_BADGE="☕"
 ##
 
+{{ if eq .chezmoi.os "darwin" -}}
 ##
-# Bash configuration --
-# ensure bash is installed with brew (brew install bash)
+# MacOS Bash configuration
+# Note: ensure bash is installed with brew (`brew install bash`)
 path=("/usr/local/bin" $path)
 ##
+{{ end -}}
 
 ##
 # Node.js configuration
-export NVM_LAZY_LOAD=true
+# export NVM_LAZY_LOAD=true
 export NVM_DIR="${HOME}/.local/opt/nvm"
 ##
 
@@ -24,6 +27,9 @@ export DOCKER_BUILDKIT=1
 ##
 # Golang configuration
 path+=("${HOME}/go/bin")
+{{ if eq .chezmoi.username "ericcrosson" -}}
+export GOPRIVATE='github.com/lumina-tech/*'
+{{ end -}}
 ##
 
 ##
@@ -46,11 +52,12 @@ path+=("${HOME}/Library/Python/2.7/bin")
 path=("${HOME}/.local/bin" $path)
 ##
 
+{{ if eq .chezmoi.os "linux" -}}
 ##
 # Brew configuration
 path+=('/home/linuxbrew/.linuxbrew/bin')
 ##
-
+{{ else if eq .chezmoi.os "darwin" -}}
 ##
 # GNU binaries
 #
@@ -67,7 +74,8 @@ path+=('/home/linuxbrew/.linuxbrew/bin')
 #
 # Source:
 # https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
-path=("$(brew --prefix)/opt/make/libexec/gnubin" $path)
+# path=("$(brew --prefix)/opt/make/libexec/gnubin" $path)
 ##
+{{ end -}}
 
 export -U PATH

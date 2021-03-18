@@ -33,10 +33,8 @@ alias a='ambs '
 alias ar='ambr '
 alias c='chezmoi '
 alias d='docker '
-alias fd='fdfind '
-alias gdc='git diff --cached '
 alias g='git '
-alias j='jira '
+alias gdc='git diff --cached '
 alias l='ls -lahv '
 alias o='open '
 alias rg='rg --smart-case '
@@ -45,20 +43,31 @@ alias ssh='ssh -t '
 alias sudo='sudo '
 alias v='vim '
 
-if command -v 'hub' &>/dev/null; then
+{{ if eq .chezmoi.username "ericcrosson" -}}
+alias j='jira '
+{{ end -}}
+
+if command -v hub &>/dev/null; then
     alias git='hub '
+fi
+
+if command -v fdfind &>/dev/null; then
+   alias fd='fdfind '
 fi
 
 # This post outlines what it takes to default to GNU make on macOS
 # https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
 # alias make='gmake '
 
+# Make and change directory
+# Usage: mc <dir>
+#
+# @example
+# mc new-directory
 mc() {
-    mkdir -p -- "$1" &&
-        cd -P -- "$1"
+     local namespace="${1:?"Directory must be specified"}"
+     mkdir -p -- "$1" && cd -P -- "$1"
 }
-
-[ -f ~/.local/share/zsh/screen ] && source ~/.local/share/zsh/screen
 
 #####################################################################
 # completions
@@ -137,7 +146,7 @@ PURE_CMD_MAX_EXEC_TIME=3
 PURE_NODE_ENABLED=0
 PURE_GIT_PULL=0
 
-zplug "mafredri/zsh-async"
+zplug "mafredri/zsh-async", use:"async.zsh"
 zplug "esc-zsh/lambda-pure"
 
 zplug "sobolevn/wakatime-zsh-plugin"
@@ -150,6 +159,8 @@ zplug "jreese/zsh-titles"
 zplug "lukechilds/zsh-nvm"
 zplug "lukechilds/zsh-better-npm-completion", defer:2
 
+# TODO: load this without triggering the auto-loading of nvm
+# (less important on a fast machine)
 zplug "esc-zsh/zsh-auto-nvm-use", defer:2
 
 # TODO: wrap in a darwin-guard
@@ -195,9 +206,20 @@ zplug load
 # fzf config
 #####################################################################
 
-export FZF_DEFAULT_COMMAND='fdfind --type f'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND='fdfind --type d'
+if command -v fd &>/dev/null; then
+    FZF_DEFAULT_COMMAND="fd --type f"
+    FZF_ALT_C_COMMAND="fd --type d"
+elif command -v fdfind &>/dev/null; then
+    FZF_DEFAULT_COMMAND="fdfind --type f"
+    FZF_ALT_C_COMMAND="fdfind --type d"
+else
+    FZF_DEFAULT_COMMAND="find -type f"
+    FZF_ALT_C_COMMAND="find -type d"
+fi
+
+export FZF_DEFAULT_COMMAND
+export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
+export FZF_ALT_C_COMMAND
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 bindkey '^X^T' fzf-file-widget
@@ -213,6 +235,24 @@ if command -v pyenv >/dev/null 2>&1; then
         eval "$(pyenv virtualenv-init -)"
     fi
 fi
+
+#####################################################################
+# jira config
+#####################################################################
+
+{{ if eq .chezmoi.username "ericcrosson" -}}
+eval "$(jira --completion-script-zsh)"
+{{ end -}}
+
+#####################################################################
+# includes
+#####################################################################
+
+[ -f ~/.local/share/zsh/screen ] && source ~/.local/share/zsh/screen
+
+{{ if eq .chezmoi.username "ericcrosson" -}}
+[ -f ~/.local/share/zsh/bitgo ] && source ~/.local/share/zsh/bitgo
+{{ end -}}
 
 #####################################################################
 # post-config

@@ -187,12 +187,6 @@ Which came first, the Emacs or the shell?
 Favored font of late
 #+BEGIN_SRC emacs-lisp
   (let ((esc-font "Hack"))
-    ;; install `esc-font`
-    (when (not (font-exists-p esc-font))
-      (call-process
-       ;; TODO: interpolate esc-font into the script name
-       (expand-file-name "font-install-hack.sh"
-                         "~/.emacs.d/bin")))
     ;; use `esc-font`
     (when (font-exists-p esc-font)
       (set-face-attribute 'default nil

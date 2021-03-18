@@ -1,6 +1,12 @@
 [user]
     email = {{ .user.email }}
     name = {{ .user.name }}
+{{ if eq .chezmoi.username "ericcrosson" }}
+    signingKey = 0AB49222C769F13EDE3EBFB2352FBA3B4180A44A
+
+[commit]
+    gpgSign = true
+{{ end -}}
 
 [init]
     defaultBranch = master
@@ -119,12 +125,18 @@
 [git-up "fetch"]
     prune = true
     all = false
+
 [git-up "push"]
     auto = false
     all = false
     tags = false
+
 [git-up "rebase"]
     auto = true
     show-hashes = false
+
 [git-up "updates"]
     check = false
+
+[gpg]
+    program = gpg

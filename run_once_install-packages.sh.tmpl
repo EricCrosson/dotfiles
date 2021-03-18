@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+{{ if eq .chezmoi.os "linux" }}
+
+echo "Installing dependencies with apt..."
+
+sudo apt install \
+     ripgrep
+
+echo "Installing dependencies with apt...done"
+
+# DISCUSS: Hopefully this installs Hack, but if this script runs
+# before provisioning then it won't be effective. Also not sure if
+# flags -f -v are required
+fc-cache
+
+{{ else if eq .chezmoi.os "darwin" }}
+
+# FIXME: use a .Brewfile
+# https://www.chezmoi.io/docs/faq/#how-do-i-only-run-a-script-when-a-file-has-changed
+
+brew install \
+     ripgrep
+
+brew cask install homebrew/cask-fonts/font-hack
+
+{{ end }}
