@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#
+# Run a set of tests identified by a regex
+# Usage:
+#   gotest <package> [<regex>]
+#
+# Options:
+#   -h --help    Show this message
+#   <package>    Package to test
+#   <regex>      Regex matching tests to run
+#
+# @example
+# gotest ./service/trade/manager 'TestManager/Behavior/.*'
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+readonly __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# required to add ./docopts to PATH
+PATH="${PATH}:${__dir}"
+# shellcheck source=./docopts.sh
+source "${__dir}/docopts.sh" --auto "$@"
+# shellcheck disable=SC2119
+# docopt_print_ARGS
+
+readonly regex="${ARGS[<regex>]:+-run ${ARGS[<regex>]}}"
+
+go test "${ARGS[<package>]}" -v -cover ${regex}
