@@ -6,7 +6,7 @@
 
 ##
 # General configuration
-export HISTSIZE=10000                    # retain a reasonable history
+export HISTSIZE=25000                    # retain a reasonable history
 zmodload zsh/terminfo                    #
 ##
 
@@ -163,8 +163,9 @@ zplug "lukechilds/zsh-better-npm-completion", defer:2
 # (less important on a fast machine)
 zplug "esc-zsh/zsh-auto-nvm-use", defer:2
 
-# TODO: wrap in a darwin-guard
+{{ if eq .chezmoi.os "darwin" -}}
 zplug "plugins/osx",   from:oh-my-zsh
+{{ end -}}
 
 zplug "plugins/docker", from:oh-my-zsh
 zplug "plugins/docker-compose", from:oh-my-zsh

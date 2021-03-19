@@ -1,0 +1,7 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: test-run
+# key: test
+# --
+t.Run("$1", func(t *testing.T) {
+    $0
+})

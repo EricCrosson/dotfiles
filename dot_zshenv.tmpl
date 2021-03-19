@@ -5,15 +5,16 @@ export TERM=xterm-256color
 export HOMEBREW_INSTALL_BADGE="☕"
 ##
 
-{{ if eq .chezmoi.os "darwin" -}}
 ##
-# MacOS Bash configuration
-# Note: ensure bash is installed with brew (`brew install bash`)
+# Bash configuration
+# Note(MacOS): ensure bash is installed with brew
 path=("/usr/local/bin" $path)
 ##
-{{ end -}}
 
+##
+# Zsh configuration
 fpath=("$HOME/.zplug/repos/mafredri/zsh-async" $fpath)
+##
 
 ##
 # Node.js configuration
@@ -39,18 +40,18 @@ export GOPRIVATE='github.com/lumina-tech/*'
 path+=("${HOME}/.cargo/bin")
 ##
 
+{{ if eq .chezmoi.os "darwin" -}}
 ##
 # Python configuration
 alias pip='pip3 '
 path+=("${HOME}/Library/Python/${$(python3 --version | cut -d' ' -f2)%.*}/bin")
+path+=("${HOME}/Library/Python/2.7/bin")
 ##
+{{ end -}}
 
 ##
 # Global PATH configuration
 path+=('/usr/local/sbin')
-path+=('/usr/local/opt/awscli@1/bin')
-path+=('/usr/local/opt/helm@2/bin')
-path+=("${HOME}/Library/Python/2.7/bin")
 path=("${HOME}/.local/bin" $path)
 ##
 
@@ -76,7 +77,7 @@ path+=('/home/linuxbrew/.linuxbrew/bin')
 #
 # Source:
 # https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
-# path=("$(brew --prefix)/opt/make/libexec/gnubin" $path)
+path=("$(brew --prefix)/opt/make/libexec/gnubin" $path)
 ##
 {{ end -}}
 

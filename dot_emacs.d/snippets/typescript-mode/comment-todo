@@ -1,7 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: comment-todo
-# key: /*todo
-# --
-/**
- * TODO: $0
- */

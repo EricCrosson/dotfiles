@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+#
+# Build a go package on each change with nodemon
+# Usage:
+#   gobuildwatch <package>
+#
+# Options:
+#   -h --help    Show this message
+#   <package>    Package to test
+#
+# @example
+# gotestwatch ./service/trade/manager
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+readonly __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# required to add ./docopts to PATH
+PATH="${PATH}:${__dir}"
+# shellcheck source=./docopts.sh
+source "${__dir}/docopts.sh" --auto "$@"
+# shellcheck disable=SC2119
+# docopt_print_ARGS
+
+nodemon -x "go build ${ARGS[<package>]} || true"

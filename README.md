@@ -22,6 +22,15 @@ Not sure of the exact timings, but this corresponds to a little under
 200ms initial delay and 25ms between repeats
 
 ``` shell
-$ defaults write NSGlobalDomain KeyRepeat -int 1
-$ defaults write -g InitialKeyRepeat -int 13
+defaults write NSGlobalDomain KeyRepeat -int 1
+defaults write -g InitialKeyRepeat -int 13
+```
+
+## Ubuntu customizations
+
+### Setting a faster keyboard repeat rate
+
+``` shell
+gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 12
+gsettings set org.gnome.desktop.peripherals.keyboard delay 172
 ```
