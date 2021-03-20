@@ -2076,9 +2076,7 @@ I am not sure how the two packages relate.
     (evil-leader/set-key
       "pf" 'counsel-projectile-find-file
       "pd" 'counsel-projectile-find-dir
-      ;; TODO: use rg again, it was broken as of 2020-03-07
-      ;; "pa" 'counsel-projectile-rg
-      "pa" 'counsel-projectile-ag
+      "pa" 'counsel-projectile-rg
       "pb" 'counsel-projectile-switch-to-buffer
       "pp" 'counsel-projectile-switch-project
       "pk" 'projectile-kill-buffers
