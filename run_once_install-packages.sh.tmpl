@@ -15,7 +15,7 @@ install_go_jira() {
 {{ end -}}
 
 configure_keyboard_repeat_rate() {
-{{ if eq .chezmoi.os "linux" -}}
+{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) }}
     gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 12
     gsettings set org.gnome.desktop.peripherals.keyboard delay 172
 {{ else if eq .chezmoi.os "darwin" -}}
@@ -52,7 +52,7 @@ install_go_jira
 
 configure_keyboard_repeat_rate
 
-{{ if eq .chezmoi.os "linux" }}
+{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) }}
 
 # DISCUSS: Hopefully this installs Hack, but if this script runs
 # before provisioning then it won't be effective. Also not sure if
