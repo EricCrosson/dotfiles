@@ -1,5 +1,7 @@
+.aws/config_eric
+.emacs.d/init.org
+.keep
 LICENSE
+Makefile
 README.md
 doc/
-.keep
-.aws/config_eric
