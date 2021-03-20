@@ -2,4 +2,4 @@ LICENSE
 README.md
 doc/
 .keep
-**/*_eric
+.aws/config_eric
