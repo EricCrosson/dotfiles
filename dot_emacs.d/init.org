@@ -333,11 +333,15 @@ To install icons, run `M-x all-the-icons-install-fonts`
     :pin melpa-stable)
 #+END_SRC
 
-*** cursor config
+*** Cursor config
 #+BEGIN_SRC emacs-lisp
   (blink-cursor-mode 0)
 #+END_SRC
 
+*** Line numbers
+#+begin_src emacs-lisp
+  (global-display-line-numbers-mode t)
+#+end_src
 ** Macros
 I took the macro below from [[http://milkbox.net/note/single-file-master-emacs-configuration/][milkypostman]]. His article is really worth
 a read; stop what you're doing and go take a look if you haven't.
@@ -369,18 +373,12 @@ I did not grow up in an era where this is a straightforward mnemonic
 #+END_SRC
 
 ** Behavioral modifications
-What I really want is for this to go away.  If you know of a way, or
-perhaps to change the color to `(face-attribute 'default
-:background)`, drop a line!
-
 #+BEGIN_SRC emacs-lisp
   (setq-default
    frame-title-format '("emacs@" system-name ":%f") ;include path of frame
    ;; frame-title-format ""
   )
 #+END_SRC
-
-TODO: on mac set the frame-title color to same as default text
 
 #+BEGIN_SRC emacs-lisp
   (put 'overwrite-mode 'disabled t)            ; There shall be no 'insert'
@@ -412,14 +410,6 @@ Now everybody agrees that the =*Minibuffer*= prompt is uneditable
   (setq minibuffer-prompt-properties '(read-only t point-entered
                                                  minibuffer-avoid-prompt face
                                                  minibuffer-prompt))
-#+END_SRC
-
-Line numbers, when visible, should be loaded after a short delay and
-not loaded eagerly. They're candy, and who spends resources acquiring
-candy?
-#+BEGIN_SRC emacs-lisp :tangle no
-  (setq linum-delay t
-        linum-eager nil)
 #+END_SRC
 
 These settings keep the text soup that is GNU/Linux as happy as
