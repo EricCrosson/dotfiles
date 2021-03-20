@@ -838,6 +838,7 @@ the first half of `#define`.
     (push "REFACTOR" fic-highlighted-words)
     (push "RENAME" fic-highlighted-words)
     (push "RESUME" fic-highlighted-words)
+    (push "SMELL" fic-highlighted-words)
     (push "TEST" fic-highlighted-words)
     (push "TICKET" fic-highlighted-words)
     (push "TYPE" fic-highlighted-words)
