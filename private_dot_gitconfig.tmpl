@@ -11,6 +11,12 @@
 [init]
     defaultBranch = master
 
+[core]
+    editor = vim
+    excludesfile = ~/.gitignore_global
+    autocrlf = false
+    pager = delta
+
 [github]
     user = {{ .user.email }}
 
@@ -98,11 +104,11 @@
     PushInsteadOf = "gh:"
     # example: git clone gh:ericcrosson/dotfiles
 
-[core]
-    editor = vim
-    excludesfile = ~/.gitignore_global
-    autocrlf = false
-    pager = diff-so-fancy | less --tabs=4 -RFX
+[delta]
+    line-numbers = true
+    syntax-theme = GitHub
+    # side-by-side=true
+    whitespace-error-style = 22 reverse
 
 [color "diff-highlight"]
     oldNormal = red bold
