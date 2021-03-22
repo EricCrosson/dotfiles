@@ -37,26 +37,6 @@ configure_keyboard_repeat_rate() {
 {{ end -}}
 }
 
-cat > "${HOME}/.Brewfile" <<EOF
-brew "awscli"
-brew "bash"
-brew "bat"
-brew "chezmoi"
-brew "curl"
-brew "diff-so-fancy"
-brew "direnv"
-brew "fd"
-brew "fzf"
-brew "git"
-brew "git-delta"
-brew "hub"
-brew "ripgrep"
-brew "ruby"
-brew "wakatime-cli"
-brew "wget"
-brew "youtube-dl"
-EOF
-
 install_brew
 brew bundle --global
 
