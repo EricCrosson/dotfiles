@@ -11,10 +11,10 @@
         api_key = ""
 
     [data.stratos]
-        [data.stratos.dev.aws]
+        [data.stratos.aws.dev]
             access_key_id = ""
             secret_access_key = ""
 
-        [data.stratos.prod.aws]
+        [data.stratos.aws.prod]
             access_key_id = ""
             secret_access_key = ""
