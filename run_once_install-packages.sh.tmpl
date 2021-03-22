@@ -14,6 +14,19 @@ install_go_jira() {
 }
 {{ end -}}
 
+
+{{ if eq .chezmoi.os "darwin" -}}
+# To prioritize GNU Make in $PATH in ~/.zshenv, you must also execute
+# the following to set the system path as early as possible
+# https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
+macos_configure_zsh_path() {
+    if [ ! -f /etc/zshenv ]; then
+        sudo cp /etc/zprofile /etc/zshenv
+        sudo mv /etc/zprofile /etc/zprofile.bak
+    fi
+}
+{{ end -}}
+
 configure_keyboard_repeat_rate() {
 {{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) }}
     gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 12
@@ -71,5 +84,7 @@ brew install emacs-head@28 \
     --with-pdumper \
     --with-xwidgets \
     --with-modern-icon-purple
+
+macos_configure_zsh_path
 
 {{ end }}
