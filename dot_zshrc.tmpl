@@ -158,10 +158,6 @@ zplug "jreese/zsh-titles"
 zplug "lukechilds/zsh-nvm"
 zplug "lukechilds/zsh-better-npm-completion", defer:2
 
-# TODO: load this without triggering the auto-loading of nvm
-# (less important on a fast machine)
-zplug "esc-zsh/zsh-auto-nvm-use", defer:2
-
 {{ if eq .chezmoi.os "darwin" -}}
 zplug "plugins/osx",   from:oh-my-zsh
 {{ end -}}
@@ -194,8 +190,6 @@ zplug "ericcrosson/smart-cd"
 forgit_log=gl
 forgit_stash_show=gs
 zplug "wfxr/forgit", defer:2
-
-# zplug "esc-zsh/zsh-dirnav"  # useless on osx because ctrl-right/left already bound
 
 # commands
 zplug "peterhurford/up.zsh"
