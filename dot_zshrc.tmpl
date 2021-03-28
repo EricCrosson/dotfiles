@@ -6,11 +6,8 @@
 
 ##
 # General configuration
-export HISTSIZE=25000                    # retain a reasonable history
-zmodload zsh/terminfo                    #
-##
+zmodload zsh/terminfo
 
-##
 # Use bash-style navigation
 bindkey -e                               # use bash input mode
 # autoload -U select-word-style            # kill-word stops at directory delimeter
@@ -18,15 +15,6 @@ setopt interactivecomments               # bash-style comments
 autoload copy-earlier-word && \
 	zle -N copy-earlier-word && \
 	bindkey '^[,' copy-earlier-word  # cycle through last-words with M-.
-##
-
-##
-# Editor for local and remote sessions
-if [[ -n "${SSH_CONNECTION}" ]]; then
-  export EDITOR='vim'
-else
-  export EDITOR='vim'
-fi
 ##
 
 alias c='chezmoi '
@@ -126,12 +114,6 @@ zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cput
 #####################################################################
 
 ##
-# Configure zplug packages
-export SMART_CD_ONLY_IF_FITS="true"
-# export SMART_CD_LS_COMMAND="k --human"
-##
-
-##
 # Bootstrap zplug
 if [[ ! -d ~/.zplug ]]; then
   git clone https://github.com/zplug/zplug ~/.zplug
@@ -141,14 +123,8 @@ source "${HOME}/.zplug/init.zsh"
 
 zplug "zplug/zplug", hook-build:'zplug --self-manage'
 
-PURE_CMD_MAX_EXEC_TIME=3
-PURE_NODE_ENABLED=0
-PURE_GIT_PULL=0
-
 zplug "mafredri/zsh-async", use:"async.zsh"
 zplug "esc-zsh/lambda-pure"
-
-zplug "sobolevn/wakatime-zsh-plugin"
 
 # Disabled 2021-01-06 for speed, not sure what effects we'll see
 # zplug "chrissicool/zsh-256color"
@@ -173,22 +149,18 @@ zplug "plugins/colored-man-pages", from:oh-my-zsh
 
 zplug "MichaelAquilina/zsh-you-should-use", defer:2
 
-zplug "zsh-users/zsh-completions"
-zplug "zsh-users/zsh-autosuggestions"  # does incur a slowdown, esp during paste
-zplug "zsh-users/zsh-history-substring-search"
-zplug "robsis/zsh-completion-generator"
-
-zplug "hlissner/zsh-autopair", defer:2
-zplug "supercrabtree/k", defer:2
-
 zplug "esc-zsh/smart-cd"
+zplug "hlissner/zsh-autopair", defer:2
+zplug "robsis/zsh-completion-generator"
+zplug "sobolevn/wakatime-zsh-plugin"
+zplug "supercrabtree/k", defer:2
+zplug "wfxr/forgit", defer:2
+zplug "zsh-users/zsh-autosuggestions"  # does incur a slowdown, esp during paste
+zplug "zsh-users/zsh-completions"
+zplug "zsh-users/zsh-history-substring-search"
 
 # Never got much use, so disabled for now
 # zplug "tarrasch/zsh-functional"
-
-forgit_log=gl
-forgit_stash_show=gs
-zplug "wfxr/forgit", defer:2
 
 # commands
 zplug "peterhurford/up.zsh"
@@ -201,20 +173,6 @@ zplug load
 # fzf config
 #####################################################################
 
-if command -v fdfind &>/dev/null; then
-    FZF_ALT_C_COMMAND="fdfind --type d"
-    FZF_DEFAULT_COMMAND="fdfind --type f"
-elif command -v fd &>/dev/null; then
-    FZF_ALT_C_COMMAND="fd --type d"
-    FZF_DEFAULT_COMMAND="fd --type f"
-else
-    FZF_ALT_C_COMMAND="find -type d"
-    FZF_DEFAULT_COMMAND="find -type f"
-fi
-
-export FZF_ALT_C_COMMAND
-export FZF_DEFAULT_COMMAND
-export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 bindkey '^X^T' fzf-file-widget
