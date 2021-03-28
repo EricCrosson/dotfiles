@@ -1,5 +1,7 @@
 startup_message off     # disable the startup screen
 vbell off               # replace the screen flash with an audible bell
+term xterm-256color
+termcapinfo xterm* ti@:te@
 
 defscrollback 15000     # keep n lines of the buffer
 altscreen on            # prevents the excessive output of programs > buffer
