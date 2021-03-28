@@ -1258,28 +1258,27 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
 
 **** web-mode config
 #+BEGIN_SRC emacs-lisp
-  (use-package web-mode
-    :ensure t
-    :pin melpa-stable
-    :after (tide)
-    :config
-    (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+    (use-package web-mode
+      :ensure t
+      :pin melpa-stable
+      :mode ("\\.tsx\\'")
+      :after (evil evil-leader lsp-mode lsp-ui)
+      :hook ((web-mode . lsp-deferred))
+      :bind (:map web-mode-map
+             ("C-c C-n" . lsp-rename))
+      :config
+      (evil-leader/set-key-for-mode 'web-mode
+        "fp" 'js-find-package-json)
 
-    (defun setup-tide-mode ()
-      (interactive)
-      (tide-setup)
-      (flycheck-mode +1)
-      (setq flycheck-check-syntax-automatically '(save mode-enabled))
-      (eldoc-mode +1)
-      (tide-hl-identifier-mode +1)
-      (company-mode +1))
-
-    (add-hook 'web-mode-hook
-              (lambda ()
-                (when (string-equal "tsx" (file-name-extension buffer-file-name))
-                  (setup-tide-mode))))
-    ;; enable typescript-tslint checker
-    (flycheck-add-mode 'typescript-tslint 'web-mode))
+      (defun esc/config-web-mode ()
+        (define-key web-mode-map (vector 'remap 'fill-paragraph) 'typescript-c-fill-paragraph)
+        ; (add-hook 'before-save-hook #'lsp-format-buffer t t) ;; one day, sweet prince
+        ; (add-hook 'before-save-hook #'lsp-organize-imports t t) ;; one day, sweet prince
+        (setq-local company-idle-delay 0)
+        (setq-local company-minimum-prefix-length 1)
+        (setq-local lsp-idle-delay 0.25)
+        (setq-local lsp-ui-sideline-show-code-actions nil))
+      (add-hook 'web-mode-hook 'esc/config-web-mode))
 #+END_SRC
 **** ts-comint
 Wasn't working :\
