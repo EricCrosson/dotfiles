@@ -1165,6 +1165,14 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
       (message "find-package-json error: not currently visiting a file")))
 #+end_src
 
+**** run-prettier-fix
+#+begin_src emacs-lisp
+    (defun js-npm-run-prettier-fix ()
+      "Run `npm run prettier:fix` in the current directory."
+      (interactive)
+      (shell-command (format "npx --no-install prettier --write %s" (buffer-file-name))))
+#+end_src
+
 **** prettier config
 #+BEGIN_SRC emacs-lisp
   (use-package prettier-js
@@ -1185,8 +1193,9 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
     :pin melpa-stable
     :after (evil-leader)
     :config
-      (evil-leader/set-key-for-mode 'json-mode
-        "fp" 'js-find-package-json))
+      (evil-leader/set-key-for-mode 'typescript-mode
+        "fp" 'js-find-package-json
+        "ff" 'js-npm-run-prettier-fix))
 #+END_SRC
 
 *** Jsonnet mode config
@@ -1212,7 +1221,8 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
            ("C-c C-n" . lsp-rename))
     :config
     (evil-leader/set-key-for-mode 'typescript-mode
-      "fp" 'js-find-package-json)
+      "fp" 'js-find-package-json
+      "ff" 'js-npm-run-prettier-fix)
     (defun esc/config-typescript-mode ()
       (define-key typescript-mode-map (vector 'remap 'fill-paragraph) 'typescript-c-fill-paragraph)
       ; (add-hook 'before-save-hook #'lsp-format-buffer t t) ;; one day, sweet prince
@@ -1267,8 +1277,9 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
       :bind (:map web-mode-map
              ("C-c C-n" . lsp-rename))
       :config
-      (evil-leader/set-key-for-mode 'web-mode
-        "fp" 'js-find-package-json)
+      (evil-leader/set-key-for-mode 'typescript-mode
+        "fp" 'js-find-package-json
+        "ff" 'js-npm-run-prettier-fix)
 
       (defun esc/config-web-mode ()
         (define-key web-mode-map (vector 'remap 'fill-paragraph) 'typescript-c-fill-paragraph)
@@ -1605,7 +1616,6 @@ Record one frame per keystroke.
     (evil-leader/set-key
       "a" 'counsel-rg
       "k" 'counsel-company
-      "ff" 'counsel-find-file
       "fr" 'counsel-recentf
       "fd" 'save-buffer
       "jk" 'counsel-imenu
