@@ -2217,7 +2217,9 @@ I am not sure how the two packages relate.
              :fetcher github
              :repo "EricCrosson/follow-current-buffer")
     :after (evil-leader)
-    :init (evil-leader/set-key "bF" 'follow-current-buffer))
+    :init (evil-leader/set-key
+            "bf" 'follow-mode
+            "bF" 'follow-current-buffer))
 #+END_SRC
 
 **** switch-to-previous-buffer-mode
