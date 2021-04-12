@@ -2,4 +2,4 @@
 # name: import-fp-ts
 # key: importfp
 # --
-import { $1 } from 'fp-ts/$0'
+import * as $1 from 'fp-ts/$0'
