@@ -2090,6 +2090,7 @@ I am not sure how the two packages relate.
       "pp" 'counsel-projectile-switch-project
       "pk" 'projectile-kill-buffers
       "ps" 'projectile-save-project-buffers
+      "pi" 'projectile-invalidate-cache
       "p%" 'projectile-replace-regexp)
     (add-to-list 'projectile-globally-ignored-files "package-lock.json")
     (counsel-projectile-mode 1))
