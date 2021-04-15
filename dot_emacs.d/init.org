@@ -1194,7 +1194,7 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
     :pin melpa-stable
     :after (evil-leader)
     :config
-      (evil-leader/set-key-for-mode 'typescript-mode
+      (evil-leader/set-key-for-mode 'json-mode
         "fp" 'js-find-package-json
         "ff" 'js-npm-run-prettier-fix))
 #+END_SRC
