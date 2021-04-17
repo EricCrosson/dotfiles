@@ -1282,10 +1282,9 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
       :bind (:map web-mode-map
              ("C-c C-n" . lsp-rename))
       :config
-      (evil-leader/set-key-for-mode 'typescript-mode
+      (evil-leader/set-key-for-mode 'web-mode
         "fp" 'js-find-package-json
         "ff" 'js-npm-run-prettier-fix)
-
       (defun esc/config-web-mode ()
         (define-key web-mode-map (vector 'remap 'fill-paragraph) 'typescript-c-fill-paragraph)
         ; (add-hook 'before-save-hook #'lsp-format-buffer t t) ;; one day, sweet prince
