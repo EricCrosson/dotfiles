@@ -715,6 +715,15 @@ new terminal.
 #+end_src
 
 ** Language configs
+*** editorconfig config
+#+begin_src emacs-lisp
+  (use-package editorconfig
+    :ensure t
+    :pin melpa-stable
+    :config
+    (editorconfig-mode 1))
+#+end_src
+
 *** LSP mode config
 #+BEGIN_SRC emacs-lisp
     (use-package lsp-mode
