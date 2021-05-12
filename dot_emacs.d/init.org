@@ -1281,6 +1281,9 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
 #+END_SRC
 
 **** web-mode config
+TODO: add autopair-mode
+TODO: add fic-mode
+You know what: is this even considered a prog mode?
 #+BEGIN_SRC emacs-lisp
     (use-package web-mode
       :ensure t
