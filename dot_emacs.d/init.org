@@ -1891,7 +1891,7 @@ Record one frame per keystroke.
 #+END_SRC
 
 **** evil-multiple-cursors
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package evil-mc
     :ensure t
     :pin melpa-stable
