@@ -21,7 +21,7 @@ multiuser on
 
 ### clear the scrollback history
 # http://stackoverflow.com/a/13160702
-bind 'C' eval "clear" "scrollback 0" "scrollback 15000"
+bind 'C' eval "clear" "scrollback 0" "scrollback 1500000"
 
 ### resize keybindings
 bind + resize +5

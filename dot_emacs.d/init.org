@@ -2138,6 +2138,11 @@ I am not sure how the two packages relate.
 *** Flyspell config
 #+BEGIN_SRC emacs-lisp
   (use-package flyspell
+    :after (evil-leader)
+    :init
+    (evil-leader/set-key
+      "fb" 'flyspell-buffer
+      "fn" 'flyspell-goto-next-error)
     :config
     (add-hook 'org-mode-hook 'flyspell-mode)
     (add-hook 'prog-mode-hook 'flyspell-prog-mode))
