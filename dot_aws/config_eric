@@ -5,3 +5,7 @@ output = json
 [profile stratos-prod]
 region = eu-west-1
 output = json
+
+[profile stratos-management-personal]
+region = eu-west-1
+output = json
