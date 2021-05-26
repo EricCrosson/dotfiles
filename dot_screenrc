@@ -3,7 +3,7 @@ vbell off               # replace the screen flash with an audible bell
 term xterm-256color
 termcapinfo xterm* ti@:te@
 
-defscrollback 1500000   # keep n lines of the buffer
+defscrollback 1000000   # keep n lines of the buffer
 altscreen on            # prevents the excessive output of programs > buffer
 markkeys "h=^b:j=^n:l=^f:$=^e:k=^p:0=^a"  # emacs keybindings for copy mode
 
@@ -21,7 +21,7 @@ multiuser on
 
 ### clear the scrollback history
 # http://stackoverflow.com/a/13160702
-bind 'C' eval "clear" "scrollback 0" "scrollback 1500000"
+bind 'C' eval "clear" "scrollback 0" "scrollback 1000000"
 
 ### resize keybindings
 bind + resize +5
