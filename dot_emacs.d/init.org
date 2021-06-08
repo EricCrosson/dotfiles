@@ -2157,15 +2157,6 @@ Source [[https://www.manueluberti.eu/emacs/2020/09/18/project/][Manuel Uberti]]
              #'string<))))
 #+end_src
 
-**** ripgrep config
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package ripgrep
-    :ensure t
-    :pin melpa-stable
-    :after (evil-leader)
-    :config (evil-leader/set-key "gh" 'ripgrep-regexp))
-#+END_SRC
-
 *** Flycheck config
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
