@@ -2090,6 +2090,14 @@ I am not sure how the two packages relate.
              :repo "EricCrosson/tail-messages-mode"))
 #+END_SRC
 
+*** el-patch config
+#+begin_src emacs-lisp
+  (use-package el-patch
+    :ensure t
+    :pin melpa-stable
+    :init (setq el-patch-enable-use-package-integration t))
+#+end_src
+
 *** Projectile config
 #+BEGIN_SRC emacs-lisp
   (use-package counsel-projectile
@@ -2097,9 +2105,10 @@ I am not sure how the two packages relate.
     :pin melpa
     :after (counsel evil-leader)
     :config
-    (setq projectile-enable-caching t)
+    ;; disabled in favor of the built-in `project` package
+    ;; (setq projectile-enable-caching t)
     (evil-leader/set-key
-      "pf" 'counsel-projectile-find-file
+      "pf" 'project-find-file
       "pd" 'counsel-projectile-find-dir
       "pa" 'counsel-projectile-rg
       "pb" 'counsel-projectile-switch-to-buffer
@@ -2111,6 +2120,42 @@ I am not sure how the two packages relate.
     (add-to-list 'projectile-globally-ignored-files "package-lock.json")
     (counsel-projectile-mode 1))
 #+END_SRC
+
+*** Project config
+
+Source [[https://www.manueluberti.eu/emacs/2020/09/18/project/][Manuel Uberti]]
+
+#+begin_src emacs-lisp
+  (el-patch-defun project--files-in-directory (dir ignores &optional files)
+    (el-patch-remove
+      (require 'find-dired)
+      (require 'xref)
+      (defvar find-name-arg))
+    (let* ((default-directory dir)
+           ;; Make sure ~/ etc. in local directory name is
+           ;; expanded and not left for the shell command
+           ;; to interpret.
+           (localdir (file-local-name (expand-file-name dir)))
+           (command (el-patch-swap
+                      (format "%s %s %s -type f %s -print0"
+                              find-program
+                              localdir
+                              (xref--find-ignores-arguments ignores localdir)
+                              (if files
+                                  (concat (shell-quote-argument "(")
+                                          " " find-name-arg " "
+                                          (mapconcat
+                                           #'shell-quote-argument
+                                           (split-string files)
+                                           (concat " -o " find-name-arg " "))
+                                          " "
+                                          (shell-quote-argument ")"))
+                                ""))
+                      (format "fd -t f -0 . %s" localdir))))
+      (project--remote-file-names
+       (sort (split-string (shell-command-to-string command) "\0" t)
+             #'string<))))
+#+end_src
 
 **** ripgrep config
 #+BEGIN_SRC emacs-lisp :tangle no
