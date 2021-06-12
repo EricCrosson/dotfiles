@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+#
+# Extract a commit from the current branch into a new branch created
+# from specified parent branch.
+#
+# Usage:
+#  git-subbranch -n <name> -b <parent> <commit>
+#
+# Options:
+#   -b <parent>    The branch from which to create the new branch
+#   -n <name>      The name to use for the newly-created branch
+#   <commit>       SHA-1 hash of the git commit to cherry-pick
+#
+# @example
+# git subbranch -n my-cool-feature -b develop a1d2f37
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+readonly __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# required to add ./docopts to PATH
+PATH="${PATH}:${__dir}"
+# shellcheck source=./docopts.sh
+source "${__dir}/docopts.sh" --auto "$@"
+# shellcheck disable=SC2119
+docopt_print_ARGS
+
+readonly parent="${ARGS[-b]}"
+readonly branch_name="${ARGS[-n]}"
+readonly commit="${ARGS[<commit>]}"
+
+readonly current_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+# echo "parent: ${parent}"
+# echo "branch_name: ${branch_name}"
+# echo "commit: ${commit}"
+
+git checkout "${parent}"
+git checkout -b "${branch_name}"
+git cherry-pick "${commit}"
+
+git checkout "${current_branch}"
