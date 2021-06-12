@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 # Build a go package on each change with nodemon
+#
 # Usage:
 #   gobuildwatch <package>
 #

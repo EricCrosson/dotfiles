@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 # Calculate test-coverage over a set of tests identified by a regex
+#
 # Usage:
 #   gocover <package> [<regex>]
 #

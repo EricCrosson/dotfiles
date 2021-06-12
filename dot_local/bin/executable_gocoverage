@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 # Visualize test-coverage in a browser over a set of tests identified by a regex
+#
 # Usage:
 #   gocover <package> [<regex>]
 #

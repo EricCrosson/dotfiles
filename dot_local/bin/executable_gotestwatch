@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 # Watch a set of tests identified by a regex with nodemon
+#
 # Usage:
 #   gotestwatch <package> [<regex>]
 #

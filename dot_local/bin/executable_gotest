@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 # Run a set of tests identified by a regex
+#
 # Usage:
 #   gotest <package> [<regex>]
 #
