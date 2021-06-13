@@ -1187,7 +1187,7 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
 #+end_src
 
 **** run-prettier-and-eslint-fix
-#+begin_src emacs-lisp tangle: no
+#+begin_src emacs-lisp
   (defun js-run-prettier-and-eslint-fix ()
     "Run `prettier --fix` and `eslint --fix` on the current file."
     (interactive)
