@@ -726,20 +726,20 @@ new terminal.
 
 *** LSP mode config
 #+BEGIN_SRC emacs-lisp
-    (use-package lsp-mode
-      :ensure t
-      :pin melpa
-      :after (evil-leader)
-      :commands (lsp lsp-deferred)
-      :init
-      (setq lsp-file-watch-threshold 10000
-            lsp-prefer-capf t
-            lsp-log-io nil)
-      :config
-      (evil-leader/set-key-for-mode 'lsp-mode
-        "fl" 'lsp-format-buffer)
-      :custom
-      (lsp-headerline-breadcrumb-enable nil))
+  (use-package lsp-mode
+    :ensure t
+    :pin melpa
+    :after (evil-leader)
+    :commands (lsp lsp-deferred)
+    :init
+    (setq lsp-file-watch-threshold 10000
+          lsp-prefer-capf t
+          lsp-log-io nil)
+    :config
+    (evil-leader/set-key-for-mode 'lsp-mode
+      "fl" 'lsp-format-buffer)
+    :custom
+    (lsp-headerline-breadcrumb-enable nil))
 #+END_SRC
 
 **** LSP UI config
