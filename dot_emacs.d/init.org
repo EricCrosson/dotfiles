@@ -1188,13 +1188,16 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
 #+end_src
 
 **** run-prettier-and-eslint-fix
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp tangle: no
   (defun js-run-prettier-and-eslint-fix ()
     "Run `prettier --fix` and `eslint --fix` on the current file."
     (interactive)
     (let ((exit-code (js-run-prettier-fix)))
       (when (eq 0 exit-code)
         (revert-buffer-no-confirm)
+        ;; leave time for buffer to revert to bring in prettier
+        ;; changes and for eslint to parse the new code
+        (sleep-for 0.05)
         (lsp-format-buffer)
         (save-buffer))))
 #+end_src
@@ -1220,7 +1223,7 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
     :config
       (evil-leader/set-key-for-mode 'json-mode
         "fp" 'js-find-package-json
-        "ff" 'js-run-prettier-and-eslint-fix)
+        "ff" 'js-run-prettier-fix)
       (defun esc/config-json-mode ()
         (make-local-variable 'js-indent-level)
         (setq js-indent-level 2))
@@ -1251,7 +1254,7 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
     :config
     (evil-leader/set-key-for-mode 'typescript-mode
       "fp" 'js-find-package-json
-      "ff" 'js-run-prettier-and-eslint-fix)
+      "ff" 'js-run-prettier-fix)
     (defun esc/config-typescript-mode ()
       (define-key typescript-mode-map (vector 'remap 'fill-paragraph) 'typescript-c-fill-paragraph)
       ; (add-hook 'before-save-hook #'lsp-format-buffer t t) ;; one day, sweet prince
@@ -1311,7 +1314,7 @@ You know what: is this even considered a prog mode?
       :config
       (evil-leader/set-key-for-mode 'web-mode
         "fp" 'js-find-package-json
-        "ff" 'js-run-prettier-and-eslint-fix)
+        "ff" 'js-run-prettier-fix)
       (defun esc/config-web-mode ()
         (define-key web-mode-map (vector 'remap 'fill-paragraph) 'typescript-c-fill-paragraph)
         ; (add-hook 'before-save-hook #'lsp-format-buffer t t) ;; one day, sweet prince
