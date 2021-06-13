@@ -1201,6 +1201,7 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
         (lsp-format-buffer)
         (save-buffer))))
 #+end_src
+
 **** prettier config
 #+BEGIN_SRC emacs-lisp
   (use-package prettier-js
