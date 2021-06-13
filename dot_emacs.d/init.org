@@ -1192,7 +1192,8 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
   (defun js-run-eslint-fix ()
     "Run `eslint --fix` on the current file."
     (interactive)
-    (shell-command (format "npx --no-install eslint --fix %s" (buffer-file-name))))
+    (let ((default-directory (locate-dominating-file "." "tsconfig.json")))
+      (shell-command (format "npx --no-install eslint --fix %s" (buffer-file-name)))))
 #+end_src
 
 **** run-prettier-and-eslint-fix
