@@ -1194,6 +1194,7 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
     (interactive)
     (let ((exit-code (js-run-prettier-fix)))
       (when (eq 0 exit-code)
+        (revert-buffer-no-confirm)
         (lsp-format-buffer)
         (save-buffer))))
 #+end_src
