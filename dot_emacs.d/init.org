@@ -1178,7 +1178,7 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
 **** run-prettier-fix
 #+begin_src emacs-lisp
   (defun js-npm-run-prettier-fix ()
-    "Run `npm run prettier:fix` in the current directory."
+    "Run `prettier --fix` on the current file."
     (interactive)
     (shell-command (format "npx --no-install prettier --write %s" (buffer-file-name))))
 #+end_src
