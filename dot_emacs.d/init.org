@@ -1135,19 +1135,22 @@ Use lsp-mode
     :after (evil evil-leader lsp-mode lsp-ui)
     :hook ((js-mode . lsp-deferred))
     :bind (:map js-mode-map
-           ("C-c C-n" . lsp-rename))
+                ("C-c C-n" . lsp-rename))
     :config
     ;; TODO: what is the mode name for this?
     ;; (evil-leader/set-key-for-mode javascript-mode
     ;;   "fp" 'js-find-package-json)
     (defun esc/config-javascript-mode ()
       (define-key js-mode-map (vector 'remap 'fill-paragraph) 'javascript-c-fill-paragraph)
-      ; (add-hook 'before-save-hook #'lsp-format-buffer t t) ;; one day, sweet prince
-      ; (add-hook 'before-save-hook #'lsp-organize-imports t t) ;; one day, sweet prince
+                                          ; (add-hook 'before-save-hook #'lsp-format-buffer t t) ;; one day, sweet prince
+                                          ; (add-hook 'before-save-hook #'lsp-organize-imports t t) ;; one day, sweet prince
       (setq-local company-idle-delay 0)
       (setq-local company-minimum-prefix-length 1)
       (setq-local lsp-idle-delay 0.25)
-      (setq-local lsp-ui-sideline-show-code-actions nil))
+      (setq-local lsp-ui-sideline-show-code-actions nil)
+      ;; configure 2-space indent
+      (make-local-variable 'js-indent-level)
+      (setq js-indent-level 2))
     (add-hook 'javascript-mode-hook 'esc/config-javascript-mode))
 #+end_src
 
@@ -1257,7 +1260,10 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
       (setq-local company-idle-delay 0)
       (setq-local company-minimum-prefix-length 1)
       (setq-local lsp-idle-delay 0.25)
-      (setq-local lsp-ui-sideline-show-code-actions nil))
+      (setq-local lsp-ui-sideline-show-code-actions nil)
+      ;; configure 2-space indent
+      (make-local-variable 'typescript-indent-level)
+      (setq typescript-indent-level 2))
     (add-hook 'typescript-mode-hook 'esc/config-typescript-mode))
 #+END_SRC
 
