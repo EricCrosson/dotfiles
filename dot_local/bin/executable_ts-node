@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#
+# Run a TypeScript repl, ensuring the --noUnusedLocals
+# option is disabled.
+#
+# Source:
+# https://github.com/TypeStrong/ts-node/issues/850#issuecomment-526141756
+#
+# Usage:
+#   ts-node
+
+
+npx ts-node -O '{"noUnusedLocals": false}'
