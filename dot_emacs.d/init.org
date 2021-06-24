@@ -1214,18 +1214,19 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
 
 *** JSON mode config
 #+BEGIN_SRC emacs-lisp
-  (use-package json-mode
-    :ensure t
-    :pin melpa-stable
-    :after (evil-leader)
-    :config
-      (evil-leader/set-key-for-mode 'json-mode
-        "fp" 'js-find-package-json
-        "ff" 'js-run-prettier-and-eslint-fix)
-      (defun esc/config-json-mode ()
-        (make-local-variable 'js-indent-level)
-        (setq js-indent-level 2))
-      (add-hook 'json-mode-hook 'esc/config-json-mode))
+    (use-package json-mode
+      :ensure t
+      :pin melpa-stable
+      :after (evil-leader)
+      :config
+        (evil-leader/set-key-for-mode 'json-mode
+          "fp" 'js-find-package-json
+          "ff" 'js-run-prettier-fix
+          "fl" 'js-run-eslint-fix)
+        (defun esc/config-json-mode ()
+          (make-local-variable 'js-indent-level)
+          (setq js-indent-level 2))
+        (add-hook 'json-mode-hook 'esc/config-json-mode))
 #+END_SRC
 
 *** Jsonnet mode config
@@ -1252,7 +1253,8 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
     :config
     (evil-leader/set-key-for-mode 'typescript-mode
       "fp" 'js-find-package-json
-      "ff" 'js-run-prettier-and-eslint-fix)
+      "ff" 'js-run-prettier-fix
+      "fl" 'js-run-eslint-fix)
     (defun esc/config-typescript-mode ()
       (define-key typescript-mode-map (vector 'remap 'fill-paragraph) 'typescript-c-fill-paragraph)
       ; (add-hook 'before-save-hook #'lsp-format-buffer t t) ;; one day, sweet prince
@@ -1315,7 +1317,8 @@ You know what: is this even considered a prog mode?
       :config
       (evil-leader/set-key-for-mode 'web-mode
         "fp" 'js-find-package-json
-        "ff" 'js-run-prettier-and-eslint-fix)
+        "ff" 'js-run-prettier-fix
+        "fl" 'js-run-eslint-fix)
       (defun esc/config-web-mode ()
         (define-key web-mode-map (vector 'remap 'fill-paragraph) 'typescript-c-fill-paragraph)
         ; (add-hook 'before-save-hook #'lsp-format-buffer t t) ;; one day, sweet prince
