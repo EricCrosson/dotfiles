@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+#
+# Run a set of test files identified by a regex
+#
+# Usage:
+#   tstest [--parallel] [<regex>]
+#
+# Options:
+#   <regex>          Regex matching test files to run
+#   -h --help        Show this message
+#   -p --parallel    Run tests in parallel
+#
+# @example
+# tstest './test/unit/*/
+
+# FEATURE: add --parallel to negate -s
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+readonly __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# required to add ./docopts to PATH
+PATH="${PATH}:${__dir}"
+# shellcheck source=./docopts.sh
+source "${__dir}/docopts.sh" --auto "$@"
+# shellcheck disable=SC2119
+# docopt_print_ARGS
+
+args=""
+if [ "${ARGS[--parallel]}" == false ]; then
+    args="${args} --serial"
+fi
+
+nodemon -x "npx ava ${args} --verbose --fail-fast ${ARGS[<regex>]} || true"
