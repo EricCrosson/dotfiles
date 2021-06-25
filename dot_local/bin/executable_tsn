@@ -7,7 +7,6 @@
 # https://github.com/TypeStrong/ts-node/issues/850#issuecomment-526141756
 #
 # Usage:
-#   ts-node
-
+#   tsn
 
 npx ts-node -O '{"noUnusedLocals": false}'
