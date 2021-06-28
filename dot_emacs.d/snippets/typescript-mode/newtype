@@ -2,6 +2,7 @@
 # name: io-ts-newtype
 # key: newtype
 # --
+import { Newtype } from 'newtype-ts'
 import { fromNewtype, NonEmptyString } from 'io-ts-types'
 
 interface $1
