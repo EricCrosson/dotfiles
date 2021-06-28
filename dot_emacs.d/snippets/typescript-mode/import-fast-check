@@ -1,0 +1,5 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: import-fast-check
+# key: importfc
+# --
+import * as fc from 'fast-check'
