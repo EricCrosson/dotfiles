@@ -1,0 +1,10 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: io-ts-newtype
+# key: newtype
+# --
+import { fromNewtype, NonEmptyString } from 'io-ts-types'
+
+interface $1
+  extends Newtype<{ readonly $1: unique symbol }, $2> {}
+
+const ApiKeyID = fromNewtype<ApiKeyID>($2)
