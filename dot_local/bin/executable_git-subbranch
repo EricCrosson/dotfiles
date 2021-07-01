@@ -24,7 +24,7 @@ PATH="${PATH}:${__dir}"
 # shellcheck source=./docopts.sh
 source "${__dir}/docopts.sh" --auto "$@"
 # shellcheck disable=SC2119
-docopt_print_ARGS
+# docopt_print_ARGS
 
 readonly parent="${ARGS[-b]}"
 readonly branch_name="${ARGS[-n]}"
