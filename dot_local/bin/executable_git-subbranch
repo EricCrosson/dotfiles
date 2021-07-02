@@ -4,15 +4,15 @@
 # from specified parent branch.
 #
 # Usage:
-#  git-subbranch -n <name> -b <parent> <commit>
+#  git-subbranch -b <new_branch> <start_point> <commit>...
 #
 # Options:
-#   -b <parent>    The branch from which to create the new branch
-#   -n <name>      The name to use for the newly-created branch
-#   <commit>       SHA-1 hash of the git commit to cherry-pick
+#   -b <new_branch>    The branch from which to create the new branch
+#   <start_point>      The name to use for the newly-created branch
+#   <commit>           SHA-1 hash of the git commit to cherry-pick
 #
 # @example
-# git subbranch -n my-cool-feature -b develop a1d2f37
+# git subbranch -b my-cool-feature develop a1d2f37
 
 set -o errexit
 set -o nounset
@@ -26,18 +26,23 @@ source "${__dir}/docopts.sh" --auto "$@"
 # shellcheck disable=SC2119
 # docopt_print_ARGS
 
-readonly parent="${ARGS[-b]}"
-readonly branch_name="${ARGS[-n]}"
-readonly commit="${ARGS[<commit>]}"
+readonly start_point="${ARGS[<start_point>]}"
+readonly new_branch="${ARGS[-b]}"
+
+commit=""
+i=0
+while [[ $i -lt "${ARGS[<commit>,#]}" ]]; do
+    commit="${commit} ${ARGS[<commit>,$i]}"
+    i=$((i+1))
+done
 
 readonly current_branch="$(git rev-parse --abbrev-ref HEAD)"
 
-# echo "parent: ${parent}"
-# echo "branch_name: ${branch_name}"
+# echo "new_branch: ${new_branch}"
+# echo "start_point: ${start_point}"
 # echo "commit: ${commit}"
 
-git checkout "${parent}"
-git checkout -b "${branch_name}"
+git checkout -b "${new_branch}" "${start_point}"
 git cherry-pick "${commit}"
 
 git checkout "${current_branch}"
