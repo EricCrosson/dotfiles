@@ -40,6 +40,6 @@ case "${stage_files}" in
     false)
         git diff -U0 \
             | grepdiff -E "${regex}" --output-matching=hunk \
-	    | git var GIT_PAGER
+	    | "$(git var GIT_PAGER)"
     ;;
 esac
