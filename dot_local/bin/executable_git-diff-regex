@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+#
+# Stage hunks by regex.
+#
+# Usage:
+#  git-diff-regex [-a] <regex>
+#
+# Options:
+#   -a --add    Add matches to the staging area
+#   <regex>     Regex used to select hunks from the working tree
+#
+# @example
+# git subbranch -b my-cool-feature develop a1d2f37
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+readonly __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# required to add ./docopts to PATH
+PATH="${PATH}:${__dir}"
+# shellcheck source=./docopts.sh
+source "${__dir}/docopts.sh" --auto "$@"
+# shellcheck disable=SC2119
+# docopt_print_ARGS
+
+readonly regex="${ARGS[<regex>]}"
+readonly stage_files="${ARGS[--add]}"
+
+# echo "regex: ${regex}"
+# echo "stage_files: ${stage_files}"
+
+case "${stage_files}" in
+    true)
+        git diff -U0 \
+            | grepdiff -E "${regex}" --output-matching=hunk \
+            | git apply --cached --unidiff-zero
+    ;;
+
+    false)
+        git diff -U0 \
+            | grepdiff -E "${regex}" --output-matching=hunk
+    ;;
+esac
