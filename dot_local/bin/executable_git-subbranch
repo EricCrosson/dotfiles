@@ -43,6 +43,7 @@ readonly current_branch="$(git rev-parse --abbrev-ref HEAD)"
 # echo "commit: ${commit}"
 
 git checkout -b "${new_branch}" "${start_point}"
-git cherry-pick "${commit}"
+# shellcheck disable=SC2086
+git cherry-pick ${commit}
 
 git checkout "${current_branch}"
