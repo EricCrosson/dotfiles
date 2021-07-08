@@ -13,8 +13,6 @@
 # @example
 # tstest './test/unit/*/
 
-# FEATURE: add --parallel to negate -s
-
 set -o errexit
 set -o nounset
 set -o pipefail
