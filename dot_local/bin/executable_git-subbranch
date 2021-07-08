@@ -18,7 +18,8 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-readonly __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+__dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly __dir
 # required to add ./docopts to PATH
 PATH="${PATH}:${__dir}"
 # shellcheck source=./docopts.sh
