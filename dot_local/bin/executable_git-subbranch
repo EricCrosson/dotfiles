@@ -36,7 +36,8 @@ while [[ $i -lt "${ARGS[<commit>,#]}" ]]; do
     i=$((i+1))
 done
 
-readonly current_branch="$(git rev-parse --abbrev-ref HEAD)"
+current_branch="$(git rev-parse --abbrev-ref HEAD)"
+readonly current_branch
 
 # echo "new_branch: ${new_branch}"
 # echo "start_point: ${start_point}"
