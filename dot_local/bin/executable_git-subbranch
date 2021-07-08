@@ -4,12 +4,13 @@
 # from specified parent branch.
 #
 # Usage:
-#  git-subbranch -b <new_branch> <start_point> <commit>...
+#  git-subbranch [-p] -b <new_branch> <start_point> <commit>...
 #
 # Options:
 #   -b <new_branch>    The branch from which to create the new branch
 #   <start_point>      The name to use for the newly-created branch
 #   <commit>           SHA-1 hash of the git commit to cherry-pick
+#   -p --push          Push the new branch
 #
 # @example
 # git subbranch -b my-cool-feature develop a1d2f37
@@ -47,5 +48,9 @@ readonly current_branch
 git checkout -b "${new_branch}" "${start_point}"
 # shellcheck disable=SC2086
 git cherry-pick ${commit}
+
+if [[ "${ARGS[--push]}" == true ]]; then
+    git push origin "${new_branch}"
+fi
 
 git checkout "${current_branch}"
