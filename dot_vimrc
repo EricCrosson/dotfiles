@@ -38,6 +38,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'haishanh/night-owl.vim'
 Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'wakatime/vim-wakatime'
+Plug 'triglav/vim-visual-increment'
 Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
 
 " Initialize plugin system
