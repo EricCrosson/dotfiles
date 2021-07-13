@@ -32,9 +32,8 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 call plug#begin('~/.vim/plugged')
 
+Plug 'editorconfig/editorconfig-vim'
 Plug 'kristijanhusak/vim-hybrid-material'
-
-" Wakatime config
 Plug 'wakatime/vim-wakatime'
 
 " Initialize plugin system
