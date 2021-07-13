@@ -24,7 +24,9 @@ set nowrap
 " Spell checking and auto-wrapping to got commit messages
 autocmd Filetype gitcommit setlocal spell textwidth=72
 
-" === Plug
+" =======================================
+" Plugins
+" =======================================
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -33,8 +35,19 @@ endif
 call plug#begin('~/.vim/plugged')
 
 Plug 'editorconfig/editorconfig-vim'
+Plug 'haishanh/night-owl.vim'
 Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'wakatime/vim-wakatime'
 
 " Initialize plugin system
 call plug#end()
+
+" =======================================
+" Theme
+" =======================================
+if (has("termguicolors"))
+ set termguicolors
+endif
+
+syntax enable
+colorscheme night-owl
