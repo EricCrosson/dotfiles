@@ -1,3 +1,6 @@
+" =======================================
+" Behavior
+" =======================================
 set timeout timeoutlen=1000 ttimeoutlen=100
 set <f13>=fd
 imap <F13> <esc>
@@ -9,6 +12,8 @@ nnoremap <C-H> <C-W><C-H>
 
 set splitbelow
 set splitright
+
++xterm_clipboard
 
 " =======================================
 " Display
