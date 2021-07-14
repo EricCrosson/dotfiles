@@ -72,9 +72,13 @@ let mapleader = " "
 
 nnoremap <leader><F13> :write<CR>
 
+nnoremap <leader>pf :Files<CR>
+nnoremap <leader>pa :Rg<CR>
+
+nnoremap <leader>gl :GetCommitLink<CR>
+
 nnoremap <leader>ld :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>lr :YcmCompleter GoToReferences<CR>
 nnoremap <leader>li :YcmCompleter GoToImplementation<CR>
 nnoremap <leader>lt :YcmCompleter GoToType<CR>
 
-nnoremap <leader>gl :GetCommitLink<CR>
