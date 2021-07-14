@@ -54,3 +54,16 @@ endif
 
 syntax enable
 colorscheme night-owl
+
+" =======================================
+" Leader
+" =======================================
+nnoremap <Space> <NOP>
+let mapleader = " "
+
+nnoremap <leader><F13> :write<CR>
+
+nnoremap <leader>ld :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>lr :YcmCompleter GoToReferences<CR>
+nnoremap <leader>li :YcmCompleter GoToImplementation<CR>
+nnoremap <leader>lt :YcmCompleter GoToType<CR>
