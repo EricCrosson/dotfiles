@@ -42,6 +42,7 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'editorconfig/editorconfig-vim'
 Plug 'haishanh/night-owl.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'knsh14/vim-github-link'
 Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'triglav/vim-visual-increment'
