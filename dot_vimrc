@@ -39,7 +39,7 @@ Plug 'haishanh/night-owl.vim'
 Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'wakatime/vim-wakatime'
 Plug 'triglav/vim-visual-increment'
-Plug 'ycm-core/YouCompleteMe', { 'do': './install.py' }
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --ts-completer' }
 
 " Initialize plugin system
 call plug#end()
