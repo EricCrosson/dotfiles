@@ -19,13 +19,14 @@ set backspace=indent,eol,start
 " =======================================
 " Display
 " =======================================
-set linespace=3
-set ruler
-set title
 set cmdheight=1
-set showtabline=2
 set colorcolumn=80
+set linespace=3
 set nowrap
+set number
+set ruler
+set showtabline=2
+set title
 
 " Spell checking and auto-wrapping for git commit messages
 autocmd Filetype gitcommit setlocal spell textwidth=72
@@ -71,6 +72,7 @@ nnoremap <Space> <NOP>
 let mapleader = " "
 
 nnoremap <leader><F13> :write<CR>
+nnoremap <leader>bd :bd<CR>
 
 nnoremap <leader>pf :Files<CR>
 nnoremap <leader>pa :Rg<CR>
