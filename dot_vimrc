@@ -42,11 +42,11 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'editorconfig/editorconfig-vim'
 Plug 'haishanh/night-owl.vim'
-Plug 'kristijanhusak/vim-hybrid-material'
-Plug 'wakatime/vim-wakatime'
-Plug 'triglav/vim-visual-increment'
-Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --ts-completer' }
 Plug 'knsh14/vim-github-link'
+Plug 'kristijanhusak/vim-hybrid-material'
+Plug 'triglav/vim-visual-increment'
+Plug 'wakatime/vim-wakatime'
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --ts-completer' }
 
 " Initialize plugin system
 call plug#end()
