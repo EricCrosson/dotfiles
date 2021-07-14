@@ -11,6 +11,9 @@
 #
 # @example
 # git subbranch -b my-cool-feature develop a1d2f37
+#
+# @dependencies
+# - patchutils package
 
 set -o errexit
 set -o nounset
