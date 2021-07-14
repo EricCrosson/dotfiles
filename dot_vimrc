@@ -15,6 +15,7 @@ set splitright
 
 set nocompatible
 set backspace=indent,eol,start
+set updatetime=750
 
 " =======================================
 " Display
