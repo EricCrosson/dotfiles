@@ -48,7 +48,7 @@ Plug 'knsh14/vim-github-link'
 Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'triglav/vim-visual-increment'
 Plug 'wakatime/vim-wakatime'
-Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --ts-completer' }
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --clangd-completer --cs-completer --go-completer --rust-completer --java-completer --ts-completer' }
 
 " Initialize plugin system
 call plug#end()
