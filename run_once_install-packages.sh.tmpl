@@ -49,7 +49,7 @@ configure_keyboard_repeat_rate
 {{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) }}
 
 # dependencies for vim YouCompleteMe
-sudo apt install mono-complete default-jdk
+sudo apt install vim-gtk3 mono-complete default-jdk
 
 # DISCUSS: Hopefully this installs Hack, but if this script runs
 # before provisioning then it won't be effective. Also not sure if
