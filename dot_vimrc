@@ -47,6 +47,7 @@ call plug#end()
 " =======================================
 " Theme
 " =======================================
+set t_ut=
 if (has("termguicolors"))
  set termguicolors
 endif
