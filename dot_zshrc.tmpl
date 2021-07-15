@@ -17,47 +17,6 @@ autoload copy-earlier-word && \
 	bindkey '^[,' copy-earlier-word  # cycle through last-words with M-.
 ##
 
-alias c='chezmoi '
-alias d='docker '
-alias g='git '
-alias gdc='git diff --cached '
-alias gl='git l '
-alias l='ls -lahv '
-alias o='open '
-alias npx='npx --no-install '
-alias rg='rg --smart-case '
-alias s='screen '
-alias ssh='ssh -t '
-alias sudo='sudo '
-alias v='vim '
-alias nrw='npm run --ws '
-
-{{ if eq .chezmoi.username "ericcrosson" -}}
-alias j='jira '
-{{ end -}}
-
-if command -v hub &>/dev/null; then
-    alias git='hub '
-fi
-
-if command -v fdfind &>/dev/null; then
-   alias fd='fdfind '
-fi
-
-# This post outlines what it takes to default to GNU make on macOS
-# https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
-# alias make='gmake '
-
-# Make and change directory
-# Usage: mc <dir>
-#
-# @example
-# mc new-directory
-mc() {
-     local namespace="${1:?"Directory must be specified"}"
-     mkdir -p -- "$1" && cd -P -- "$1"
-}
-
 #####################################################################
 # completions
 #####################################################################
@@ -208,6 +167,51 @@ eval "$(jira --completion-script-zsh)"
 {{ if eq .chezmoi.username "ericcrosson" -}}
 [ -f ~/.local/share/zsh/bitgo ] && source ~/.local/share/zsh/bitgo
 {{ end -}}
+
+#####################################################################
+# aliases
+#####################################################################
+
+alias c='chezmoi '
+alias d='docker '
+alias g='git '
+alias gdc='git diff --cached '
+alias gl='git l '
+alias l='ls -lahv '
+alias o='open '
+alias npx='npx --no-install '
+alias rg='rg --smart-case '
+alias s='screen '
+alias ssh='ssh -t '
+alias sudo='sudo '
+alias v='vim '
+alias nrw='npm run --ws '
+
+{{ if eq .chezmoi.username "ericcrosson" -}}
+alias j='jira '
+{{ end -}}
+
+if command -v hub &>/dev/null; then
+    alias git='hub '
+fi
+
+if command -v fdfind &>/dev/null; then
+   alias fd='fdfind '
+fi
+
+# This post outlines what it takes to default to GNU make on macOS
+# https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
+# alias make='gmake '
+
+# Make and change directory
+# Usage: mc <dir>
+#
+# @example
+# mc new-directory
+mc() {
+     local namespace="${1:?"Directory must be specified"}"
+     mkdir -p -- "$1" && cd -P -- "$1"
+}
 
 #####################################################################
 # post-config
