@@ -66,6 +66,7 @@ endif
 
 syntax enable
 colorscheme night-owl
+set guifont=Hack
 
 " =======================================
 " Leader
