@@ -44,14 +44,25 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'editorconfig/editorconfig-vim'
 Plug 'haishanh/night-owl.vim'
+Plug 'honza/vim-snippets'
 Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'knsh14/vim-github-link'
 Plug 'kristijanhusak/vim-hybrid-material'
+Plug 'SirVer/ultisnips'
 Plug 'triglav/vim-visual-increment'
 Plug 'wakatime/vim-wakatime'
 Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --clangd-completer --cs-completer --go-completer --rust-completer --java-completer --ts-completer' }
+
+" make YCM compatible with UltiSnips
+let g:ycm_key_list_select_completion = ['n', '<Down>']
+let g:ycm_key_list_previous_completion = ['p', '<Up>']
+
+" better key bindings for UltiSnipsExpandTrigger
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 " Initialize plugin system
 call plug#end()
