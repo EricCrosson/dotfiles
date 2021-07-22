@@ -13,6 +13,8 @@
 # @example
 # tstest './test/unit/*/
 
+# FEATURE: support mocha
+
 set -o errexit
 set -o nounset
 set -o pipefail
