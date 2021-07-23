@@ -744,19 +744,20 @@ new terminal.
 
 **** LSP UI config
 #+BEGIN_SRC emacs-lisp
-(use-package lsp-ui
-  :ensure t
-  :pin melpa
-  :after (lsp-mode evil-leader)
-  :init
-  (setq lsp-ui-doc-enable nil
-        lsp-ui-peek-enable t
-        lsp-ui-sideline-enable t
-        lsp-ui-imenu-enable t
-        lsp-ui-flycheck-enable t)
-  (evil-leader/set-key
-    "lr" 'lsp-ui-peek-find-references
-    "ld" 'lsp-ui-peek-find-definitions))
+  (use-package lsp-ui
+    :ensure t
+    :pin melpa
+    :after (lsp-mode evil-leader)
+    :init
+    (setq lsp-ui-doc-enable nil
+          lsp-ui-peek-enable t
+          lsp-ui-sideline-enable t
+          lsp-ui-imenu-enable t
+          lsp-ui-flycheck-enable t)
+    (evil-leader/set-key
+      "lr" 'lsp-ui-peek-find-references
+      "ld" 'lsp-ui-peek-find-definitions
+      "li" 'lsp-ui-peek-find-implementation))
 #+END_SRC
 
 **** lsp-ivy config
