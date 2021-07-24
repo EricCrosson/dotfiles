@@ -1817,14 +1817,15 @@ Record one frame per keystroke.
                                           "magit-.*-mode"))
     (evil-leader/set-key
 
-           ;;; stock emacs functions
+      ;; stock emacs functions
       "y" 'execute-extended-command
+      "sl" 'sort-lines
 
-           ;;; file commands
+      ;; file commands
       "fo" 'ff-find-other-file
       ;; TODO: cull unnecessary entries from recentf list (machine files)
 
-           ;;; buffer commands
+      ;; buffer commands
       "bd" 'kill-current-buffer
       "bu" 'bury-buffer
 
@@ -1842,7 +1843,7 @@ Record one frame per keystroke.
       "id" 'esc-insert-short-date
       "iD" 'esc-insert-long-date
       "it" 'esc-insert-timestamp
-     )
+      )
     (global-evil-leader-mode 1))
 #+END_SRC
 
