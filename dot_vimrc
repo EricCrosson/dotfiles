@@ -44,6 +44,7 @@ endif
 call plug#begin('~/.vim/plugged')
 
 Plug 'airblade/vim-gitgutter'
+Plug 'axelf4/vim-strip-trailing-whitespace'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'haishanh/night-owl.vim'
 Plug 'honza/vim-snippets'
