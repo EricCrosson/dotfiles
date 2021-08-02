@@ -52,6 +52,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'knsh14/vim-github-link'
 Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'SirVer/ultisnips'
+Plug 'sjl/gundo.vim'
 Plug 'triglav/vim-visual-increment'
 Plug 'wakatime/vim-wakatime'
 Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --clangd-completer --cs-completer --go-completer --rust-completer --java-completer --ts-completer' }
