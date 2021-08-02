@@ -55,6 +55,7 @@ Plug 'SirVer/ultisnips'
 Plug 'sjl/gundo.vim'
 Plug 'triglav/vim-visual-increment'
 Plug 'wakatime/vim-wakatime'
+Plug 'wesQ3/vim-windowswap'
 Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --clangd-completer --cs-completer --go-completer --rust-completer --java-completer --ts-completer' }
 
 " make YCM compatible with UltiSnips
