@@ -133,7 +133,6 @@ zplug "esc-zsh/lambda-pure"
 
 zplug "jreese/zsh-titles"
 
-zplug "lukechilds/zsh-nvm"
 zplug "lukechilds/zsh-better-npm-completion", defer:2
 
 {{ if eq .chezmoi.os "darwin" -}}
@@ -153,6 +152,7 @@ zplug "MichaelAquilina/zsh-you-should-use", defer:2
 
 zplug "esc-zsh/smart-cd"
 zplug "hlissner/zsh-autopair", defer:2
+zplug "kiurchv/asdf.plugin.zsh", defer:2
 zplug "reegnz/jq-zsh-plugin"
 zplug "robsis/zsh-completion-generator"
 zplug "sobolevn/wakatime-zsh-plugin"
@@ -215,5 +215,7 @@ eval "$(jira --completion-script-zsh)"
 #####################################################################
 
 eval "$(direnv hook zsh)"
+eval "$(asdf exec direnv hook zsh)"
+direnv() { asdf exec direnv "$@"; }
 
 # zprof

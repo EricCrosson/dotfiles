@@ -25,15 +25,6 @@ export SMART_CD_ONLY_IF_FITS="true"
 # export SMART_CD_LS_COMMAND="k --human"
 
 #####################################################################
-# Node.js configuration
-#####################################################################
-export NVM_LAZY_LOAD=true
-export NVM_LAZY_LOAD_EXTRA_COMMANDS=('emacs' 'git' 'make' 'nodemon' 'npx' 'vim')
-# NOTE: experimenting with asdf's implementation
-# export NVM_AUTO_USE=true
-export NVM_DIR="${HOME}/.local/opt/nvm"
-
-#####################################################################
 # fzf configuration
 #####################################################################
 if command -v fdfind &>/dev/null; then
@@ -120,6 +111,12 @@ path+=('/home/linuxbrwe/.linuxbrew/sbin')
 # https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
 path=("$(brew --prefix)/opt/make/libexec/gnubin" $path)
 {{ end -}}
+
+#####################################################################
+# asdf configuration
+#####################################################################
+export ASDF_DIR="$(brew --prefix asdf)"
+path+=("${HOME}/.asdf/shims")
 
 export -U PATH
 export -U FPATH

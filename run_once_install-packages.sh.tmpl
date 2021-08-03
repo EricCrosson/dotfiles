@@ -8,7 +8,10 @@ install_brew() {
 }
 
 install_asdf_plugins() {
-    asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+    asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+    asdf plugin-add direnv
+    asdf install direnv latest
+    asdf global direnv latest
 }
 
 {{ if eq .chezmoi.username "ericcrosson" -}}
