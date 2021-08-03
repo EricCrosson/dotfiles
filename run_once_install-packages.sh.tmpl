@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
+# vim: filetype=sh
 
 install_brew() {
     if !command -v brew &>/dev/null; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
+}
+
+install_asdf_plugins() {
+    asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
 }
 
 {{ if eq .chezmoi.username "ericcrosson" -}}
@@ -40,12 +45,6 @@ configure_keyboard_repeat_rate() {
 install_brew
 brew bundle --global
 
-{{ if eq .chezmoi.username "ericcrosson" -}}
-install_go_jira
-{{ end -}}
-
-configure_keyboard_repeat_rate
-
 {{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) }}
 
 # dependencies for vim YouCompleteMe
@@ -74,3 +73,11 @@ brew install emacs-head@28 \
 macos_configure_zsh_path
 
 {{ end }}
+
+{{ if eq .chezmoi.username "ericcrosson" -}}
+install_go_jira
+{{ end -}}
+
+configure_keyboard_repeat_rate
+
+install_asdf_plugins
