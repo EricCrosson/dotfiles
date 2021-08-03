@@ -6,6 +6,8 @@
     [data.github]
         # from https://github.com/settings/tokens
         forge_token = ""
+        gh_token = ""
+        username = ""
 
     [data.wakatime]
         api_key = ""
