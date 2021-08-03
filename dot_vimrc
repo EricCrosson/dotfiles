@@ -93,6 +93,7 @@ let mapleader = " "
 nnoremap <leader><F13> :write<CR>
 nnoremap <leader>bd :bd<CR>
 
+nnoremap <leader>pe :Files<CR>
 nnoremap <leader>pf :Files<CR>
 nnoremap <leader>pa :Rg<CR>
 
