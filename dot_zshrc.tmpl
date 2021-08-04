@@ -10,6 +10,7 @@ zmodload zsh/terminfo
 bindkey -e                               # use bash input mode
 # autoload -U select-word-style            # kill-word stops at directory delimeter
 setopt interactivecomments               # bash-style comments
+setopt autopushd
 autoload copy-earlier-word && \
 	zle -N copy-earlier-word && \
 	bindkey '^[,' copy-earlier-word  # cycle through last-words with M-.
