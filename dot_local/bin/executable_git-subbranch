@@ -4,16 +4,23 @@
 # from specified parent branch.
 #
 # Usage:
-#  git-subbranch [-p] -b <new_branch> <start_point> <commit>...
+#  git-subbranch [-p] [-b <new_branch> | -t <ticket>] <start_point> <commit>...
 #
 # Options:
+#   -p --push          Push the new branch
 #   -b <new_branch>    The branch from which to create the new branch
+#   -t <ticket>        The ticket to use as a prefix for this branch name
 #   <start_point>      The name to use for the newly-created branch
 #   <commit>           SHA-1 hash of the git commit to cherry-pick
-#   -p --push          Push the new branch
 #
 # @example
 # git subbranch -b my-cool-feature develop a1d2f37
+#
+# @example
+# git subbranch -t JIRA-12345 develop a1d2f37
+#
+# @example
+# git subbranch develop a1d2f37
 
 set -o errexit
 set -o nounset
@@ -28,14 +35,45 @@ source "${__dir}/docopts.sh" --auto "$@"
 # shellcheck disable=SC2119
 # docopt_print_ARGS
 
+readonly branch_prefix_template="ericcrosson/ESC-000"
+
+random_number() {
+  shuf -i 1-999 -n 1
+}
+
+random_branch_prefix() {
+  echo "${branch_prefix_template/000/$(random_number)}"
+}
+
+commit_subject() {
+  git log -n 1 --pretty=%s "${1:?must identify commit to grab commit subject}"
+}
+
+one_word() {
+  local string="${1:?must provide a string to condense into a single word}"
+  echo "${string//[ .:^~?*@]/-}"
+}
+
+branch_name_from_commit_subject() {
+  local commit="${1:?must provide sha to generate a branch name}"
+  local prefix="${2:-$(random_branch_prefix)}"
+  echo "${prefix}-$(one_word "$(commit_subject "${commit}")")"
+}
+
+readonly sha="${ARGS[<commit>,0]}"
+
+if [[ -n "${ARGS[-t]}" ]]; then
+  ticket="$(branch_name_from_commit_subject "${sha}" "${ARGS[-t]}")"
+fi
+
 readonly start_point="${ARGS[<start_point>]}"
-readonly new_branch="${ARGS[-b]}"
+readonly new_branch="${ticket:-${ARGS[-b]:-$(branch_name_from_commit_subject "${sha}")}}"
 
 commit=""
 i=0
 while [[ $i -lt "${ARGS[<commit>,#]}" ]]; do
-    commit="${commit} ${ARGS[<commit>,$i]}"
-    i=$((i+1))
+  commit="${commit} ${ARGS[<commit>,$i]}"
+  i=$((i+1))
 done
 
 current_branch="$(git rev-parse --abbrev-ref HEAD)"
@@ -50,7 +88,7 @@ git checkout -b "${new_branch}" "${start_point}"
 git cherry-pick ${commit}
 
 if [[ "${ARGS[--push]}" == true ]]; then
-    git push origin "${new_branch}"
+  git push origin "${new_branch}"
 fi
 
 git checkout "${current_branch}"
