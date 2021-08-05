@@ -35,14 +35,14 @@ source "${__dir}/docopts.sh" --auto "$@"
 # shellcheck disable=SC2119
 # docopt_print_ARGS
 
-readonly branch_prefix_template="ericcrosson/ESC-000"
+readonly branch_prefix_template="ericcrosson/ESC-00"
 
 random_number() {
-  shuf -i 1-999 -n 1
+  shuf -i 1-99 -n 1
 }
 
 random_branch_prefix() {
-  echo "${branch_prefix_template/000/$(random_number)}"
+  echo "${branch_prefix_template/00/$(random_number)}"
 }
 
 commit_subject() {
