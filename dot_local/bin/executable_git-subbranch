@@ -100,9 +100,10 @@ fi
 
 # open a pull-request
 if [[ "${ARGS[--open]}" == true ]]; then
-  hub pull-request --browse
+  # FEATURE: add a --edit flag
+  hub pull-request --no-edit --browse
 elif [[ "${ARGS[--draft]}" == true ]]; then
-  hub pull-request --browse --draft
+  hub pull-request --no-edit --browse --draft
 fi
 
 git checkout "${current_branch}"
