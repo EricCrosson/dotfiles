@@ -54,6 +54,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'knsh14/vim-github-link'
 Plug 'kristijanhusak/vim-hybrid-material'
+Plug 'prettier/vim-prettier'
 Plug 'SirVer/ultisnips'
 Plug 'sjl/gundo.vim'
 Plug 'triglav/vim-visual-increment'
@@ -98,11 +99,15 @@ nnoremap <leader>pe :Files<CR>
 nnoremap <leader>pf :Files<CR>
 nnoremap <leader>pa :Rg<CR>
 
-nnoremap <leader>gl :GetCommitLink<CR>
+nmap <leader>gl <Plug>(GetCommitLink)
+nmap <leader>ga <Plug>(GitGutterStageHunk)
+nmap <leader>gu <Plug>(GitGutterUndoHunk)
+nmap <leader>gp <Plug>(GitGutterPreviewHunk)
 
 nnoremap <leader>ld :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>lr :YcmCompleter GoToReferences<CR>
 nnoremap <leader>li :YcmCompleter GoToImplementation<CR>
 nnoremap <leader>lt :YcmCompleter GoToType<CR>
 
-nnoremap <leader>ff :!cd %:h; npx prettier --write %:p<CR><CR>
+nmap <Leader>ff <Plug>(PrettierAsync)
+xmap <Leader>ff :PrettierPartial<CR>
