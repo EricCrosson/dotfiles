@@ -99,7 +99,8 @@ nnoremap <leader>pe :Files<CR>
 nnoremap <leader>pf :Files<CR>
 nnoremap <leader>pa :Rg<CR>
 
-nmap <leader>gl <Plug>(GetCommitLink)
+nmap <leader>gl :GetCommitLink<CR>
+
 nmap <leader>ga <Plug>(GitGutterStageHunk)
 nmap <leader>gu <Plug>(GitGutterUndoHunk)
 nmap <leader>gp <Plug>(GitGutterPreviewHunk)
