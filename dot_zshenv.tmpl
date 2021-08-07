@@ -115,7 +115,12 @@ path=("$(brew --prefix)/opt/make/libexec/gnubin" $path)
 #####################################################################
 # asdf configuration
 #####################################################################
-source "$(brew --prefix asdf)/asdf.sh"
+{{ if eq .chezmoi.os "linux" -}}
+source /home/linuxbrew/.linuxbrew/opt/asdf/asdf.sh
+{{ end -}}
 
+#####################################################################
+# Epilogue
+#####################################################################
 export -U PATH
 export -U FPATH
