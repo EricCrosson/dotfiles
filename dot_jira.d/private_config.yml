@@ -1,0 +1,7 @@
+endpoint: https://stratos-trade.atlassian.net
+user: eric@stratos.trade
+password-source: keyring
+overrides:
+  priority: Needs Triage
+  assignee: eric@stratos.trade
+  reporter: eric@stratos.trade

@@ -21,17 +21,18 @@ autoload copy-earlier-word && \
 
 alias c='chezmoi '
 alias d='docker '
-alias g='git '
 alias gdc='git diff --cached '
+alias g='git '
+alias j='jira '
 alias l='ls -lahv '
-alias o='open '
 alias npx='npx --no-install '
+alias nrw='npm run --ws '
+alias o='open '
 alias rg='rg --smart-case '
 alias s='screen '
 alias ssh='ssh -t '
 alias sudo='sudo '
 alias v='vim '
-alias nrw='npm run --ws '
 
 {{ if eq .chezmoi.username "ericcrosson" -}}
 alias j='jira '
