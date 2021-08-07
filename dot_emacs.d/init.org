@@ -983,6 +983,8 @@ the first half of `#define`.
     :ensure t
     :pin melpa-stable
     :defer
+    :bind (:map company-active-map
+                ("<tab>" . company-complete-selection))
     :config
     (setq lsp-eldoc-render-all t)
     (global-company-mode 1))
@@ -1202,8 +1204,15 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
 
 **** prettier config
 #+BEGIN_SRC emacs-lisp
-  (use-package prettier-js
-    :ensure t)
+  (use-package prettier
+    :ensure t
+    :config
+    (defun esc/prettier-on-region-or-buffer ()
+      (interactive)
+      (if (use-region-p)
+          (prettier-prettify-region)
+        (prettier-prettify))
+      ))
 #+END_SRC
 
 **** indium config
@@ -1222,7 +1231,7 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
       :config
         (evil-leader/set-key-for-mode 'json-mode
           "fp" 'js-find-package-json
-          "ff" 'js-run-prettier-fix
+          "ff" 'esc/prettier-on-region-or-buffer
           "fl" 'js-run-eslint-fix)
         (defun esc/config-json-mode ()
           (make-local-variable 'js-indent-level)
@@ -1254,7 +1263,7 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
     :config
     (evil-leader/set-key-for-mode 'typescript-mode
       "fp" 'js-find-package-json
-      "ff" 'js-run-prettier-fix
+      "ff" 'esc/prettier-on-region-or-buffer
       "fl" 'js-run-eslint-fix)
     (defun esc/config-typescript-mode ()
       (define-key typescript-mode-map (vector 'remap 'fill-paragraph) 'typescript-c-fill-paragraph)
@@ -1294,7 +1303,7 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
     (defun tide/configure-tide-typescript ()
       (setq flycheck-check-syntax-automatically '(save mode-enabled))
       (setq company-backends '(company-tide company-yasnippet))
-      (bind-key "TAB" 'yas-expand yas-minor-mode-map)
+      (bind-key "<tab>" 'yas-expand yas-minor-mode-map)
       (bind-key "M-." nil evil-normal-state-map)
       ;; aligns annotation to the right hand side
       ;; (setq company-tooltip-align-annotations t)
@@ -1318,7 +1327,7 @@ You know what: is this even considered a prog mode?
       :config
       (evil-leader/set-key-for-mode 'web-mode
         "fp" 'js-find-package-json
-        "ff" 'js-run-prettier-fix
+        "ff" 'esc/prettier-on-region-or-buffer
         "fl" 'js-run-eslint-fix)
       (defun esc/config-web-mode ()
         (define-key web-mode-map (vector 'remap 'fill-paragraph) 'typescript-c-fill-paragraph)
@@ -1794,23 +1803,7 @@ Record one frame per keystroke.
     :pin melpa-stable
     :after (evil)
     :init
-    ;; TODO: autoload these defuns
-    (defun esc-insert-long-date ()
-      "Insert date at point in human-readable format, e.g. Tuesday
-    October 18, 2016."
-      (interactive)
-      (insert (format-time-string "%A %B %d, %Y")))
-
-    (defun esc-insert-short-date ()
-      "Insert date at point in YYYY-MM-DD format."
-      (interactive)
-      (insert (format-time-string "%Y-%m-%d")))
-
-    (defun esc-insert-timestamp ()
-      "Insert timestamp at point in YYYY-MM-DD|HH:MM (UTC time)"
-      (interactive)
-      (insert (format-time-string "%Y-%m-%d|%H:%M" nil t)))
-
+    (global-evil-leader-mode 1)
     :config
     (setq evil-leader/leader "<SPC>")
     (setq evil-leader/no-prefix-mode-rx '("dired-mode"
@@ -1838,13 +1831,7 @@ Record one frame per keystroke.
       "ci" 'org-clock-in
       "cl" 'org-clock-in-last
       "cq" 'org-clock-cancel
-
-      ;;; insertion commands
-      "id" 'esc-insert-short-date
-      "iD" 'esc-insert-long-date
-      "it" 'esc-insert-timestamp
-      )
-    (global-evil-leader-mode 1))
+      ))
 #+END_SRC
 
 **** evil-magit
