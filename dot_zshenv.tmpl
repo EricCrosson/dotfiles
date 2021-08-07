@@ -115,8 +115,7 @@ path=("$(brew --prefix)/opt/make/libexec/gnubin" $path)
 #####################################################################
 # asdf configuration
 #####################################################################
-export ASDF_DIR="$(brew --prefix asdf)"
-path+=("${HOME}/.asdf/shims")
+source "$(brew --prefix asdf)/asdf.sh"
 
 export -U PATH
 export -U FPATH
