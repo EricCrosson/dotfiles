@@ -34,13 +34,7 @@ alias ssh='ssh -t '
 alias sudo='sudo '
 alias v='vim '
 
-{{ if eq .chezmoi.username "ericcrosson" -}}
-alias j='jira '
-{{ end -}}
-
-if command -v hub &>/dev/null; then
-    alias git='hub '
-fi
+eval "$(hub alias -s)"
 
 if command -v fdfind &>/dev/null; then
    alias fd='fdfind '
