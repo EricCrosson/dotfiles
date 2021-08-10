@@ -1,3 +1,5 @@
+# vim: filetype=sh
+
 #####################################################################
 # Terminal emulator configuration
 #####################################################################
@@ -117,6 +119,13 @@ path=("$(brew --prefix)/opt/make/libexec/gnubin" $path)
 {{ if eq .chezmoi.os "linux" -}}
 source /home/linuxbrew/.linuxbrew/opt/asdf/asdf.sh
 {{ end -}}
+
+#####################################################################
+# Nix configuration
+#####################################################################
+if [ -e "${HOME}/.nix-profile/etc/profile.d/nix.sh" ]; then
+  . "${HOME}/.nix-profile/etc/profile.d/nix.sh"
+fi
 
 #####################################################################
 # Epilogue

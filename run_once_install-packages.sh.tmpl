@@ -7,6 +7,13 @@ install_brew() {
     fi
 }
 
+install_nix() {
+  if !command -v nix-shell &>/dev/null; then
+    sudo install -d -m755 -o $(id -u) -g $(id -g) /nix
+    curl -L https://nixos.org/nix/install | sh
+  fi
+}
+
 install_asdf_plugins() {
     asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
     asdf plugin-add direnv
@@ -49,6 +56,8 @@ install_brew
 brew bundle --global
 
 {{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) }}
+
+install_nix
 
 # dependencies for vim YouCompleteMe
 sudo apt install vim-gtk3 mono-complete default-jdk
