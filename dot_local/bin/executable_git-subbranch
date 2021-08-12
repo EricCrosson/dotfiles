@@ -8,8 +8,8 @@
 #
 # Options:
 #   -p --push          Push the new branch
-#   -o --open          Open a pull-request
-#   -d --draft         Open a pull-request in draft state
+#   -o --open          Open a pull-request (implies --push)
+#   -d --draft         Open a pull-request in draft state (implies --push)
 #   -b <new_branch>    The branch from which to create the new branch
 #   -t <ticket>        The ticket to use as a prefix for this branch name
 #   <start_point>      The name to use for the newly-created branch
@@ -94,7 +94,7 @@ git checkout -b "${new_branch}" "${start_point}"
 git cherry-pick ${commit}
 
 # push the new branch
-if [[ "${ARGS[--push]}" == true ]]; then
+if [[ "${ARGS[--push]}" == true || "${ARGS[--open]}" == true || "${ARGS[--draft]}" == true ]]; then
   git push origin "${new_branch}"
 fi
 
