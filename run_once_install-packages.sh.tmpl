@@ -15,15 +15,6 @@ install_asdf_plugins() {
   asdf global direnv latest
 }
 
-{{ if eq .chezmoi.username "ericcrosson" -}}
-install_go_jira() {
-  if !command -v jira &>/dev/null; then
-    GO111MODULE=on go get github.com/go-jira/jira/cmd/jira
-  fi
-}
-{{ end -}}
-
-
 {{ if eq .chezmoi.os "darwin" -}}
 # To prioritize GNU Make in $PATH in ~/.zshenv, you must also execute
 # the following to set the system path as early as possible
@@ -76,10 +67,6 @@ brew install emacs-head@28 \
 macos_configure_zsh_path
 
 {{ end }}
-
-{{ if eq .chezmoi.username "ericcrosson" -}}
-install_go_jira
-{{ end -}}
 
 configure_keyboard_repeat_rate
 
