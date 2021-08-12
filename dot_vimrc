@@ -101,6 +101,7 @@ nnoremap <leader>pf :Files<CR>
 nnoremap <leader>pa :Rg<CR>
 
 nmap <leader>gl :GetCommitLink<CR>
+xmap <leader>gl :GetCommitLink<CR>
 
 nmap <leader>ga <Plug>(GitGutterStageHunk)
 nmap <leader>gu <Plug>(GitGutterUndoHunk)
