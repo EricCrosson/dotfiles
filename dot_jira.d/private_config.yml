@@ -5,3 +5,24 @@ overrides:
   priority: Needs Triage
   assignee: eric@stratos.trade
   reporter: eric@stratos.trade
+custom-commands:
+  - name: mine
+    help: display issues assigned to me
+    script: |-
+      if [ -n "$JIRA_PROJECT" ]; then
+        # if `project: ...` configured just list the issues for current project
+        {{jira}} list --template table --query "resolution = unresolved and assignee=currentuser() and project = $JIRA_PROJECT ORDER BY priority asc, created"
+      else
+        # otherwise list issues for all projects
+        {{jira}} list --template table --query "resolution = unresolved and assignee=currentuser() ORDER BY priority asc, created"
+      fi
+  - name: sprint
+    help: display issues in active sprint
+    script: |-
+      if [ -n "$JIRA_PROJECT" ]; then
+        # if `project: ...` configured just list the issues for current project
+        {{jira}} list --template table --query "sprint in openSprints() and type != epic and resolution = unresolved and project=$JIRA_PROJECT ORDER BY rank asc, created"
+      else
+        # otherwise list issues for all projects
+        {{jira}} list --template table --query "sprint in openSprints() and type != epic and resolution = unresolved ORDER BY rank asc, created"
+      fi
