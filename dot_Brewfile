@@ -1,6 +1,7 @@
 brew "asdf"
 brew "awscli"
 brew "bash"
+brew "make"
 brew "bat"
 brew "chezmoi"
 brew "curl"
