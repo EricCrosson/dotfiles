@@ -13,6 +13,6 @@ make
 openssh-server
 python3-dev
 screen
-vim
+vim-gtk3
 xclip
 zsh
