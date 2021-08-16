@@ -21,8 +21,6 @@ autoload copy-earlier-word && \
 
 alias c='chezmoi '
 alias d='docker '
-alias gdc='git diff --cached '
-alias g='git '
 alias j='jira '
 alias l='exa -lg --git --time-style=long-iso '
 alias npx='npx --no-install '
@@ -34,6 +32,12 @@ alias ssh='ssh -t '
 alias sudo='sudo '
 alias vim='nvim '
 alias v='vim '
+
+alias gd='git diff '
+alias gdc='git diff --cached '
+alias gfa='git fetch --all --prune --jobs=10'
+alias g='git '
+alias gs='git status '
 
 eval "$(hub alias -s)"
 
@@ -132,21 +136,20 @@ zplug "lukechilds/zsh-better-npm-completion", defer:2
 zplug "plugins/osx",   from:oh-my-zsh
 {{ end -}}
 
-zplug "plugins/docker", from:oh-my-zsh
-zplug "plugins/docker-compose", from:oh-my-zsh
-zplug "plugins/golang", from:oh-my-zsh
-zplug "plugins/git", from:oh-my-zsh
-zplug "plugins/github", from:oh-my-zsh
-zplug "plugins/gitignore", from:oh-my-zsh
-zplug "plugins/pip", from:oh-my-zsh
 zplug "plugins/colored-man-pages", from:oh-my-zsh
+zplug "plugins/brew", from:oh-my-zsh, defer:2
+zplug "plugins/docker-compose", from:oh-my-zsh, defer:2
+zplug "plugins/docker", from:oh-my-zsh, defer:2
+zplug "plugins/git-flow", from:oh-my-zsh, defer:2
+zplug "plugins/node", from:oh-my-zsh, defer:2
+zplug "plugins/ripgrep", from:oh-my-zsh, defer:2
 
 zplug "MichaelAquilina/zsh-you-should-use", defer:2
 
 zplug "esc-zsh/smart-cd"
 zplug "hlissner/zsh-autopair", defer:2
 zplug "kiurchv/asdf.plugin.zsh", defer:2
-zplug "reegnz/jq-zsh-plugin"
+zplug "reegnz/jq-zsh-plugin", defer:2
 zplug "robsis/zsh-completion-generator"
 zplug "sobolevn/wakatime-zsh-plugin"
 zplug "zsh-users/zsh-autosuggestions"  # does incur a slowdown, esp during paste

@@ -8,30 +8,11 @@
     gpgSign = true
 {{ end -}}
 
-[init]
-    defaultBranch = master
-
-[core]
-    editor = vim
-    excludesfile = ~/.gitignore_global
-    autocrlf = false
-    pager = delta
-
 [github]
     user = {{ .user.email }}
 
-[color]
-    ui = true
-    interactive = auto
-
-[push]
-    default = simple
-
-[pull]
-    rebase = true
-
-[rerere]
-    enabled = true
+[init]
+    defaultBranch = master
 
 [alias]
     a = add
@@ -53,6 +34,25 @@
     recommit = commit --reuse-message=HEAD@{1}
 
     alias = !git config --list | grep \"alias\\\\.\" | sed \"s/alias\\\\.\\\\([^=]*\\\\)=\\\\(.*\\\\)/\\\\1\\\\\\t => \\\\2/\" | sort
+
+[core]
+    editor = vim
+    excludesfile = ~/.gitignore_global
+    autocrlf = false
+    pager = delta
+
+[color]
+    ui = true
+    interactive = auto
+
+[push]
+    default = simple
+
+[pull]
+    rebase = true
+
+[rerere]
+    enabled = true
 
 [url "git@github.com:"]
     insteadOf = "gh:"
