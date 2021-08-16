@@ -16,4 +16,8 @@ if ! (grep $USER /etc/passwd | grep -q zsh); then
   chsh -s $(which zsh)
 fi
 
+if ! (groups | grep -q docker); then
+  sudo usermod -a -G docker $(whoami)
+fi
+
 {{ end -}}
