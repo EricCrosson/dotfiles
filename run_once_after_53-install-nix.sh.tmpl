@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# vim: filetype=sh
+
+{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) -}}
+
+install_nix() {
+  if ! command -v nix-shell &>/dev/null; then
+    sudo install -d -m755 -o $(id -u) -g $(id -g) /nix
+    curl -L https://nixos.org/nix/install | sh
+  fi
+}
+
+{{ end -}}

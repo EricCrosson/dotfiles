@@ -445,6 +445,13 @@ location
         mouse-yank-at-point t)
 #+END_SRC
 
+*** rip config (rm improved)
+#+begin_src emacs-lisp
+  (setq delete-by-moving-to-trash t)
+  (defun system-move-file-to-trash (filename)
+    (shell-command (concat (executable-find "rip") " " filename)))
+#+end_src
+
 ** Core
 *** Libraries
 #+BEGIN_SRC emacs-lisp
@@ -986,17 +993,9 @@ the first half of `#define`.
     :bind (:map company-active-map
                 ("<tab>" . company-complete-selection))
     :config
-    (setq lsp-eldoc-render-all t)
+    (setq lsp-eldoc-render-all t
+          lsp-completion-provider :capf)
     (global-company-mode 1))
-#+END_SRC
-
-**** Company LSP config
-#+BEGIN_SRC emacs-lisp
-(use-package company-lsp
-  :ensure t
-  :pin melpa
-  :after (company lsp-mode)
-  :commands (company-lsp))
 #+END_SRC
 
 *** Python config
@@ -2579,7 +2578,6 @@ Keep a history of =M-x= across sessions.
         desktop-load-locked-desktop t     ;never freeze after crash
         backup-by-copying-when-linked t
         backup-by-copying-when-mismatch t)
-  (mkdir (car desktop-path) t)            ; ensure desktop-save dir exists
   (desktop-save-mode 1)                   ;use desktop file
 #+END_SRC
 
@@ -2646,10 +2644,12 @@ other than what will be published.
 #+BEGIN_SRC emacs-lisp
   (use-package wakatime-mode
     :ensure t
+    :init
+    (setq wakatime-cli-path "wakatime")
     :config
     (load (expand-file-name "wakatime" esc-secrets-directory))
     (global-wakatime-mode)
-)
+    )
 #+END_SRC
 *** Restart-emacs config
 #+BEGIN_SRC emacs-lisp

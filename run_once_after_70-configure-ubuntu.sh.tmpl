@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# vim: filetype=sh
+
+{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) -}}
+
+# set natural scrolling
+gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
+
+# set night light
+gsettings set org.gnome.settings-daemon.plugins.color night-light-enabled true
+gsettings set org.gnome.settings-daemon.plugins.color night-light-temperature 1500
+gsettings set org.gnome.settings-daemon.plugins.color night-light-schedule-automatic true
+
+# keyboard
+gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 12
+gsettings set org.gnome.desktop.peripherals.keyboard delay 172
+gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:nocaps']"
+
+# media keys
+gsettings set org.gnome.settings-daemon.plugins.media-keys play "['F9']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys volume-mute "['F10']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys volume-down "['F11']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys volume-up "['F12']"
+
+# dock configuration
+gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
+gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'LEFT'
+gsettings set org.gnome.shell.extensions.dash-to-dock animation-time 0.1
+gsettings set org.gnome.shell.extensions.dash-to-dock preferred-monitor 0
+gsettings set org.gnome.desktop.background show-desktop-icons false
+
+# screensaver and lock
+gsettings set org.gnome.desktop.screensaver lock-enabled false
+gsettings set org.gnome.desktop.screensaver ubuntu-lock-on-suspend false
+gsettings set org.gnome.desktop.session idle-delay $((30*60))
+gsettings set org.gnome.settings-daemon.plugins.power power-button-action 'suspend'
+
+# desktop
+gsettings set org.gnome.mutter workspaces-only-on-primary false
+gsettings set org.gnome.desktop.background show-desktop-icons false
+gsettings set org.gnome.shell.extensions.desktop-icons show-trash false
+gsettings set org.gnome.shell.extensions.desktop-icons show-home false
+gsettings set org.gnome.desktop.privacy remove-old-trash-files true
+gsettings set org.gnome.desktop.privacy old-files-age 90
+gsettings set org.gnome.desktop.privacy recent-files-max-age 180
+
+# calendar
+gsettings set org.gnome.desktop.interface clock-show-weekday true
+gsettings set org.gnome.desktop.interface clock-show-seconds false
+gsettings set org.gnome.desktop.interface cursor-blink false
+gsettings set org.gnome.desktop.calendar show-weekdate true
+gsettings set org.gnome.desktop.interface gtk-key-theme 'Emacs'
+
+{{ end -}}

@@ -1,3 +1,5 @@
+apt-packages.txt
+apt-packages-for-emacs.txt
 .aws/config_eric
 doc/
 .editorconfig

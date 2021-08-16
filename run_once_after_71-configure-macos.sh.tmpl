@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# vim: filetype=sh
+
+{{ if eq .chezmoi.os "darwin" -}}
+
+# To prioritize GNU Make in $PATH in ~/.zshenv, you must also execute
+# the following to set the system path as early as possible
+# https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
+configure_zsh_path() {
+  if [ ! -f /etc/zshenv ]; then
+    sudo cp /etc/zprofile /etc/zshenv
+    sudo mv /etc/zprofile /etc/zprofile.bak
+  fi
+}
+
+configure_keyboard_repeat_rate() {
+  {{ if eq .chezmoi.os "darwin" -}}
+  defaults write NSGlobalDomain KeyRepeat -int 1
+  defaults write -g InitialKeyRepeat -int 13
+  {{ end -}}
+}
+
+configure_zsh_path
+configure_keyboard_repeat_rate
+
+{{ end -}}

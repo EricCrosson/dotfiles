@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) -}}
+
+if ! command -v google-chrome &>/dev/null; then
+  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  trap 'rm google-chrome-stable_current_amd64.deb' EXIT
+  sudo dpkg -i google-chrome-stable_current_amd64.deb
+fi
+
+{{ end -}}

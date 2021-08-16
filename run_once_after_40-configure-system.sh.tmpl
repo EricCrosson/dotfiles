@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# vim: filetype=sh
+
+{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) }}
+
+# set default terminal to kitty
+sudo update-alternatives --set x-terminal-emulator "$(which kitty)"
+
+# DISCUSS: Hopefully this installs Hack, but if this script runs
+# before provisioning then it won't be effective. Also not sure if
+# flags -f -v are required
+fc-cache
+
+# set default shell to zsh
+if ! (grep $USER /etc/passwd | grep -q zsh); then
+  chsh -s $(which zsh)
+fi
+
+{{ end -}}

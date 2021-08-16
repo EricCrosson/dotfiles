@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# vim: filetype=sh
+
+{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) }}
+
+if !  grep -q "^deb .*ubuntu-toolchain-r/ppa" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
+  sudo add-apt-repository -y ppa:ubuntu-toolchain-r/ppa
+  sudo sed -i 's/# deb-src/deb-src/' /etc/apt/sources.list
+  sudo apt update
+fi
+
+xargs -a ~/.local/share/chezmoi/apt-packages-for-emacs.txt sudo apt -y install
+
+# Instructions from
+# https://masteringemacs.org/article/speed-up-emacs-libjansson-native-elisp-compilation
+if ! command -v emacs &>/dev/null; then
+  DEBIAN_FRONTEND=noninteractive
+  sudo apt build-dep -y emacs-lucid
+
+  tmp="$(mktemp --directory)"
+  trap 'rm -rf "${tmp}"' EXIT
+  pushd "${tmp}"
+
+  git clone git://git.savannah.gnu.org/emacs.git
+  cd emacs || exit 1
+  ./autogen.sh
+  CC="gcc-10" ./configure \
+    prefix=/usr/local \
+    --with-cairo \
+    --with-gnutls \
+    --with-imagemagick \
+    --with-jpeg \
+    --with-mailutils \
+    --with-modules=yes \
+    --with-native-compilation \
+    --without-gconf \
+    --without-gsettings \
+    --without-toolkit-scroll-bars \
+    --without-xwidgets \
+    --with-png \
+    --with-rsvg \
+    --with-tiff \
+    --with-wide-int \
+    --with-xft \
+    --with-xml2 \
+    --with-xpm \
+    --with-x-toolkit=lucid \
+    --with-x=yes \
+    'CFLAGS=-g -fstack-protector-strong -Wformat -Werror=format-security -O3 -mtune=native -march=native -fomit-frame-pointer'
+  make -j$(nproc)
+  sudo make install
+fi
+
+{{ else if eq .chezmoi.os "darwin" -}}
+
+# REFACTOR: use consistent configure flags
+brew install emacs-head@28 \
+  --with-cocoa \
+  --with-imagemagick \
+  --with-no-frame-refocus \
+  --with-pdumper \
+  --with-xwidgets \
+  --with-modern-icon-purple
+
+{{ end -}}

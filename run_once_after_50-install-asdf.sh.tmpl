@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# vim: filetype=sh
+
+install_asdf_plugins() {
+  asdf plugin-add direnv
+  asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+  asdf plugin-add python
+
+  asdf global direnv latest
+  asdf global nodejs latest
+  asdf global python latest
+
+  asdf install direnv latest
+  asdf install nodejs latest
+  asdf install python latest
+}
