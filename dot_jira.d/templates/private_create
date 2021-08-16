@@ -3,7 +3,7 @@ fields:
   project:
     key: {{ or .overrides.project "" }}
   issuetype: # Values: {{ range .meta.fields.issuetype.allowedValues }}{{ .name }}, {{end}}Task, Sub-task, Story, Epic
-    name: {{ or .overrides.issuetype "" }}{{if .meta.fields.priority.allowedValues}}
+    name: {{ or "Task" .overrides.issuetype "" }}{{if .meta.fields.priority.allowedValues}}
   priority: # Values: {{ range .meta.fields.priority.allowedValues }}{{.name}}, {{end}}
     name: {{ or .overrides.priority "" }}{{end}}{{if .meta.fields.reporter}}
   reporter:

@@ -5,6 +5,7 @@ overrides:
   priority: Needs Triage
   assignee: eric@stratos.trade
   reporter: eric@stratos.trade
+  issuetype: Task
 custom-commands:
   - name: mine
     help: display issues assigned to me
