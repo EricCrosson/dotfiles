@@ -14,6 +14,11 @@ setopt autopushd
 autoload copy-earlier-word && \
 	zle -N copy-earlier-word && \
 	bindkey '^[,' copy-earlier-word  # cycle through last-words with M-.
+
+#####################################################################
+# tab completion
+#####################################################################
+
 zstyle ':completion:*:*:git:*' script "${HOME}/.local/share/zsh/git-completion.bash"
 
 #####################################################################
