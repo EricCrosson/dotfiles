@@ -6,6 +6,9 @@
 export HISTSIZE=1500000                 # retain a reasonable history
 export HOMEBREW_INSTALL_BADGE="☕"
 export EDITOR=nvim
+{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) -}}
+skip_global_compinit=1
+{{ end -}}
 
 #####################################################################
 # XDG configuration
@@ -16,6 +19,7 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-"${HOME}/.local/share"}"
 # Zsh configuration
 #####################################################################
 fpath=("$HOME/.zplug/repos/mafredri/zsh-async" $fpath)
+ZGEN_RESET_ON_CHANGE=("${HOME}/.zshrc")
 
 #####################################################################
 # PS1 configuration

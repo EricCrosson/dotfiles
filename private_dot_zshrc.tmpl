@@ -45,6 +45,8 @@ eval "$(hub alias -s)"
 # https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
 # alias make='gmake '
 
+# TODO: autoload this
+# TODO: pull this into a plugin
 # Make and change directory
 # Usage: mc <dir>
 #
@@ -88,21 +90,6 @@ zstyle ':completion:*' keep-prefix
 zstyle ':completion:*' completer _oldlist _complete _match _ignored \
     _approximate _list _history
 
-# Update compinit only once a day
-# https://gist.github.com/ctechols/ca1035271ad134841284#gistcomment-2308206
-autoload -Uz compinit
-
-for dump in ~/.zcompdump(N.mh+24); do
-  compinit
-done
-
-compinit -C
-
-# Original complete functions
-compdef '_files -g "*.hs"' runhaskell
-compdef _man w3mman
-compdef _tex platex
-
 # dircolors on completed entries
 zstyle ':completion:*' list-colors 'di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
 
@@ -113,64 +100,50 @@ zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cput
 #####################################################################
 
 ##
-# Bootstrap zplug
-if [[ ! -d ~/.zplug ]]; then
-  git clone https://github.com/zplug/zplug ~/.zplug
-  source ~/.zplug/init.zsh && zplug update --self
+# Bootstrap zgen
+if [ ! -d "${HOME}/.zgen" ]; then
+  git clone https://github.com/tarjoilija/zgen.git "${HOME}/.zgen"
 fi
-source "${HOME}/.zplug/init.zsh"
+source "${HOME}/.zgen/zgen.zsh"
 
-zplug "zplug/zplug", hook-build:'zplug --self-manage'
+if ! zgen saved; then
+  zgen oh-my-zsh
+  zgen oh-my-zsh plugins/colored-man-pages
+  zgen oh-my-zsh plugins/brew
+  zgen oh-my-zsh plugins/docker-compose
+  zgen oh-my-zsh plugins/docker
+  zgen oh-my-zsh plugins/git-flow
+  zgen oh-my-zsh plugins/node
+  zgen oh-my-zsh plugins/ripgrep
 
-zplug "mafredri/zsh-async", use:"async.zsh"
-zplug "esc-zsh/lambda-pure"
+  # must be loaded sequentially
+  zgen load mafredri/zsh-async
+  zgen load esc-zsh/lambda-pure
 
-# Disabled 2021-01-06 for speed, not sure what effects we'll see
-# zplug "chrissicool/zsh-256color"
+  zgen load esc-zsh/smart-cd
+  zgen load hlissner/zsh-autopair
+  zgen load jreese/zsh-titles
+  zgen load lukechilds/zsh-better-npm-completion
+  zgen load MichaelAquilina/zsh-you-should-use
+  zgen load reegnz/jq-zsh-plugin
+  zgen load robsis/zsh-completion-generator
+  zgen load sobolevn/wakatime-zsh-plugin
+  zgen load zsh-users/zsh-autosuggestions  # does incur a slowdown, especially during paste
+  zgen load zsh-users/zsh-completions
+  zgen load zsh-users/zsh-history-substring-search
 
-zplug "jreese/zsh-titles"
+  # commands
+  zgen load peterhurford/up.zsh
 
-zplug "lukechilds/zsh-better-npm-completion", defer:2
-
-{{ if eq .chezmoi.os "darwin" -}}
-zplug "plugins/osx",   from:oh-my-zsh
-{{ end -}}
-
-zplug "plugins/colored-man-pages", from:oh-my-zsh
-zplug "plugins/brew", from:oh-my-zsh, defer:2
-zplug "plugins/docker-compose", from:oh-my-zsh, defer:2
-zplug "plugins/docker", from:oh-my-zsh, defer:2
-zplug "plugins/git-flow", from:oh-my-zsh, defer:2
-zplug "plugins/node", from:oh-my-zsh, defer:2
-zplug "plugins/ripgrep", from:oh-my-zsh, defer:2
-
-zplug "MichaelAquilina/zsh-you-should-use", defer:2
-
-zplug "esc-zsh/smart-cd"
-zplug "hlissner/zsh-autopair", defer:2
-zplug "kiurchv/asdf.plugin.zsh", defer:2
-zplug "reegnz/jq-zsh-plugin", defer:2
-zplug "robsis/zsh-completion-generator"
-zplug "sobolevn/wakatime-zsh-plugin"
-zplug "zsh-users/zsh-autosuggestions"  # does incur a slowdown, esp during paste
-zplug "zsh-users/zsh-completions"
-zplug "zsh-users/zsh-history-substring-search"
-
-# Never got much use, so disabled for now
-# zplug "tarrasch/zsh-functional"
-
-# commands
-zplug "peterhurford/up.zsh"
-
-! zplug check && zplug install
-zplug load
+  zgen save
+fi
 ##
 
 #####################################################################
 # fzf config
 #####################################################################
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source ~/.fzf.zsh
 
 bindkey '^X^T' fzf-file-widget
 bindkey '^T' transpose-chars
@@ -198,7 +171,7 @@ eval "$(jira --completion-script-zsh)"
 # includes
 #####################################################################
 
-[ -f ~/.local/share/zsh/screen ] && source ~/.local/share/zsh/screen
+source ~/.local/share/zsh/screen
 
 {{ if eq .chezmoi.username "ericcrosson" -}}
 [ -f ~/.local/share/zsh/bitgo ] && source ~/.local/share/zsh/bitgo
