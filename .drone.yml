@@ -1,0 +1,13 @@
+name: default
+
+kind: pipeline
+type: docker
+
+steps:
+- name: test
+  image: alpine
+  commands:
+    - apk add chezmoi
+    - mkdir -p ~/.config/chezmoi
+    - cp doc/sample_chezmoi.toml ~/.config/chezmoi/chezmoi.toml
+    - chezmoi diff
