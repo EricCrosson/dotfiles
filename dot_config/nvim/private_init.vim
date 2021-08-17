@@ -50,11 +50,12 @@ Plug 'google/vim-jsonnet', { 'for': ['jsonnet'] }
 Plug 'haishanh/night-owl.vim'
 "Plug 'honza/vim-snippets'
 Plug 'jiangmiao/auto-pairs'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 Plug 'kevinoid/vim-jsonc', { 'for': ['json'] }
 Plug 'knsh14/vim-github-link'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 Plug 'prettier/vim-prettier', { 'for': ['typescript', 'javascript', 'markdown'] }
 "Plug 'SirVer/ultisnips'
 Plug 'sjl/gundo.vim'
@@ -111,21 +112,13 @@ nmap <Leader>ff <Plug>(PrettierAsync)
 xmap <Leader>ff :PrettierPartial<CR>
 
 " =======================================
-" fzf
+" Telescope
 " =======================================
-function! RipgrepFzf(query, fullscreen)
-  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
-  let initial_command = printf(command_fmt, shellescape(a:query))
-  let reload_command = printf(command_fmt, '{q}')
-  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
-endfunction
-
-command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
-
-nnoremap <leader>pe :Files<CR>
-nnoremap <leader>pf :Files<CR>
-nnoremap <leader>pa :RG<CR>
+nnoremap <leader>pe <cmd>Telescope find_files<cr>
+nnoremap <leader>pf <cmd>Telescope find_files<cr>
+nnoremap <leader>pa <cmd>Telescope live_grep<cr>
+nnoremap <leader>b <cmd>Telescope buffers<cr>
+nnoremap <leader>h <cmd>Telescope help_tags<cr>
 
 " =======================================
 " CoC
