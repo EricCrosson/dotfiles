@@ -1,7 +1,8 @@
-apt-packages.txt
 apt-packages-for-emacs.txt
+apt-packages.txt
 .aws/config_eric
 doc/
+.drone.yml
 .editorconfig
 .emacs.d/init.org
 .keep
