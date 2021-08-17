@@ -1,4 +1,4 @@
-# dotfiles
+# dotfiles [![Build Status](https://cloud.drone.io/api/badges/EricCrosson/dotfiles/status.svg)](https://cloud.drone.io/EricCrosson/dotfiles)
 
 Configurations managed by [chezmoi](https://github.com/twpayne/chezmoi).
 
