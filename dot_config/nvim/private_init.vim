@@ -1,9 +1,8 @@
 " =======================================
 " Behavior
 " =======================================
-" set timeout timeoutlen=1000 ttimeoutlen=100
-" set <f13>=fd
-" imap <F13> <esc>
+set timeout timeoutlen=1000 ttimeoutlen=100
+inoremap fd <Esc>
 
 " FIXME: windmove for vim not working yet
 nnoremap <S-Left> <C-W><j>
@@ -47,25 +46,22 @@ call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
 Plug 'axelf4/vim-strip-trailing-whitespace'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'google/vim-jsonnet'
+Plug 'google/vim-jsonnet', { 'for': ['jsonnet'] }
 Plug 'haishanh/night-owl.vim'
 "Plug 'honza/vim-snippets'
 Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'kevinoid/vim-jsonc'
+Plug 'kevinoid/vim-jsonc', { 'for': ['json'] }
 Plug 'knsh14/vim-github-link'
-Plug 'kristijanhusak/vim-hybrid-material'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'prettier/vim-prettier'
+Plug 'prettier/vim-prettier', { 'for': ['typescript', 'javascript', 'markdown'] }
 "Plug 'SirVer/ultisnips'
 Plug 'sjl/gundo.vim'
 Plug 'tpope/vim-fugitive'
-Plug 'triglav/vim-visual-increment'
+Plug 'triglav/vim-visual-increment' ", { 'on': ['FIXME'] }
 Plug 'wakatime/vim-wakatime'
-Plug 'wesQ3/vim-windowswap'
 " Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --clangd-completer --cs-completer --go-completer --rust-completer --java-completer --ts-completer' }
-Plug 'zhou13/vim-easyescape'
 
 " let g:ycm_key_list_select_completion = ['n', '<Down>']
 " let g:ycm_key_list_previous_completion = ['p', '<Up>']
@@ -89,15 +85,6 @@ endif
 syntax enable
 colorscheme night-owl
 set guifont=Hack
-
-" =======================================
-" Easy Escape
-" =======================================
-
-let g:easyescape_chars = { "f": 1, "d": 1 }
-let g:easyescape_timeout = 100
-cnoremap jk <ESC>
-cnoremap kj <ESC>
 
 " =======================================
 " Leader
