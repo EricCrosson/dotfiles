@@ -2,14 +2,13 @@
 
 Configurations managed by [chezmoi](https://github.com/twpayne/chezmoi).
 
-## Building GNU Emacs on MacOS
+## Use
 
-``` shell
-brew install emacs-head@28 \
-    --with-cocoa \
-    --with-imagemagick \
-    --with-no-frame-refocus \
-    --with-pdumper \
-    --with-xwidgets \
-    --with-modern-icon-purple
-```
+1. Install git, curl with system package manager
+1. [Install brew](https://docs.brew.sh/Installation)
+1. `brew install chezmoi`
+1. `git clone https://github.com/EricCrosson/dotfiles ~/.local/share/chezmoi`
+1. `cp ~/.local/share/chezmoi/doc/sample_chezmoi.toml ~/.config/chezmoi/chezmoi.toml`
+1. `chezmoi apply`
+
+Don't forget to populate your secrets in `~/.config/chezmoi/chezmoi.toml`.
