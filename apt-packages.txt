@@ -17,4 +17,5 @@ python3-dev
 screen
 vim-gtk3
 xclip
+yubioath-desktop
 zsh
