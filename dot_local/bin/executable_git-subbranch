@@ -53,7 +53,7 @@ function git_default_branch() {
   echo master
 }
 
-readonly branch_prefix_template="ericcrosson/ESC-00"
+readonly branch_prefix_template="ESC-00"
 
 random_number() {
   shuf -i 1-99 -n 1
