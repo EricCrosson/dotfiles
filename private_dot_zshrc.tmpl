@@ -22,50 +22,6 @@ autoload copy-earlier-word && \
 zstyle ':completion:*:*:git:*' script "${HOME}/.local/share/zsh/git-completion.bash"
 
 #####################################################################
-# aliases
-#####################################################################
-
-alias c='chezmoi'
-alias d='docker'
-alias j='jira'
-alias l='exa -lg --git --time-style=long-iso'
-alias npx='npx --no-install'
-alias nrw='npm run --ws '
-alias rg='rg --smart-case'
-alias rip='rip --graveyard "${HOME}/.local/share/Trash"'
-alias s='screen'
-alias ssh='ssh -t '
-alias sudo='sudo '
-alias vim='nvim '
-alias v='vim '
-
-alias ga='git add'
-alias gd='git diff'
-alias gdc='git diff --cached'
-alias gfa='git fetch --all --prune --jobs=10'
-alias g='git'
-alias gs='git status'
-alias gsu='git submodule update'
-
-eval "$(hub alias -s)"
-
-# This post outlines what it takes to default to GNU make on macOS
-# https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
-# alias make='gmake '
-
-# TODO: autoload this
-# TODO: pull this into a plugin
-# Make and change directory
-# Usage: mc <dir>
-#
-# @example
-# mc new-directory
-mc() {
-     local namespace="${1:?"Directory must be specified"}"
-     mkdir -p -- "$1" && cd -P -- "$1"
-}
-
-#####################################################################
 # completions
 #####################################################################
 
@@ -146,6 +102,50 @@ if ! zgen saved; then
   zgen save
 fi
 ##
+
+#####################################################################
+# aliases
+#####################################################################
+
+alias c='chezmoi'
+alias d='docker'
+alias j='jira'
+alias l='exa -lg --git --time-style=long-iso'
+alias npx='npx --no-install'
+alias nrw='npm run --ws '
+alias rg='rg --smart-case'
+alias rip='rip --graveyard "${HOME}/.local/share/Trash"'
+alias s='screen'
+alias ssh='ssh -t '
+alias sudo='sudo '
+alias vim='nvim '
+alias v='vim '
+
+alias ga='git add'
+alias gd='git diff'
+alias gdc='git diff --cached'
+alias gfa='git fetch --all --prune --jobs=10'
+alias g='git'
+alias gs='git status'
+alias gsu='git submodule update'
+
+eval "$(hub alias -s)"
+
+# This post outlines what it takes to default to GNU make on macOS
+# https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
+# alias make='gmake '
+
+# TODO: autoload this
+# TODO: pull this into a plugin
+# Make and change directory
+# Usage: mc <dir>
+#
+# @example
+# mc new-directory
+mc() {
+     local namespace="${1:?"Directory must be specified"}"
+     mkdir -p -- "$1" && cd -P -- "$1"
+}
 
 #####################################################################
 # fzf config
