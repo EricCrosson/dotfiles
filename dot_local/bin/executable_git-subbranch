@@ -78,7 +78,19 @@ branch_name_from_commit_subject() {
   echo "${prefix}-$(one_word "$(commit_subject "${commit}")")"
 }
 
-readonly sha="${ARGS[<commit>,0]}"
+commit=""
+sha=""
+if [[ "${ARGS[<commit>,#]}" == 0 ]]; then
+  commit="$(git rev-parse HEAD)"
+  sha="$(git rev-parse HEAD)"
+else
+  sha="${ARGS[<commit>,0]}"
+  i=0
+  while [[ $i -lt "${ARGS[<commit>,#]}" ]]; do
+    commit="${commit} ${ARGS[<commit>,$i]}"
+    i=$((i+1))
+  done
+fi
 
 if [[ -n "${ARGS[-t]}" ]]; then
   ticket="$(branch_name_from_commit_subject "${sha}" "${ARGS[-t]}")"
@@ -86,17 +98,6 @@ fi
 
 readonly start_point="${ARGS[<start_point>]:-$(git_default_branch)}"
 readonly new_branch="${ticket:-${ARGS[-b]:-$(branch_name_from_commit_subject "${sha}")}}"
-
-commit=""
-if [[ "${ARGS[<commit>,#]}" == 0 ]]; then
-  commit="$(git rev-parse HEAD)"
-else
-  i=0
-  while [[ $i -lt "${ARGS[<commit>,#]}" ]]; do
-    commit="${commit} ${ARGS[<commit>,$i]}"
-    i=$((i+1))
-  done
-fi
 
 current_branch="$(git rev-parse --abbrev-ref HEAD)"
 readonly current_branch
