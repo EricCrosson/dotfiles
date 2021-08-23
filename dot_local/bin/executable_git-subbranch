@@ -4,7 +4,7 @@
 # from specified parent branch.
 #
 # Usage:
-#  git-subbranch [-p] [-o|-d] [-b <new_branch>|-t <ticket>] [-s <start_point>] <commit>...
+#  git-subbranch [-p] [-o|-d] [-b <new_branch>|-t <ticket>] [-s <start_point>] [<commit>...]
 #
 # Options:
 #   -p --push           Push the new branch
@@ -13,7 +13,7 @@
 #   -b <new_branch>     The name to use for the newly-created branch
 #   -t <ticket>         The ticket to use as a prefix for this branch name
 #   -s <start_point>    The branch from which to create the new branch
-#   <commit>            SHA-1 hash of the git commit to cherry-pick
+#   <commit>            SHA-1 hash of the git commit to cherry-pick (defaults to HEAD)
 #
 # Requirements:
 # - (hub)[https://github.com/github/hub]
@@ -88,11 +88,15 @@ readonly start_point="${ARGS[<start_point>]:-$(git_default_branch)}"
 readonly new_branch="${ticket:-${ARGS[-b]:-$(branch_name_from_commit_subject "${sha}")}}"
 
 commit=""
-i=0
-while [[ $i -lt "${ARGS[<commit>,#]}" ]]; do
-  commit="${commit} ${ARGS[<commit>,$i]}"
-  i=$((i+1))
-done
+if [[ "${ARGS[<commit>,#]}" == 0 ]]; then
+  commit="$(git rev-parse HEAD)"
+else
+  i=0
+  while [[ $i -lt "${ARGS[<commit>,#]}" ]]; do
+    commit="${commit} ${ARGS[<commit>,$i]}"
+    i=$((i+1))
+  done
+fi
 
 current_branch="$(git rev-parse --abbrev-ref HEAD)"
 readonly current_branch
