@@ -5,6 +5,7 @@
 
 {{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) -}}
 
-xargs -a ~/.local/share/chezmoi/apt-packages.txt sudo apt -y install
+sudo apt -y autoremove
 
 {{ end -}}
+

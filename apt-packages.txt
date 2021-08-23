@@ -2,8 +2,6 @@ chrome-gnome-shell
 curl
 dconf-editor
 dirmngr
-docker
-docker-compose
 gcc
 gnome-shell-extensions
 gnome-tweaks
