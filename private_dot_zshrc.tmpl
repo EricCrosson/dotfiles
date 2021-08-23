@@ -11,6 +11,7 @@ bindkey -e                               # use bash input mode
 # autoload -U select-word-style            # kill-word stops at directory delimeter
 setopt interactivecomments               # bash-style comments
 setopt autopushd
+setopt histignorealldups
 autoload copy-earlier-word && \
 	zle -N copy-earlier-word && \
 	bindkey '^[,' copy-earlier-word  # cycle through last-words with M-.
@@ -185,6 +186,9 @@ source "${HOME}/.local/share/zsh/jira"
 #####################################################################
 # post-config
 #####################################################################
+
+unsetopt sharehistory
+setopt appendhistory
 
 eval "$(direnv hook zsh)"
 eval "$(asdf exec direnv hook zsh)"
