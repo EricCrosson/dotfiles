@@ -82,6 +82,9 @@ if ! zgen saved; then
   zgen oh-my-zsh plugins/git-flow
   zgen oh-my-zsh plugins/node
   zgen oh-my-zsh plugins/ripgrep
+  {{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) -}}
+  zgen oh-my-zsh plugins/ubuntu
+  {{ end -}}
 
   # must be loaded sequentially
   zgen load mafredri/zsh-async
