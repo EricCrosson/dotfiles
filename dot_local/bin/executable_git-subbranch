@@ -36,7 +36,7 @@ __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly __dir
 # required to add ./docopts to PATH
 PATH="${PATH}:${__dir}"
-# shellcheck source=./docopts.sh
+# shellcheck source=./executable_docopts.sh
 source "${__dir}/docopts.sh" --auto "$@"
 # shellcheck disable=SC2119
 # docopt_print_ARGS
