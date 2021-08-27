@@ -69,7 +69,7 @@ commit_subject() {
 
 one_word() {
   local string="${1:?must provide a string to condense into a single word}"
-  echo "${string//[ .:^~?*@()<>]/-}"
+  echo "${string//[ .:^~?*@()<>]/-}" | tr -s '-'
 }
 
 branch_name_from_commit_subject() {
