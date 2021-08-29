@@ -48,6 +48,7 @@ Plug 'axelf4/vim-strip-trailing-whitespace'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'google/vim-jsonnet', { 'for': ['jsonnet'] }
 Plug 'haishanh/night-owl.vim'
+Plug 'hwayne/tla.vim'
 "Plug 'honza/vim-snippets'
 Plug 'jiangmiao/auto-pairs'
 Plug 'kevinoid/vim-jsonc', { 'for': ['json'] }
