@@ -49,6 +49,8 @@ if ! command -v emacs &>/dev/null; then
     'CFLAGS=-g -fstack-protector-strong -Wformat -Werror=format-security -O3 -mtune=native -march=native -fomit-frame-pointer'
   make -j$(nproc)
   sudo make install
+
+  popd
 fi
 
 {{ else if eq .chezmoi.os "darwin" -}}

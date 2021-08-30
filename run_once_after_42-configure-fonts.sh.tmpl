@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# vim: filetype=sh
+
+{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) }}
+
+if [[ ! -d "${HOME}/.local/share/fonts/San Francisco" ]]; then
+  tmp="$(mktemp --directory)"
+  trap 'rm -rf "${tmp}"' EXIT
+  pushd "${tmp}"
+
+  wget https://raw.githubusercontent.com/EricCrosson/dotfiles-fonts/master/San-Francisco.zip -O san-francisco.zip
+  unzip san-francisco.zip || exit 1
+  mv "San Francisco" "${HOME}/.local/share/fonts/San Francisco"
+
+  popd
+fi
+
+fc-cache
+
+{{ end -}}
