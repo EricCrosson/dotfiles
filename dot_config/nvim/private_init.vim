@@ -61,7 +61,6 @@ Plug 'prettier/vim-prettier', { 'for': ['typescript', 'javascript', 'markdown'] 
 "Plug 'SirVer/ultisnips'
 Plug 'sjl/gundo.vim'
 Plug 'tpope/vim-fugitive'
-Plug 'triglav/vim-visual-increment' ", { 'on': ['FIXME'] }
 Plug 'wakatime/vim-wakatime'
 " Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --clangd-completer --cs-completer --go-completer --rust-completer --java-completer --ts-completer' }
 
