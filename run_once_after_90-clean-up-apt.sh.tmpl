@@ -3,7 +3,7 @@
 
 # apt-packages.txt hash: {{ include "apt-packages.txt" | sha256sum }}
 
-{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) -}}
+{{ if (eq .chezmoi.os "linux") -}}
 
 sudo apt -y autoremove
 

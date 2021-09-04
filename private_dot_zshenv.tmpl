@@ -6,7 +6,7 @@
 export HISTSIZE=1500000                 # retain a reasonable history
 export HOMEBREW_INSTALL_BADGE="☕"
 export EDITOR=nvim
-{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) -}}
+{{ if (eq .chezmoi.os "linux") -}}
 skip_global_compinit=1
 {{ end -}}
 

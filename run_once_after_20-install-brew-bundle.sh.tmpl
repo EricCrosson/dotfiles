@@ -12,9 +12,3 @@ install_brew() {
 
 install_brew
 brew bundle --global
-
-{{ if eq .chezmoi.os "darwin" -}}
-
-brew cask install homebrew/cask-fonts/font-hack
-
-{{ end -}}

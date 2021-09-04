@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # vim: filetype=sh
 
-{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) }}
+{{ if (eq .chezmoi.os "linux") }}
 
 if ! command -v docker &>/dev/null; then
 

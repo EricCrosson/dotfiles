@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # vim: filetype=sh
 
-{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) }}
+{{ if (eq .chezmoi.os "linux") }}
 
 if !  grep -q "^deb .*ubuntu-toolchain-r/ppa" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
   sudo add-apt-repository -y ppa:ubuntu-toolchain-r/ppa

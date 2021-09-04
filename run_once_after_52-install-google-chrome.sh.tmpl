@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) -}}
+{{ if (eq .chezmoi.os "linux") -}}
 
 if ! command -v google-chrome &>/dev/null; then
   wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb

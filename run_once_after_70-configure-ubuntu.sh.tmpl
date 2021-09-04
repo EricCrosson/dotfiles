@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # vim: filetype=sh
 
-{{ if (and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "ubuntu")) -}}
+{{ if (eq .chezmoi.os "linux") -}}
 
 # set natural scrolling
 gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
