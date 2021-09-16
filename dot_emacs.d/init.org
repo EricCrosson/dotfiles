@@ -2116,6 +2116,7 @@ I am not sure how the two packages relate.
     ;; disabled in favor of the built-in `project` package
     ;; (setq projectile-enable-caching t)
     (evil-leader/set-key
+      "pe" 'project-find-file
       "pf" 'project-find-file
       "pd" 'counsel-projectile-find-dir
       "pa" 'counsel-projectile-rg
