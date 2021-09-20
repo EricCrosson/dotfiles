@@ -2127,7 +2127,7 @@ I am not sure how the two packages relate.
       "pi" 'projectile-invalidate-cache
       "p%" 'projectile-replace-regexp)
     (add-to-list 'projectile-globally-ignored-files "package-lock.json")
-    (setq counsel-rg-base-command '("rg" "--max-columns" "240" "--with-filename" "--no-heading" "--line-number" "--color" "never" "%s" "-j" "1"))
+    (setq counsel-rg-base-command '("rg" "--max-columns" "240" "--with-filename" "--no-heading" "--line-number" "--color" "never" "-j" "1" "%s"))
     (counsel-projectile-mode 1))
 #+END_SRC
 
