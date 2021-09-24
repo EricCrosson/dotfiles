@@ -49,6 +49,11 @@ fpath=("${HOME}/.local/share/zsh/site-functions" $fpath)
 ZGEN_RESET_ON_CHANGE=("${HOME}/.zshrc" "${HOME}/.zshenv")
 
 #####################################################################
+# Oh My zsh configuration
+#####################################################################
+DISABLE_UPDATE_PROMPT=true
+
+#####################################################################
 # PS1 configuration
 #####################################################################
 PURE_CMD_MAX_EXEC_TIME=3
@@ -78,11 +83,6 @@ fi
 export FZF_ALT_C_COMMAND
 export FZF_DEFAULT_COMMAND
 export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
-
-#####################################################################
-# forgit configuration
-#####################################################################
-export FORGIT_NO_ALIASES=true
 
 #####################################################################
 # Docker configuration
