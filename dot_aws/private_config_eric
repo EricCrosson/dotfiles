@@ -1,11 +1,14 @@
 [profile stratos-dev]
 region = eu-west-1
 output = json
+cli_pager=
 
 [profile stratos-prod]
 region = eu-west-1
 output = json
+cli_pager=
 
 [profile stratos-management-personal]
 region = eu-west-1
 output = json
+cli_pager=
