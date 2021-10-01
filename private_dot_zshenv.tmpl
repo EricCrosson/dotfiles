@@ -19,8 +19,8 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-"${HOME}/.local/share"}"
 # Brew configuration
 #####################################################################
 {{ if eq .chezmoi.os "linux" -}}
-path=('/home/linuxbrew/.linuxbrew/bin' $path)
-path=('/home/linuxbrew/.linuxbrew/sbin' $path)
+path+=('/home/linuxbrew/.linuxbrew/bin')
+path+=('/home/linuxbrew/.linuxbrew/sbin')
 {{ else if eq .chezmoi.os "darwin" -}}
 
 ##
