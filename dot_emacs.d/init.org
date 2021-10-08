@@ -1473,6 +1473,14 @@ TODO: use from melpa stable)
       :mode ("docker-compose[^/]*\\.yaml\\'"))
 #+END_SRC
 
+*** Nix mode
+#+begin_src emacs-lisp
+  (use-package nix-mode
+    :ensure t
+    :pin melpa
+    :mode "\\.nix\\'")
+#+end_src
+
 *** bats config
 #+BEGIN_SRC emacs-lisp
   (use-package bats-mode
