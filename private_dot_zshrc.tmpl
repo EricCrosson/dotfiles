@@ -66,8 +66,6 @@ zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cput
 # plugins
 #####################################################################
 
-##
-# Bootstrap zgen
 if [ ! -d "${HOME}/.zgen" ]; then
   git clone https://github.com/tarjoilija/zgen.git "${HOME}/.zgen"
 fi
@@ -86,10 +84,6 @@ if ! zgen saved; then
   zgen oh-my-zsh plugins/ubuntu
   {{ end -}}
 
-  # must be loaded sequentially
-  zgen load mafredri/zsh-async
-  zgen load esc-zsh/lambda-pure
-
   zgen load esc-zsh/smart-cd
   zgen load hlissner/zsh-autopair
   zgen load jreese/zsh-titles
@@ -107,7 +101,21 @@ if ! zgen saved; then
 
   zgen save
 fi
-##
+
+#####################################################################
+# Theme
+#####################################################################
+
+if [ ! -d "${HOME}/.zsh/pure" ]; then
+  mkdir -p "${HOME}/.zsh"
+  git clone https://github.com/sindresorhus/pure.git "${HOME}/.zsh/pure"
+fi
+fpath+="${HOME}/.zsh/pure"
+autoload -U promptinit
+promptinit
+prompt pure
+zstyle ':prompt:pure:prompt:success' color yellow
+zstyle ':prompt:pure:execution_time' color cyan
 
 #####################################################################
 # aliases
