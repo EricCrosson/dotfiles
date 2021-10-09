@@ -1477,7 +1477,7 @@ TODO: use from melpa stable)
 #+begin_src emacs-lisp
   (use-package nix-mode
     :ensure t
-    :pin melpa
+    :pin melpa-stable
     :mode "\\.nix\\'")
 #+end_src
 
