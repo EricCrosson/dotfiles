@@ -23,7 +23,9 @@
     co = checkout
     cob = checkout --branch
     d = diff
+    di = diff ':(exclude)package-lock.json'
     dc = diff --cached
+    dci = diff --cached ':(exclude)package-lock.json'
     f = fetch
     l = log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
     p = push
