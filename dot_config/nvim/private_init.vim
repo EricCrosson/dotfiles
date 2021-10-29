@@ -50,7 +50,7 @@ Plug 'google/vim-jsonnet', { 'for': ['jsonnet'] }
 Plug 'haishanh/night-owl.vim'
 Plug 'hwayne/tla.vim'
 "Plug 'honza/vim-snippets'
-Plug 'jiangmiao/auto-pairs'
+Plug 'LunarWatcher/auto-pairs'
 Plug 'kevinoid/vim-jsonc', { 'for': ['json'] }
 Plug 'knsh14/vim-github-link'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
