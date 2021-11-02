@@ -1169,7 +1169,24 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
                                   (locate-dominating-file "." "package.json"))))
             (when manifest
               (find-file manifest))))
-      (message "find-package-json error: not currently visiting a file")))
+      (message "js-find-package-json error: not currently visiting a file")))
+#+end_src
+
+**** find-tsconfig-json
+TODO pull this into its own package
+#+begin_src emacs-lisp
+  (defun ts-find-tsconfig-json ()
+    "Switch to the nearest tsconfig.json file above current file.
+     If already viewing a tsconfig.json file, run `bury-buffer'."
+    (interactive)
+    (if buffer-file-name
+        (if (string-equal "tsconfig.json" (file-name-nondirectory buffer-file-name))
+            (bury-buffer)
+          (let ((manifest (format "%s/tsconfig.json"
+                                  (locate-dominating-file "." "tsconfig.json"))))
+            (when manifest
+              (find-file manifest))))
+      (message "ts-find-tsconfig-json error: not currently visiting a file")))
 #+end_src
 
 **** run-prettier-fix
@@ -1228,6 +1245,7 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
       :config
         (evil-leader/set-key-for-mode 'json-mode
           "fp" 'js-find-package-json
+          "ft" 'ts-find-tsconfig-json
           "ff" 'esc/prettier-on-region-or-buffer
           "fl" 'js-run-eslint-fix)
         (defun esc/config-json-mode ()
@@ -1260,6 +1278,7 @@ TODO: add this to javascript-mode proper (not ts mode, that's already done)
     :config
     (evil-leader/set-key-for-mode 'typescript-mode
       "fp" 'js-find-package-json
+      "ft" 'ts-find-tsconfig-json
       "ff" 'esc/prettier-on-region-or-buffer
       "fl" 'js-run-eslint-fix)
     (defun esc/config-typescript-mode ()
