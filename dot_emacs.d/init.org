@@ -845,6 +845,7 @@ the first half of `#define`.
     :config
     (push "ANSWER" fic-highlighted-words)
     (push "CHALLENGE" fic-highlighted-words)
+    (push "CONTRIBUTE" fic-highlighted-words)
     (push "DEBUG" fic-highlighted-words)
     (push "DISCUSS" fic-highlighted-words)
     (push "DOCUMENT" fic-highlighted-words)
