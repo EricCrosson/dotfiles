@@ -45,6 +45,7 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'airblade/vim-gitgutter'
 Plug 'axelf4/vim-strip-trailing-whitespace'
+Plug 'dense-analysis/ale'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'google/vim-jsonnet', { 'for': ['jsonnet'] }
 Plug 'haishanh/night-owl.vim'
@@ -58,14 +59,11 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 Plug 'prettier/vim-prettier', { 'for': ['typescript', 'javascript', 'markdown'] }
+Plug 'rust-lang/rust.vim'
 "Plug 'SirVer/ultisnips'
 Plug 'sjl/gundo.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'wakatime/vim-wakatime'
-" Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --clangd-completer --cs-completer --go-completer --rust-completer --java-completer --ts-completer' }
-
-" let g:ycm_key_list_select_completion = ['n', '<Down>']
-" let g:ycm_key_list_previous_completion = ['p', '<Up>']
 
 " better key bindings for UltiSnipsExpandTrigger
 let g:UltiSnipsExpandTrigger = "<tab>"
@@ -132,5 +130,12 @@ nnoremap <leader>h <cmd>Telescope help_tags<cr>
 
 " inoremap <M-n> :CocNext<CR>
 
-"let g:ycm_key_list_select_completion = ['n', '<Down>']
-"let g:ycm_key_list_previous_completion = ['p', '<Up>']
+" =======================================
+" Rust configuration
+" =======================================
+let g:rustfmt_autosave = 1
+
+" =======================================
+" Docker configuration
+" =======================================
+autocmd BufNewFile,BufRead Dockerfile* set syntax=dockerfile
