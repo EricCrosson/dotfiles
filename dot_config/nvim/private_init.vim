@@ -119,6 +119,30 @@ nnoremap <leader>b <cmd>Telescope buffers<cr>
 nnoremap <leader>h <cmd>Telescope help_tags<cr>
 
 " =======================================
+" Tree Sitter
+" =======================================
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
+  ignore_install = { }, -- List of parsers to ignore installing
+  highlight = {
+    enable = true,      -- false will disable the whole extension
+    disable = { },      -- list of language that will be disabled
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "gnn",
+      node_incremental = "grn",
+      scope_incremental = "grc",
+      node_decremental = "grm",
+    },
+  },
+}
+EOF
+
+" =======================================
 " CoC
 " =======================================
 " let g:coc_enable_locationlist = 0
