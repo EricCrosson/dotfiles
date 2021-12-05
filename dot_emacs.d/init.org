@@ -669,6 +669,8 @@ For Easy Templates
 There's no reason to query you about your favorite shell with every
 new terminal.
 #+BEGIN_SRC emacs-lisp
+  (add-hook 'sh-mode-hook 'tree-sitter-hl-mode)
+
   (setq explicit-shell-file-name
         (if (file-exists-p "/usr/bin/zsh")
             "/usr/bin/zsh"
@@ -1251,20 +1253,21 @@ TODO pull this into its own package
 
 *** JSON mode config
 #+BEGIN_SRC emacs-lisp
-    (use-package json-mode
-      :ensure t
-      :pin melpa-stable
-      :after (evil-leader)
-      :config
-        (evil-leader/set-key-for-mode 'json-mode
-          "fp" 'js-find-package-json
-          "ft" 'ts-find-tsconfig-json
-          "ff" 'esc/prettier-on-region-or-buffer
-          "fl" 'js-run-eslint-fix)
-        (defun esc/config-json-mode ()
-          (make-local-variable 'js-indent-level)
-          (setq js-indent-level 2))
-        (add-hook 'json-mode-hook 'esc/config-json-mode))
+  (use-package json-mode
+    :ensure t
+    :pin melpa-stable
+    :after (evil-leader tree-sitter)
+    :hook ((json-mode . tree-sitter-hl-mode))
+    :config
+      (evil-leader/set-key-for-mode 'json-mode
+        "fp" 'js-find-package-json
+        "ft" 'ts-find-tsconfig-json
+        "ff" 'esc/prettier-on-region-or-buffer
+        "fl" 'js-run-eslint-fix)
+      (defun esc/config-json-mode ()
+        (make-local-variable 'js-indent-level)
+        (setq js-indent-level 2))
+      (add-hook 'json-mode-hook 'esc/config-json-mode))
 #+END_SRC
 
 *** Jsonnet mode config
