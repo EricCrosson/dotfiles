@@ -58,6 +58,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'prettier/vim-prettier', { 'for': ['typescript', 'javascript', 'markdown'] }
 Plug 'rust-lang/rust.vim'
 "Plug 'SirVer/ultisnips'
@@ -119,7 +120,7 @@ nnoremap <leader>b <cmd>Telescope buffers<cr>
 nnoremap <leader>h <cmd>Telescope help_tags<cr>
 
 " =======================================
-" Tree Sitter
+" Tree sitter
 " =======================================
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
@@ -137,6 +138,43 @@ require'nvim-treesitter.configs'.setup {
       node_incremental = "grn",
       scope_incremental = "grc",
       node_decremental = "grm",
+    },
+  },
+}
+EOF
+
+" =======================================
+" Tree sitter text objects
+" =======================================
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  textobjects = {
+    select = {
+      enable = true,
+
+      -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,
+
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        ["ic"] = "@class.inner",
+        ["aa"] = "@parameter.outer",
+        ["ia"] = "@parameter.inner",
+        ["a;"] = "@comment.outer",
+        ["ab"] = "@block.outer",
+        ["ib"] = "@block.inner",
+
+        -- Or you can define your own textobjects like this
+        -- ["iF"] = {
+        --   python = "(function_definition) @function",
+        --   cpp = "(function_definition) @function",
+        --   c = "(function_definition) @function",
+        --   java = "(method_declaration) @function",
+        -- },
+      },
     },
   },
 }
