@@ -729,6 +729,19 @@ new terminal.
     (editorconfig-mode 1))
 #+end_src
 
+*** tree-sitter config
+#+begin_src emacs-lisp
+  (use-package tree-sitter
+    :ensure t
+    :pin melpa)
+
+  (use-package tree-sitter-langs
+    :ensure t
+    :pin melpa
+    :after (tree-sitter)
+    :config (global-tree-sitter-mode 1))
+#+end_src
+
 *** LSP mode config
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
@@ -967,8 +980,9 @@ the first half of `#define`.
   (use-package rust-mode
     :ensure t
     :pin melpa
-    :after (lsp-mode lsp-ui)
-    :hook ((rust-mode . lsp-deferred))
+    :after (lsp-mode lsp-ui tree-sitter)
+    :hook ((rust-mode . lsp-deferred)
+           (rust-mode . tree-sitter-hl-mode))
     :bind (:map rust-mode-map
            ("C-c C-n" . lsp-rename))
     :config
@@ -1017,7 +1031,9 @@ the first half of `#define`.
     :ensure t
     :defer t
     :pin melpa-stable
-    :hook python-mode
+    :after (tree-sitter)
+    :hook ((python-mode . anaconda-mode)
+           (python-mode . tree-sitter-hl-mode))
     :init
     (setq anaconda-mode-installation-directory
           (expand-file-name "anaconda-mode" esc-meta-directory))
@@ -1092,11 +1108,6 @@ Always open associated header/source files in a separate window.
     :pin melpa-stable)
 #+end_src
 
-*** Stratos config
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\.fl\\'" . ruby-mode))
-#+END_SRC
-
 *** Shell-mode config
 Mark scripts executable on save.
 #+BEGIN_SRC emacs-lisp
@@ -1133,8 +1144,9 @@ Use lsp-mode
 *** JavaScript config
 #+begin_src emacs-lisp
   (use-package js
-    :after (evil evil-leader lsp-mode lsp-ui)
-    :hook ((js-mode . lsp-deferred))
+    :after (evil evil-leader lsp-mode lsp-ui tree-sitter)
+    :hook ((js-mode . lsp-deferred)
+           (js-mode . tree-sitter-hl-mode))
     :bind (:map js-mode-map
                 ("C-c C-n" . lsp-rename))
     :config
@@ -1272,8 +1284,9 @@ TODO pull this into its own package
   (use-package typescript-mode
     :ensure t
     :pin melpa
-    :after (evil evil-leader lsp-mode lsp-ui)
-    :hook ((typescript-mode . lsp-deferred))
+    :after (evil evil-leader lsp-mode lsp-ui tree-sitter)
+    :hook ((typescript-mode . lsp-deferred)
+           (typescript-mode . tree-sitter-hl-mode))
     :bind (:map typescript-mode-map
            ("C-c C-n" . lsp-rename))
     :config
@@ -1403,8 +1416,9 @@ Install dependencies: `npm i -g tsun`
   (use-package go-mode
     :ensure t
     :pin melpa-stable
-    :after (evil lsp-mode)
-    :hook ((go-mode . lsp-deferred))
+    :after (evil lsp-mode tree-sitter)
+    :hook ((go-mode . lsp-deferred)
+           (go-mode . tree-sitter-hl-mode))
     :bind (:map go-mode-map
            ("C-c C-n" . lsp-rename))
     :config
