@@ -1902,26 +1902,34 @@ Record one frame per keystroke.
     :config (global-evil-surround-mode 1))
 #+END_SRC
 
-**** evil-args
+**** evil-tree-sitter-text-objects
 #+BEGIN_SRC emacs-lisp
+  (use-package evil-textobj-tree-sitter
+    :ensure t
+    :pin melpa
+    :after (evil tree-sitter)
+    :config
+    (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
+    (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+    (define-key evil-outer-text-objects-map "c" (evil-textobj-tree-sitter-get-textobj "class.outer"))
+    (define-key evil-inner-text-objects-map "c" (evil-textobj-tree-sitter-get-textobj "class.inner"))
+    ; (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj "parameter.outer"))
+    (define-key evil-inner-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj "parameter.inner"))
+    (define-key evil-outer-text-objects-map ";" (evil-textobj-tree-sitter-get-textobj "comment.outer"))
+    (define-key evil-outer-text-objects-map "b" (evil-textobj-tree-sitter-get-textobj "block.outer"))
+    (define-key evil-inner-text-objects-map "b" (evil-textobj-tree-sitter-get-textobj "block.inner")))
+#+END_SRC
+
+Fall back to evil-args for the outer-parameter text object: https://github.com/meain/evil-textobj-tree-sitter/issues/33
+
+#+begin_src emacs-lisp
   (use-package evil-args
     :ensure t
     :pin melpa-stable
     :after (evil)
     :config
-    ;; bind evil-args text objects
-    (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
-    (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
-
-    ;; bind evil-forward/backward-args
-    (define-key evil-normal-state-map "L" 'evil-forward-arg)
-    (define-key evil-normal-state-map "H" 'evil-backward-arg)
-    (define-key evil-motion-state-map "L" 'evil-forward-arg)
-    (define-key evil-motion-state-map "H" 'evil-backward-arg)
-
-    ;; bind evil-jump-out-args
-    (define-key evil-normal-state-map "K" 'evil-jump-out-args))
-#+END_SRC
+    (define-key evil-outer-text-objects-map "a" 'evil-outer-arg))
+#+end_src
 
 **** evil-matchit
 #+BEGIN_SRC emacs-lisp
