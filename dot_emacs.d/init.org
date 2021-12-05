@@ -1288,6 +1288,7 @@ TODO pull this into its own package
   (use-package typescript-mode
     :ensure t
     :pin melpa
+    :mode ("\\.tsx\\'")
     :after (evil evil-leader lsp-mode lsp-ui tree-sitter)
     :hook ((typescript-mode . lsp-deferred)
            (typescript-mode . tree-sitter-hl-mode))
@@ -1349,29 +1350,29 @@ TODO pull this into its own package
 TODO: add autopair-mode
 TODO: add fic-mode
 You know what: is this even considered a prog mode?
-#+BEGIN_SRC emacs-lisp
-    (use-package web-mode
-      :ensure t
-      :pin melpa-stable
-      :mode ("\\.tsx\\'")
-      :after (evil evil-leader lsp-mode lsp-ui)
-      :hook ((web-mode . lsp-deferred))
-      :bind (:map web-mode-map
-             ("C-c C-n" . lsp-rename))
-      :config
-      (evil-leader/set-key-for-mode 'web-mode
-        "fp" 'js-find-package-json
-        "ff" 'esc/prettier-on-region-or-buffer
-        "fl" 'js-run-eslint-fix)
-      (defun esc/config-web-mode ()
-        (define-key web-mode-map (vector 'remap 'fill-paragraph) 'typescript-c-fill-paragraph)
-        ; (add-hook 'before-save-hook #'lsp-format-buffer t t) ;; one day, sweet prince
-        ; (add-hook 'before-save-hook #'lsp-organize-imports t t) ;; one day, sweet prince
-        (setq-local company-idle-delay 0)
-        (setq-local company-minimum-prefix-length 1)
-        (setq-local lsp-idle-delay 0.25)
-        (setq-local lsp-ui-sideline-show-code-actions nil))
-      (add-hook 'web-mode-hook 'esc/config-web-mode))
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package web-mode
+    :ensure t
+    :pin melpa-stable
+    :mode ("\\.tsx\\'")
+    :after (evil evil-leader lsp-mode lsp-ui)
+    :hook ((web-mode . lsp-deferred))
+    :bind (:map web-mode-map
+           ("C-c C-n" . lsp-rename))
+    :config
+    (evil-leader/set-key-for-mode 'web-mode
+      "fp" 'js-find-package-json
+      "ff" 'esc/prettier-on-region-or-buffer
+      "fl" 'js-run-eslint-fix)
+    (defun esc/config-web-mode ()
+      (define-key web-mode-map (vector 'remap 'fill-paragraph) 'typescript-c-fill-paragraph)
+      ; (add-hook 'before-save-hook #'lsp-format-buffer t t) ;; one day, sweet prince
+      ; (add-hook 'before-save-hook #'lsp-organize-imports t t) ;; one day, sweet prince
+      (setq-local company-idle-delay 0)
+      (setq-local company-minimum-prefix-length 1)
+      (setq-local lsp-idle-delay 0.25)
+      (setq-local lsp-ui-sideline-show-code-actions nil))
+    (add-hook 'web-mode-hook 'esc/config-web-mode))
 #+END_SRC
 **** ts-comint
 Wasn't working :\
