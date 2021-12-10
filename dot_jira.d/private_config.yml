@@ -27,3 +27,7 @@ custom-commands:
         # otherwise list issues for all projects
         {{jira}} list --query "sprint in openSprints() and assignee=currentuser() and type != epic and resolution = unresolved ORDER BY rank asc, created"
       fi
+  - name: latest-bg-ticket
+    help: display latest-created issue
+    script: |-
+      {{jira}} list --query "project = BitGo and created >= startOfDay() ORDER BY created DESC"
