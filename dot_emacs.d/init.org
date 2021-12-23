@@ -991,6 +991,7 @@ the first half of `#define`.
     ;; TODO: this isn't rust-specific, it's the exact same code for golang.
     ;; Pull this out into the lsp configs somewhere... not sure where yet.
     (defun esc/configure-rust-mode ()
+      (setq rust-format-on-save t)
       (add-hook 'before-save-hook #'lsp-format-buffer t t)
       (add-hook 'before-save-hook #'lsp-organize-imports t t)
       (setq-local company-idle-delay 0)
