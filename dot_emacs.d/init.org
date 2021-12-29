@@ -1569,6 +1569,11 @@ TODO: use from melpa stable)
 #+END_SRC
 
 ** Extra
+*** CRDT Collaborative Editing
+#+begin_src emacs-lisp
+  (use-package crdt :ensure t)
+#+end_src
+
 *** So-Long mode
 #+begin_src emacs-lisp
   (global-so-long-mode 1)
