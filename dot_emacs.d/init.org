@@ -1289,9 +1289,10 @@ TODO pull this into its own package
     :ensure t
     :pin melpa
     :mode ("\\.tsx\\'")
-    :after (evil evil-leader lsp-mode lsp-ui tree-sitter)
+    :after (evil evil-leader lsp-mode lsp-ui prettier tree-sitter)
     :hook ((typescript-mode . lsp-deferred)
-           (typescript-mode . tree-sitter-hl-mode))
+           (typescript-mode . tree-sitter-hl-mode)
+           (typescript-mode . prettier-mode))
     :bind (:map typescript-mode-map
            ("C-c C-n" . lsp-rename))
     :config
