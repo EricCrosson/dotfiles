@@ -774,6 +774,11 @@ new terminal.
           lsp-ui-sideline-enable t
           lsp-ui-imenu-enable t
           lsp-ui-flycheck-enable t)
+    ;; Read about checker chains here:
+    ;; https://github.com/flycheck/flycheck/issues/1762
+    ;; and here
+    ;; https://www.flycheck.org/en/latest/user/syntax-checkers.html#configuring-checker-chains
+    (flycheck-add-next-checker 'lsp 'javascript-eslint)
     (evil-leader/set-key
       "lr" 'lsp-ui-peek-find-references
       "ld" 'lsp-ui-peek-find-definitions
@@ -1145,11 +1150,19 @@ Use lsp-mode
 #+END_SRC
 
 *** JavaScript config
+Add-node-modules-path config
+#+begin_src emacs-lisp
+  (use-package add-node-modules-path :ensure t)
+#+end_src
+
+JavaScript config
+
 #+begin_src emacs-lisp
   (use-package js
-    :after (evil evil-leader lsp-mode lsp-ui tree-sitter)
+    :after (evil evil-leader lsp-mode lsp-ui tree-sitter add-node-modules-path)
     :hook ((js-mode . lsp-deferred)
-           (js-mode . tree-sitter-hl-mode))
+           (js-mode . tree-sitter-hl-mode)
+           (js-mode . add-node-modules-path))
     :bind (:map js-mode-map
                 ("C-c C-n" . lsp-rename))
     :config
@@ -1257,8 +1270,9 @@ TODO pull this into its own package
   (use-package json-mode
     :ensure t
     :pin melpa-stable
-    :after (evil-leader tree-sitter)
-    :hook ((json-mode . tree-sitter-hl-mode))
+    :after (evil-leader tree-sitter add-node-modules-path)
+    :hook ((json-mode . tree-sitter-hl-mode)
+           (json-mode . add-node-modules-path))
     :config
       (evil-leader/set-key-for-mode 'json-mode
         "fp" 'js-find-package-json
@@ -1289,10 +1303,11 @@ TODO pull this into its own package
     :ensure t
     :pin melpa
     :mode ("\\.tsx\\'")
-    :after (evil evil-leader lsp-mode lsp-ui prettier tree-sitter)
+    :after (evil evil-leader lsp-mode lsp-ui prettier tree-sitter add-node-modules-path)
     :hook ((typescript-mode . lsp-deferred)
            (typescript-mode . tree-sitter-hl-mode)
-           (typescript-mode . prettier-mode))
+           (typescript-mode . prettier-mode)
+           (typescript-mode . add-node-modules-path))
     :bind (:map typescript-mode-map
            ("C-c C-n" . lsp-rename))
     :config
@@ -1313,73 +1328,6 @@ TODO pull this into its own package
       (make-local-variable 'typescript-indent-level)
       (setq typescript-indent-level 2))
     (add-hook 'typescript-mode-hook 'esc/config-typescript-mode))
-#+END_SRC
-
-**** tide config
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package tide
-    :ensure t
-    :pin melpa-stable
-    :after (eldoc typescript-mode company flycheck)
-    :bind (:map typescript-mode-map
-           ("M-." . tide-jump-to-definition)
-           ("M-R" . tide-restart-server)
-           ("C-c C-n" . tide-rename-symbol)
-           ("C-c C-f" . tide-rename-file))
-    :hook ((typescript-mode . tide-setup)
-           (typescript-mode . tide-hl-identifier-mode)
-           (typescript-mode . company-mode-on)
-           (typescript-mode . turn-on-flycheck-mode)
-           (typescript-mode . turn-on-eldoc-mode)
-           ;; (before-save . tide-format-before-save)
-           )
-    :config
-    (flycheck-add-mode 'javascript-eslint 'typescript-mode)
-    ;; (flycheck-add-next-checker 'typescript-tide 'javascript-eslint 'append)
-    (defun tide/configure-tide-typescript ()
-      (setq flycheck-check-syntax-automatically '(save mode-enabled))
-      (setq company-backends '(company-tide company-yasnippet))
-      (bind-key "<tab>" 'yas-expand yas-minor-mode-map)
-      (bind-key "M-." nil evil-normal-state-map)
-      ;; aligns annotation to the right hand side
-      ;; (setq company-tooltip-align-annotations t)
-      )
-    (add-hook 'typescript-mode-hook 'tide/configure-tide-typescript))
-#+END_SRC
-
-**** web-mode config
-TODO: add autopair-mode
-TODO: add fic-mode
-You know what: is this even considered a prog mode?
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package web-mode
-    :ensure t
-    :pin melpa-stable
-    :mode ("\\.tsx\\'")
-    :after (evil evil-leader lsp-mode lsp-ui)
-    :hook ((web-mode . lsp-deferred))
-    :bind (:map web-mode-map
-           ("C-c C-n" . lsp-rename))
-    :config
-    (evil-leader/set-key-for-mode 'web-mode
-      "fp" 'js-find-package-json
-      "ff" 'esc/prettier-on-region-or-buffer
-      "fl" 'js-run-eslint-fix)
-    (defun esc/config-web-mode ()
-      (define-key web-mode-map (vector 'remap 'fill-paragraph) 'typescript-c-fill-paragraph)
-      ; (add-hook 'before-save-hook #'lsp-format-buffer t t) ;; one day, sweet prince
-      ; (add-hook 'before-save-hook #'lsp-organize-imports t t) ;; one day, sweet prince
-      (setq-local company-idle-delay 0)
-      (setq-local company-minimum-prefix-length 1)
-      (setq-local lsp-idle-delay 0.25)
-      (setq-local lsp-ui-sideline-show-code-actions nil))
-    (add-hook 'web-mode-hook 'esc/config-web-mode))
-#+END_SRC
-**** ts-comint
-Wasn't working :\
-Install dependencies: `npm i -g tsun`
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package ts-comint :ensure t)
 #+END_SRC
 
 *** PureScript config
@@ -2230,16 +2178,15 @@ Source [[https://www.manueluberti.eu/emacs/2020/09/18/project/][Manuel Uberti]]
 
 *** Flycheck config
 #+BEGIN_SRC emacs-lisp
-(use-package flycheck
-  :ensure t
-  :pin melpa
-  :init (global-flycheck-mode 1)
-  :config
-  ;; TODO: autoload only
-  (defun turn-on-flycheck-mode ()
-    "Turn on `flycheck-mode'."
-    (interactive)
-    (flycheck-mode 1)))
+  (use-package flycheck
+    :ensure t
+    :pin melpa
+    :config
+    (flycheck-add-mode 'javascript-eslint 'javascript-mode)
+    (flycheck-add-mode 'javascript-eslint 'json-mode)
+    (flycheck-add-mode 'javascript-eslint 'typescript-mode)
+    ;; must be evaluated after modes are configured
+    (global-flycheck-mode 1))
 #+END_SRC
 
 *** Flyspell config
