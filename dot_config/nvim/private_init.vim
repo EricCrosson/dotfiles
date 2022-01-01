@@ -61,6 +61,7 @@ Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug 'prettier/vim-prettier', { 'for': ['typescript', 'javascript', 'markdown'] }
 Plug 'rust-lang/rust.vim'
+Plug 'sindrets/winshift.nvim'
 "Plug 'SirVer/ultisnips'
 Plug 'sjl/gundo.vim'
 Plug 'tpope/vim-fugitive'
@@ -201,3 +202,48 @@ let g:rustfmt_autosave = 1
 " Docker configuration
 " =======================================
 autocmd BufNewFile,BufRead Dockerfile* set syntax=dockerfile
+
+" =======================================
+" Winshift configuration
+" =======================================
+lua <<EOF
+require("winshift").setup({
+  highlight_moving_win = true,  -- Highlight the window being moved
+  focused_hl_group = "Visual",  -- The highlight group used for the moving window
+  moving_win_options = {
+    -- These are local options applied to the moving window while it's
+    -- being moved. They are unset when you leave Win-Move mode.
+    wrap = false,
+    cursorline = false,
+    cursorcolumn = false,
+    colorcolumn = "",
+  },
+  -- The window picker is used to select a window while swapping windows with
+  -- ':WinShift swap'.
+  -- A string of chars used as identifiers by the window picker.
+  window_picker_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+  window_picker_ignore = {
+    -- This table allows you to indicate to the window picker that a window
+    -- should be ignored if its buffer matches any of the following criteria.
+    filetype = {  -- List of ignored file types
+      "NvimTree",
+    },
+    buftype = {   -- List of ignored buftypes
+      "terminal",
+      "quickfix",
+    },
+    bufname = {   -- List of regex patterns matching ignored buffer names
+      [[.*foo/bar/baz\.qux]]
+    },
+  },
+})
+EOF
+
+nnoremap <C-H> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+nnoremap <C-M-H> <Cmd>WinShift left<CR>
+nnoremap <C-M-J> <Cmd>WinShift down<CR>
+nnoremap <C-M-K> <Cmd>WinShift up<CR>
+nnoremap <C-M-L> <Cmd>WinShift right<CR>
