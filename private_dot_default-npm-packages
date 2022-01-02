@@ -1,3 +1,4 @@
 nodemon
 npmrc
 typescript
+typescript-language-server
