@@ -12,7 +12,7 @@ install_helix() {
   git clone \
     --recurse-submodules \
     --shallow-submodules \
-    -j $(nproc) \
+    -j "$(nproc)" \
     "${helix_repository}" \
     "${helix_directory}"
 
