@@ -778,7 +778,8 @@ new terminal.
     ;; https://github.com/flycheck/flycheck/issues/1762
     ;; and here
     ;; https://www.flycheck.org/en/latest/user/syntax-checkers.html#configuring-checker-chains
-    (flycheck-add-next-checker 'lsp 'javascript-eslint)
+    ;; Disabling because this has a ridiculous performance penalty
+    ;; (flycheck-add-next-checker 'lsp 'javascript-eslint)
     (evil-leader/set-key
       "lr" 'lsp-ui-peek-find-references
       "ld" 'lsp-ui-peek-find-definitions
