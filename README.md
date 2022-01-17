@@ -7,7 +7,7 @@ Configurations managed by [chezmoi](https://github.com/twpayne/chezmoi).
 1. Install git, curl with system package manager
 1. [Install brew](https://docs.brew.sh/Installation)
 1. `brew install chezmoi`
-1. `git clone https://github.com/EricCrosson/dotfiles ~/.local/share/chezmoi`
+1. `git clone --recurse-submodules --shallow-submodules -j8 https://github.com/EricCrosson/dotfiles ~/.local/share/chezmoi`
 1. `cp ~/.local/share/chezmoi/doc/sample_chezmoi.toml ~/.config/chezmoi/chezmoi.toml`
 1. `chezmoi apply`
 
