@@ -7,7 +7,7 @@ readonly prefix="${HOME}/.local/share/chezmoi"
 readonly helix_directory="${prefix}/helix"
 readonly helix_runtime_directory="${HOME}/.config/helix/runtime"
 
-  # compile helix
+# compile helix
 cd "${helix_directory}" || exit 1
 cargo install --path helix-term
 
