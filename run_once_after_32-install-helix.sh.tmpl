@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# vim: filetype=sh
+
+# helix-editor hash: {{ include ".git-submodule-shas/helix" | sha256sum }}
+
+readonly prefix="${HOME}/.local/share/chezmoi"
+readonly helix_directory="${prefix}/helix"
+readonly helix_runtime_directory="${HOME}/.config/helix/runtime"
+
+  # compile helix
+cd "${helix_directory}" || exit 1
+cargo install --path helix-term
+
+# copy the helix runtme as instructed in the readme
+rm -rf "${helix_runtime_directory}"
+cp -r "${helix_directory}/runtime" "${helix_runtime_directory}"
