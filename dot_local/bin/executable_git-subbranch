@@ -53,16 +53,6 @@ function git_default_branch() {
   echo master
 }
 
-readonly branch_prefix_template="eric/ESC-00"
-
-random_number() {
-  shuf -i 1-99 -n 1
-}
-
-random_branch_prefix() {
-  echo "${branch_prefix_template/00/$(random_number)}"
-}
-
 commit_subject() {
   git log -n 1 --pretty=%s "${1:?must identify commit to grab commit subject}"
 }
@@ -74,8 +64,12 @@ one_word() {
 
 branch_name_from_commit_subject() {
   local commit="${1:?must provide sha to generate a branch name}"
-  local prefix="${2:-$(random_branch_prefix)}"
-  echo "${prefix}-$(one_word "$(commit_subject "${commit}")")"
+  local prefix="${2:-}"
+  if [ -z "${prefix}" ]; then
+    echo "$(one_word "$(commit_subject "${commit}")")"
+  else
+    echo "${prefix}-$(one_word "$(commit_subject "${commit}")")"
+  fi
 }
 
 commit=""
