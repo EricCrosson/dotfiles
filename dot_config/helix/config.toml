@@ -8,3 +8,9 @@ C-h = "jump_view_left"
 C-j = "jump_view_down"
 C-k = "jump_view_up"
 C-l = "jump_view_right"
+
+# Introduced in https://github.com/helix-editor/helix/pull/1154
+[editor.cursor-shape]
+normal = "block"
+insert = "bar"
+select = "underline"
