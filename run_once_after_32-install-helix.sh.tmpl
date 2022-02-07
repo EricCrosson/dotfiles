@@ -7,8 +7,11 @@ readonly prefix="${HOME}/.local/share/chezmoi"
 readonly helix_directory="${prefix}/helix"
 readonly helix_runtime_directory="${HOME}/.config/helix/runtime"
 
-# compile helix
+# update helix and submodules
 cd "${helix_directory}" || exit 1
+git submodule update --init --recursive
+
+# compile helix
 cargo install --path helix-term
 
 # copy the helix runtme as instructed in the readme
