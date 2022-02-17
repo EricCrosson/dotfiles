@@ -7,7 +7,7 @@ C-k = "jump_view_up"
 C-l = "jump_view_right"
 
 [editor]
-idle-timeout = 200
+idle-timeout = 0
 
 # Introduced in https://github.com/helix-editor/helix/pull/1154
 [editor.cursor-shape]
