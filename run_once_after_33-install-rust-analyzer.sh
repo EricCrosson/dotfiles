@@ -13,6 +13,6 @@ install_rust_analyzer() {
   cargo xtask install --server
 }
 
-if !command -v rust-analyzer &>/dev/null; then
+if ! command -v rust-analyzer &>/dev/null; then
   install_rust_analyzer
 fi
