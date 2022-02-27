@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# vim: filetype=sh
 
 install_rust() {
   if !command -v rust &>/dev/null; then

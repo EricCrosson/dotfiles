@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# vim: filetype=sh
 
 readonly prefix="${HOME}/.local/share/dotfiles"
 readonly rust_analyzer_repository="https://github.com/rust-analyzer/rust-analyzer.git"
