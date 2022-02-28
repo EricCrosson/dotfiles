@@ -6,7 +6,9 @@ readonly git_submodule_sha_dir="${chezmoi_dir}/.git-submodule-shas"
 cd "${chezmoi_dir}" || exit
 mkdir -p "${git_submodule_sha_dir}"
 
-for submodule in "$(git submodule status)"
+IFS=$'\n'
+
+for submodule in $(git submodule status)
 do
   repo="$(echo "$submodule" | cut -d' ' -f3)"
   hash="$(echo "$submodule" | cut -d' ' -f2)"
