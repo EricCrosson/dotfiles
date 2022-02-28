@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# kmonad-editor hash: {{ include ".git-submodule-shas/kmonad" | sha256sum }}
+
+readonly prefix="${HOME}/.local/share/chezmoi"
+readonly kmonad_directory="${prefix}/kmonad"
+
+# update kmonad and submodules
+cd "${kmonad_directory}" || exit 1
+git submodule update --init --recursive
+
+# compile kmonad and install in $HOME/.local/bin
+stack install
