@@ -1,0 +1,20 @@
+version: 2
+updates:
+  # Update helix-editor
+  - package-ecosystem: gitsubmodule
+    directory: /
+    allow:
+      - dependency-name: helix
+    schedule:
+      interval: daily
+      # UTC
+      time: 10:00
+    assignees:
+      - ericcrosson
+    reviewers:
+      - ericcrosson
+    labels:
+      - dependencies
+      - git
+      - helix-update
+    open-pull-requests-limit: 3
