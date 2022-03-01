@@ -1,0 +1,22 @@
+name: continuous-integration
+
+on: [pull_request]
+
+jobs:
+  validate:
+    name: Validate Secrets Documentation
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS chezmoi.io/get)"
+      - name: Validate secrets documentation
+        run: |
+          mkdir -p ~/.config/chezmoi ~/.local/share/chezmoi
+          cp doc/sample_chezmoi.toml ~/.config/chezmoi/chezmoi.toml
+          PATH=$PATH:./bin chezmoi diff
