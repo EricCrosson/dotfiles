@@ -3,5 +3,5 @@
         ".git",
         "dist/*"
     ],
-    "ext": "ts,js,json,go,rs"
+    "ext": "ts,js,mjs,json,go,rs"
 }
