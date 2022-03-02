@@ -18,5 +18,5 @@ jobs:
       - name: Validate secrets documentation
         run: |
           mkdir -p ~/.config/chezmoi ~/.local/share/chezmoi
-          cp doc/sample_chezmoi.toml ~/.config/chezmoi/chezmoi.toml
+          cp .chezmoi.toml.tmpl ~/.config/chezmoi/chezmoi.toml
           PATH=$PATH:./bin chezmoi diff
