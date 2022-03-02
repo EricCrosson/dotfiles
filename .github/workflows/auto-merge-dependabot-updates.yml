@@ -1,4 +1,4 @@
-name: auto-merge-helix-updates-from-dependabot
+name: auto-merge-dependabot-updates
 
 on: pull_request
 
@@ -7,7 +7,7 @@ permissions:
   contents: write
 
 jobs:
-  dependabot:
+  helix:
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' }}
 
