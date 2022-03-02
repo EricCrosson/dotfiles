@@ -15,4 +15,5 @@ cargo install --path helix-term
 
 # copy the helix runtme as instructed in the readme
 rm -rf "${helix_runtime_directory}"
+mkdir -p "$(dirname "${helix_runtime_directory}")"
 cp -r "${helix_directory}/runtime" "${helix_runtime_directory}"
