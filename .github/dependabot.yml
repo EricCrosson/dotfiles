@@ -16,5 +16,5 @@ updates:
     labels:
       - dependencies
       - git
-      - helix-update
+      - helix
     open-pull-requests-limit: 3
