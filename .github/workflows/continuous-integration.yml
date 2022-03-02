@@ -2,21 +2,50 @@ name: continuous-integration
 
 on: [pull_request]
 
-jobs:
-  validate:
-    name: Validate Secrets Documentation
+env:
+  CHEZMOI_DIRECTORY: .local/share/chezmoi
 
+jobs:
+  validate-secrets:
+    name: Validate Secrets Documentation
     runs-on: ubuntu-latest
 
     steps:
+      - name: Configure CHEZMOI_PATH environment variable
+        run: echo "CHEZMOI_PATH=${HOME}/${CHEZMOI_DIRECTORY}" >> $GITHUB_ENV
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 1
       - name: Install chezmoi
-        run: sh -c "$(curl -fsLS chezmoi.io/get)"
-      - name: Validate secrets documentation
         run: |
-          mkdir -p ~/.config/chezmoi ~/.local/share/chezmoi
+          sh -c "$(curl -fsLS chezmoi.io/get)" -- -b ~/.local/bin
+          echo ~/.local/bin >> $GITHUB_PATH
+      # Avoid using the chezmoi bootstrap script above because that eagerly
+      # initializes all submodules, which is not necessary for this job
+      - name: Install user configuration
+        run: |
+          mkdir -p "$(dirname "${CHEZMOI_PATH}")"
+          cp -r "${GITHUB_WORKSPACE}" "${CHEZMOI_PATH}"
+      - name: Record git submodule hashes
+        run: bash -x "${CHEZMOI_PATH}/run_after_21-record-git-submodule-shas.sh"
+      - name: Install dummy secrets from documented example
+        run: |
+          mkdir -p ~/.config/chezmoi
           cp .chezmoi.toml.tmpl ~/.config/chezmoi/chezmoi.toml
-          PATH=$PATH:./bin chezmoi diff
+      - name: Validate secrets
+        run: chezmoi diff
+  
+  compile-helix:
+    name: Compile Helix Editor
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Configure CHEZMOI_PATH environment variable
+        run: echo "CHEZMOI_PATH=${HOME}/${CHEZMOI_DIRECTORY}" >> $GITHUB_ENV
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS chezmoi.io/get)" -- init EricCrosson
+      - name: Compile helix
+        run: |
+          cd "${CHEZMOI_PATH}/helix"
+          cargo check

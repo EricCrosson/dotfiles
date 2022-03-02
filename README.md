@@ -1,5 +1,3 @@
-![Build Status](https://github.com/EricCrosson/dotfiles/actions/workflows/continuous-integration.yml/badge.svg?branch=master)
-
 Configurations managed by [chezmoi](https://github.com/twpayne/chezmoi).
 
 ## Use
