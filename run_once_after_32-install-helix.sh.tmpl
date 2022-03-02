@@ -3,11 +3,12 @@
 # helix-editor hash: {{ include ".git-submodule-shas/helix" | sha256sum }}
 
 readonly prefix="${HOME}/.local/share/chezmoi"
-readonly helix_directory="${prefix}/helix"
-readonly helix_runtime_directory="${HOME}/.config/helix/runtime"
+readonly helix_dir="${prefix}/helix"
+readonly helix_config_dir="${HOME}/.config.helix"
+readonly helix_runtime_directory="${helix_config_dir}/runtime"
 
 # update helix and submodules
-cd "${helix_directory}" || exit 1
+cd "${helix_dir}" || exit 1
 git submodule update --init --recursive
 
 # compile helix
@@ -15,5 +16,5 @@ cargo install --path helix-term
 
 # copy the helix runtme as instructed in the readme
 rm -rf "${helix_runtime_directory}"
-mkdir -p "$(dirname "${helix_runtime_directory}")"
-cp -r "${helix_directory}/runtime" "${helix_runtime_directory}"
+mkdir -p "${helix_config_dir}"
+cp -r "${helix_dir}/runtime" "${helix_runtime_directory}"

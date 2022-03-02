@@ -45,7 +45,7 @@ jobs:
         run: echo "CHEZMOI_PATH=${HOME}/${CHEZMOI_DIRECTORY}" >> $GITHUB_ENV
       - name: Install chezmoi
         run: sh -c "$(curl -fsLS chezmoi.io/get)" -- init EricCrosson
-      - name: Record git submodule hashes
-        run: bash "${CHEZMOI_PATH}/run_after_21-record-git-submodule-shas.sh"
       - name: Compile helix
-        run: bash "${CHEZMOI_PATH}/run_once_after_32-install-helix.sh.tmpl"
+        run: |
+          cd "${CHEZMOI_PATH}/helix"
+          cargo check
