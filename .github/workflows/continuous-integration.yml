@@ -1,6 +1,6 @@
 name: continuous-integration
 
-on: [pull_request]
+on: pull_request
 
 env:
   CHEZMOI_DIRECTORY: .local/share/chezmoi
