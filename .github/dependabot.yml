@@ -9,8 +9,6 @@ updates:
       interval: daily
       # UTC
       time: "10:00"
-    assignees:
-      - ericcrosson
     reviewers:
       - ericcrosson
     labels:
