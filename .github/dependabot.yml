@@ -8,7 +8,7 @@ updates:
     schedule:
       interval: daily
       # UTC
-      time: "10:00"
+      time: "08:00"
     reviewers:
       - ericcrosson
     labels:
