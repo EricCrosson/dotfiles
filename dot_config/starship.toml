@@ -12,7 +12,6 @@ $character"""
 [directory]
 style = "blue"
 truncation_length = 100
-truncate_to_repo = false
 
 [character]
 success_symbol = "[;](yellow)"
