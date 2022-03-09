@@ -7,11 +7,12 @@ $git_state\
 $git_status\
 $cmd_duration\
 $line_break\
-$python\
 $character"""
 
 [directory]
 style = "blue"
+truncation_length = 100
+truncate_to_repo = false
 
 [character]
 success_symbol = "[;](yellow)"
