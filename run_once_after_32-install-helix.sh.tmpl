@@ -9,7 +9,6 @@ readonly helix_runtime_directory="${helix_config_dir}/runtime"
 
 # update helix and submodules
 cd "${helix_dir}" || exit 1
-git submodule update --init --recursive
 
 # compile helix
 cargo install --path helix-term
@@ -18,3 +17,7 @@ cargo install --path helix-term
 rm -rf "${helix_runtime_directory}"
 mkdir -p "${helix_config_dir}"
 cp -r "${helix_dir}/runtime" "${helix_runtime_directory}"
+
+# download and compile grammars
+hx --grammar fetch
+hx --grammar build
