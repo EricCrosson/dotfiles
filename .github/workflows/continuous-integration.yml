@@ -21,8 +21,8 @@ jobs:
         run: |
           sh -c "$(curl -fsLS chezmoi.io/get)" -- -b ~/.local/bin
           echo ~/.local/bin >> $GITHUB_PATH
-      # Avoid using the chezmoi bootstrap script above because that eagerly
-      # initializes all submodules, which is not necessary for this job
+      # Avoid using the chezmoi bootstrap script above because that triggers
+      # apt updates, which are unnecessary for this task
       - name: Install user configuration
         run: |
           mkdir -p "$(dirname "${CHEZMOI_PATH}")"
