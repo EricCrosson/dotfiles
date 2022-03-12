@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# udev rule hash: {{ include "kmonad-configuration/02_kmonad_uinput.rules" | sha256sum }}
+# systemd service hash: {{ include "kmonad-configuration/kmonad.service" | sha256sum }}
+
+# Following instructions from
+# https://github.com/kmonad/kmonad/blob/ca616766a6ebf36e946c2e60dbc31e583b9f8e5f/doc/faq.md
+
+readonly prefix="${HOME}/.local/share/chezmoi"
+readonly kmonad_conf_dir="${prefix}/kmonad-configuration"
+
+readonly udev_rule_filename="02_kmonad_uinput.rules"
+readonly udev_rule_path="/lib/udev/rules.d/${udev_rule_filename}"
+
+readonly systemd_service_filename="kmonad.service"
+readonly systemd_service_path="/etc/systemd/system/${systemd_service_filename}"
+
+add_user_to_uinput_group() {
+  sudo usermod -aG input "$(whoami)"
+  sudo usermod -aG uinput "$(whoami)"
+}
+
+create_uinput_group() {
+  if ! getent group uinput > /dev/null; then
+    sudo groupadd uinput
+    add_user_to_uinput_group
+  fi
+}
+
+write_udev_rule() {
+  cat "${kmonad_conf_dir}/${udev_rule_filename}" | sudo tee "${udev_rule_path}"
+}
+
+# https://github.com/kmonad/kmonad/blob/ca616766a6ebf36e946c2e60dbc31e583b9f8e5f/startup/kmonad.service
+write_systemd_service() {
+  cat "${kmonad_conf_dir}/${systemd_service_filename}" | sudo tee "${systemd_service_path}"
+}
+
+start_systemd_service() {
+  sudo systemctl enable kmonad
+  sudo systemctl restart kmonad
+}
+
+create_uinput_group
+write_udev_rule
+write_systemd_service
+start_systemd_service
