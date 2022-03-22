@@ -4,7 +4,7 @@
 
 readonly prefix="${HOME}/.local/share/chezmoi"
 readonly helix_dir="${prefix}/helix"
-readonly helix_config_dir="${HOME}/.config.helix"
+readonly helix_config_dir="${HOME}/.config/helix"
 readonly helix_runtime_directory="${helix_config_dir}/runtime"
 
 cd "${helix_dir}" || exit 1
@@ -16,10 +16,9 @@ rm -rf "${helix_runtime_directory}"
 cargo install --path helix-term
 
 # download and compile grammars
-hx --grammar fetch
-hx --grammar build
+# hx --grammar fetch
+# hx --grammar build
 
-# TODO: use a symlink here instead
-# copy the helix runtme as instructed in the readme
+# configure the helix runtme as instructed in the readme
 mkdir -p "${helix_config_dir}"
-cp -r "${helix_dir}/runtime" "${helix_runtime_directory}"
+ln --symbolic --target-directory "${helix_config_dir}" "${helix_dir}/runtime"
