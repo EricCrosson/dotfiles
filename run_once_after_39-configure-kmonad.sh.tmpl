@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # udev rule hash: {{ include "kmonad-configuration/02_kmonad_uinput.rules" | sha256sum }}
-# systemd service hash: {{ include "kmonad-configuration/kmonad.service" | sha256sum }}
+# systemd service hash: {{ include "dot_local/systemd/system/kmonad.service.tmpl" | sha256sum }}
 
 # Following instructions from
 # https://github.com/kmonad/kmonad/blob/ca616766a6ebf36e946c2e60dbc31e583b9f8e5f/doc/faq.md
@@ -31,9 +31,14 @@ write_udev_rule() {
   cat "${kmonad_conf_dir}/${udev_rule_filename}" | sudo tee "${udev_rule_path}"
 }
 
+# Example from
 # https://github.com/kmonad/kmonad/blob/ca616766a6ebf36e946c2e60dbc31e583b9f8e5f/startup/kmonad.service
+#
+# We use chezmoi to render the template variables in the systemd service, then copy
+# the file into place.  This hoop is necessary to jump through because managing
+# files outside the users home directory is an explicit non-goal of chezmoi.
 write_systemd_service() {
-  cat "${kmonad_conf_dir}/${systemd_service_filename}" | sudo tee "${systemd_service_path}"
+  sudo ln -sf "${HOME}/.local/systemd/system/${systemd_service_filename}" "${systemd_service_path}"
 }
 
 start_systemd_service() {
