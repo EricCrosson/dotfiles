@@ -16,8 +16,8 @@ rm -rf "${helix_runtime_directory}"
 cargo install --path helix-term
 
 # download and compile grammars
-# hx --grammar fetch
-# hx --grammar build
+hx --grammar fetch
+hx --grammar build
 
 # configure the helix runtme as instructed in the readme
 mkdir -p "${helix_config_dir}"
