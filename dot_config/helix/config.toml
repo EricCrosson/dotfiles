@@ -6,6 +6,8 @@ C-j = "jump_view_down"
 C-k = "jump_view_up"
 C-l = "jump_view_right"
 
+"space" = {t = ":tree-sitter-subtree"}
+
 [editor]
 idle-timeout = 0
 
