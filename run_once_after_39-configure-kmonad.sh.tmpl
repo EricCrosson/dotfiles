@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # udev rule hash: {{ include "kmonad-configuration/02_kmonad_uinput.rules" | sha256sum }}
+# kmonad config hash: {{ include "dot_config/kmonad/private_config-kinesis-advantage.kbd" | sha256sum }}
+# kmonad config hash: {{ include "dot_config/kmonad/private_config-realforce.kbd" | sha256sum }}
 # systemd service hash: {{ include "dot_local/systemd/system/kmonad-kinesis-advantage.service.tmpl" | sha256sum }}
 # systemd service hash: {{ include "dot_local/systemd/system/kmonad-realforce.service.tmpl" | sha256sum }}
 

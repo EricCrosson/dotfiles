@@ -24,7 +24,7 @@
   tab  q    w    e    r    t                   y    u    i    o    p    \
   caps a    s    d    f    g                   h    j    k    l    ;    '
   lsft z    x    c    v    b                   n    m    ,    .    / rsft
-       grv  lmet left rght                          up   down [    ]
+       grv  102d left rght                          up   down [    ]
 
                            lctl lalt   ralt rctl
                       bspc del  home   pgup  ret spc
@@ -39,7 +39,7 @@
   _    _    _    _    _    _                   _    _    _    _    _    _ 
   @xtl _    _    _    _    _                   _    _    _    _    _    _ 
   _    _    _    _    _    _                   _    _    _    _    _    _ 
-       _    _    _    _                             _    _    _    _ 
+       _    lmet _    _                             _    _    _    _ 
 
                            lmet _       _    rmet 
                       _    _    _       _    _    _ 
