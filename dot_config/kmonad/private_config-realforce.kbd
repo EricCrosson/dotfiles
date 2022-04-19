@@ -1,7 +1,9 @@
+;; evtest is your friend
+
 (defcfg
   ;; For Linux
-  input  (device-file "/dev/input/by-id/{{ .keyboard.device_id }}")
-  output (uinput-sink "My KMonad output")
+  input  (device-file "/dev/input/by-id/usb-0853_0111-event-kbd")
+  output (uinput-sink "KMonad-realforce")
 
   ;; Comment this is you want unhandled events not to be emitted
   fallthrough true
@@ -24,6 +26,7 @@
   lctl lmet lalt           spc            ralt rmet cmp  rctl            left down rght
 )
 
+;; DISCUSS: semicolon acts as ctrl when held
 (deflayer caps-as-ctrl-or-escape
   _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _    _    _    _    _    _    _    _    _    _    _    _    _     _    _    _

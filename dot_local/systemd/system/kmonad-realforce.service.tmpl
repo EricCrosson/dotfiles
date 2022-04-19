@@ -1,0 +1,12 @@
+[Unit]
+Description=KMonad keyboard configuration for the Realforce
+
+[Service]
+Restart=always
+RestartSec=3
+Nice=-20
+User={{ .chezmoi.username }}
+ExecStart={{ .chezmoi.homeDir }}/.local/bin/kmonad {{ .chezmoi.homeDir }}/.config/kmonad/config-realforce.kbd
+
+[Install]
+WantedBy=default.target

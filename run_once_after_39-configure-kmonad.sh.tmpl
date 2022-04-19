@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 # udev rule hash: {{ include "kmonad-configuration/02_kmonad_uinput.rules" | sha256sum }}
-# systemd service hash: {{ include "dot_local/systemd/system/kmonad.service.tmpl" | sha256sum }}
+# systemd service hash: {{ include "dot_local/systemd/system/kmonad-kinesis-advantage.service.tmpl" | sha256sum }}
+# systemd service hash: {{ include "dot_local/systemd/system/kmonad-realforce.service.tmpl" | sha256sum }}
 
 # Following instructions from
 # https://github.com/kmonad/kmonad/blob/ca616766a6ebf36e946c2e60dbc31e583b9f8e5f/doc/faq.md
@@ -11,9 +12,6 @@ readonly kmonad_conf_dir="${prefix}/kmonad-configuration"
 
 readonly udev_rule_filename="02_kmonad_uinput.rules"
 readonly udev_rule_path="/lib/udev/rules.d/${udev_rule_filename}"
-
-readonly systemd_service_filename="kmonad.service"
-readonly systemd_service_path="/etc/systemd/system/${systemd_service_filename}"
 
 add_user_to_uinput_group() {
   sudo usermod -aG input "$(whoami)"
@@ -38,12 +36,16 @@ write_udev_rule() {
 # the file into place.  This hoop is necessary to jump through because managing
 # files outside the users home directory is an explicit non-goal of chezmoi.
 write_systemd_service() {
-  sudo ln -sf "${HOME}/.local/systemd/system/${systemd_service_filename}" "${systemd_service_path}"
+  sudo ln -sf "${HOME}/.local/systemd/system/kmonad-kinesis-advantage.service" "/etc/systemd/system/kmonad-kinesis-advantage.service"
+  sudo ln -sf "${HOME}/.local/systemd/system/kmonad-realforce.service" "/etc/systemd/system/kmonad-realforce.service"
 }
 
 start_systemd_service() {
-  sudo systemctl enable kmonad
-  sudo systemctl restart kmonad
+  sudo systemctl enable kmonad-kinesis-advantage
+  sudo systemctl enable kmonad-realforce
+
+  sudo systemctl restart kmonad-kinesis-advantage
+  sudo systemctl restart kmonad-realforce
 }
 
 create_uinput_group
