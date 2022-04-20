@@ -1,5 +1,3 @@
-theme = "spacebones_light"
-
 [keys.normal]
 C-h = "jump_view_left"
 C-j = "jump_view_down"
