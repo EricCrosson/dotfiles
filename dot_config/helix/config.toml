@@ -1,3 +1,5 @@
+theme = "spacebones_light"
+
 [keys.normal]
 # "space" = {f = {d = ":w"}}
 # "space" = {e = "file_picker"}
