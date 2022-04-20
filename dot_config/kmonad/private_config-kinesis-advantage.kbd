@@ -46,29 +46,15 @@
 ;;                                 _       _   
 ;; )
 
-(deflayer switch-up-and-down-keys-to-match-vim-j-and-k
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _    _    _ 
-
-  _    _    _    _    _    _                   _    _    _    _    _    _ 
-  _    _    _    _    _    _                   _    _    _    _    _    _ 
-  _    _    _    _    _    _                   _    _    _    _    _    _ 
-  _    _    _    _    _    _                   _    _    _    _    _    _ 
-       _    _    _    _                             down up   _    _ 
-
-                           _    _       _    _ 
-                      _    _    _       _    _    _ 
-                                _       _   
-)
-
 ;; DISCUSS: semicolon acts as ctrl when held
-(deflayer caps-as-ctrl-or-escape 
+(deflayer base
   _    _    _    _    _    _    _    _    _    _    _    _    _    _    _    _ 
 
   _    _    _    _    _    _                   _    _    _    _    _    _ 
   _    _    _    _    _    _                   _    _    _    _    _    _ 
   @xtl _    _    _    _    _                   _    _    _    _    _    _ 
   _    _    _    _    _    _                   _    _    _    _    _    _ 
-       _    lmet _    _                             _    _    _    _ 
+       _    lmet _    _                             down up   _    _ 
 
                            lmet _       _    rmet 
                       _    _    _       _    _    _ 
