@@ -1,0 +1,77 @@
+# Author: Eric Crosson <eric.s.crosson@utexas.edu>
+
+"attribute" = "#b1951d"
+"keyword" = { fg = "#3a81c3" }
+"keyword.directive" = "#3a81c3"
+"namespace" = "#b1951d"
+"punctuation" = "fg1"
+"punctuation.delimiter" = "fg1"
+"operator" = "fg1"
+"special" = "fg1" # This is used for the selection in fuzzy-matching
+"property" = "#7590db"
+"variable.property" = "#7590db"
+"variable" = "fg1" # "#715ab1"
+"variable.builtin" = "fg1"
+"variable.parameter" = "#7590db"
+"type" = { fg = "fg1", modifiers = ["italic"] } # "#6c3163"
+"type.builtin" = "#6c3163"
+"constructor" = { fg = "#4e3163", modifiers = ["bold"] }
+"function" = { fg = "fg1", modifiers = ["bold"] }
+"function.macro" = "fg2"
+"function.builtin" = "fg1"
+"comment" = { fg = "fg4", modifiers = ["italic"]  }
+"constant" = { fg = "fg1" }
+"constant.builtin" = { fg = "fg1", modifiers = ["bold"] }
+"string" = "fg1"
+"number" = "#6c3163"
+"escape" = { fg = "#5f3bc4", modifiers = ["bold"] }
+"label" = "#b1951d"
+"module" = "#b1951d"
+
+"markup.heading" = "blue"
+"markup.list" = "red"
+"markup.bold" = { fg = "yellow", modifiers = ["bold"] }
+"markup.italic" = { fg = "magenta", modifiers = ["italic"] }
+"markup.link.url" = { fg = "yellow", modifiers = ["underlined"] }
+"markup.link.text" = "red"
+"markup.quote" = "cyan"
+"markup.raw" = "green"
+
+"diff.plus" = "#2d9574"
+"diff.delta" = "#715ab1"
+"diff.minus" = "#ba2f59"
+
+"warning" = { fg = "#da8b55" }
+"error" = { fg = "#e0211d" }
+"info" = { fg = "#b1951d" }
+"hint" = { fg = "#d1dcdf" }
+
+"ui.background" = { bg = "bg0" }
+"ui.linenr" = { fg = "bg3" }
+"ui.linenr.selected" = { fg = "#b1951d" }
+"ui.statusline" = { fg = "fg1", bg = "bg2" }
+"ui.statusline.inactive" = { fg = "fg4", bg = "bg1" }
+"ui.popup" = { bg = "bg1" }
+"ui.window" = { bg = "bg1" }
+"ui.help" = { bg = "bg1", fg = "fg1" }
+"ui.text" = { fg = "fg1" }
+"ui.text.focus" = { fg = "fg1" }
+"ui.selection" = { bg = "bg3" }
+"ui.cursor.primary" = { modifiers = ["reversed"] }
+"ui.cursor.match" = { bg = "bg3" }
+"ui.menu" = { fg = "fg1", bg = "bg2" }
+"ui.menu.selected" = { fg = "#655370", bg = "#d1dcdf", modifiers = ["bold"] }
+"ui.virtual" = "bg2"
+
+"diagnostic" = { modifiers = ["underlined"] }
+
+[palette]
+bg0 = "#e0e0e0"
+bg1 = "#efeae9"
+bg2 = "#ccccc8"
+bg3 = "#b4c6cb"
+
+fg1 = "#444444"
+fg2 = "#666666"
+# fg3 = "#bdae93"
+fg4 = "#959595"
