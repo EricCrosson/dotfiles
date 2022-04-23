@@ -8,4 +8,4 @@ install_gh_extension() {
 }
 
 install_gh_extension mislav/gh-branch
-install_gh_extension heaths/gh-label
+# install_gh_extension heaths/gh-label
