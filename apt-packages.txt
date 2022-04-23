@@ -1,3 +1,4 @@
+build-essential
 chrome-gnome-shell
 curl
 dconf-editor
@@ -5,6 +6,7 @@ dirmngr
 gcc
 gnome-shell-extensions
 gnome-tweaks
+gnupg2
 gnupg-agent
 kitty
 libbz2-dev
