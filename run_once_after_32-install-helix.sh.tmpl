@@ -9,6 +9,9 @@ readonly helix_runtime_directory="${helix_config_dir}/runtime"
 
 cd "${helix_dir}" || exit 1
 
+# When chezmoi is bootstrapping a fresh install, the PATH is not configured yet
+source $HOME/.cargo/env
+
 # start from a clean slate
 rm -rf "${helix_runtime_directory}"
 
