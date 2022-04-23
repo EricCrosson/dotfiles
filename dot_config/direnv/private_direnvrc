@@ -63,6 +63,3 @@ export_function() {
     chmod +x "${target}"
   fi
 }
-
-# Enable asdf integration
-source "$(asdf direnv hook asdf)"
