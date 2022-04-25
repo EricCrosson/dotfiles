@@ -1,4 +1,4 @@
-theme = "e_ink"
+theme = "tokyonight"
 
 [keys.normal]
 C-h = "jump_view_left"
