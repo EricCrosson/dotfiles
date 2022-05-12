@@ -1,10 +1,11 @@
+*.~*~
 *~undo-tree~.gz
-.projectile
-node_modules/
 .DS_Store
 .dir-locals.el
+.direnv/
 .envrc
-*.~*~
 .log/
+.projectile
 .yo-rc.json
 /scratch
+node_modules/
