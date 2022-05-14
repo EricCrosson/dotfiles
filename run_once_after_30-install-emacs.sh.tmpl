@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# apt-packages-for-emacs.txt hash: {{ include "apt-packages-for-emacs.txt" | sha256sum }}
+
 {{ if (eq .chezmoi.os "linux") }}
 
 if !  grep -q "^deb .*ubuntu-toolchain-r/ppa" /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null; then
