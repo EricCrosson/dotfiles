@@ -29,6 +29,8 @@ jobs:
           cp -r "${GITHUB_WORKSPACE}" "${CHEZMOI_PATH}"
       - name: Record git submodule hashes
         run: bash -x "${CHEZMOI_PATH}/run_after_21-record-git-submodule-shas.sh"
+      - name: Record date units
+        run: bash -x "${CHEZMOI_PATH}/run_after_22-record-date-units.sh"
       - name: Install dummy secrets from documented example
         run: |
           mkdir -p ~/.config/chezmoi
