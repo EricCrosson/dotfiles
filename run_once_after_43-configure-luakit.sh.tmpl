@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# week-of-year hash: {{ include ".date-units/week" | sha256sum }}
+
+readonly prefix="${HOME}/.local/share/luakit/adblock"
+readonly easylist="https://easylist-downloads.adblockplus.org/easylist.txt"
+
+mkdir -p "${prefix}"
+cd "${prefix}" || exit 1
+
+wget --output-document "${prefix}/easylist.txt" "${easylist}"
