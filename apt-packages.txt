@@ -11,6 +11,7 @@ gnupg-agent
 kitty
 libbz2-dev
 libssl-dev
+luakit
 make
 openssh-server
 python3-dev
