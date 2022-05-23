@@ -1,8 +1,6 @@
 .aws/config_eric
 .editorconfig
-.emacs.d/init.org
 .keep
-apt-packages-for-emacs.txt
 apt-packages.txt
 helix
 kmonad

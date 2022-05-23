@@ -1,5 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: import-io-ts
-# key: importio
-# --
-import * as t from 'io-ts'

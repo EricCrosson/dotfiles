@@ -1,5 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: embed-image
-# key: img
-# --
-[[./img/.png]]

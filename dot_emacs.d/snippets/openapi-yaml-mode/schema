@@ -1,6 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: schema
-# key: schema
-# --
-type: object
-properties:

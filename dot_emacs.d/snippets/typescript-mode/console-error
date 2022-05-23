@@ -1,5 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: console.error
-# key: ce
-# --
-console.error($0)

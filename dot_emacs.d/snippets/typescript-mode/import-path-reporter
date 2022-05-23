@@ -1,5 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: import-path-reporter
-# key: importpr
-# --
-import * as PathReporter from 'io-ts/lib/PathReporter'

@@ -1,5 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: console.log.interpolate
-# key: cli
-# --
-console.log(\`$0\`);

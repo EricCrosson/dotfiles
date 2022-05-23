@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: @param
-# key: ap
-# type: command
-# --
-(yas/expand-snippet
-  (format "* @param <$0>"))

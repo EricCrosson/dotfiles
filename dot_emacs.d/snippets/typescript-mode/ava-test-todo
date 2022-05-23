@@ -1,5 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: ava-test-todo
-# key: test.todo
-# --
-test.todo('$0')

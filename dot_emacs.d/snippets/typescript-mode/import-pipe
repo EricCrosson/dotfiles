@@ -1,5 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: import-io-ts-pipe
-# key: importpipe
-# --
-import { pipe } from 'fp-ts/function'

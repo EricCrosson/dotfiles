@@ -1,5 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: use strict
-# key: strict
-# --
-'use strict';

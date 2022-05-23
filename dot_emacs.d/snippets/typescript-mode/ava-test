@@ -1,7 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: ava-test
-# key: test
-# --
-test('$0', t => {
-
-})
