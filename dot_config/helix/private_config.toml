@@ -1,4 +1,4 @@
-theme = "tokyonight"
+theme = "catppuccin_mocha"
 
 [keys.normal]
 C-h = "jump_view_left"
