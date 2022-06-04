@@ -20,6 +20,3 @@ select = "underline"
 # Introduced in https://github.com/helix-editor/helix/pull/1802
 [editor.whitespace.render]
 tab = "all"
-
-[editor.whitespace.characters]
-# tab = "→"
