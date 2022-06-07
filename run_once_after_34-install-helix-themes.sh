@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# catppuccin-helix hash: {{ include ".git-submodule-shas/catppuccin-helix" | sha256sum }}
-
 readonly prefix="${HOME}/.local/share/chezmoi"
 readonly catppuccin_dir="${prefix}/catppuccin-helix"
 readonly helix_themes_dir="${HOME}/.config/helix/themes"
