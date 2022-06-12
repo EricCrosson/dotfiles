@@ -31,6 +31,8 @@
 
 (defalias
   xtl (tap-next esc lctl)    ;; tap for esc, hold for lctrl
+  ;; DISCUSS: semicolon acts as ctrl when held
+  ;; x;  (tap-next ; lctl)      ;; tap for ;, hold for lctrl
   sym (layer-toggle symbols) ;; activate the symbols layer
   ;; FIXME: below doesn't work because we hold ctrl-{ when we press C-9
   ;; Maybe tap-next-release is the answer
@@ -62,12 +64,10 @@
   lsft z    x    c    v    b                   n    m    ,    .    / rsft
        grv  lmet left rght                          down up   [    ]
 
-                           @sym lalt   ralt @sym
+                           @sym lalt   ralt  ralt
                       bspc del  home   pgup  ret spc
                                  end   pgdn
 )
-
-;; DISCUSS: semicolon acts as ctrl when held
 
 (deflayer symbols
   _    _    _    _    _    _    _    _    _    _    _    _    _    _    _    _ 
