@@ -1,5 +1,13 @@
 version: 2
 updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+      - github-actions
+
   # Update helix-editor
   - package-ecosystem: gitsubmodule
     directory: /
