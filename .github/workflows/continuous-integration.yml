@@ -14,7 +14,7 @@ jobs:
       - name: Configure CHEZMOI_PATH environment variable
         run: echo "CHEZMOI_PATH=${HOME}/${CHEZMOI_DIRECTORY}" >> $GITHUB_ENV
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
       - name: Install chezmoi
