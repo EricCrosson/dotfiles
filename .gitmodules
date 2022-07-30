@@ -6,4 +6,4 @@
 	url = https://github.com/kmonad/kmonad
 [submodule "catppuccin-helix"]
 	path = catppuccin-helix
-	url = https://github.com/EricCrosson/catppuccin-helix.git
+	url = https://github.com/catppuccin/helix.git
