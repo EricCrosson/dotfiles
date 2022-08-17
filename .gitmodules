@@ -4,3 +4,6 @@
 [submodule "kmonad"]
 	path = kmonad
 	url = https://github.com/kmonad/kmonad
+[submodule "catppuccin-bat"]
+	path = catppuccin-bat
+	url = git@github.com:catppuccin/bat.git

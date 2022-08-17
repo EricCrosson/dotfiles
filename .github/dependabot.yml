@@ -24,3 +24,20 @@ updates:
       - git
       - helix
     open-pull-requests-limit: 3
+
+  # Update catppuccin-bat
+  - package-ecosystem: gitsubmodule
+    directory: /
+    allow:
+      - dependency-name: catppuccin-bat
+    schedule:
+      interval: daily
+      # UTC
+      time: "08:00"
+    reviewers:
+      - ericcrosson
+    labels:
+      - dependencies
+      - git
+      - catppuccin
+    open-pull-requests-limit: 2
