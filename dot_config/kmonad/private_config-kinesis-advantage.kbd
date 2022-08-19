@@ -30,14 +30,8 @@
 )
 
 (defalias
-  xtl (tap-next esc lctl)    ;; tap for esc, hold for lctrl
-  ;; DISCUSS: semicolon acts as ctrl when held
-  ;; x;  (tap-next ; lctl)      ;; tap for ;, hold for lctrl
+  xtl (tap-hold-next 1000 esc lctl)    ;; tap for esc, hold for lctrl
   sym (layer-toggle symbols) ;; activate the symbols layer
-  ;; FIXME: below doesn't work because we hold ctrl-{ when we press C-9
-  ;; Maybe tap-next-release is the answer
-  ;; https://github.com/kmonad/kmonad/blob/master/keymap/tutorial.kbd#L755
-  ;; xtl (tap-next esc (around @sym lctl))    ;; tap for esc, hold for lctrl
 )
 
 ;; https://github.com/shofel/dotfiles/blob/e40fc87d664f61633e8ce55082fc96bcd878041a/home-nix/kmonad/kinesis_130P.kbd
