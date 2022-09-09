@@ -9,7 +9,11 @@ destination="$HOME/.local/bin/jsonnet-language-server"
 if [[ ! -f "${destination}" ]]
 then
 
-  curl --output "${destination}" "${download_link}"
+  curl \
+    --silent \
+    --location \
+    --output "${destination}" \
+    "${download_link}"
   chmod +x "${destination}"
 
 fi
