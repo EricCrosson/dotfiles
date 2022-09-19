@@ -1,3 +1,0 @@
-[[language]]
-name = "markdown"
-language-server = { command = "ltex-ls" }
