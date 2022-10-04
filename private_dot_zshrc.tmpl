@@ -187,7 +187,5 @@ unsetopt sharehistory
 setopt appendhistory
 
 eval "$(direnv hook zsh)"
-eval "$(asdf exec direnv hook zsh)"
-direnv() { asdf exec direnv "$@"; }
 
 # zprof
