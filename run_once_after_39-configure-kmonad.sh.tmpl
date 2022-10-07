@@ -6,6 +6,8 @@
 # systemd service hash: {{ include "dot_local/systemd/system/kmonad-kinesis-advantage.service.tmpl" | sha256sum }}
 # systemd service hash: {{ include "dot_local/systemd/system/kmonad-realforce.service.tmpl" | sha256sum }}
 
+{{ if (eq .chezmoi.os "linux") -}}
+
 # Following instructions from
 # https://github.com/kmonad/kmonad/blob/ca616766a6ebf36e946c2e60dbc31e583b9f8e5f/doc/faq.md
 
@@ -54,3 +56,5 @@ create_uinput_group
 write_udev_rule
 write_systemd_service
 start_systemd_service
+
+{{ end -}}

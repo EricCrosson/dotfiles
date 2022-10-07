@@ -24,4 +24,5 @@ hx --grammar build
 
 # configure the helix runtme as instructed in the readme
 mkdir -p "${helix_config_dir}"
-ln --symbolic --target-directory "${helix_config_dir}" "${helix_dir}/runtime"
+cd "${helix_config_dir}" || { echo "Unable to cd into helix_config_dir"; exit 1; }
+ln -s "${helix_dir}/runtime"

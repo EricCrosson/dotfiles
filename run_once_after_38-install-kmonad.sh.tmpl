@@ -2,6 +2,8 @@
 
 # kmonad-editor hash: {{ include ".git-submodule-shas/kmonad" | sha256sum }}
 
+{{ if (eq .chezmoi.os "linux") -}}
+
 readonly prefix="${HOME}/.local/share/chezmoi"
 readonly kmonad_directory="${prefix}/kmonad"
 
@@ -11,3 +13,5 @@ git submodule update --init --recursive
 
 # compile kmonad and install in $HOME/.local/bin
 stack install
+
+{{ end -}}
