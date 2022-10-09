@@ -21,25 +21,6 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-"${HOME}/.local/share"}"
 {{ if eq .chezmoi.os "linux" -}}
 path+=('/home/linuxbrew/.linuxbrew/bin')
 path+=('/home/linuxbrew/.linuxbrew/sbin')
-{{ else if eq .chezmoi.os "darwin" -}}
-
-##
-# GNU binaries
-#
-# MacOS Note: to prioritize GNU Make in $PATH, you must also execute the
-# following:
-#
-# ``` sh
-# sudo cp /etc/zprofile /etc/zshenv
-# sudo mv /etc/zprofile /etc/zprofile.bak
-# ```
-#
-# This sets the system path as early as possible, so we can prepend to
-# it here
-#
-# Source:
-# https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
-path=("$(brew --prefix)/opt/make/libexec/gnubin" $path)
 {{ end -}}
 
 #####################################################################
@@ -110,12 +91,6 @@ alias pip='pip3 '
 path+=("${HOME}/Library/Python/${$(python3 --version | cut -d' ' -f2)%.*}/bin")
 path+=("${HOME}/Library/Python/2.7/bin")
 {{ end -}}
-
-#####################################################################
-# Bash configuration
-# Note(MacOS): ensure bash is installed with brew
-#####################################################################
-path=("/usr/local/bin" $path)
 
 #####################################################################
 # Global PATH configuration
