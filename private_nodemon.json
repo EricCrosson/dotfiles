@@ -1,7 +1,0 @@
-{
-    "ignore": [
-        ".git",
-        "dist/*"
-    ],
-    "ext": "ts,js,mjs,json,go,rs"
-}
