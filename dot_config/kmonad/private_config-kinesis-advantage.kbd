@@ -31,7 +31,6 @@
 
 (defalias
   xtl (tap-hold-next 1000 esc lctl)    ;; tap for esc, hold for lctrl
-  sym (layer-toggle symbols) ;; activate the symbols layer
 )
 
 ;; https://github.com/shofel/dotfiles/blob/e40fc87d664f61633e8ce55082fc96bcd878041a/home-nix/kmonad/kinesis_130P.kbd
@@ -58,21 +57,7 @@
   lsft z    x    c    v    b                   n    m    ,    .    / rsft
        grv  lmet left rght                          down up   [    ]
 
-                           @sym lalt   ralt  ralt
+                           lctl lalt   ralt  rctl
                       bspc del  home   pgup  ret spc
                                  end   pgdn
-)
-
-(deflayer symbols
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _    _    _ 
-
-  grv  _    _    _    _    _                   _    _    _    {    }    _ 
-  _    _    _    _    _    _                   XX   7    8    9    _    _ 
-  _    _    _    _    _    _                   XX   4    5    6    _    _ 
-  _    _    _    _    _    _                   XX   1    2    3    _    _ 
-       _    _    _    _                             _    0    .    _ 
-
-                           _    _       _    _ 
-                      _    _    _       _    _    _ 
-                                _       _   
 )
