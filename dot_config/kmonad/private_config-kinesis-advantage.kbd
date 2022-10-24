@@ -43,7 +43,7 @@
   lsft z    x    c    v    b                   n    m    ,    .    / rsft
        grv  102d left rght                          up   down [    ]
 
-                           lctl lalt   ralt rctl
+                           lctl lalt   rmeta rctl
                       bspc del  home   pgup  ret spc
                                  end   pgdn
 )
@@ -57,7 +57,7 @@
   lsft z    x    c    v    b                   n    m    ,    .    / rsft
        grv  lmet left rght                          down up   [    ]
 
-                           lctl lalt   ralt  rctl
+                           lctl lalt   lalt  rctl
                       bspc del  home   pgup  ret spc
                                  end   pgdn
 )
