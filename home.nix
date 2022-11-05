@@ -47,7 +47,7 @@
     rnix-lsp
     rust-analyzer
     shellcheck
-    taplo-lsp
+    taplo-lsp                                     # TOML
 
     # for shell
     exa
