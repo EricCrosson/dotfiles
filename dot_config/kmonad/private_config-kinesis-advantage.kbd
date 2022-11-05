@@ -57,7 +57,7 @@
   lsft z    x    c    v    b                   n    m    ,    .    / rsft
        grv  lmet left rght                          down up   [    ]
 
-                           lctl lalt   lalt  rctl
+                           lctl lalt   ralt  rctl
                       bspc del  home   pgup  ret spc
                                  end   pgdn
 )

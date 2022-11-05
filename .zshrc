@@ -1,5 +1,3 @@
-# vim: filetype=sh
-
 #####################################################################
 # config
 #####################################################################
@@ -10,7 +8,6 @@ zmodload zsh/terminfo
 
 # Use bash-style navigation
 bindkey -e                               # use bash input mode
-# autoload -U select-word-style            # kill-word stops at directory delimeter
 setopt interactivecomments               # bash-style comments
 setopt autopushd
 setopt histignorealldups
@@ -22,6 +19,7 @@ autoload copy-earlier-word && \
 # tab completion
 #####################################################################
 
+# FIXME: this isn't supported on your nixos yet
 zstyle ':completion:*:*:git:*' script "${HOME}/.local/share/zsh/git-completion.bash"
 
 #####################################################################
@@ -40,22 +38,30 @@ zstyle ':completion:*:descriptions' format '%d'
 zstyle ':completion:*:options' verbose yes
 zstyle ':completion:*:values' verbose yes
 zstyle ':completion:*:options' prefix-needed yes
-# Use cache completion
-# apt-get, dpkg (Debian), rpm (Redhat), urpmi (Mandrake), perl -M,
-# bogofilter (zsh 4.2.1 >=), fink, mac_apps...
-zstyle ':completion:*' use-cache true
+zstyle ':completion:*' use-cache true             # Use cache completion
 zstyle ':completion:*:default' menu select=1
 zstyle ':completion:*' matcher-list \
     '' \
     'm:{a-z}={A-Z}' \
     'l:|=* r:|[.,_-]=* r:|=* m:{a-z}={A-Z}'
 # sudo completions
-zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin \
-    /usr/sbin /usr/bin /sbin /bin /usr/X11R6/bin
+zstyle ':completion:*:sudo:*' command-path \
+  /usr/local/sbin \
+  /usr/local/bin \
+  /usr/sbin \
+  /usr/bin \
+  /sbin \
+  /bin
 zstyle ':completion:*' menu select
 zstyle ':completion:*' keep-prefix
-zstyle ':completion:*' completer _oldlist _complete _match _ignored \
-    _approximate _list _history
+zstyle ':completion:*' completer \
+  _oldlist \
+  _complete \
+  _match \
+  _ignored \
+  _approximate \
+  _list \
+  _history
 
 # dircolors on completed entries
 zstyle ':completion:*' list-colors 'di=34:ln=35:so=32:pi=33:ex=31:bd=46;34:cd=43;34:su=41;30:sg=46;30:tw=42;30:ow=43;30'
@@ -81,15 +87,12 @@ if ! zgen saved; then
   zgen oh-my-zsh plugins/kubectl
   zgen oh-my-zsh plugins/node
   zgen oh-my-zsh plugins/ripgrep
-  {{ if (eq .chezmoi.os "linux") -}}
   zgen oh-my-zsh plugins/ubuntu
-  {{ end -}}
 
   zgen load esc-zsh/smart-cd
   zgen load hlissner/zsh-autopair
   zgen load jreese/zsh-titles
   zgen load lukechilds/zsh-better-npm-completion
-  zgen load MichaelAquilina/zsh-you-should-use
   zgen load reegnz/jq-zsh-plugin
   zgen load robsis/zsh-completion-generator
   zgen load sobolevn/wakatime-zsh-plugin
@@ -107,21 +110,19 @@ fi
 # aliases
 #####################################################################
 
-alias bat='bat -pp --theme="Catppuccin-{{ .catppuccin_theme }}"'
+# FIXME: install bat themes on nixos
+alias bat='bat -pp --theme="Catppuccin-mocha"'
 alias c='cargo'
 alias d='docker'
+# FIXME: not using chezmoi templates anymore
 alias grip='grip --pass {{ .github.gh_token }}'
 alias h='hx --vsplit'
 alias j='jira'
 alias l='exa -lg --git --time-style=long-iso'
-alias m='make'
 alias npx='npx --no-install'
-alias nrw='npm run --ws '
 alias rg='rg --smart-case'
 alias rip='rip --graveyard "${HOME}/.local/share/Trash"'
-alias s='screen'
 alias ssh='ssh -t '
-alias topgrade='topgrade --yes system'
 alias vim='nvim '
 alias viddy='viddy --differences'
 
@@ -135,27 +136,25 @@ alias gsu='git submodule update'
 
 eval "$(hub alias -s)"
 
-# This post outlines what it takes to default to GNU make on macOS
-# https://unix.stackexchange.com/questions/246751/how-to-know-why-and-where-the-path-env-variable-is-set/250456#250456
-# alias make='gmake '
-
-# TODO: autoload this
-# TODO: pull this into a plugin
 # Make and change directory
 # Usage: mc <dir>
 #
 # @example
 # mc new-directory
 mc() {
-     local namespace="${1:?"Directory must be specified"}"
-     mkdir -p -- "$1" && cd -P -- "$1"
+   local namespace="${1:?"Directory must be specified"}"
+   mkdir -p -- "$1" && cd -P -- "$1"
 }
 
 #####################################################################
 # fzf config
 #####################################################################
 
-source ~/.fzf.zsh
+if [ -n "${commands[fzf-share]}" ]          # https://nixos.wiki/wiki/Fzf
+then
+  source "$(fzf-share)/key-bindings.zsh"
+  source "$(fzf-share)/completion.zsh"
+fi
 
 bindkey '^X^T' fzf-file-widget
 bindkey '^T' transpose-chars
@@ -165,17 +164,7 @@ bindkey '^T' transpose-chars
 #####################################################################
 
 eval "$(jira --completion-script-zsh)"
-
-#####################################################################
-# includes
-#####################################################################
-
-source "${HOME}/.local/share/zsh/screen"
-source "${HOME}/.local/share/zsh/jira"
-
-{{ if eq .chezmoi.username "ericcrosson" -}}
-[ -f ~/.local/share/zsh/bitgo ] && source ~/.local/share/zsh/bitgo
-{{ end -}}
+# source "${HOME}/.local/share/zsh/jira"
 
 #####################################################################
 # post-config

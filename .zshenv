@@ -1,14 +1,10 @@
-# vim: filetype=sh
-
 #####################################################################
 # Terminal emulator configuration
 #####################################################################
 export HISTSIZE=1500000                 # retain a reasonable history
-export HOMEBREW_INSTALL_BADGE="☕"
+# FIXME: use nix for this
 export EDITOR=hx
-{{ if (eq .chezmoi.os "linux") -}}
 skip_global_compinit=1
-{{ end -}}
 
 #####################################################################
 # XDG configuration
@@ -16,23 +12,10 @@ skip_global_compinit=1
 export XDG_DATA_HOME="${XDG_DATA_HOME:-"${HOME}/.local/share"}"
 
 #####################################################################
-# Brew configuration
-#####################################################################
-{{ if eq .chezmoi.os "linux" -}}
-path+=('/home/linuxbrew/.linuxbrew/bin')
-path+=('/home/linuxbrew/.linuxbrew/sbin')
-{{ end -}}
-
-#####################################################################
 # Zsh configuration
 #####################################################################
 fpath=("${HOME}/.local/share/zsh/site-functions" $fpath)
 ZGEN_RESET_ON_CHANGE=("${HOME}/.zshrc" "${HOME}/.zshenv")
-
-#####################################################################
-# Oh My zsh configuration
-#####################################################################
-DISABLE_UPDATE_PROMPT=true
 
 #####################################################################
 # PS1 configuration
@@ -50,16 +33,8 @@ export SMART_CD_ONLY_IF_FITS_RATIO=66
 #####################################################################
 # fzf configuration
 #####################################################################
-if command -v fdfind &>/dev/null; then
-    FZF_ALT_C_COMMAND="fdfind --type d"
-    FZF_DEFAULT_COMMAND="fdfind --type f"
-elif command -v fd &>/dev/null; then
-    FZF_ALT_C_COMMAND="fd --type d"
-    FZF_DEFAULT_COMMAND="fd --type f"
-else
-    FZF_ALT_C_COMMAND="find -type d"
-    FZF_DEFAULT_COMMAND="find -type f"
-fi
+FZF_ALT_C_COMMAND="fd --type d"
+FZF_DEFAULT_COMMAND="fd --type f"
 
 export FZF_ALT_C_COMMAND
 export FZF_DEFAULT_COMMAND
@@ -68,29 +43,12 @@ export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
 #####################################################################
 # Docker configuration
 #####################################################################
-export DOCKER_BUILDKIT=1
-
-#####################################################################
-# Golang configuration
-#####################################################################
-path+=("${HOME}/go/bin")
-{{ if eq .chezmoi.username "ericcrosson" -}}
-export GOPRIVATE='github.com/lumina-tech/*'
-{{ end -}}
+# export DOCKER_BUILDKIT=1
 
 #####################################################################
 # Rust configuration
 #####################################################################
 path+=("${HOME}/.cargo/bin")
-
-{{ if eq .chezmoi.os "darwin" -}}
-#####################################################################
-# Python configuration
-#####################################################################
-alias pip='pip3 '
-path+=("${HOME}/Library/Python/${$(python3 --version | cut -d' ' -f2)%.*}/bin")
-path+=("${HOME}/Library/Python/2.7/bin")
-{{ end -}}
 
 #####################################################################
 # Global PATH configuration
@@ -102,13 +60,6 @@ path=("${HOME}/.local/bin" $path)
 # direnv configuration
 #####################################################################
 export DIRENV_LOG_FORMAT=""
-
-#####################################################################
-# Nix configuration
-#####################################################################
-if [ -e "${HOME}/.nix-profile/etc/profile.d/nix.sh" ]; then
-  . "${HOME}/.nix-profile/etc/profile.d/nix.sh"
-fi
 
 #####################################################################
 # Epilogue
