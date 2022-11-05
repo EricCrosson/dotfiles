@@ -36,9 +36,18 @@
   home.packages = with pkgs; [
     bat
     entr
-    nodePackages.typescript-language-server
     inputs.git-disjoint.packages.${system}.default
+
+    # Helix and supporting tools
     inputs.helix.packages.${system}.default
+    inputs.jsonnet-language-server.packages.${system}.default
+    nodePackages.bash-language-server
+    nodePackages.typescript-language-server
+    nodePackages.vscode-langservers-extracted
+    rnix-lsp
+    rust-analyzer
+    shellcheck
+    taplo-lsp
 
     # for shell
     exa
