@@ -22,7 +22,7 @@
       inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nur.url = "github:nix-community/NUR";
+    nur.url = "github:nix-community/nur";
   };
 
   outputs = inputs @ { self, nixpkgs, home-manager, ... }:
@@ -32,21 +32,26 @@
       pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
+        overlays = [
+          inputs.nur.overlay
+        ];
       };
       lib = nixpkgs.lib;
 
       specialArgs = {                             # Pass variables to configuration.nix
-        inherit inputs user system;
+        inherit inputs pkgs user system;
       };
 
       modules = [
         ./configuration.nix
         home-manager.nixosModules.home-manager {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = specialArgs;
-          home-manager.users.${user} = {
-            imports = [ ./home.nix ];
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            extraSpecialArgs = specialArgs;
+            users.${user} = {
+              imports = [ ./home.nix ];
+            };
           };
         }
       ];

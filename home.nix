@@ -5,12 +5,6 @@
 # FIXME: why does polybar not start with bspwm?
 # FIXME: what happened to my virtual desktops with bspwm?
 {
-  imports = [
-    # nur.repos.rycee.firefox-addons.onepassword-password-manager
-    # RESUME: fix me
-    # ./helix.nix
-  ];
-  
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home.username = "${user}";
@@ -28,15 +22,9 @@
 
   programs.home-manager.enable = true;            # Let Home Manager install and manage itself.
 
-  # programs.helix = {
-  #   enable = true;
-  #   package = inputs.helix.packages.${system}.default;
-  # };
-
   home.packages = with pkgs; [
-    bat
-    entr
     inputs.git-disjoint.packages.${system}.default
+    viddy
 
     # Helix and supporting tools
     inputs.helix.packages.${system}.default
@@ -65,9 +53,63 @@
 
   programs.firefox = {
     enable = true;
-    extensions = [
-      # config.nur.repos.rycee.firefox-addons.onepassword-password-manager
+    extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      ublock-origin
+      onepassword-password-manager
     ];
+    profiles = {
+      default = {
+        id = 0;
+        name = "Default";
+        isDefault = true;
+        settings = {
+          "app.normandy.enabled" = false;
+          "browser.contentblocking.category" = "strict";
+          "browser.startup.page" = 3;             # Restore previous windows and tabs on startup.
+          "extensions.htmlaboutaddons.inline-options.enabled" = false;
+          "extensions.htmlaboutaddons.recommendations.enabled" = false;
+          "extensions.pocket.enabled" = false;
+          "extensions.pocket.showHome" = false;
+          "privacy.donottrackheader.enabled" = true;
+          "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons" = false;
+          "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features" = false;
+          "browser.newtabpage.activity-stream.feeds.section.highlights" = false;
+          "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
+          "browser.newtabpage.activity-stream.feeds.snippets" = false;
+          "browser.newtabpage.activity-stream.feeds.topsites" = false;
+          "browser.newtabpage.activity-stream.section.highlights.includeBookmarks" = false;
+          "browser.newtabpage.activity-stream.section.highlights.includeDownloads" = false;
+          "browser.newtabpage.activity-stream.section.highlights.includePocket" = false;
+          "browser.newtabpage.activity-stream.section.highlights.includeVisited" = false;
+          "browser.newtabpage.activity-stream.section.highlights.rows" = false;
+          "browser.newtabpage.activity-stream.section.topstories.rows" = false;
+          "browser.newtabpage.activity-stream.showSponsored" = false;
+          "browser.newtabpage.activity-stream.topSitesRows" = false;
+          "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+          "browser.urlbar.suggest.quicksuggest.sponsored" = false;
+
+          # Opt out of all telemetry
+          # https://www.tecklyfe.com/how-to-disable-telemetry-data-collection-on-firefox
+          "browser.newtabpage.activity-stream.feeds.telemetry" = false;
+          "browser.newtabpage.activity-stream.telemetry" = false;
+          "browser.ping-centre.telemetry" = false;
+          "datareporting.healthreport.uploadEnabled" = false;
+          "datareporting.policy.dataSubmissionEnabled" = false;
+          "datareporting.sessions.current.clean" = true;
+          "devtools.onboarding.telemetry.logged" = false;
+          "toolkit.telemetry.archive.enabled" = false;
+          "toolkit.telemetry.bhrPing.enabled" = false;
+          "toolkit.telemetry.enabled" = false;
+          "toolkit.telemetry.firstShutdownPing.enabled" = false;
+          "toolkit.telemetry.hybridContent.enabled" = false;
+          "toolkit.telemetry.newProfilePing.enabled" = false;
+          "toolkit.telemetry.reportingpolicy.firstRun" = false;
+          "toolkit.telemetry.shutdownPingSender.enabled" = false;
+          "toolkit.telemetry.unified" = false;
+          "toolkit.telemetry.updatePing.enabled" = false;
+        };
+      };
+    };
   };
 
   # DISCUSS: can we use a nix-provided path to this file?

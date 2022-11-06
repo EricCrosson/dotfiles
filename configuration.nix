@@ -72,23 +72,22 @@ in
   security.sudo.wheelNeedsPassword = false;
 
   environment.systemPackages = with pkgs; [
-    _1password-gui
-    amber
-    bottom
-    cachix
-    curl
-    discord
-    evtest
-
     direnv
     nix-direnv
 
+    _1password-gui
+    amber
+    bat
+    bottom
+    curl
+    discord
+    entr
+    evtest
     fd
     firefox
     kitty
     kmonad
     git
-    google-chrome
     htop
     killall
     nano                                          # Nano is installed by default
