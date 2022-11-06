@@ -396,6 +396,22 @@
         "type": "indirect"
       }
     },
+    "nixpkgs-22_05": {
+      "locked": {
+        "lastModified": 1667091951,
+        "narHash": "sha256-62sz0fn06Nq8OaeBYrYSR3Y6hUcp8/PC4dJ7HeGaOhU=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "6440d13df2327d2db13d3b17e419784020b71d22",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "release-22.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1667482890,
@@ -454,7 +470,8 @@
         "home-manager": "home-manager",
         "jsonnet-language-server": "jsonnet-language-server",
         "nixpkgs": "nixpkgs_2",
-        "nur": "nur"
+        "nur": "nur",
+        "sops-nix": "sops-nix"
       }
     },
     "rust-analyzer-src": {
@@ -493,6 +510,27 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "sops-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "nixpkgs-22_05": "nixpkgs-22_05"
+      },
+      "locked": {
+        "lastModified": 1667427533,
+        "narHash": "sha256-MsgTnQEi1g7f8anlW5klHW2pJgam4CLbJaYyBw2ed58=",
+        "owner": "mic92",
+        "repo": "sops-nix",
+        "rev": "486b4455da16272c1ed31bc82adcdbe7af829465",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mic92",
+        "repo": "sops-nix",
         "type": "github"
       }
     }

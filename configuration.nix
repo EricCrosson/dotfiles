@@ -12,6 +12,7 @@ in
     [ 
       ./hardware-configuration.nix                # Include the results of the hardware scan
       ./kmonad-nixos-module.nix
+      ./modules/sops.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -56,7 +57,12 @@ in
 
   programs.zsh.enable = true;                     # Set zsh as the default shell for all users.
   users.defaultUserShell = pkgs.zsh;
-  environment.shells = [ pkgs.zsh ];
+  environment = {
+    shells = [ pkgs.zsh ];
+    sessionVariables = {
+      GH_TOKEN = "$(cat ${config.sops.secrets.github_token_personal.path})";
+    };
+  };
 
   # Define a user account.
   users.users.${user} = {
@@ -76,15 +82,19 @@ in
     nix-direnv
 
     _1password-gui
+    age
     curl
     discord
     firefox
     git
+    gnupg
     kitty
     kmonad
     killall
     nano                                          # Nano is installed by default
     pavucontrol                                   # Graphival audio control
+    sops
+    tree
     vim
     wget
     xclip
@@ -94,10 +104,11 @@ in
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
 
   # List services that you want to enable:
 
