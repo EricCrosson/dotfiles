@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, system, user, ... }:
+{ email, inputs, config, pkgs, system, user, ... }:
 
 # FIXME: disable cursor blink
 # FIXME: set keyboard repeat rate
@@ -22,9 +22,31 @@
 
   programs.home-manager.enable = true;            # Let Home Manager install and manage itself.
 
+  programs.atuin = {
+    enable = true;
+    settings = {
+      dialect = "us";
+      auto_sync = false;
+      update_check = false;
+      search_mode = "fuzzy";
+    };
+  };
+
   home.packages = with pkgs; [
+    amber
+    bat
+    bottom
+    curl
+    entr
+    evtest
+    fd
+    git
+    htop
     inputs.git-disjoint.packages.${system}.default
+    ripgrep
+    vim
     viddy
+    wget
 
     # Helix and supporting tools
     inputs.helix.packages.${system}.default
@@ -54,8 +76,8 @@
   programs.firefox = {
     enable = true;
     extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-      ublock-origin
       onepassword-password-manager
+      ublock-origin
     ];
     profiles = {
       default = {
@@ -87,6 +109,7 @@
           "browser.newtabpage.activity-stream.topSitesRows" = false;
           "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
           "browser.urlbar.suggest.quicksuggest.sponsored" = false;
+          "media.eme.enabled" = true;
 
           # Opt out of all telemetry
           # https://www.tecklyfe.com/how-to-disable-telemetry-data-collection-on-firefox
@@ -116,6 +139,9 @@
   home.file.".direnvrc" = {
     text = "source /run/current-system/sw/share/nix-direnv/direnvrc";
   };
+
+  home.file.".gitconfig".source = ./.gitconfig;
+  home.file.".gitignore".source = ./.gitignore;
 
   # Shell
   home.file.".zshenv".source = ./.zshenv;

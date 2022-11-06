@@ -76,23 +76,15 @@ in
     nix-direnv
 
     _1password-gui
-    amber
-    bat
-    bottom
     curl
     discord
-    entr
-    evtest
-    fd
     firefox
+    git
     kitty
     kmonad
-    git
-    htop
     killall
     nano                                          # Nano is installed by default
     pavucontrol                                   # Graphival audio control
-    ripgrep
     vim
     wget
     xclip

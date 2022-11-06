@@ -1,15 +1,9 @@
 [user]
-    email = {{ .user.email }}
-    name = {{ .user.name }}
-{{ if eq .chezmoi.username "ericcrosson" }}
-    signingKey = 0AB49222C769F13EDE3EBFB2352FBA3B4180A44A
-
-[commit]
-    gpgSign = true
-{{ end -}}
+    email = ${email}
+    name = Eric Crosson
 
 [github]
-    user = {{ .user.email }}
+    user = ${email}
 
 [init]
     defaultBranch = master
@@ -69,10 +63,13 @@
 [rerere]
     enabled = true
 
+[gpg]
+    program = gpg
+
+# example: git clone gh:ericcrosson/dotfiles
 [url "git@github.com:"]
     insteadOf = "gh:"
     PushInsteadOf = "gh:"
-    # example: git clone gh:ericcrosson/dotfiles
 
 [delta]
     line-numbers = true
@@ -92,10 +89,6 @@
     new = green bold
     whitespace = red reverse
 
-[diff-so-fancy]
-    markEmptyLines = false
-    changeHunkIndicators = true
-
 [git-up "fetch"]
     prune = true
     all = false
@@ -111,6 +104,3 @@
 
 [git-up "updates"]
     check = false
-
-[gpg]
-    program = gpg

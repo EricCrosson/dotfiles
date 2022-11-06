@@ -29,6 +29,7 @@
     let
       system = "x86_64-linux";
       user = "eric";
+      email = "eric.s.crosson@utexas.edu";
       pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
@@ -39,7 +40,7 @@
       lib = nixpkgs.lib;
 
       specialArgs = {                             # Pass variables to configuration.nix
-        inherit inputs pkgs user system;
+        inherit email inputs pkgs user system;
       };
 
       modules = [
