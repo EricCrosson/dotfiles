@@ -61,6 +61,7 @@ in
     shells = [ pkgs.zsh ];
     sessionVariables = {
       GH_TOKEN = "$(cat ${config.sops.secrets.github_token_personal.path})";
+      GITHUB_TOKEN = "$(cat ${config.sops.secrets.github_token_personal.path})";
     };
   };
 
