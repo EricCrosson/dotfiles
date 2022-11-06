@@ -1,5 +1,6 @@
 { email, inputs, config, pkgs, system, user, ... }:
 
+# FIXME: add helix config
 # FIXME: disable cursor blink
 # FIXME: set keyboard repeat rate
 # FIXME: why does polybar not start with bspwm?
@@ -32,6 +33,36 @@
     };
   };
 
+  programs.helix = {
+    enable = true;
+    package = inputs.helix.packages.${system}.default;
+    languages = [
+      {
+        name = "markdown";
+        language-server.command = "ltex-ls";
+      }
+    ];
+    settings = {
+      theme = "catppuccin_mocha";
+      keys.normal = {
+        C-h = "jump_view_left";
+        C-j = "jump_view_down";
+        C-k = "jump_view_up";
+        C-l = "jump_view_right";
+        space.t = ":tree-sitter-subtree";
+      };
+      editor = {
+        idle-timeout = 0;
+        cursor-shape = {
+          normal = "block";
+          insert = "bar";
+          select = "underline";
+        };
+        whitespace.render.tab = "all";
+      };
+    };
+  };
+
   home.packages = with pkgs; [
     amber
     bat
@@ -49,7 +80,6 @@
     wget
 
     # Helix and supporting tools
-    inputs.helix.packages.${system}.default
     inputs.jsonnet-language-server.packages.${system}.default
     nodePackages.bash-language-server
     nodePackages.typescript-language-server
@@ -140,8 +170,117 @@
     text = "source /run/current-system/sw/share/nix-direnv/direnvrc";
   };
 
-  home.file.".gitconfig".source = ./.gitconfig;
   home.file.".gitignore".source = ./.gitignore;
+  home.file.".gitconfig" = {
+    text = ''
+    [user]
+        email = ${email}
+        name = Eric Crosson
+
+    [github]
+        user = ${email}
+
+    [init]
+        defaultBranch = master
+
+    [alias]
+        a = add
+        b = branch
+        c = commit
+        cl = clone
+        co = checkout
+        cn = checkout --detach
+        d = diff
+        di = diff ':(exclude)./**/package-lock.json' ':(exclude)./**/yarn.lock'
+        dc = diff --cached
+        dci = diff --cached ':(exclude)./**/package-lock.json' ':(exclude)./**/yarn.lock'
+        dn = diff --name-only
+        dcn = diff --cached --name-only
+        f = fetch
+        l = log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
+        p = pull
+        fsl = push --force-with-lease
+        re = restore
+        rs = restore --staged
+        s = status
+        su = submodule update
+
+        exec = "!exec "
+
+        # After `git reset --soft HEAD^1`, commit with the same commit message
+        # Source: https://stackoverflow.com/a/25930432
+        recommit = commit --reuse-message=HEAD@{1}
+
+        alias = !git config --list | grep \"alias\\\\.\" | sed \"s/alias\\\\.\\\\([^=]*\\\\)=\\\\(.*\\\\)/\\\\1\\\\\\t => \\\\2/\" | sort
+
+        # git branchless
+        bs = branchless sync
+
+    [core]
+        editor = hx
+        excludesfile = ~/.gitignore_global
+        autocrlf = false
+        pager = delta
+
+    [advice]
+        skippedCherryPicks = false
+
+    [color]
+        ui = true
+        interactive = auto
+
+    [push]
+        default = simple
+
+    [pull]
+        rebase = true
+
+    [rerere]
+        enabled = true
+
+    [gpg]
+        program = gpg
+
+    # example: git clone gh:ericcrosson/dotfiles
+    [url "git@github.com:"]
+        insteadOf = "gh:"
+        PushInsteadOf = "gh:"
+
+    [delta]
+        line-numbers = true
+        # side-by-side=true
+
+    [color "diff-highlight"]
+        oldNormal = red bold
+        oldHighlight = red bold reverse
+        newNormal = green bold
+        newHighlight = green bold reverse
+
+    [color "diff"]
+        meta = 11
+        frag = magenta bold
+        commit = yellow bold
+        old = red bold
+        new = green bold
+        whitespace = red reverse
+
+    [git-up "fetch"]
+        prune = true
+        all = false
+
+    [git-up "push"]
+        auto = false
+        all = false
+        tags = false
+
+    [git-up "rebase"]
+        auto = true
+        show-hashes = false
+
+    [git-up "updates"]
+        check = false
+    '';
+  };
 
   # Shell
   home.file.".zshenv".source = ./.zshenv;
