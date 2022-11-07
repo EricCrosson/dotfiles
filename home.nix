@@ -2,6 +2,7 @@
 
 # TODO: set font to Hack
 # FIXME: volume function keys
+# FIXME: screen tearing
 # FIXME: set keyboard repeat rate
 # FIXME: why does polybar not start with bspwm?
 # FIXME: what happened to my virtual desktops with bspwm?
@@ -34,6 +35,7 @@
     fd
     git
     git-extras
+    gnupg
     htop
     hub
     inputs.git-disjoint.packages.${system}.default
@@ -107,6 +109,7 @@
               "eBay".metaData.hidden = true;
               "Wikipedia (en)".metaData.alias = "w";
             };
+          force = true;
         };
         settings = {
           "app.normandy.enabled" = false;
@@ -136,7 +139,6 @@
           "media.eme.enabled" = true;
 
           # Opt out of all telemetry
-          # https://www.tecklyfe.com/how-to-disable-telemetry-data-collection-on-firefox
           "browser.newtabpage.activity-stream.feeds.telemetry" = false;
           "browser.newtabpage.activity-stream.telemetry" = false;
           "browser.ping-centre.telemetry" = false;
@@ -167,6 +169,105 @@
       pager = "delta";
       aliases = {
         co = "pr checkout";
+      };
+    };
+  };
+
+  programs.git = {
+    enable = true;
+    userName = "Eric Crosson";
+    userEmail = "${email}";
+    aliases = {
+      a = "add";
+      b = "branch";
+      c = "commit";
+      cl = "clone";
+      co = "checkout";
+      cn = "checkout --detach";
+      d = "diff";
+      di = "diff ':(exclude)./**/package-lock.json' ':(exclude)./**/yarn.lock'";
+      dc = "diff --cached";
+      dci = "diff --cached ':(exclude)./**/package-lock.json' ':(exclude)./**/yarn.lock'";
+      dn = "diff --name-only";
+      f = "fetch";
+      l = "log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'";
+      p = "pull";
+      fsl = "push --force-with-lease";
+      re = "restore";
+      rs = "restore --staged";
+      s = "status";
+      su = "submodule update";
+
+      exec = "!exec ";
+
+      # After `git reset --soft HEAD^1`, commit with the same commit message
+      # Source: https://stackoverflow.com/a/25930432
+      recommit = "commit --reuse-message=HEAD@{1}";
+
+      alias = "!git config --list | grep \"alias\\\\.\" | sed \"s/alias\\\\.\\\\([^=]*\\\\)=\\\\(.*\\\\)/\\\\1\\\\\\t => \\\\2/\" | sort";
+    };
+    delta = {
+      enable = true;
+      options = {
+        line-numbers = true;
+      };
+    };
+    ignores = [
+      "/scratch/"
+    ];
+    extraConfig = {
+      advice = {
+        skippedCherryPicks = false;
+      };
+      color = {
+        ui = true;
+        interactive = "auto";
+      };
+      core = {
+          editor = "hx";
+          excludesfile = "~/.gitignore_global";
+          autocrlf = false;
+
+          diff-highlight = {
+            oldNormal = "red bold";
+            oldHighlight = "red bold reverse";
+            newNormal = "green bold";
+            newHighlight = "green bold reverse";
+          };
+
+          diff = {
+            meta = 11;
+            frag = "magenta bold";
+            commit = "yellow bold";
+            old = "red bold";
+            new = "green bold";
+            whitespace = "red reverse";
+          };
+      };
+      github = {
+        user = "${email}";
+      };
+      gpg = {
+        program = "${pkgs.gnupg}";
+      };
+      init = {
+        defaultBranch = "master";
+      };
+      pull = {
+        rebase = true;
+      };
+      push = {
+        default = "simple";
+      };
+      rerere = {
+        enabled = true;
+      };
+      # example: git clone gh:ericcrosson/dotfiles
+      url = {
+        "git@github.com" = {
+          insteadOf = "gh:";
+          PushInsteadOf = "gh:";
+        };
       };
     };
   };
@@ -213,124 +314,6 @@
   # DISCUSS: can we use a nix-provided path to this file?
   home.file.".direnvrc" = {
     text = "source /run/current-system/sw/share/nix-direnv/direnvrc";
-  };
-
-  home.file.".gitignore" = {
-    text = ''
-      /scratch/
-    '';
-  };
-
-  # TODO: use home-manager options
-  home.file.".gitconfig" = {
-    text = ''
-      [user]
-          email = ${email}
-          name = Eric Crosson
-
-      [github]
-          user = ${email}
-
-      [init]
-          defaultBranch = master
-
-      [alias]
-          a = add
-          b = branch
-          c = commit
-          cl = clone
-          co = checkout
-          cn = checkout --detach
-          d = diff
-          di = diff ':(exclude)./**/package-lock.json' ':(exclude)./**/yarn.lock'
-          dc = diff --cached
-          dci = diff --cached ':(exclude)./**/package-lock.json' ':(exclude)./**/yarn.lock'
-          dn = diff --name-only
-          dcn = diff --cached --name-only
-          f = fetch
-          l = log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
-          p = pull
-          fsl = push --force-with-lease
-          re = restore
-          rs = restore --staged
-          s = status
-          su = submodule update
-
-          exec = "!exec "
-
-          # After `git reset --soft HEAD^1`, commit with the same commit message
-          # Source: https://stackoverflow.com/a/25930432
-          recommit = commit --reuse-message=HEAD@{1}
-
-          alias = !git config --list | grep \"alias\\\\.\" | sed \"s/alias\\\\.\\\\([^=]*\\\\)=\\\\(.*\\\\)/\\\\1\\\\\\t => \\\\2/\" | sort
-
-          # git branchless
-          bs = branchless sync
-
-      [core]
-          editor = hx
-          excludesfile = ~/.gitignore_global
-          autocrlf = false
-          pager = delta
-
-      [advice]
-          skippedCherryPicks = false
-
-      [color]
-          ui = true
-          interactive = auto
-
-      [push]
-          default = simple
-
-      [pull]
-          rebase = true
-
-      [rerere]
-          enabled = true
-
-      [gpg]
-          program = gpg
-
-      # example: git clone gh:ericcrosson/dotfiles
-      [url "git@github.com:"]
-          insteadOf = "gh:"
-          PushInsteadOf = "gh:"
-
-      [delta]
-          line-numbers = true
-          # side-by-side=true
-
-      [color "diff-highlight"]
-          oldNormal = red bold
-          oldHighlight = red bold reverse
-          newNormal = green bold
-          newHighlight = green bold reverse
-
-      [color "diff"]
-          meta = 11
-          frag = magenta bold
-          commit = yellow bold
-          old = red bold
-          new = green bold
-          whitespace = red reverse
-
-      [git-up "fetch"]
-          prune = true
-          all = false
-
-      [git-up "push"]
-          auto = false
-          all = false
-          tags = false
-
-      [git-up "rebase"]
-          auto = true
-          show-hashes = false
-
-      [git-up "updates"]
-          check = false
-    '';
   };
 
   # Shell

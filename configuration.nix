@@ -117,11 +117,12 @@ in
   services.openssh.enable = true;
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
-  # FIXME: does not work as advertised
-  # services.xserver.libinput.mouse.naturalScrolling = true;
+  services.xserver = {
+    enable = true;
+    videoDrivers = [ "nvidia" ];
+    # RESUME: set the keyboard repeat rate
+  };
 
-  services.xserver.videoDrivers = [ "nvidia" ];
 
   # Configure keymap in X11
   services.xserver.layout = "us";
