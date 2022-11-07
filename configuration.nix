@@ -206,6 +206,7 @@ in
 
   environment.pathsToLink = [                     # Include direnvrc in nix store.
     "/share/nix-direnv"                           # This file is sourced by each user's ~/.direnvrc
+    "/share/zsh"                                  # Enable zsh completion for system packages
   ];
   nixpkgs.overlays = [                            # Enable Nix flakes with direnv.
     ( self: super: {

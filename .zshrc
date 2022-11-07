@@ -12,8 +12,8 @@ setopt interactivecomments               # bash-style comments
 setopt autopushd
 setopt histignorealldups
 autoload copy-earlier-word && \
-	zle -N copy-earlier-word && \
-	bindkey '^[,' copy-earlier-word  # cycle through last-words with M-.
+  zle -N copy-earlier-word && \
+  bindkey '^[,' copy-earlier-word  # cycle through last-words with M-.
 
 #####################################################################
 # tab completion
@@ -142,8 +142,8 @@ eval "$(hub alias -s)"
 # @example
 # mc new-directory
 mc() {
-   local namespace="${1:?"Directory must be specified"}"
-   mkdir -p -- "$1" && cd -P -- "$1"
+  local namespace="${1:?"Directory must be specified"}"
+  mkdir -p -- "$1" && cd -P -- "$1"
 }
 
 #####################################################################
