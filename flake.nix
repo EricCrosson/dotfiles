@@ -23,61 +23,88 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/nur";
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
+    };
     sops-nix = {
       url = "github:mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = inputs @ { self, nixpkgs, home-manager, sops-nix, ... }:
-    let
-      system = "x86_64-linux";
-      # REFACTOR: use a user object here
-      user = "eric";
-      email = "eric.s.crosson@utexas.edu";
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-        overlays = [
-          inputs.nur.overlay
-        ];
-      };
-      lib = nixpkgs.lib;
+  outputs = inputs @ {
+    self,
+    flake-utils,
+    home-manager,
+    nixpkgs,
+    pre-commit-hooks,
+    sops-nix,
+    ...
+  }: (
+    flake-utils.lib.eachDefaultSystem (
+      system: (
+        let
+          system = "x86_64-linux";
+          # REFACTOR: use a user object here
+          user = "eric";
+          email = "eric.s.crosson@utexas.edu";
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+            overlays = [
+              inputs.nur.overlay
+            ];
+          };
+          lib = nixpkgs.lib;
 
-      specialArgs = {                             # Pass variables to configuration.nix
-        inherit email inputs pkgs user sops-nix system;
-      };
+          specialArgs = {
+            # Pass variables to configuration.nix
+            inherit email inputs pkgs user sops-nix system;
+          };
 
-      modules = [
-        ./configuration.nix
-        sops-nix.nixosModules.sops
-        home-manager.nixosModules.home-manager {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            extraSpecialArgs = specialArgs;
-            users.${user} = {
-              imports = [ ./home.nix ];
+          modules = [
+            ./configuration.nix
+            sops-nix.nixosModules.sops
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = specialArgs;
+                users.${user} = {
+                  imports = [./home.nix];
+                };
+              };
+            }
+          ];
+
+          checks = {
+            pre-commit-check = pre-commit-hooks.lib.${system}.run {
+              src = ./.;
+              hooks = {
+                alejandra.enable = true;
+              };
             };
           };
+        in {
+          nixosConfigurations = {
+            chimp = lib.nixosSystem {
+              inherit system modules specialArgs;
+            };
+          };
+          devShell = pkgs.mkShell {
+            inherit (checks.pre-commit-check) shellHook;
+            # imports all files ending in .asc/.gpg
+            sopsPGPKeyDirs = [
+              "${toString ./.}/keys/hosts"
+              "${toString ./.}/keys/users"
+            ];
+            nativeBuildInputs = [
+              (pkgs.callPackage sops-nix {}).sops-import-keys-hook
+            ];
+          };
         }
-      ];
-    in
-    {
-      nixosConfigurations = {
-        chimp = lib.nixosSystem {
-          inherit system modules specialArgs;
-        };
-      };
-      devShells.${system}.default = pkgs.mkShell {
-        # imports all files ending in .asc/.gpg
-        sopsPGPKeyDirs = [ 
-          "${toString ./.}/keys/hosts"
-          "${toString ./.}/keys/users"
-        ];
-        nativeBuildInputs = [
-          (pkgs.callPackage sops-nix {}).sops-import-keys-hook
-        ];
-      };
-    };
+      )
+    )
+  );
 }

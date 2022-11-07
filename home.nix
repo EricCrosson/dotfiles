@@ -1,5 +1,13 @@
-{ config, email, inputs, pkgs, sops-nix, system, user, ... }:
-
+{
+  config,
+  email,
+  inputs,
+  pkgs,
+  sops-nix,
+  system,
+  user,
+  ...
+}:
 # TODO: set font to Hack
 # FIXME: volume function keys
 # FIXME: screen tearing
@@ -22,7 +30,7 @@
   # changes in each release.
   home.stateVersion = "22.05";
 
-  programs.home-manager.enable = true;            # Let Home Manager install and manage itself.
+  programs.home-manager.enable = true; # Let Home Manager install and manage itself.
 
   home.packages = with pkgs; [
     amber
@@ -52,7 +60,7 @@
     rnix-lsp
     rust-analyzer
     shellcheck
-    taplo-lsp                                     # TOML
+    taplo-lsp # TOML
 
     # for shell
     exa
@@ -92,29 +100,37 @@
         search = {
           default = "Google";
           engines = {
-              "Nix Packages" = {
-                urls = [{
+            "Nix Packages" = {
+              urls = [
+                {
                   template = "https://search.nixos.org/packages";
                   params = [
-                    { name = "type"; value = "packages"; }
-                    { name = "query"; value = "{searchTerms}"; }
+                    {
+                      name = "type";
+                      value = "packages";
+                    }
+                    {
+                      name = "query";
+                      value = "{searchTerms}";
+                    }
                   ];
-                }];
-                icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-                definedAliases = [ "nix" ];
-              };
-              "Amazon.com".metaData.hidden = true;
-              "Bing".metaData.hidden = true;
-              "DuckDuckGo".metaData.hidden = true;
-              "eBay".metaData.hidden = true;
-              "Wikipedia (en)".metaData.alias = "w";
+                }
+              ];
+              icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+              definedAliases = ["nix"];
             };
+            "Amazon.com".metaData.hidden = true;
+            "Bing".metaData.hidden = true;
+            "DuckDuckGo".metaData.hidden = true;
+            "eBay".metaData.hidden = true;
+            "Wikipedia (en)".metaData.alias = "w";
+          };
           force = true;
         };
         settings = {
           "app.normandy.enabled" = false;
           "browser.contentblocking.category" = "strict";
-          "browser.startup.page" = 3;             # Restore previous windows and tabs on startup.
+          "browser.startup.page" = 3; # Restore previous windows and tabs on startup.
           "extensions.htmlaboutaddons.inline-options.enabled" = false;
           "extensions.htmlaboutaddons.recommendations.enabled" = false;
           "extensions.pocket.enabled" = false;
@@ -224,25 +240,25 @@
         interactive = "auto";
       };
       core = {
-          editor = "hx";
-          excludesfile = "~/.gitignore_global";
-          autocrlf = false;
+        editor = "hx";
+        excludesfile = "~/.gitignore_global";
+        autocrlf = false;
 
-          diff-highlight = {
-            oldNormal = "red bold";
-            oldHighlight = "red bold reverse";
-            newNormal = "green bold";
-            newHighlight = "green bold reverse";
-          };
+        diff-highlight = {
+          oldNormal = "red bold";
+          oldHighlight = "red bold reverse";
+          newNormal = "green bold";
+          newHighlight = "green bold reverse";
+        };
 
-          diff = {
-            meta = 11;
-            frag = "magenta bold";
-            commit = "yellow bold";
-            old = "red bold";
-            new = "green bold";
-            whitespace = "red reverse";
-          };
+        diff = {
+          meta = 11;
+          frag = "magenta bold";
+          commit = "yellow bold";
+          old = "red bold";
+          new = "green bold";
+          whitespace = "red reverse";
+        };
       };
       github = {
         user = "${email}";

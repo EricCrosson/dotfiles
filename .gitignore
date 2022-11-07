@@ -1,3 +1,4 @@
 /.direnv/
 /.git-submodule-shas
+/.pre-commit-config.yaml
 /result

@@ -1,19 +1,21 @@
 # Edit this configuration file to define what should be installed on
 # your system. Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ config, pkgs, lib, system, user, ... }:
-
-let
-  kmonad = import ./kmonad.nix pkgs;
-in
 {
-  imports =
-    [ 
-      ./hardware-configuration.nix                # Include the results of the hardware scan
-      ./kmonad-nixos-module.nix
-      ./modules/sops.nix
-    ];
+  config,
+  pkgs,
+  lib,
+  system,
+  user,
+  ...
+}: let
+  kmonad = import ./kmonad.nix pkgs;
+in {
+  imports = [
+    ./hardware-configuration.nix # Include the results of the hardware scan
+    ./kmonad-nixos-module.nix
+    ./modules/sops.nix
+  ];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.grub.device = "/dev/nvme0n1p2";
@@ -22,7 +24,7 @@ in
 
   networking.hostName = "chimp"; # Define your hostname.
   networking.nameservers = [
-    "192.168.1.76"                                # Use a pi-hole when possible
+    "192.168.1.76" # Use a pi-hole when possible
     "8.8.8.8"
   ];
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -53,12 +55,12 @@ in
     alsa.support32Bit = true;
     pulse.enable = true;
   };
-  services.pcscd.enable = true;                   # For YubiKey TOTP.
+  services.pcscd.enable = true; # For YubiKey TOTP.
 
-  programs.zsh.enable = true;                     # Set zsh as the default shell for all users.
+  programs.zsh.enable = true; # Set zsh as the default shell for all users.
   users.defaultUserShell = pkgs.zsh;
   environment = {
-    shells = [ pkgs.zsh ];
+    shells = [pkgs.zsh];
     sessionVariables = {
       GH_TOKEN = "$(cat ${config.sops.secrets.github_token_personal.path})";
       GITHUB_TOKEN = "$(cat ${config.sops.secrets.github_token_personal.path})";
@@ -71,9 +73,16 @@ in
     home = "/home/${user}";
     description = "Eric Crosson";
     extraGroups = [
-      "wheel"   # Enable ‘sudo’ for the user.
-      "video" "audio" "camera" "kvm" "libvirtd" "networkmanager"
-      "input" "uinput" "kmonad" # for kmonad
+      "wheel" # Enable 'sudo' for the user.
+      "video"
+      "audio"
+      "camera"
+      "kvm"
+      "libvirtd"
+      "networkmanager"
+      "input"
+      "uinput"
+      "kmonad" # for kmonad
     ];
   };
   security.sudo.wheelNeedsPassword = false;
@@ -92,8 +101,8 @@ in
     kitty
     kmonad
     killall
-    nano                                          # Nano is installed by default
-    pavucontrol                                   # Graphival audio control
+    nano # Nano is installed by default
+    pavucontrol # Graphival audio control
     sops
     tree
     vim
@@ -119,10 +128,9 @@ in
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
-    videoDrivers = [ "nvidia" ];
+    videoDrivers = ["nvidia"];
     # RESUME: set the keyboard repeat rate
   };
-
 
   # Configure keymap in X11
   services.xserver.layout = "us";
@@ -195,7 +203,7 @@ in
       dates = "daily";
       options = "--delete-older-than 7d";
     };
-    package = pkgs.nixVersions.unstable;          # Enable Nix flakes on system.
+    package = pkgs.nixVersions.unstable; # Enable Nix flakes on system.
     extraOptions = ''
       experimental-features = nix-command flakes
       keep-outputs = true
@@ -204,14 +212,16 @@ in
   };
   nixpkgs.config.allowUnfree = true;
 
-  environment.pathsToLink = [                     # Include direnvrc in nix store.
-    "/share/nix-direnv"                           # This file is sourced by each user's ~/.direnvrc
-    "/share/zsh"                                  # Enable zsh completion for system packages
+  environment.pathsToLink = [
+    # Include direnvrc in nix store.
+    "/share/nix-direnv" # This file is sourced by each user's ~/.direnvrc
+    "/share/zsh" # Enable zsh completion for system packages
   ];
-  nixpkgs.overlays = [                            # Enable Nix flakes with direnv.
-    ( self: super: {
-      nix-direnv = super.nix-direnv.override { enableFlakes = true; };
-    } )
+  nixpkgs.overlays = [
+    # Enable Nix flakes with direnv.
+    (self: super: {
+      nix-direnv = super.nix-direnv.override {enableFlakes = true;};
+    })
   ];
 
   system = {
