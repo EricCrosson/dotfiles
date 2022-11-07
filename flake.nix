@@ -25,6 +25,8 @@
     nur.url = "github:nix-community/nur";
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix = {
       url = "github:mic92/sops-nix";
