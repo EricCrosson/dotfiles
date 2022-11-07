@@ -1,6 +1,5 @@
 { email, inputs, config, pkgs, sops-nix, system, user, ... }:
 
-# FIXME: add helix config
 # FIXME: disable cursor blink
 # FIXME: volume function keys
 # FIXME: set keyboard repeat rate
