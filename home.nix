@@ -1,4 +1,4 @@
-{ email, inputs, config, pkgs, sops-nix, system, user, ... }:
+{ config, email, inputs, pkgs, sops-nix, system, user, ... }:
 
 # TODO: set font to Hack
 # FIXME: volume function keys
@@ -311,6 +311,59 @@
     };
   };
 
+  programs.starship = {
+    enable = true;
+    settings = {
+      format = pkgs.lib.concatStrings [
+        "$username"
+        "$hostname"
+        "$directory"
+        "$git_branch"
+        "$git_state"
+        "$git_status"
+        "$cmd_duration"
+        "$line_break"
+        "$character"
+      ];
+      character = {
+        success_symbol = "[;](yellow)";
+        error_symbol = "[;](red)";
+        vicmd_symbol = "[;](green)";
+      };
+      directory = {
+        style = "blue";
+        truncation_length = 100;
+      };
+      cmd_duration = {
+        format = "[$duration]($style) ";
+        style = "yellow";
+      };
+      git_branch = {
+        format = "[$branch]($style)";
+        style = "bright-black";
+      };
+      git_status = {
+        format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)";
+        style = "cyan";
+        conflicted = "​";
+        untracked = "​";
+        modified = "​";
+        staged = "​";
+        renamed = "​";
+        deleted = "​";
+        stashed = "≡";
+      };
+      git_state = {
+        format = "\([$state( $progress_current/$progress_total)]($style)\) ";
+        style = "bright-black";
+      };
+      python = {
+        format = "[$virtualenv]($style) ";
+        style = "bright-black";
+      };
+    };
+  };
+
   # DISCUSS: can we use a nix-provided path to this file?
   home.file.".direnvrc" = {
     text = "source /run/current-system/sw/share/nix-direnv/direnvrc";
@@ -320,7 +373,6 @@
   # REFACTOR: use home.shellAliases
   home.file.".zshenv".source = ./.zshenv;
   home.file.".zshrc".source = ./.zshrc;
-  home.file.".config/starship.toml".source = ./.config/starship.toml;
 
   # Window Manager
   home.file.".config/sxhkd/sxhkdrc" = {
