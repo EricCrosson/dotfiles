@@ -34,6 +34,7 @@
     evtest
     fd
     git
+    git-extras
     htop
     hub
     inputs.git-disjoint.packages.${system}.default
@@ -119,8 +120,6 @@
     };
   };
 
-  # TODO: configure search engine on
-  # https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query={THIS IS THE SEARCH ARG}
   programs.firefox = {
     enable = true;
     extensions = with pkgs.nur.repos.rycee.firefox-addons; [
@@ -132,6 +131,27 @@
         id = 0;
         name = "Default";
         isDefault = true;
+        search = {
+          default = "Google";
+          engines = {
+              "Nix Packages" = {
+                urls = [{
+                  template = "https://search.nixos.org/packages";
+                  params = [
+                    { name = "type"; value = "packages"; }
+                    { name = "query"; value = "{searchTerms}"; }
+                  ];
+                }];
+                icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+                definedAliases = [ "n" ];
+              };
+              "Amazon.com".metaData.hidden = true;
+              "Bing".metaData.hidden = true;
+              "DuckDuckGo".metaData.hidden = true;
+              "eBay".metaData.hidden = true;
+              "Wikipedia (en)".metaData.alias = "w";
+            };
+        };
         settings = {
           "app.normandy.enabled" = false;
           "browser.contentblocking.category" = "strict";
