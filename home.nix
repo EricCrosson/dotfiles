@@ -97,17 +97,21 @@
         id = 0;
         name = "Default";
         isDefault = true;
+        bookmarks = [
+          {
+            name = "GitHub Notifications";
+            keyword = "n";
+            url = "https://github.com/notifications?query=is%3Aunread";
+          }
+          {
+            name = "GitHub Pull Requests";
+            keyword = "p";
+            url = "https://github.com/pulls";
+          }
+        ];
         search = {
           default = "Google";
           engines = {
-            "GitHub Notifications" = {
-              urls = [
-                {
-                  template = "https://github.com/notifications?query=is%3Aunread";
-                }
-              ];
-              definedAliases = ["n"];
-            };
             "Nix Packages" = {
               urls = [
                 {
