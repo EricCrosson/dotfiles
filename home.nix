@@ -100,6 +100,14 @@
         search = {
           default = "Google";
           engines = {
+            "GitHub Notifications" = {
+              urls = [
+                {
+                  template = "https://github.com/notifications?query=is%3Aunread";
+                }
+              ];
+              definedAliases = ["n"];
+            };
             "Nix Packages" = {
               urls = [
                 {
