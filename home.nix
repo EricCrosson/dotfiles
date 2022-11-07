@@ -101,7 +101,7 @@
                   ];
                 }];
                 icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-                definedAliases = [ "n" ];
+                definedAliases = [ "nix" ];
               };
               "Amazon.com".metaData.hidden = true;
               "Bing".metaData.hidden = true;
