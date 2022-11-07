@@ -1,6 +1,6 @@
 { email, inputs, config, pkgs, sops-nix, system, user, ... }:
 
-# FIXME: disable cursor blink
+# TODO: set font to Hack
 # FIXME: volume function keys
 # FIXME: set keyboard repeat rate
 # FIXME: why does polybar not start with bspwm?
@@ -199,6 +199,14 @@
         };
         whitespace.render.tab = "all";
       };
+    };
+  };
+
+  programs.kitty = {
+    enable = true;
+    settings = {
+      cursor_blink_interval = 0;
+      scrollback_lines = 50000;
     };
   };
 
