@@ -76,49 +76,6 @@
     };
   };
 
-  programs.gh = {
-    enable = true;
-    settings = {
-      git_protocol = "https";
-      prompt = "enabled";
-      pager = "delta";
-      aliases = {
-        co = "pr checkout";
-      };
-    };
-  };
-
-  programs.helix = {
-    enable = true;
-    package = inputs.helix.packages.${system}.default;
-    languages = [
-      {
-        name = "markdown";
-        language-server.command = "ltex-ls";
-      }
-    ];
-    settings = {
-      # TODO: use variable to set theme
-      theme = "catppuccin_mocha";
-      keys.normal = {
-        C-h = "jump_view_left";
-        C-j = "jump_view_down";
-        C-k = "jump_view_up";
-        C-l = "jump_view_right";
-        space.t = ":tree-sitter-subtree";
-      };
-      editor = {
-        idle-timeout = 0;
-        cursor-shape = {
-          normal = "block";
-          insert = "bar";
-          select = "underline";
-        };
-        whitespace.render.tab = "all";
-      };
-    };
-  };
-
   programs.firefox = {
     enable = true;
     extensions = with pkgs.nur.repos.rycee.firefox-addons; [
@@ -198,6 +155,49 @@
           "toolkit.telemetry.unified" = false;
           "toolkit.telemetry.updatePing.enabled" = false;
         };
+      };
+    };
+  };
+
+  programs.gh = {
+    enable = true;
+    settings = {
+      git_protocol = "https";
+      prompt = "enabled";
+      pager = "delta";
+      aliases = {
+        co = "pr checkout";
+      };
+    };
+  };
+
+  programs.helix = {
+    enable = true;
+    package = inputs.helix.packages.${system}.default;
+    languages = [
+      {
+        name = "markdown";
+        language-server.command = "ltex-ls";
+      }
+    ];
+    settings = {
+      # TODO: use variable to set theme
+      theme = "catppuccin_mocha";
+      keys.normal = {
+        C-h = "jump_view_left";
+        C-j = "jump_view_down";
+        C-k = "jump_view_up";
+        C-l = "jump_view_right";
+        space.t = ":tree-sitter-subtree";
+      };
+      editor = {
+        idle-timeout = 0;
+        cursor-shape = {
+          normal = "block";
+          insert = "bar";
+          select = "underline";
+        };
+        whitespace.render.tab = "all";
       };
     };
   };
