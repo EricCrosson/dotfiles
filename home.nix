@@ -11,7 +11,6 @@
 # TODO: set font to Hack
 # FIXME: volume function keys
 # FIXME: screen tearing
-# FIXME: set keyboard repeat rate
 # FIXME: why does polybar not start with bspwm?
 # FIXME: what happened to my virtual desktops with bspwm?
 {

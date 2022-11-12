@@ -139,6 +139,9 @@ in {
   services.xserver.windowManager.bspwm = {
     enable = true;
   };
+  services.xserver.displayManager.sessionCommands = ''
+    ${pkgs.xorg.xset}/bin/xset r rate 172 83
+  '';
 
   services.kmonad = {
     enable = true;
