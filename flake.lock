@@ -217,21 +217,6 @@
     },
     "flake-utils_4": {
       "locked": {
-        "lastModified": 1644229661,
-        "narHash": "sha256-1YdnJAsNy69bpcjuoKdOYQX0YxZBiCYZo4Twxerqv7k=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "3cecb5b042f7f209c56ffd8371b2711a290ec797",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "flake-utils_5": {
-      "locked": {
         "lastModified": 1659877975,
         "narHash": "sha256-zllb8aq3YO3h8B/U0/J1WBgAL8EX5yWf5pMj3G0NAmc=",
         "owner": "numtide",
@@ -272,11 +257,11 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1667895065,
-        "narHash": "sha256-FIUxmZx9pzWh2+LGUXqoWhGqi0M5Df5HG8V0e7i12EY=",
+        "lastModified": 1668268094,
+        "narHash": "sha256-FkZW1s76UruIY8tZtt9ERMCFR4xj6XmQ2nNDNEKDj6Q=",
         "owner": "ericcrosson",
         "repo": "git-disjoint",
-        "rev": "a8e4eefe1ba0d3b853fd368f90f920df176a5ed3",
+        "rev": "434492b10b0a96007179181880784629812951c2",
         "type": "github"
       },
       "original": {
@@ -294,11 +279,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1668040964,
-        "narHash": "sha256-+UW8YOqCO+xD7Ay0qK7xWmzghvtwKN68BrGDDYGQ6Gk=",
+        "lastModified": 1668215648,
+        "narHash": "sha256-zUo+0zGFyYycVr+INsqbO1qmfV8tdaNQf88xOeYH5TE=",
         "owner": "helix-editor",
         "repo": "helix",
-        "rev": "d7136d691a32cb327c358ab9e19bd9d25d61a457",
+        "rev": "1f72d342493206b83ed82efd402aca712eaffbf8",
         "type": "github"
       },
       "original": {
@@ -384,16 +369,18 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1645655918,
-        "narHash": "sha256-ZfbEFRW7o237+A1P7eTKhXje435FCAoe0blj2n20Was=",
+        "lastModified": 1668087632,
+        "narHash": "sha256-T/cUx44aYDuLMFfaiVpMdTjL4kpG7bh0VkN6JEM78/E=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "77a7a4197740213879b9a1d2e1788c6c8ade4274",
+        "rev": "5f588eb4a958f1a526ed8da02d6ea1bea0047b9f",
         "type": "github"
       },
       "original": {
-        "id": "nixpkgs",
-        "type": "indirect"
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "nixpkgs-22_05": {
@@ -412,29 +399,13 @@
         "type": "github"
       }
     },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1667901915,
-        "narHash": "sha256-IkSou5ox/yZ2YUhGpk8vxd2TNU2pwRlYtir5k55NaxE=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "093268502280540a7f5bf1e2a6330a598ba3b7d0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nur": {
       "locked": {
-        "lastModified": 1668038359,
-        "narHash": "sha256-xsEG4/ZoUpG7VWymXgRD2MAN0nkKneeD84f4RUpsNic=",
+        "lastModified": 1668255064,
+        "narHash": "sha256-JWVzaBAC9eL+Eg/SG71ZPSDQQd/eO9sS2YNGrlDDEH4=",
         "owner": "nix-community",
         "repo": "nur",
-        "rev": "71dadb246555d9acab72a953cdb051dcbd926464",
+        "rev": "9a0be7d4b9de779707b8788c6bdaaf23160a7975",
         "type": "github"
       },
       "original": {
@@ -445,8 +416,14 @@
     },
     "pre-commit-hooks": {
       "inputs": {
-        "flake-utils": "flake-utils_4",
-        "nixpkgs": "nixpkgs"
+        "flake-utils": [
+          "git-disjoint",
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "git-disjoint",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1658611562,
@@ -492,7 +469,7 @@
         "helix": "helix",
         "home-manager": "home-manager",
         "jsonnet-language-server": "jsonnet-language-server",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "nur": "nur",
         "pre-commit-hooks": "pre-commit-hooks_2",
         "sops-nix": "sops-nix"
@@ -517,7 +494,7 @@
     },
     "rust-overlay": {
       "inputs": {
-        "flake-utils": "flake-utils_5",
+        "flake-utils": "flake-utils_4",
         "nixpkgs": [
           "helix",
           "nixpkgs"
