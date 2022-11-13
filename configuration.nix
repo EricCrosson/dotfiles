@@ -197,6 +197,20 @@ in {
   # Enable CUPS to print documents.
   # services.printing.enable = true;
 
+  # https://discourse.nixos.org/t/warning-boot-enablecontainers-virtualisation-containers-unsupported/21249
+  boot.enableContainers = false;
+  virtualisation = {
+    podman = {
+      enable = true;
+
+      # Create a `docker` alias for podman, to use it as a drop-in replacement
+      dockerCompat = true;
+
+      # Required for containers under podman-compose to be able to talk to each other.
+      defaultNetwork.dnsname.enable = true;
+    };
+  };
+
   nix = {
     settings = {
       auto-optimise-store = true;
