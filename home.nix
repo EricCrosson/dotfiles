@@ -41,6 +41,7 @@
     evtest
     fd
     git
+    git-absorb
     git-extras
     gnupg
     htop
