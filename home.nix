@@ -68,7 +68,7 @@
     hub
     python
     starship
-    # wakatime
+    wakatime
 
     # for window manager
     polybar
