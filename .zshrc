@@ -80,14 +80,10 @@ source "${HOME}/.zgen/zgen.zsh"
 if ! zgen saved; then
   zgen oh-my-zsh
   zgen oh-my-zsh plugins/colored-man-pages
-  zgen oh-my-zsh plugins/brew
-  zgen oh-my-zsh plugins/docker-compose
   zgen oh-my-zsh plugins/docker
-  zgen oh-my-zsh plugins/git-flow
   zgen oh-my-zsh plugins/kubectl
   zgen oh-my-zsh plugins/node
   zgen oh-my-zsh plugins/ripgrep
-  zgen oh-my-zsh plugins/ubuntu
 
   zgen load esc-zsh/smart-cd
   zgen load hlissner/zsh-autopair
@@ -96,7 +92,7 @@ if ! zgen saved; then
   zgen load reegnz/jq-zsh-plugin
   zgen load robsis/zsh-completion-generator
   zgen load sobolevn/wakatime-zsh-plugin
-  zgen load zsh-users/zsh-autosuggestions  # does incur a slowdown, especially during paste
+  zgen load zsh-users/zsh-autosuggestions  # does incur a runtime slowdown, especially during paste
   zgen load zsh-users/zsh-completions
   zgen load zsh-users/zsh-history-substring-search
 
@@ -114,6 +110,7 @@ fi
 alias bat='bat -pp --theme="Catppuccin-mocha"'
 alias c='cargo'
 alias d='docker'
+alias git='hub'
 # FIXME: not using chezmoi templates anymore
 alias grip='grip --pass {{ .github.gh_token }}'
 alias h='hx --vsplit'
@@ -133,8 +130,6 @@ alias gfa='git fetch --all --prune --jobs=10'
 alias g='git'
 alias gs='git status'
 alias gsu='git submodule update'
-
-eval "$(hub alias -s)"
 
 # Make and change directory
 # Usage: mc <dir>
@@ -163,7 +158,23 @@ bindkey '^T' transpose-chars
 # jira config
 #####################################################################
 
-eval "$(jira --completion-script-zsh)"
+# Output of this command is cached below
+# eval "$(jira --completion-script-zsh)"
+#compdef jira
+# autoload -U compinit && compinit
+# autoload -U bashcompinit && bashcompinit
+
+_jira_bash_autocomplete() {
+    local cur prev opts base
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    opts=$( ${COMP_WORDS[0]} --completion-bash ${COMP_WORDS[@]:1:$COMP_CWORD} )
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    return 0
+}
+complete -F _jira_bash_autocomplete jira
+# End cached output
+
 # source "${HOME}/.local/share/zsh/jira"
 
 #####################################################################
@@ -175,6 +186,21 @@ eval "$(starship init zsh)"
 unsetopt sharehistory
 setopt appendhistory
 
-eval "$(direnv hook zsh)"
+# Output of this command is cached below
+# eval "$(direnv hook zsh)"
+_direnv_hook() {
+  trap -- '' SIGINT;
+  eval "$("/nix/store/r13cd02nqp2m7d9p20jjh9q4ykcwdizb-direnv-2.32.1/bin/direnv" export zsh)";
+  trap - SIGINT;
+}
+typeset -ag precmd_functions;
+if [[ -z "${precmd_functions[(r)_direnv_hook]+1}" ]]; then
+  precmd_functions=( _direnv_hook ${precmd_functions[@]} )
+fi
+typeset -ag chpwd_functions;
+if [[ -z "${chpwd_functions[(r)_direnv_hook]+1}" ]]; then
+  chpwd_functions=( _direnv_hook ${chpwd_functions[@]} )
+fi
+# End cached output
 
 # zprof
