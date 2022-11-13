@@ -35,8 +35,10 @@
     amber
     bat
     bottom
+    cargo-watch
     curl
     delta
+    du-dust
     entr
     evtest
     fd
