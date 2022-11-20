@@ -14,6 +14,7 @@
     user = {
       username = "eric";
       email = "eric.s.crosson@utexas.edu";
+      theme = "mocha";
     };
     pkgs = import nixpkgs {
       inherit system;

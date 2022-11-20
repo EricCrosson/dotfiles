@@ -92,18 +92,22 @@
   programs.bat = {
     enable = true;
     config = {
-      theme = "catppuccin-mocha";
+      theme = "catppuccin-${user.theme}";
       style = "plain";
       paging = "never";
     };
-    themes = {
-      catppuccin-mocha = builtins.readFile (pkgs.fetchFromGitHub {
-          owner = "catppuccin";
-          repo = "bat";
-          rev = "ba4d16880d63e656acced2b7d4e034e4a93f74b1";
-          sha256 = "sha256-6WVKQErGdaqb++oaXnY3i6/GuH2FhTgK0v4TN4Y0Wbw=";
-        }
-        + "/Catppuccin-mocha.tmTheme");
+    themes = let
+      catppuccin-bat = pkgs.fetchFromGitHub {
+        owner = "catppuccin";
+        repo = "bat";
+        rev = "ba4d16880d63e656acced2b7d4e034e4a93f74b1";
+        sha256 = "sha256-6WVKQErGdaqb++oaXnY3i6/GuH2FhTgK0v4TN4Y0Wbw=";
+      };
+    in {
+      catppuccin-frappe = builtins.readFile (catppuccin-bat + "/Catppuccin-frappe.tmTheme");
+      catppuccin-latte = builtins.readFile (catppuccin-bat + "/Catppuccin-latte.tmTheme");
+      catppuccin-macchiato = builtins.readFile (catppuccin-bat + "/Catppuccin-macchiato.tmTheme");
+      catppuccin-mocha = builtins.readFile (catppuccin-bat + "/Catppuccin-mocha.tmTheme");
     };
   };
 
@@ -336,8 +340,7 @@
       }
     ];
     settings = {
-      # TODO: use variable to set theme
-      theme = "catppuccin_mocha";
+      theme = "catppuccin_${user.theme}";
       keys.normal = {
         C-h = "jump_view_left";
         C-j = "jump_view_down";
