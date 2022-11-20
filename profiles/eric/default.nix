@@ -74,6 +74,9 @@
     # for window manager
     polybar
     rofi
+    pamixer
+    pavucontrol # Graphival audio control
+    playerctl
   ];
 
   # FIXME: this doesn't appear to be active
