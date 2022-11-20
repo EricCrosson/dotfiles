@@ -1,13 +1,15 @@
 # Tutorial from
 # https://github.com/kmonad/kmonad/blob/af8c2253754882b5b50c824ce9906d35f9b95657/doc/installation.md?plain=1#L452
-
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   cfg = config.services.kmonad;
 
   # Per-keyboard options:
-  keyboard = { name, ... }: {
+  keyboard = {name, ...}: {
     options = {
       name = lib.mkOption {
         type = lib.types.str;
@@ -23,8 +25,8 @@ let
 
       extraGroups = lib.mkOption {
         type = lib.types.listOf lib.types.str;
-        default = [ ];
-        example = [ "openrazer" ];
+        default = [];
+        example = ["openrazer"];
         description = ''
           Extra permission groups to attach to the KMonad instance for
           this keyboard.
@@ -75,21 +77,23 @@ let
   };
 
   # Create a complete KMonad configuration file:
-  mkCfg = keyboard:
-    let defcfg = ''
-      (defcfg
-        input  (device-file "${keyboard.device}")
-        output (uinput-sink "kmonad-${keyboard.name}")
-    '' +
-    lib.optionalString (keyboard.defcfg.compose.key != null) ''
-      cmp-seq ${keyboard.defcfg.compose.key}
-      cmp-seq-delay ${toString keyboard.defcfg.compose.delay}
-    '' + ''
-        fallthrough ${lib.boolToString keyboard.defcfg.fallthrough}
-        allow-cmd ${lib.boolToString keyboard.defcfg.allowCommands}
-      )
-    '';
-    in
+  mkCfg = keyboard: let
+    defcfg =
+      ''
+        (defcfg
+          input  (device-file "${keyboard.device}")
+          output (uinput-sink "kmonad-${keyboard.name}")
+      ''
+      + lib.optionalString (keyboard.defcfg.compose.key != null) ''
+        cmp-seq ${keyboard.defcfg.compose.key}
+        cmp-seq-delay ${toString keyboard.defcfg.compose.delay}
+      ''
+      + ''
+          fallthrough ${lib.boolToString keyboard.defcfg.fallthrough}
+          allow-cmd ${lib.boolToString keyboard.defcfg.allowCommands}
+        )
+      '';
+  in
     pkgs.writeTextFile {
       name = "kmonad-${keyboard.name}.cfg";
       text = lib.optionalString keyboard.defcfg.enable (defcfg + "\n") + keyboard.config;
@@ -102,39 +106,41 @@ let
     name = "kmonad-${keyboard.name}";
     value = {
       description = "KMonad trigger for ${keyboard.device}";
-      wantedBy = [ "default.target" ];
+      wantedBy = ["default.target"];
       pathConfig.Unit = "${name}.service";
       pathConfig.PathExists = keyboard.device;
     };
   };
 
   # Build a systemd service that starts KMonad:
-  mkService = keyboard:
-    let
-      cmd = [
+  mkService = keyboard: let
+    cmd =
+      [
         "${cfg.package}/bin/kmonad"
-      ] ++ cfg.extraArgs ++ [
+      ]
+      ++ cfg.extraArgs
+      ++ [
         "${mkCfg keyboard}"
       ];
 
-      groups = [
+    groups =
+      [
         "input"
         "uinput"
-      ] ++ keyboard.extraGroups;
-    in
-    {
-      name = "kmonad-${keyboard.name}";
-      value = {
-        description = "KMonad for ${keyboard.device}";
-        script = lib.escapeShellArgs cmd;
-        serviceConfig.Restart = "no";
-        serviceConfig.User = "kmonad";
-        serviceConfig.SupplementaryGroups = groups;
-        serviceConfig.Nice = -20;
-      };
+      ]
+      ++ keyboard.extraGroups;
+  in {
+    name = "kmonad-${keyboard.name}";
+    value = {
+      description = "KMonad for ${keyboard.device}";
+      script = lib.escapeShellArgs cmd;
+      serviceConfig.Restart = "no";
+      serviceConfig.User = "kmonad";
+      serviceConfig.SupplementaryGroups = groups;
+      serviceConfig.Nice = -20;
     };
-in
-{
+  };
+in {
   options.services.kmonad = {
     enable = lib.mkEnableOption "KMonad: An advanced keyboard manager.";
 
@@ -147,23 +153,23 @@ in
 
     keyboards = lib.mkOption {
       type = lib.types.attrsOf (lib.types.submodule keyboard);
-      default = { };
+      default = {};
       description = "Keyboard configuration.";
     };
 
     extraArgs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ ];
-      example = [ "--log-level" "debug" ];
+      default = [];
+      example = ["--log-level" "debug"];
       description = "Extra arguments to pass to KMonad.";
     };
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ cfg.package ];
+    environment.systemPackages = [cfg.package];
 
-    users.groups.uinput = { };
-    users.groups.kmonad = { };
+    users.groups.uinput = {};
+    users.groups.kmonad = {};
 
     users.users.kmonad = {
       description = "KMonad system user.";
@@ -178,10 +184,10 @@ in
 
     systemd.paths =
       builtins.listToAttrs
-        (map mkPath (builtins.attrValues cfg.keyboards));
+      (map mkPath (builtins.attrValues cfg.keyboards));
 
     systemd.services =
       builtins.listToAttrs
-        (map mkService (builtins.attrValues cfg.keyboards));
+      (map mkService (builtins.attrValues cfg.keyboards));
   };
 }

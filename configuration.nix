@@ -13,7 +13,7 @@
 in {
   imports = [
     ./hardware-configuration.nix # Include the results of the hardware scan
-    ./kmonad-nixos-module.nix
+    ./modules/kmonad.nix
     ./modules/sops.nix
   ];
 
