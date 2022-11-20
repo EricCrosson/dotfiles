@@ -78,6 +78,7 @@
     rofi
   ];
 
+  # FIXME: this doesn't appear to be active
   programs.atuin = {
     enable = true;
     settings = {
@@ -88,7 +89,7 @@
     };
   };
 
-  # Note: I had to run "bat cache --build" to get this theme to be picked up
+  # Note: I had to run "bat cache --build" to get this theme to be picked up.
   # Closed issue: https://github.com/nix-community/home-manager/issues/2482
   programs.bat = {
     enable = true;
