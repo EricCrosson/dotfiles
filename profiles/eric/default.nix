@@ -497,6 +497,11 @@
           isDefault = true;
           bookmarks = [
             {
+              name = "Discord";
+              keyword = "discord";
+              url = "https://discord.com/channels/@me";
+            }
+            {
               name = "GitHub Notifications";
               keyword = "n";
               url = "https://github.com/notifications?query=is%3Aunread";
