@@ -109,13 +109,16 @@
     kitty
     killall
     nano # Nano is installed by default
-    pavucontrol # Graphival audio control
     sops
     tree
     vim
     wget
     xclip
     yubioath-desktop
+
+    pamixer
+    pavucontrol # Graphival audio control
+    playerctl
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

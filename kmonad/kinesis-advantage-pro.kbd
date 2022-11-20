@@ -1,5 +1,6 @@
 (defalias
   xtl (tap-hold-next 1000 esc lctl)    ;; tap for esc, hold for lctrl
+  play playpause
 )
 
 ;; https://github.com/shofel/dotfiles/blob/e40fc87d664f61633e8ce55082fc96bcd878041a/home-nix/kmonad/kinesis_130P.kbd
@@ -16,7 +17,7 @@
 )
 
 (deflayer base
-  esc  F1   F2   F3   F4   F5   F6   F7   F8   F9   F10  F11  F12  prnt slck pause
+  esc  F1   F2   F3   F4   F5   F6   F7   F8   play mute vold volu prnt slck pause
   =    1    2    3    4    5                   6    7    8    9    0    -
   tab  q    w    e    r    t                   y    u    i    o    p    \
   @xtl a    s    d    f    g                   h    j    k    l    ;    '

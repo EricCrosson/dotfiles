@@ -7,7 +7,6 @@
   ...
 }:
 # TODO: set font to Hack
-# FIXME: volume function keys
 # FIXME: screen tearing
 # FIXME: why does polybar not start with bspwm?
 # FIXME: what happened to my virtual desktops with bspwm?
@@ -554,6 +553,16 @@
       # move a floating window
       super + {Left,Down,Up,Right}
       	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+      # volume control
+      XF86AudioMute
+        pamixer --toggle-mute
+      XF86AudioLowerVolume
+        pamixer --decrease 5
+      XF86AudioRaiseVolume
+        pamixer --increase 5
+      XF86AudioPlay
+        playerctl --player=%any play-pause
     '';
   };
 
