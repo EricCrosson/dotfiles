@@ -17,6 +17,31 @@
         "type": "github"
       }
     },
+    "ast-grep": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "dir": "ast-grep",
+        "lastModified": 1668902776,
+        "narHash": "sha256-KxiCTvGg3NRG9jwXxTbbEh+8VJl4/7xfmlceZso1OSo=",
+        "owner": "ericcrosson",
+        "repo": "escpkgs",
+        "rev": "932a2a44bf4ac7843b04870df56a916d37e5ede7",
+        "type": "github"
+      },
+      "original": {
+        "dir": "ast-grep",
+        "owner": "ericcrosson",
+        "repo": "escpkgs",
+        "type": "github"
+      }
+    },
     "crane": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -464,6 +489,7 @@
     },
     "root": {
       "inputs": {
+        "ast-grep": "ast-grep",
         "flake-utils": "flake-utils",
         "git-disjoint": "git-disjoint",
         "helix": "helix",

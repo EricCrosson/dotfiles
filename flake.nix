@@ -4,6 +4,11 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    ast-grep = {
+      url = "github:ericcrosson/escpkgs?dir=ast-grep";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     git-disjoint = {
       url = "github:ericcrosson/git-disjoint";
       inputs.nixpkgs.follows = "nixpkgs";

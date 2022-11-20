@@ -33,6 +33,7 @@
 
   home.packages = with pkgs; [
     amber
+    inputs.ast-grep.packages.${system}.default
     bat
     bottom
     cargo-watch
