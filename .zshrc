@@ -109,8 +109,7 @@ fi
 alias c='cargo'
 alias d='docker'
 alias git='hub'
-# FIXME: not using chezmoi templates anymore
-alias grip='grip --pass {{ .github.gh_token }}'
+alias grip='grip --pass $GH_TOKEN'
 alias h='hx --vsplit'
 alias j='jira'
 alias l='exa -lg --git --time-style=long-iso'

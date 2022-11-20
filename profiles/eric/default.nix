@@ -35,15 +35,25 @@
       gnupg
       htop
       hub
+      python310Packages.grip
       ripgrep
+      rm-improved
+      sd
       viddy
+      viu
       vim
       wget
+
+      # Still missing
+      # kubectx
+      # ltex-ls
+      # git diff-regex
 
       # Helix and supporting tools
       inputs.jsonnet-language-server.packages.${system}.jsonnet-tool
       nil
       nodePackages.bash-language-server
+      nodePackages.dockerfile-language-server-nodejs
       nodePackages.typescript-language-server
       nodePackages.vscode-langservers-extracted
       rust-analyzer
