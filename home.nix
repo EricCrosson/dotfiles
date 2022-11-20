@@ -111,6 +111,11 @@
             keyword = "p";
             url = "https://github.com/pulls";
           }
+          {
+            name = "Helix Editor Keymap";
+            keyword = "hx";
+            url = "https://docs.helix-editor.com/master/keymap.html";
+          }
         ];
         search = {
           default = "Google";
