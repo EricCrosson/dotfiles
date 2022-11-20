@@ -34,7 +34,6 @@
       git-extras
       gnupg
       htop
-      hub
       python310Packages.grip
       ripgrep
       rm-improved
