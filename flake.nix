@@ -11,38 +11,27 @@
     ...
   }: let
     system = "x86_64-linux";
-    # REFACTOR: use a user object here
-    user = "eric";
-    email = "eric.s.crosson@utexas.edu";
+    user = {
+      username = "eric";
+      email = "eric.s.crosson@utexas.edu";
+    };
     pkgs = import nixpkgs {
       inherit system;
       config.allowUnfree = true;
       overlays = [
         inputs.nur.overlay
+        (self: super: {
+          # Enable Nix flakes with direnv.
+          nix-direnv = super.nix-direnv.override {enableFlakes = true;};
+        })
       ];
     };
     lib = nixpkgs.lib;
 
     specialArgs = {
       # Pass variables to configuration.nix
-      inherit email inputs pkgs user sops-nix system;
+      inherit inputs pkgs user system;
     };
-
-    modules = [
-      ./configuration.nix
-      sops-nix.nixosModules.sops
-      home-manager.nixosModules.home-manager
-      {
-        home-manager = {
-          useGlobalPkgs = true;
-          useUserPackages = true;
-          extraSpecialArgs = specialArgs;
-          users.${user} = {
-            imports = [./home.nix];
-          };
-        };
-      }
-    ];
 
     checks = {
       pre-commit-check = pre-commit-hooks.lib.${system}.run {
@@ -53,11 +42,6 @@
       };
     };
   in {
-    nixosConfigurations = {
-      chimp = lib.nixosSystem {
-        inherit system modules specialArgs;
-      };
-    };
     devShells.${system}.default = pkgs.mkShell {
       inherit (checks.pre-commit-check) shellHook;
       # imports all files ending in .asc/.gpg
@@ -68,6 +52,26 @@
       nativeBuildInputs = [
         (pkgs.callPackage sops-nix {}).sops-import-keys-hook
       ];
+    };
+    nixosConfigurations = {
+      belisaere = lib.nixosSystem {
+        inherit system specialArgs;
+        modules = [
+          ./hosts/belisaere/configuration.nix
+          sops-nix.nixosModules.sops
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              extraSpecialArgs = specialArgs;
+              users.${user.username} = {
+                imports = [./profiles/eric];
+              };
+            };
+          }
+        ];
+      };
     };
   };
 

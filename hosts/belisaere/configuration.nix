@@ -3,8 +3,8 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
   config,
-  pkgs,
   lib,
+  pkgs,
   system,
   user,
   inputs,
@@ -12,7 +12,7 @@
 }: {
   imports = [
     ./hardware-configuration.nix # Include the results of the hardware scan
-    ./modules/sops.nix
+    ../../modules/sops.nix
     inputs.kmonad.nixosModules.default
   ];
 
@@ -21,7 +21,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "chimp"; # Define your hostname.
+  networking.hostName = "belisaere"; # Define your hostname.
   networking.nameservers = [
     "192.168.1.76" # Use a pi-hole when possible
     "8.8.8.8"
@@ -77,9 +77,9 @@
   };
 
   # Define a user account.
-  users.users.${user} = {
+  users.users.${user.username} = {
     isNormalUser = true;
-    home = "/home/${user}";
+    home = "/home/${user.username}";
     description = "Eric Crosson";
     extraGroups = [
       "wheel" # Enable 'sudo' for the user.
@@ -206,12 +206,6 @@
     # Include direnvrc in nix store.
     "/share/nix-direnv" # This file is sourced by each user's ~/.direnvrc
     "/share/zsh" # Enable zsh completion for system packages
-  ];
-  nixpkgs.overlays = [
-    # Enable Nix flakes with direnv.
-    (self: super: {
-      nix-direnv = super.nix-direnv.override {enableFlakes = true;};
-    })
   ];
 
   system = {

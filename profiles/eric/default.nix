@@ -1,11 +1,9 @@
 {
   config,
-  email,
-  inputs,
   pkgs,
-  sops-nix,
   system,
   user,
+  inputs,
   ...
 }:
 # TODO: set font to Hack
@@ -16,8 +14,8 @@
 {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-  home.username = "${user}";
-  home.homeDirectory = "/home/${user}";
+  home.username = "${user.username}";
+  home.homeDirectory = "/home/${user.username}";
 
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
@@ -32,8 +30,10 @@
   programs.home-manager.enable = true; # Let Home Manager install and manage itself.
 
   home.packages = with pkgs; [
-    amber
     inputs.ast-grep.packages.${system}.default
+    inputs.git-disjoint.packages.${system}.default
+
+    amber
     bottom
     cargo-watch
     curl
@@ -48,10 +48,9 @@
     gnupg
     htop
     hub
-    inputs.git-disjoint.packages.${system}.default
     ripgrep
-    vim
     viddy
+    vim
     wget
 
     # Helix and supporting tools
@@ -232,7 +231,7 @@
   programs.git = {
     enable = true;
     userName = "Eric Crosson";
-    userEmail = "${email}";
+    userEmail = "${user.email}";
     aliases = {
       a = "add";
       b = "branch";
@@ -301,7 +300,7 @@
         };
       };
       github = {
-        user = "${email}";
+        user = "${user.email}";
       };
       gpg = {
         program = "${pkgs.gnupg}";
@@ -427,8 +426,8 @@
 
   # Shell
   # REFACTOR: use home.shellAliases
-  home.file.".zshenv".source = ./.zshenv;
-  home.file.".zshrc".source = ./.zshrc;
+  home.file.".zshenv".source = ../../.zshenv;
+  home.file.".zshrc".source = ../../.zshrc;
 
   # Window Manager
   home.file.".config/sxhkd/sxhkdrc" = {
