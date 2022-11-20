@@ -61,7 +61,6 @@
     nodePackages.bash-language-server
     nodePackages.typescript-language-server
     nodePackages.vscode-langservers-extracted
-    rnix-lsp
     rust-analyzer
     shellcheck
     taplo-lsp # TOML
