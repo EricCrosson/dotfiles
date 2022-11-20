@@ -271,6 +271,32 @@
         "url": "https://gitlab.haskell.org/bgamari/ghc-utils"
       }
     },
+    "git-diff-regex": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pre-commit-hooks": [
+          "pre-commit-hooks"
+        ]
+      },
+      "locked": {
+        "lastModified": 1668988198,
+        "narHash": "sha256-CVwwBtLpMc53ilbtgUA76expl/OX4ZV8l7e2rmt3TkE=",
+        "owner": "ericcrosson",
+        "repo": "git-diff-regex",
+        "rev": "621939ba2bdce1d71f50e508be2defeaea6170e5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ericcrosson",
+        "repo": "git-diff-regex",
+        "type": "github"
+      }
+    },
     "git-disjoint": {
       "inputs": {
         "crane": "crane",
@@ -513,6 +539,7 @@
       "inputs": {
         "ast-grep": "ast-grep",
         "flake-utils": "flake-utils",
+        "git-diff-regex": "git-diff-regex",
         "git-disjoint": "git-disjoint",
         "helix": "helix",
         "home-manager": "home-manager",

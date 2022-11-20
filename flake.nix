@@ -85,6 +85,12 @@
       inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    git-diff-regex = {
+      url = "github:ericcrosson/git-diff-regex";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
+    };
     git-disjoint = {
       url = "github:ericcrosson/git-disjoint";
       inputs.nixpkgs.follows = "nixpkgs";

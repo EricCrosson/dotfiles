@@ -18,6 +18,7 @@
 
     packages = with pkgs; [
       inputs.ast-grep.packages.${system}.default
+      inputs.git-diff-regex.packages.${system}.default
       inputs.git-disjoint.packages.${system}.default
 
       amber
