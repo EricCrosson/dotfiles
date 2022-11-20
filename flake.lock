@@ -350,18 +350,18 @@
         ]
       },
       "locked": {
-        "dir": "jsonnet-language-server",
-        "lastModified": 1667678037,
-        "narHash": "sha256-nKytNEepLEjhuNPHJ0bVsanvpW/mCmbMdl/NGsFOutA=",
-        "owner": "ericcrosson",
-        "repo": "escpkgs",
-        "rev": "389dff4d7d930ee7aca53bb27e171c0f11673bec",
+        "dir": "nix",
+        "lastModified": 1668607158,
+        "narHash": "sha256-vDpCin9k6RkXi0MyOQpgFO+UIuDpKn+Y9wukiwpd+9Q=",
+        "owner": "grafana",
+        "repo": "jsonnet-language-server",
+        "rev": "c02475dc12e7eb9c0dc42d4cd33a0161e51de3fb",
         "type": "github"
       },
       "original": {
-        "dir": "jsonnet-language-server",
-        "owner": "ericcrosson",
-        "repo": "escpkgs",
+        "dir": "nix",
+        "owner": "grafana",
+        "repo": "jsonnet-language-server",
         "type": "github"
       }
     },

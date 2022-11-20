@@ -23,7 +23,7 @@
       inputs.utils.follows = "flake-utils";
     };
     jsonnet-language-server = {
-      url = "github:ericcrosson/escpkgs?dir=jsonnet-language-server";
+      url = "github:grafana/jsonnet-language-server?dir=nix";
       inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };

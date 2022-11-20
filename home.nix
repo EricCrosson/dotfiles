@@ -55,7 +55,7 @@
     wget
 
     # Helix and supporting tools
-    inputs.jsonnet-language-server.packages.${system}.default
+    inputs.jsonnet-language-server.packages.${system}.jsonnet-tool
     nil
     nodePackages.bash-language-server
     nodePackages.typescript-language-server
