@@ -57,6 +57,7 @@
 
     # Helix and supporting tools
     inputs.jsonnet-language-server.packages.${system}.default
+    nil
     nodePackages.bash-language-server
     nodePackages.typescript-language-server
     nodePackages.vscode-langservers-extracted
