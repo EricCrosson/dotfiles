@@ -7,14 +7,13 @@
   lib,
   system,
   user,
+  inputs,
   ...
-}: let
-  kmonad = import ./kmonad.nix pkgs;
-in {
+}: {
   imports = [
     ./hardware-configuration.nix # Include the results of the hardware scan
-    ./modules/kmonad.nix
     ./modules/sops.nix
+    inputs.kmonad.nixosModules.default
   ];
 
   # Use the systemd-boot EFI boot loader.
@@ -92,7 +91,6 @@ in {
       "networkmanager"
       "input"
       "uinput"
-      "kmonad" # for kmonad
     ];
   };
   security.sudo.wheelNeedsPassword = false;
@@ -109,7 +107,6 @@ in {
     git
     gnupg
     kitty
-    kmonad
     killall
     nano # Nano is installed by default
     pavucontrol # Graphival audio control
@@ -131,6 +128,23 @@ in {
   };
 
   # List services that you want to enable:
+  services.kmonad = {
+    enable = true;
+    package = inputs.kmonad.packages.${system}.default;
+    keyboards = {
+      kinesis-advantage-pro = {
+        name = "kinesis-advantage-pro";
+        device = "/dev/input/by-id/usb-05f3_0007-event-kbd";
+        defcfg = {
+          enable = true;
+          compose.key = null;
+          fallthrough = true;
+          allowCommands = false;
+        };
+        config = builtins.readFile "${inputs.self}/kmonad/kinesis-advantage-pro.kbd";
+      };
+    };
+  };
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
@@ -152,57 +166,6 @@ in {
   services.xserver.displayManager.sessionCommands = ''
     ${pkgs.xorg.xset}/bin/xset r rate 172 83
   '';
-
-  services.kmonad = {
-    enable = true;
-    package = kmonad;
-    keyboards = {
-      kinesis-advantage = {
-        name = "kinesis-advantage";
-        device = "/dev/input/by-id/usb-05f3_0007-event-kbd";
-        defcfg = {
-          enable = true;
-          compose.key = null;
-          fallthrough = true;
-          allowCommands = false;
-        };
-        config = ''
-          (defalias
-            xtl (tap-hold-next 1000 esc lctl)    ;; tap for esc, hold for lctrl
-          )
-
-          ;; https://github.com/shofel/dotfiles/blob/e40fc87d664f61633e8ce55082fc96bcd878041a/home-nix/kmonad/kinesis_130P.kbd
-          (defsrc
-            esc  F1   F2   F3   F4   F5   F6   F7   F8   F9   F10  F11  F12  prnt slck pause
-
-            =    1    2    3    4    5                   6    7    8    9    0    -
-            tab  q    w    e    r    t                   y    u    i    o    p    \
-            caps a    s    d    f    g                   h    j    k    l    ;    '
-            lsft z    x    c    v    b                   n    m    ,    .    / rsft
-                 grv  102d left rght                          up   down [    ]
-
-                                     lctl lalt   rmet rctl
-                                bspc del  home   pgup  ret spc
-                                           end   pgdn
-          )
-
-          (deflayer base
-            esc  F1   F2   F3   F4   F5   F6   F7   F8   F9   F10  F11  F12  prnt slck pause
-
-            =    1    2    3    4    5                   6    7    8    9    0    -
-            tab  q    w    e    r    t                   y    u    i    o    p    \
-            @xtl a    s    d    f    g                   h    j    k    l    ;    '
-            lsft z    x    c    v    b                   n    m    ,    .    / rsft
-                 grv  lmet left rght                          down up   [    ]
-
-                                     lctl lalt   ralt  rctl
-                                bspc del  home   pgup  ret spc
-                                           end   pgdn
-          )
-        '';
-      };
-    };
-  };
 
   # Enable CUPS to print documents.
   # services.printing.enable = true;

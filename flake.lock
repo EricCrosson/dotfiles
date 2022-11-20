@@ -365,6 +365,28 @@
         "type": "github"
       }
     },
+    "kmonad": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "dir": "nix",
+        "lastModified": 1666935187,
+        "narHash": "sha256-/7uLVQHQm+d1Qyl9VGfDN3toBp5LvRx+qLLKxNj2ak4=",
+        "owner": "kmonad",
+        "repo": "kmonad",
+        "rev": "820af08d1ef1bff417829415d5f673041b67ef4d",
+        "type": "github"
+      },
+      "original": {
+        "dir": "nix",
+        "owner": "kmonad",
+        "repo": "kmonad",
+        "type": "github"
+      }
+    },
     "nci": {
       "inputs": {
         "devshell": "devshell",
@@ -495,6 +517,7 @@
         "helix": "helix",
         "home-manager": "home-manager",
         "jsonnet-language-server": "jsonnet-language-server",
+        "kmonad": "kmonad",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
         "pre-commit-hooks": "pre-commit-hooks_2",
