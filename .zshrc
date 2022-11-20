@@ -106,8 +106,6 @@ fi
 # aliases
 #####################################################################
 
-# FIXME: install bat themes on nixos
-alias bat='bat -pp --theme="Catppuccin-mocha"'
 alias c='cargo'
 alias d='docker'
 alias git='hub'

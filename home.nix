@@ -34,7 +34,6 @@
   home.packages = with pkgs; [
     amber
     inputs.ast-grep.packages.${system}.default
-    bat
     bottom
     cargo-watch
     curl
@@ -86,6 +85,26 @@
       auto_sync = false;
       update_check = false;
       search_mode = "fuzzy";
+    };
+  };
+
+  # Note: I had to run "bat cache --build" to get this theme to be picked up
+  # Closed issue: https://github.com/nix-community/home-manager/issues/2482
+  programs.bat = {
+    enable = true;
+    config = {
+      theme = "catppuccin-mocha";
+      style = "plain";
+      paging = "never";
+    };
+    themes = {
+      catppuccin-mocha = builtins.readFile (pkgs.fetchFromGitHub {
+          owner = "catppuccin";
+          repo = "bat";
+          rev = "ba4d16880d63e656acced2b7d4e034e4a93f74b1";
+          sha256 = "sha256-6WVKQErGdaqb++oaXnY3i6/GuH2FhTgK0v4TN4Y0Wbw=";
+        }
+        + "/Catppuccin-mocha.tmTheme");
     };
   };
 
