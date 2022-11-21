@@ -42,6 +42,32 @@
         "type": "github"
       }
     },
+    "bash-barrier": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pre-commit-hooks": [
+          "pre-commit-hooks"
+        ]
+      },
+      "locked": {
+        "lastModified": 1669032660,
+        "narHash": "sha256-YmlnwAMEptkjvY4vRWpfFUu/Sgui70EkQnNDA5oleF8=",
+        "owner": "ericcrosson",
+        "repo": "bash-barrier",
+        "rev": "bb50eee04d5e013172aa2a2bec24ec3d5dcabc6a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ericcrosson",
+        "repo": "bash-barrier",
+        "type": "github"
+      }
+    },
     "crane": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -538,6 +564,7 @@
     "root": {
       "inputs": {
         "ast-grep": "ast-grep",
+        "bash-barrier": "bash-barrier",
         "flake-utils": "flake-utils",
         "git-diff-regex": "git-diff-regex",
         "git-disjoint": "git-disjoint",

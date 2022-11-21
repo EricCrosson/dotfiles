@@ -85,6 +85,12 @@
       inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    bash-barrier = {
+      url = "github:ericcrosson/bash-barrier";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
+    };
     git-diff-regex = {
       url = "github:ericcrosson/git-diff-regex";
       inputs.flake-utils.follows = "flake-utils";
