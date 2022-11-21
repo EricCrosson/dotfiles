@@ -48,7 +48,6 @@
       # Still missing
       # kubectx
       # ltex-ls
-      # git diff-regex
 
       # Helix and supporting tools
       inputs.jsonnet-language-server.packages.${system}.jsonnet-tool
