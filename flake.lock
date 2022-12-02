@@ -370,11 +370,11 @@
       },
       "locked": {
         "dir": "nix",
-        "lastModified": 1668607158,
-        "narHash": "sha256-vDpCin9k6RkXi0MyOQpgFO+UIuDpKn+Y9wukiwpd+9Q=",
+        "lastModified": 1669774299,
+        "narHash": "sha256-oPItt1v4wK0W0lSots3hoq5A1ooCRwzJV8cNYV+SBb4=",
         "owner": "grafana",
         "repo": "jsonnet-language-server",
-        "rev": "c02475dc12e7eb9c0dc42d4cd33a0161e51de3fb",
+        "rev": "048fc873038f8a0e5d8975da025ea697b250fb33",
         "type": "github"
       },
       "original": {
