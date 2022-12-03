@@ -12,78 +12,82 @@
 # FIXME: what happened to my virtual desktops with bspwm?
 let
   inherit (pkgs) stdenv;
-in
-{
+in {
   home = {
     username = "${user.username}";
     homeDirectory = "${user.homeDirectory}";
     stateVersion = "22.05";
 
-    packages = with pkgs; [
-      inputs.ast-grep.packages.${system}.default
-      inputs.bash-barrier.packages.${system}.default
-      inputs.git-diff-regex.packages.${system}.default
-      inputs.git-disjoint.packages.${system}.default
+    packages = with pkgs;
+      [
+        inputs.ast-grep.packages.${system}.default
+        inputs.bash-barrier.packages.${system}.default
+        inputs.git-diff-regex.packages.${system}.default
+        inputs.git-disjoint.packages.${system}.default
 
-      amber
-      bottom
-      cargo-watch
-      curl
-      delta
-      du-dust
-      entr
-      fd
-      git
-      git-absorb
-      git-extras
-      gnupg
-      htop
-      python310Packages.grip
-      ripgrep
-      rm-improved
-      sd
-      viddy
-      viu
-      vim
-      wget
+        amber
+        bottom
+        cargo-watch
+        curl
+        delta
+        du-dust
+        entr
+        fd
+        git
+        git-absorb
+        git-extras
+        gnupg
+        htop
+        python310Packages.grip
+        ripgrep
+        rm-improved
+        sd
+        viddy
+        viu
+        vim
+        wget
 
-      # Still missing
-      # kubectx
+        # Still missing
+        # kubectx
 
-      # Helix and supporting tools
-      inputs.jsonnet-language-server.packages.${system}.jsonnet-tool
-      hadolint
-      ltex-ls
-      nil
-      nodePackages.bash-language-server
-      nodePackages.dockerfile-language-server-nodejs
-      nodePackages.typescript-language-server
-      nodePackages.vscode-langservers-extracted
-      rust-analyzer
-      shellcheck
-      taplo-lsp # TOML
+        # Helix and supporting tools
+        inputs.jsonnet-language-server.packages.${system}.jsonnet-tool
+        hadolint
+        ltex-ls
+        nil
+        nodePackages.bash-language-server
+        nodePackages.dockerfile-language-server-nodejs
+        nodePackages.typescript-language-server
+        nodePackages.vscode-langservers-extracted
+        rust-analyzer
+        shellcheck
+        taplo-lsp # TOML
 
-      # for shell
-      exa
-      fzf
-      go-jira
-      hub
-      python
-      starship
-      wakatime
+        # for shell
+        exa
+        fzf
+        go-jira
+        hub
+        python
+        starship
+        wakatime
+      ]
+      ++ (
+        if stdenv.isDarwin
+        then [
+          direnv
+        ]
+        else [
+          evtest
 
-      # FIXME: only on x86_64-linux
-      # for window manager
-      # polybar
-      # rofi
-      # pamixer
-      # pavucontrol # Graphival audio control
-      # playerctl
-    ] ++ (if stdenv.isDarwin then [
-      direnv
-    ] else [
-      evtest
-    ]);
+          # for window manager
+          polybar
+          rofi
+          pamixer
+          pavucontrol # Graphival audio control
+          playerctl
+        ]
+      );
 
     file = {
       # DISCUSS: can we use a nix-provided path to this file?
@@ -495,7 +499,10 @@ in
 
     firefox = {
       enable = true;
-      package = if stdenv.isDarwin then pkgs.firefox-bin else pkgs.firefox;
+      package =
+        if stdenv.isDarwin
+        then pkgs.firefox-bin
+        else pkgs.firefox;
       extensions = with pkgs.nur.repos.rycee.firefox-addons; [
         onepassword-password-manager
         ublock-origin
