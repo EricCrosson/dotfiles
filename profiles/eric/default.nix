@@ -10,10 +10,13 @@
 # FIXME: screen tearing
 # FIXME: why does polybar not start with bspwm?
 # FIXME: what happened to my virtual desktops with bspwm?
+let
+  inherit (pkgs) stdenv;
+in
 {
   home = {
     username = "${user.username}";
-    homeDirectory = "/home/${user.username}";
+    homeDirectory = "${user.homeDirectory}";
     stateVersion = "22.05";
 
     packages = with pkgs; [
@@ -29,7 +32,6 @@
       delta
       du-dust
       entr
-      evtest
       fd
       git
       git-absorb
@@ -70,13 +72,18 @@
       starship
       wakatime
 
+      # FIXME: only on x86_64-linux
       # for window manager
-      polybar
-      rofi
-      pamixer
-      pavucontrol # Graphival audio control
-      playerctl
-    ];
+      # polybar
+      # rofi
+      # pamixer
+      # pavucontrol # Graphival audio control
+      # playerctl
+    ] ++ (if stdenv.isDarwin then [
+      direnv
+    ] else [
+      evtest
+    ]);
 
     file = {
       # DISCUSS: can we use a nix-provided path to this file?
@@ -488,6 +495,7 @@
 
     firefox = {
       enable = true;
+      package = if stdenv.isDarwin then pkgs.firefox-bin else pkgs.firefox;
       extensions = with pkgs.nur.repos.rycee.firefox-addons; [
         onepassword-password-manager
         ublock-origin

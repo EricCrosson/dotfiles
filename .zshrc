@@ -184,20 +184,21 @@ unsetopt sharehistory
 setopt appendhistory
 
 # Output of this command is cached below
-# eval "$(direnv hook zsh)"
-_direnv_hook() {
-  trap -- '' SIGINT;
-  eval "$("/nix/store/r13cd02nqp2m7d9p20jjh9q4ykcwdizb-direnv-2.32.1/bin/direnv" export zsh)";
-  trap - SIGINT;
-}
-typeset -ag precmd_functions;
-if [[ -z "${precmd_functions[(r)_direnv_hook]+1}" ]]; then
-  precmd_functions=( _direnv_hook ${precmd_functions[@]} )
-fi
-typeset -ag chpwd_functions;
-if [[ -z "${chpwd_functions[(r)_direnv_hook]+1}" ]]; then
-  chpwd_functions=( _direnv_hook ${chpwd_functions[@]} )
-fi
+eval "$(direnv hook zsh)"
+# FIXME: caching needs to be host-specific
+# _direnv_hook() {
+#   trap -- '' SIGINT;
+#   eval "$("/nix/store/r13cd02nqp2m7d9p20jjh9q4ykcwdizb-direnv-2.32.1/bin/direnv" export zsh)";
+#   trap - SIGINT;
+# }
+# typeset -ag precmd_functions;
+# if [[ -z "${precmd_functions[(r)_direnv_hook]+1}" ]]; then
+#   precmd_functions=( _direnv_hook ${precmd_functions[@]} )
+# fi
+# typeset -ag chpwd_functions;
+# if [[ -z "${chpwd_functions[(r)_direnv_hook]+1}" ]]; then
+#   chpwd_functions=( _direnv_hook ${chpwd_functions[@]} )
+# fi
 # End cached output
 
 # zprof

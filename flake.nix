@@ -3,6 +3,7 @@
 
   outputs = inputs @ {
     self,
+    darwin,
     flake-utils,
     home-manager,
     nixpkgs,
@@ -10,9 +11,11 @@
     sops-nix,
     ...
   }: let
+    # TODO: support darwin
     system = "x86_64-linux";
     user = {
       username = "eric";
+      homeDirectory = "/home/eric";
       email = "eric.s.crosson@utexas.edu";
       theme = "mocha";
     };
@@ -55,6 +58,49 @@
         (pkgs.callPackage sops-nix {}).sops-import-keys-hook
       ];
     };
+    darwinConfigurations = {
+    # FIXME: will have to separate out the window-manager specific home-config code
+      MBP-0954 = darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        inherit inputs;
+        modules = [
+          ./hosts/MBP-0954/configuration.nix
+          home-manager.darwinModules.home-manager
+          {
+            users.users.ericcrosson.home = "/Users/ericcrosson";
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              extraSpecialArgs = {
+                system = "aarch64-darwin";
+                inherit inputs;
+                pkgs = import nixpkgs {
+                  system = "aarch64-darwin";
+                  config.allowUnfree = true;
+                  overlays = [
+                    inputs.firefox-darwin.overlay
+                    inputs.nur.overlay
+                    (self: super: {
+                      # Enable Nix flakes with direnv.
+                      nix-direnv = super.nix-direnv.override {enableFlakes = true;};
+                    })
+                  ];
+                };
+                user = {
+                  username = "ericcrosson";
+                  homeDirectory = "/Users/ericcrosson";
+                  email = "ericcrosson@bitgo.com";
+                  theme = "mocha";
+                };
+              };
+              users.ericcrosson = {
+                imports = [./profiles/eric];
+              };
+            };
+          }
+        ];
+      };
+    };
     nixosConfigurations = {
       belisaere = lib.nixosSystem {
         inherit system specialArgs;
@@ -90,6 +136,14 @@
       inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.pre-commit-hooks.follows = "pre-commit-hooks";
+    };
+    darwin = {
+      url = "github:lnl7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    firefox-darwin = {
+      url = "github:bandithedoge/nixpkgs-firefox-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     git-diff-regex = {
       url = "github:ericcrosson/git-diff-regex";
