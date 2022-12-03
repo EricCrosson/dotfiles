@@ -59,7 +59,6 @@
       ];
     };
     darwinConfigurations = {
-    # FIXME: will have to separate out the window-manager specific home-config code
       MBP-0954 = darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         inherit inputs;
