@@ -47,10 +47,10 @@
 
       # Still missing
       # kubectx
-      # ltex-ls
 
       # Helix and supporting tools
       inputs.jsonnet-language-server.packages.${system}.jsonnet-tool
+      ltex-ls
       nil
       nodePackages.bash-language-server
       nodePackages.dockerfile-language-server-nodejs
