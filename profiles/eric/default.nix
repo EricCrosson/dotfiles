@@ -50,6 +50,7 @@
 
       # Helix and supporting tools
       inputs.jsonnet-language-server.packages.${system}.jsonnet-tool
+      hadolint
       ltex-ls
       nil
       nodePackages.bash-language-server
