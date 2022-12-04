@@ -3,7 +3,11 @@
   inputs,
   withSystem,
   ...
-}: {
+}: let
+  preferences = {
+    theme = "mocha";
+  };
+in {
   flake.nixosConfigurations = withSystem "x86_64-linux" ({system, ...}: let
     # REFACTOR: apply overlays in one spot, for entire nixos config
     pkgs = import inputs.nixpkgs {
@@ -18,10 +22,10 @@
       ];
     };
     user = rec {
+      inherit preferences;
       username = "eric";
       homeDirectory = "/home/${username}";
       email = "eric.s.crosson@utexas.edu";
-      theme = "mocha";
     };
     specialArgs = {
       inherit inputs pkgs user;
@@ -59,10 +63,10 @@
       ];
     };
     user = rec {
+      inherit preferences;
       username = "ericcrosson";
       homeDirectory = "/Users/${username}";
       email = "ericcrosson@bitgo.com";
-      theme = "mocha";
     };
   in {
     MBP-0954 = inputs.darwin.lib.darwinSystem {

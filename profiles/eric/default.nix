@@ -114,7 +114,7 @@ in {
     bat = {
       enable = true;
       config = {
-        theme = "catppuccin-${user.theme}";
+        theme = "catppuccin-${user.preferences.theme}";
         style = "plain";
         paging = "never";
       };

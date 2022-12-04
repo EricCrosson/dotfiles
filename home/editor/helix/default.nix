@@ -29,7 +29,7 @@
       }
     ];
     settings = {
-      theme = "catppuccin_${user.theme}";
+      theme = "catppuccin_${user.preferences.theme}";
       keys.normal = {
         C-h = "jump_view_left";
         C-j = "jump_view_down";
