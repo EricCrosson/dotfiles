@@ -1,9 +1,11 @@
-{ config, pkgs, ... }:
-let
-  # TODO: support linux
+{pkgs, ...}: let
   pinentry-program = "${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac";
-in
-{
+in {
+  home.packages = with pkgs; [
+    # Manage direnv at the system level on NixOS, which isn't available on darwin.
+    direnv
+  ];
+
   config = {
     environment = {
       # List packages installed in system profile. To search by name, run:

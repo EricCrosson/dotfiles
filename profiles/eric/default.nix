@@ -11,78 +11,65 @@
 # FIXME: what happened to my virtual desktops with bspwm?
 let
   inherit (pkgs) stdenv;
-  commonImports = [
-  ];
   darwinImports = [
+    ../../os/darwin
   ];
   linuxImports = [
-    ../../home/window-manager/bspwm
+    ../../os/linux
   ];
 in {
-  imports =
-    commonImports
-    ++ (
-      if stdenv.isDarwin
-      then darwinImports
-      else linuxImports
-    );
+  imports = (
+    if stdenv.isDarwin
+    then darwinImports
+    else linuxImports
+  );
 
   home = {
     username = "${user.username}";
     homeDirectory = "${user.homeDirectory}";
     stateVersion = "22.05";
 
-    packages = with pkgs;
-      [
-        inputs.ast-grep.packages.${pkgs.system}.default
-        inputs.bash-barrier.packages.${pkgs.system}.default
-        inputs.git-diff-regex.packages.${pkgs.system}.default
-        inputs.git-disjoint.packages.${pkgs.system}.default
+    packages = with pkgs; [
+      inputs.ast-grep.packages.${pkgs.system}.default
+      inputs.bash-barrier.packages.${pkgs.system}.default
+      inputs.git-diff-regex.packages.${pkgs.system}.default
+      inputs.git-disjoint.packages.${pkgs.system}.default
 
-        amber
-        bottom
-        cargo-watch
-        curl
-        delta
-        du-dust
-        entr
-        fd
-        git
-        git-absorb
-        git-extras
-        gnupg
-        htop
-        python310Packages.grip
-        ripgrep
-        rm-improved
-        sd
-        viddy
-        viu
-        vim
-        wget
+      amber
+      bottom
+      cargo-watch
+      curl
+      delta
+      du-dust
+      entr
+      fd
+      git
+      git-absorb
+      git-extras
+      gnupg
+      htop
+      python310Packages.grip
+      ripgrep
+      rm-improved
+      sd
+      simplenote
+      viddy
+      viu
+      vim
+      wget
 
-        # Still missing
-        # kubectx
+      # Still missing
+      # kubectx
 
-        # for shell
-        exa
-        fzf
-        go-jira
-        hub
-        python
-        starship
-        wakatime
-      ]
-      ++ (
-        if stdenv.isDarwin
-        then [
-          # Manage direnv at the system level on NixOS, which isn't available on darwin.
-          direnv
-        ]
-        else [
-          evtest
-        ]
-      );
+      # for shell
+      exa
+      fzf
+      go-jira
+      hub
+      python
+      starship
+      wakatime
+    ];
 
     file = {
       # DISCUSS: can we use a nix-provided path to this file?

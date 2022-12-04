@@ -10,7 +10,12 @@
 
   homeImports = {
     "eric@MBP-0954" = sharedModules;
-    "eric@belisaere" = sharedModules;
+
+    "eric@belisaere" =
+      [
+        ../home/window-manager/bspwm
+      ]
+      ++ sharedModules;
   };
 
   inherit (inputs.home-manager.lib) homeManagerConfiguration;

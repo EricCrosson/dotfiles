@@ -72,7 +72,6 @@ in {
     MBP-0954 = inputs.darwin.lib.darwinSystem {
       inherit system;
       modules = [
-        ./MBP-0954/configuration.nix
         inputs.home-manager.darwinModules.home-manager
         {
           users.users.${user.username}.home = user.homeDirectory;
