@@ -9,6 +9,7 @@
     inputs.jsonnet-language-server.packages.${system}.jsonnet-tool
     hadolint
     ltex-ls
+    gopls
     nil
     nodePackages.bash-language-server
     nodePackages.dockerfile-language-server-nodejs
