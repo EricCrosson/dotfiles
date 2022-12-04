@@ -52,7 +52,6 @@ in {
       ripgrep
       rm-improved
       sd
-      simplenote
       viddy
       viu
       vim
