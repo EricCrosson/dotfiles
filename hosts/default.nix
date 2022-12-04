@@ -5,6 +5,7 @@
   ...
 }: {
   flake.nixosConfigurations = withSystem "x86_64-linux" ({system, ...}: let
+    # REFACTOR: apply overlays in one spot, for entire nixos config
     pkgs = import inputs.nixpkgs {
       inherit system;
       config.allowUnfree = true;
@@ -16,14 +17,9 @@
         })
       ];
     };
-    # TODO: avoid defining multiple times
-    homeDir = username:
-      if pkgs.stdenv.isDarwin
-      then "/Users/${username}"
-      else "/home/${username}";
     user = rec {
       username = "eric";
-      homeDirectory = homeDir username;
+      homeDirectory = "/home/${username}";
       email = "eric.s.crosson@utexas.edu";
       theme = "mocha";
     };
@@ -62,13 +58,9 @@
         })
       ];
     };
-    homeDir = username:
-      if pkgs.stdenv.isDarwin
-      then "/Users/${username}"
-      else "/home${username}";
     user = rec {
       username = "ericcrosson";
-      homeDirectory = homeDir username;
+      homeDirectory = "/Users/${username}";
       email = "ericcrosson@bitgo.com";
       theme = "mocha";
     };
@@ -79,7 +71,7 @@
         ./MBP-0954/configuration.nix
         inputs.home-manager.darwinModules.home-manager
         {
-          users.users.${user.username}.home = homeDir user.username;
+          users.users.${user.username}.home = user.homeDirectory;
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
