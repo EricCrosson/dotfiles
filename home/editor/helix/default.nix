@@ -1,12 +1,11 @@
 {
   pkgs,
-  system,
   user,
   inputs,
   ...
 }: {
   home.packages = with pkgs; [
-    inputs.jsonnet-language-server.packages.${system}.jsonnet-tool
+    inputs.jsonnet-language-server.packages.${pkgs.system}.jsonnet-tool
     hadolint
     ltex-ls
     gopls
@@ -22,7 +21,7 @@
 
   programs.helix = {
     enable = true;
-    package = inputs.helix.packages.${system}.default;
+    package = inputs.helix.packages.${pkgs.system}.default;
     languages = [
       {
         name = "markdown";

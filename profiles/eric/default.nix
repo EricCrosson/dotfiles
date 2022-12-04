@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  system,
   user,
   inputs,
   ...
@@ -13,7 +12,6 @@
 let
   inherit (pkgs) stdenv;
   commonImports = [
-    ../../home/editor/helix
   ];
   darwinImports = [
   ];
@@ -36,10 +34,10 @@ in {
 
     packages = with pkgs;
       [
-        inputs.ast-grep.packages.${system}.default
-        inputs.bash-barrier.packages.${system}.default
-        inputs.git-diff-regex.packages.${system}.default
-        inputs.git-disjoint.packages.${system}.default
+        inputs.ast-grep.packages.${pkgs.system}.default
+        inputs.bash-barrier.packages.${pkgs.system}.default
+        inputs.git-diff-regex.packages.${pkgs.system}.default
+        inputs.git-disjoint.packages.${pkgs.system}.default
 
         amber
         bottom

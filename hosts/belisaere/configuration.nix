@@ -5,7 +5,6 @@
   config,
   lib,
   pkgs,
-  system,
   user,
   inputs,
   ...
@@ -129,7 +128,7 @@
   # List services that you want to enable:
   services.kmonad = {
     enable = true;
-    package = inputs.kmonad.packages.${system}.default;
+    package = inputs.kmonad.packages.${pkgs.system}.default;
     keyboards = {
       kinesis-advantage-pro = {
         name = "kinesis-advantage-pro";
@@ -140,7 +139,7 @@
           fallthrough = true;
           allowCommands = false;
         };
-        config = builtins.readFile "${inputs.self}/kmonad/kinesis-advantage-pro.kbd";
+        config = builtins.readFile ../../kmonad/kinesis-advantage-pro.kbd;
       };
     };
   };
@@ -200,6 +199,7 @@
     '';
   };
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.hostPlatform = "x86_64-linux";
 
   environment.pathsToLink = [
     # Include direnvrc in nix store.

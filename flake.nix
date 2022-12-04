@@ -4,123 +4,56 @@
   outputs = inputs @ {
     self,
     darwin,
+    flake-parts,
     flake-utils,
     home-manager,
     nixpkgs,
     pre-commit-hooks,
     sops-nix,
     ...
-  }: let
-    # TODO: support darwin
-    system = "x86_64-linux";
-    user = {
-      username = "eric";
-      homeDirectory = "/home/eric";
-      email = "eric.s.crosson@utexas.edu";
-      theme = "mocha";
-    };
-    pkgs = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-      overlays = [
-        inputs.nur.overlay
-        (self: super: {
-          # Enable Nix flakes with direnv.
-          nix-direnv = super.nix-direnv.override {enableFlakes = true;};
-        })
+  }:
+    flake-parts.lib.mkFlake {inherit (inputs) self;} {
+      systems = [
+        "x86_64-linux"
+        "aarch64-darwin"
       ];
-    };
-    lib = nixpkgs.lib;
 
-    specialArgs = {
-      # Pass variables to configuration.nix
-      inherit inputs pkgs user system;
-    };
+      imports = [
+        ./profiles
+        ./hosts
+      ];
 
-    checks = {
-      pre-commit-check = pre-commit-hooks.lib.${system}.run {
-        src = ./.;
-        hooks = {
-          alejandra.enable = true;
-          prettier.enable = true;
+      perSystem = {
+        config,
+        pkgs,
+        system,
+        ...
+      }: let
+        checks = {
+          pre-commit-check = pre-commit-hooks.lib.${system}.run {
+            src = ./.;
+            hooks = {
+              alejandra.enable = true;
+              prettier.enable = true;
+            };
+          };
+        };
+      in {
+        formatter = pkgs.alejandra;
+
+        devShells.default = pkgs.mkShell {
+          inherit (checks.pre-commit-check) shellHook;
+          # imports all files ending in .asc/.gpg
+          sopsPGPKeyDirs = [
+            "${toString ./.}/keys/hosts"
+            "${toString ./.}/keys/users"
+          ];
+          nativeBuildInputs = [
+            (pkgs.callPackage sops-nix {}).sops-import-keys-hook
+          ];
         };
       };
     };
-  in {
-    devShells.${system}.default = pkgs.mkShell {
-      inherit (checks.pre-commit-check) shellHook;
-      # imports all files ending in .asc/.gpg
-      sopsPGPKeyDirs = [
-        "${toString ./.}/keys/hosts"
-        "${toString ./.}/keys/users"
-      ];
-      nativeBuildInputs = [
-        (pkgs.callPackage sops-nix {}).sops-import-keys-hook
-      ];
-    };
-    darwinConfigurations = {
-      MBP-0954 = darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        inherit inputs;
-        modules = [
-          ./hosts/MBP-0954/configuration.nix
-          home-manager.darwinModules.home-manager
-          {
-            users.users.ericcrosson.home = "/Users/ericcrosson";
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = {
-                system = "aarch64-darwin";
-                inherit inputs;
-                pkgs = import nixpkgs {
-                  system = "aarch64-darwin";
-                  config.allowUnfree = true;
-                  overlays = [
-                    inputs.firefox-darwin.overlay
-                    inputs.nur.overlay
-                    (self: super: {
-                      # Enable Nix flakes with direnv.
-                      nix-direnv = super.nix-direnv.override {enableFlakes = true;};
-                    })
-                  ];
-                };
-                user = {
-                  username = "ericcrosson";
-                  homeDirectory = "/Users/ericcrosson";
-                  email = "ericcrosson@bitgo.com";
-                  theme = "mocha";
-                };
-              };
-              users.ericcrosson = {
-                imports = [./profiles/eric];
-              };
-            };
-          }
-        ];
-      };
-    };
-    nixosConfigurations = {
-      belisaere = lib.nixosSystem {
-        inherit system specialArgs;
-        modules = [
-          ./hosts/belisaere/configuration.nix
-          sops-nix.nixosModules.sops
-          home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = specialArgs;
-              users.${user.username} = {
-                imports = [./profiles/eric];
-              };
-            };
-          }
-        ];
-      };
-    };
-  };
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -144,6 +77,7 @@
       url = "github:bandithedoge/nixpkgs-firefox-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    flake-parts.url = "github:hercules-ci/flake-parts";
     git-diff-regex = {
       url = "github:ericcrosson/git-diff-regex";
       inputs.flake-utils.follows = "flake-utils";
