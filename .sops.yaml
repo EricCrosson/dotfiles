@@ -1,10 +1,10 @@
 ---
 keys:
   - &admin_eric 546CB3F94471ABD54EFEE143470E706EB72DE6AC
-  - &server_chimp 97396b1415563369d9d0a1e2ebb7d91a6cf2732e
+  - &server_belisaere 97396b1415563369d9d0a1e2ebb7d91a6cf2732e
 creation_rules:
   - path_regex: secrets/main\.yaml$
     key_groups:
-    - pgp:
-      - *admin_eric
-      - *server_chimp
+      - pgp:
+          - *admin_eric
+          - *server_belisaere
