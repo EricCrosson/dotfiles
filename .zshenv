@@ -16,7 +16,7 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-"${HOME}/.local/share"}"
 #####################################################################
 fpath=("${HOME}/.local/share/zsh/site-functions" $fpath)
 ZGEN_RESET_ON_CHANGE=("${HOME}/.zshrc" "${HOME}/.zshenv")
-ZSH_WAKATIME_BIN=/etc/profiles/per-user/eric/bin/wakatime-cli
+ZSH_WAKATIME_BIN="/etc/profiles/per-user/${USER}/bin/wakatime-cli"
 
 #####################################################################
 # PS1 configuration
