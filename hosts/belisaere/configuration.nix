@@ -158,7 +158,7 @@
   services.xserver.layout = "us";
 
   # DISCUSS: may belong in user configuration?
-  services.xserver.windowManager.bspwm = {
+  services.xserver.windowManager.awesome = {
     enable = true;
   };
   services.xserver.displayManager.sessionCommands = ''

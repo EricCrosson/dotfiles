@@ -60,6 +60,12 @@ in {
       # Still missing
       # kubectx
 
+      # REFACTOR: move to awesome config
+      rofi
+      # TODO: configure or remove
+      volumeicon
+      # TODO: change desktop background
+
       # for shell
       exa
       fzf
@@ -80,6 +86,11 @@ in {
       # REFACTOR: use shellAliases
       ".zshenv".source = ../../.zshenv;
       ".zshrc".source = ../../.zshrc;
+
+      # REFACTOR: find this a forever home
+      ".config/awesome/rc.lua".source = ../../.config/awesome/rc.lua;
+      ".config/awesome/horizontal_tile.lua".source = ../../.config/awesome/horizontal_tile.lua;
+      ".config/awesome/vertical_tile.lua".source = ../../.config/awesome/vertical_tile.lua;
     };
   };
 
