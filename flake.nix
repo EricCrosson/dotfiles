@@ -35,6 +35,7 @@
             hooks = {
               alejandra.enable = true;
               prettier.enable = true;
+              stylua.enable = true;
             };
           };
         };

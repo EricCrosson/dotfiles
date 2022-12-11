@@ -16,6 +16,7 @@
     nodePackages.vscode-langservers-extracted
     rust-analyzer
     shellcheck
+    sumneko-lua-language-server
     taplo-lsp # TOML
   ];
 
@@ -43,6 +44,9 @@
           normal = "block";
           insert = "bar";
           select = "underline";
+        };
+        file-picker = {
+          hidden = false;
         };
         whitespace.render.tab = "all";
       };

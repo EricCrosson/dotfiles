@@ -62,8 +62,9 @@ in {
 
       # REFACTOR: move to awesome config
       rofi
-      # TODO: configure or remove
-      volumeicon
+      pamixer
+      pavucontrol # Graphival audio control
+      playerctl
       # TODO: change desktop background
 
       # for shell
@@ -88,9 +89,7 @@ in {
       ".zshrc".source = ../../.zshrc;
 
       # REFACTOR: find this a forever home
-      ".config/awesome/rc.lua".source = ../../.config/awesome/rc.lua;
-      ".config/awesome/horizontal_tile.lua".source = ../../.config/awesome/horizontal_tile.lua;
-      ".config/awesome/vertical_tile.lua".source = ../../.config/awesome/vertical_tile.lua;
+      ".config/awesome/".source = ../../.config/awesome;
     };
   };
 
