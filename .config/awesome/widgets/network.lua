@@ -63,21 +63,21 @@ local return_button = function()
     })
 
     local check_internet_health = [=[
-	status_ping=0
+    status_ping=0
 
-	packets="$(ping -q -w2 -c2 example.com | grep -o "100% packet loss")"
-	if [ ! -z "${packets}" ];
-	then
-		status_ping=0
-	else
-		status_ping=1
-	fi
+    packets="$(ping -q -w2 -c2 example.com | grep -o "100% packet loss")"
+    if [ ! -z "${packets}" ];
+    then
+        status_ping=0
+    else
+        status_ping=1
+    fi
 
-	if [ $status_ping -eq 0 ];
-	then
-		echo 'Connected but no internet'
-	fi
-	]=]
+    if [ $status_ping -eq 0 ];
+    then
+        echo 'Connected but no internet'
+    fi
+    ]=]
 
     -- Awesome/System startup
     local update_startup = function()
@@ -121,8 +121,8 @@ local return_button = function()
         -- Get wifi essid and bitrate
         local update_wireless_data = function(strength, healthy)
             awful.spawn.easy_async_with_shell([[
-				iw dev ]] .. network_interfaces.wlan .. [[ link
-				]], function(stdout)
+                iw dev ]] .. network_interfaces.wlan .. [[ link
+                ]], function(stdout)
                 local essid = stdout:match("SSID: (.-)\n") or "N/A"
                 local bitrate = stdout:match("tx bitrate: (.+/s)") or "N/A"
                 local message = "Connected to: <b>"
@@ -171,8 +171,8 @@ local return_button = function()
         local update_wireless_strength = function()
             awful.spawn.easy_async_with_shell(
                 [[
-				awk 'NR==3 {printf "%3.0f" ,($3/70)*100}' /proc/net/wireless
-				]],
+                awk 'NR==3 {printf "%3.0f" ,($3/70)*100}' /proc/net/wireless
+                ]],
                 function(stdout)
                     if not tonumber(stdout) then
                         return
@@ -261,51 +261,51 @@ local return_button = function()
 
     local check_network_mode = function()
         awful.spawn.easy_async_with_shell([=[
-			wireless="]=] .. tostring(network_interfaces.wlan) .. [=["
-			wired="]=] .. tostring(network_interfaces.lan) .. [=["
-			net="/sys/class/net/"
+            wireless="]=] .. tostring(network_interfaces.wlan) .. [=["
+            wired="]=] .. tostring(network_interfaces.lan) .. [=["
+            net="/sys/class/net/"
 
-			wired_state="down"
-			wireless_state="down"
-			network_mode=""
+            wired_state="down"
+            wireless_state="down"
+            network_mode=""
 
-			# Check network state based on interface's operstate value
-			function check_network_state() {
-				# Check what interface is up
-				if [[ "${wireless_state}" == "up" ]];
-				then
-					network_mode='wireless'
-				elif [[ "${wired_state}" == "up" ]];
-				then
-					network_mode='wired'
-				else
-					network_mode='No internet connection'
-				fi
-			}
+            # Check network state based on interface's operstate value
+            function check_network_state() {
+                # Check what interface is up
+                if [[ "${wireless_state}" == "up" ]];
+                then
+                    network_mode='wireless'
+                elif [[ "${wired_state}" == "up" ]];
+                then
+                    network_mode='wired'
+                else
+                    network_mode='No internet connection'
+                fi
+            }
 
-			# Check if network directory exist
-			function check_network_directory() {
-				if [[ -n "${wireless}" && -d "${net}${wireless}" ]];
-				then
-					wireless_state="$(cat "${net}${wireless}/operstate")"
-				fi
-				if [[ -n "${wired}" && -d "${net}${wired}" ]]; then
-					wired_state="$(cat "${net}${wired}/operstate")"
-				fi
-				check_network_state
-			}
+            # Check if network directory exist
+            function check_network_directory() {
+                if [[ -n "${wireless}" && -d "${net}${wireless}" ]];
+                then
+                    wireless_state="$(cat "${net}${wireless}/operstate")"
+                fi
+                if [[ -n "${wired}" && -d "${net}${wired}" ]]; then
+                    wired_state="$(cat "${net}${wired}/operstate")"
+                fi
+                check_network_state
+            }
 
-			# Start script
-			function print_network_mode() {
-				# Call to check network dir
-				check_network_directory
-				# Print network mode
-				printf "${network_mode}"
-			}
+            # Start script
+            function print_network_mode() {
+                # Call to check network dir
+                check_network_directory
+                # Print network mode
+                printf "${network_mode}"
+            }
 
-			print_network_mode
+            print_network_mode
 
-			]=], function(stdout)
+            ]=], function(stdout)
             local mode = stdout:gsub("%\n", "")
             if stdout:match("No internet connection") then
                 update_disconnected()
