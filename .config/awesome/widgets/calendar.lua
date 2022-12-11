@@ -13,7 +13,6 @@ local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local dpi = beautiful.xresources.apply_dpi
 
 local calendar = {}
 
@@ -24,7 +23,7 @@ local calendar = {}
 calendar.create = function(screen)
     -- Clock / Calendar 12h format
     -- Get Time/Date format using `man strftime`
-    local clock_widget = wibox.widget.textclock("<span font='" .. beautiful.font .. "'>%b %d %l:%M %p</span>", 1)
+    local clock_widget = wibox.widget.textclock("<span font='" .. beautiful.font .. "'>%b %d %H:%M</span>", 1)
 
     local cal_shape = function(cr, width, height)
         gears.shape.partially_rounded_rect(cr, width, height, false, false, true, true, 12)
