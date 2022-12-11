@@ -26,7 +26,7 @@ local vertical_tile = require("vertical-tile")
 -- use `ip link` command to determine these
 network_interfaces = {
     wlan = "wlp1s0",
-    lan = "enp1s0",
+    lan = "enp8s0",
 }
 
 -- {{{ Error handling
