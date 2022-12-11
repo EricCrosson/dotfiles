@@ -13,7 +13,7 @@
 
     "eric@belisaere" =
       [
-        # ../home/window-manager/bspwm
+        ../home/window-manager/awesome
       ]
       ++ sharedModules;
   };

@@ -7,8 +7,6 @@
 }:
 # TODO: set font to Hack
 # FIXME: screen tearing
-# FIXME: why does polybar not start with bspwm?
-# FIXME: what happened to my virtual desktops with bspwm?
 let
   inherit (pkgs) stdenv;
   darwinImports = [
@@ -60,13 +58,6 @@ in {
       # Still missing
       # kubectx
 
-      # REFACTOR: move to awesome config
-      rofi
-      pamixer
-      pavucontrol # Graphival audio control
-      playerctl
-      # TODO: change desktop background
-
       # for shell
       exa
       fzf
@@ -88,8 +79,6 @@ in {
       ".zshenv".source = ../../.zshenv;
       ".zshrc".source = ../../.zshrc;
 
-      # REFACTOR: find this a forever home
-      ".config/awesome/".source = ../../.config/awesome;
     };
   };
 
