@@ -3,11 +3,7 @@
 
   outputs = inputs @ {
     self,
-    darwin,
     flake-parts,
-    flake-utils,
-    home-manager,
-    nixpkgs,
     pre-commit-hooks,
     sops-nix,
     ...
@@ -24,7 +20,6 @@
       ];
 
       perSystem = {
-        config,
         pkgs,
         system,
         ...
@@ -34,6 +29,7 @@
             src = ./.;
             hooks = {
               alejandra.enable = true;
+              deadnix.enable = true;
               prettier.enable = true;
               stylua.enable = true;
             };
