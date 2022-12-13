@@ -40,6 +40,7 @@ in {
 
       age-plugin-yubikey
       amber
+      awscli2
       bottom
       cargo-watch
       comma
@@ -49,6 +50,7 @@ in {
       du-dust
       entr
       fd
+      fx
       git
       git-absorb
       git-extras
@@ -56,7 +58,11 @@ in {
       htop
       hyperfine
       jq
+      k9s
+      keychain
+      maim
       mprocs
+      pass
       passage
       pueue
       python310Packages.grip
@@ -67,15 +73,10 @@ in {
       viu
       vim
       wget
-      yq-go
-
-      # Still missing
-      # kubectx
 
       # for shell
       exa
       fzf
-      go-jira
       hub
       python
       starship
@@ -88,6 +89,7 @@ in {
         text = "source /run/current-system/sw/share/nix-direnv/direnvrc";
       };
 
+      ".xprofile".source = ../../.xprofile;
       # Shell
       # REFACTOR: use shellAliases
       ".zshenv".source = ../../.zshenv;
@@ -145,7 +147,11 @@ in {
         then pkgs.firefox-bin
         else inputs.firefox.packages.${pkgs.system}.firefox-nightly-bin;
       extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+        lastpass-password-manager
         onepassword-password-manager
+        # To disable cursor animation on Google Docs:
+        # `.docs-text-ui-cursor-blink { animation: none !important; }`
+        stylus
         ublock-origin
       ];
       profiles = {
@@ -271,6 +277,10 @@ in {
       enable = true;
       userName = "Eric Crosson";
       userEmail = "${user.email}";
+      signing = {
+        key = "0AB49222C769F13EDE3EBFB2352FBA3B4180A44A";
+        signByDefault = true;
+      };
       aliases = {
         a = "add";
         b = "branch";
@@ -342,9 +352,9 @@ in {
         github = {
           user = "${user.email}";
         };
-        gpg = {
-          program = "${pkgs.gnupg}";
-        };
+        # gpg = {
+        #   program = "${pkgs.gnupg}";
+        # };
         init = {
           defaultBranch = "master";
         };
@@ -356,13 +366,6 @@ in {
         };
         rerere = {
           enabled = true;
-        };
-        # example: git clone gh:ericcrosson/dotfiles
-        url = {
-          "git@github.com" = {
-            insteadOf = "gh:";
-            PushInsteadOf = "gh:";
-          };
         };
       };
     };

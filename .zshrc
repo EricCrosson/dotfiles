@@ -109,7 +109,7 @@ fi
 alias c='cargo'
 alias d='docker'
 alias git='hub'
-alias grip='grip --pass $GH_TOKEN'
+alias grip='grip --pass $GITHUB_TOKEN'
 alias h='hx --vsplit'
 alias j='jira'
 alias l='exa -lg --git --time-style=long-iso'
@@ -117,7 +117,7 @@ alias npx='npx --no-install'
 alias rg='rg --smart-case'
 alias rip='rip --graveyard "${HOME}/.local/share/Trash"'
 alias ssh='ssh -t '
-alias vim='nvim '
+# alias vim='nvim '
 alias viddy='viddy --differences'
 
 alias ga='git add'
@@ -128,7 +128,7 @@ alias g='git'
 alias gs='git status'
 alias gsu='git submodule update'
 
-unalias age
+unalias age 2>/dev/null
 
 # Make and change directory
 # Usage: mc <dir>
@@ -175,6 +175,15 @@ complete -F _jira_bash_autocomplete jira
 # End cached output
 
 # source "${HOME}/.local/share/zsh/jira"
+
+#####################################################################
+# BitGo configuration
+#####################################################################
+
+if [ -f "${HOME}/.zshrc_bitgo" ]
+then
+  . "${HOME}/.zshrc_bitgo"
+fi
 
 #####################################################################
 # post-config

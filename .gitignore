@@ -2,3 +2,4 @@
 /.git-submodule-shas
 /.pre-commit-config.yaml
 /result
+*.swp

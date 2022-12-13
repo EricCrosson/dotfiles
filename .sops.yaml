@@ -1,10 +1,14 @@
 ---
 keys:
   - &admin_eric 546CB3F94471ABD54EFEE143470E706EB72DE6AC
+  - &admin_ericcrosson 0AB49222C769F13EDE3EBFB2352FBA3B4180A44A
   - &server_belisaere 97396b1415563369d9d0a1e2ebb7d91a6cf2732e
+  - &server_corvere 56c675fe763c3f04d38432543462ce1cbd859bd6
 creation_rules:
   - path_regex: secrets/main\.yaml$
     key_groups:
       - pgp:
           - *admin_eric
+          - *admin_ericcrosson
           - *server_belisaere
+          - *server_corvere

@@ -266,6 +266,9 @@ globalkeys = gears.table.join(
     awful.key({}, "XF86AudioRaiseVolume", function()
         awful.spawn("pamixer --increase 5")
         awesome.emit_signal("volume_change")
+    end),
+    awful.key({}, "Print", function()
+        awful.spawn.with_shell("maim -s | xclip -selection clipboard -t image/png -i")
     end)
 )
 
