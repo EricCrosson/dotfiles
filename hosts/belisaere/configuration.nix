@@ -3,7 +3,6 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
   config,
-  lib,
   pkgs,
   user,
   inputs,
@@ -47,13 +46,17 @@
 
   # Support flashing the Ergodox EZ with QMK
   # https://github.com/zsa/docs/issues/14
-  services.udev.extraRules = ''
-    # UDEV rules for Teensy USB devices
-    ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", ENV{ID_MM_DEVICE_IGNORE}="1"
-    ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789A]?", ENV{MTP_NO_PROBE}="1"
-    SUBSYSTEMS=="usb", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789ABCD]?", MODE:="0666"
-    KERNEL=="ttyACM*", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", MODE:="0666"
-  '';
+  services.udev.extraRules =
+    /*
+    udev
+    */
+    ''
+      # UDEV rules for Teensy USB devices
+      ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", ENV{ID_MM_DEVICE_IGNORE}="1"
+      ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789A]?", ENV{MTP_NO_PROBE}="1"
+      SUBSYSTEMS=="usb", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789ABCD]?", MODE:="0666"
+      KERNEL=="ttyACM*", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", MODE:="0666"
+    '';
 
   # Enable sound.
   security.rtkit.enable = true;
@@ -113,7 +116,7 @@
     vim
     wget
     xclip
-    yubioath-desktop
+    yubikey-manager
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -192,11 +195,15 @@
       options = "--delete-older-than 7d";
     };
     package = pkgs.nixVersions.unstable; # Enable Nix flakes on system.
-    extraOptions = ''
-      experimental-features = nix-command flakes
-      keep-outputs = true
-      keep-derivations = true
-    '';
+    extraOptions =
+      /*
+      conf
+      */
+      ''
+        experimental-features = nix-command flakes
+        keep-outputs = true
+        keep-derivations = true
+      '';
   };
   nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = "x86_64-linux";
