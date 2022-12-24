@@ -12,7 +12,9 @@
       },
       "packagePatterns": ["*"],
       "excludePackagePatterns": ["helix"],
-      "enabled": false
+      "enabled": false,
+      "timezone": "America/Chicago",
+      "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"]
     }
   ],
   "timezone": "America/Chicago",
