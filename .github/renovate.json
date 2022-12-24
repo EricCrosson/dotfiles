@@ -1,0 +1,17 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "nix": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["nix"],
+      "packagePatterns": ["*"],
+      "excludePackagePatterns": ["helix"],
+      "enabled": false
+    }
+  ],
+  "timezone": "America/Chicago",
+  "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"]
+}
