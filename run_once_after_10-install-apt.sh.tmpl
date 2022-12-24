@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-# apt-packages.txt hash: {{ include "apt-packages.txt" | sha256sum }}
-
-{{ if (eq .chezmoi.os "linux") -}}
-
-xargs -a ~/.local/share/chezmoi/apt-packages.txt sudo apt -y install
-
-{{ end -}}

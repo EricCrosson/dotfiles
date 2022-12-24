@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-# apt-packages.txt hash: {{ include "apt-packages.txt" | sha256sum }}
-
-{{ if (eq .chezmoi.os "linux") -}}
-
-sudo apt -y autoremove
-
-{{ end -}}
