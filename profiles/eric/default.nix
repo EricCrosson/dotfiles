@@ -16,11 +16,10 @@ let
     ../../os/linux
   ];
 in {
-  imports = (
+  imports =
     if stdenv.isDarwin
     then darwinImports
-    else linuxImports
-  );
+    else linuxImports;
 
   home = {
     username = "${user.username}";
@@ -78,7 +77,6 @@ in {
       # REFACTOR: use shellAliases
       ".zshenv".source = ../../.zshenv;
       ".zshrc".source = ../../.zshrc;
-
     };
   };
 
