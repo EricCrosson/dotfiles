@@ -1,5 +1,5 @@
 ---
-name: update-flake-inputs
+name: Update flake inputs
 on:
   workflow_dispatch: # allows manual triggering
   schedule:
