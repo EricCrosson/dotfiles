@@ -1,0 +1,34 @@
+---
+name: update-flake-inputs
+on:
+  workflow_dispatch: # allows manual triggering
+  schedule:
+    - cron: "0 8 * * *" # runs every day at 08:00 UTC
+
+jobs:
+  lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v16
+        with:
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update helix flake input
+        uses: DeterminateSystems/update-flake-lock@v15
+        with:
+          inputs: helix
+          git-author-name: github-actions
+          git-author-email: action@github.com
+          git-committer-name: github-actions
+          git-committer-email: action@github.com
+          pr-title: Update helix flake input
+          pr-labels: |
+            dependencies
+            helix
+            nix
+          token: ${{ secrets.GH_TOKEN_PR }}
