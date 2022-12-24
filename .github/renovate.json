@@ -7,6 +7,9 @@
   "packageRules": [
     {
       "matchManagers": ["nix"],
+      "lockFileMaintenance": {
+        "enabled": true
+      },
       "packagePatterns": ["*"],
       "excludePackagePatterns": ["helix"],
       "enabled": false
