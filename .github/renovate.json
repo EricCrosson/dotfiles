@@ -4,17 +4,16 @@
   "nix": {
     "enabled": true
   },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"]
+  },
   "packageRules": [
     {
       "matchManagers": ["nix"],
-      "lockFileMaintenance": {
-        "enabled": true
-      },
       "packagePatterns": ["*"],
       "excludePackagePatterns": ["helix"],
-      "enabled": false,
-      "timezone": "America/Chicago",
-      "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"]
+      "enabled": false
     }
   ],
   "timezone": "America/Chicago",
