@@ -45,6 +45,7 @@ in {
       git-extras
       gnupg
       htop
+      jq
       python310Packages.grip
       ripgrep
       rm-improved
