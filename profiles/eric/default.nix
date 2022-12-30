@@ -46,6 +46,7 @@ in {
       gnupg
       htop
       jq
+      ouch
       python310Packages.grip
       ripgrep
       rm-improved
