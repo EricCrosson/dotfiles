@@ -4,6 +4,8 @@
   inputs,
   ...
 }: {
+  # DISCUSS: moving my helix config to its own flake for reuse
+
   home.packages = with pkgs; [
     inputs.jsonnet-language-server.packages.${pkgs.system}.jsonnet-tool
     hadolint
@@ -14,7 +16,7 @@
     nodePackages.dockerfile-language-server-nodejs
     nodePackages.typescript-language-server
     nodePackages.vscode-langservers-extracted
-    rust-analyzer
+    rust-analyzer-nightly
     shellcheck
     sumneko-lua-language-server
     taplo-lsp # TOML

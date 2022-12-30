@@ -14,8 +14,9 @@ in {
       inherit system;
       config.allowUnfree = true;
       overlays = [
+        inputs.fenix.overlays.default
         inputs.nur.overlay
-        (self: super: {
+        (_self: super: {
           # Enable Nix flakes with direnv.
           nix-direnv = super.nix-direnv.override {enableFlakes = true;};
         })
@@ -54,9 +55,10 @@ in {
       inherit system;
       config.allowUnfree = true;
       overlays = [
+        inputs.fenix.overlays.default
         inputs.firefox-darwin.overlay
         inputs.nur.overlay
-        (self: super: {
+        (_self: super: {
           # Enable Nix flakes with direnv.
           nix-direnv = super.nix-direnv.override {enableFlakes = true;};
         })
