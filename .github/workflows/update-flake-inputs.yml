@@ -21,11 +21,13 @@ jobs:
       - name: Update helix flake input
         uses: DeterminateSystems/update-flake-lock@v15
         with:
+          commit-msg: "chore(nix): update helix flake input"
           inputs: helix
           git-author-name: github-actions
           git-author-email: action@github.com
           git-committer-name: github-actions
           git-committer-email: action@github.com
+          pr-reviewers: EricCrosson
           pr-title: Update helix flake input
           pr-labels: |
             dependencies
