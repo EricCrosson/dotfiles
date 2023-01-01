@@ -31,6 +31,7 @@ in {
       inputs.bash-barrier.packages.${pkgs.system}.default
       inputs.git-diff-regex.packages.${pkgs.system}.default
       inputs.git-disjoint.packages.${pkgs.system}.default
+      inputs.ouch.packages.${pkgs.system}.default
 
       amber
       bottom
@@ -46,7 +47,6 @@ in {
       gnupg
       htop
       jq
-      ouch
       python310Packages.grip
       ripgrep
       rm-improved
