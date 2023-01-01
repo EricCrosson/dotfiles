@@ -33,6 +33,7 @@ in {
       inputs.git-disjoint.packages.${pkgs.system}.default
       inputs.ouch.packages.${pkgs.system}.default
 
+      age-plugin-yubikey
       amber
       bottom
       cargo-watch
@@ -47,6 +48,7 @@ in {
       gnupg
       htop
       jq
+      passage
       python310Packages.grip
       ripgrep
       rm-improved

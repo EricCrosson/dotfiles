@@ -128,6 +128,8 @@ alias g='git'
 alias gs='git status'
 alias gsu='git submodule update'
 
+unalias age
+
 # Make and change directory
 # Usage: mc <dir>
 #
