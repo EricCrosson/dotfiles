@@ -114,6 +114,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/nur";
+    nurl = {
+      url = "github:nix-community/nurl";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     ouch = {
       url = "github:ericcrosson/escpkgs?dir=ouch";
       inputs.flake-utils.follows = "flake-utils";

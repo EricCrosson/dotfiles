@@ -578,6 +578,26 @@
         "type": "github"
       }
     },
+    "nurl": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1672631002,
+        "narHash": "sha256-fLa9gNdwBOSOMisU1UI8KAKGOkDN13LZsBpH+bObqUM=",
+        "owner": "nix-community",
+        "repo": "nurl",
+        "rev": "69990c30594da362fbfb0ac0f2dc652e59b1c757",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nurl",
+        "type": "github"
+      }
+    },
     "ouch": {
       "inputs": {
         "flake-utils": [
@@ -668,6 +688,7 @@
         "kmonad": "kmonad",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
+        "nurl": "nurl",
         "ouch": "ouch",
         "pre-commit-hooks": "pre-commit-hooks_2",
         "sops-nix": "sops-nix"
