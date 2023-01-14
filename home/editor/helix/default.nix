@@ -16,6 +16,13 @@
     nodePackages.dockerfile-language-server-nodejs
     nodePackages.typescript-language-server
     nodePackages.vscode-langservers-extracted
+    (fenix.complete.withComponents [
+      "cargo"
+      "clippy"
+      "rust-src"
+      "rustc"
+      "rustfmt"
+    ])
     rust-analyzer-nightly
     shellcheck
     sumneko-lua-language-server
