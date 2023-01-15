@@ -12,7 +12,6 @@ permissions:
 jobs:
   helix:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'action-user' }}
 
     steps:
       - name: Get PR labels
