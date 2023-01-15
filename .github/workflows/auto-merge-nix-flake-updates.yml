@@ -18,8 +18,8 @@ jobs:
         id: metadata
         uses: joerick/pr-labels-action@v1.0.7
 
-      - name: Enable auto-merge for Dependabot PRs
-        if: contains(steps.metadata.outputs.labels, ' helix ')
+      - name: Enable auto-merge for flake-update PRs
+        if: contains(steps.metadata.outputs.labels, ' helix ') || contains(steps.metadata.outputs.labels, ' fenix ')
         run: gh pr merge --auto --merge "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
