@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  helix:
+  auto-merge:
     runs-on: ubuntu-latest
 
     steps:
