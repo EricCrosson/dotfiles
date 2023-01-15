@@ -12,7 +12,7 @@ permissions:
 jobs:
   helix:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    if: ${{ github.actor == 'action-user' }}
 
     steps:
       - name: Get PR labels
