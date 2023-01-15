@@ -1,5 +1,5 @@
 ---
-name: auto-merge-dependabot-updates
+name: Auto-merge flake updates
 
 on:
   workflow_dispatch: # allows manual triggering
