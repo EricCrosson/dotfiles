@@ -1,5 +1,5 @@
 ---
-name: Update flake inputs
+name: Update fenix flake input
 
 on:
   workflow_dispatch: # allows manual triggering
