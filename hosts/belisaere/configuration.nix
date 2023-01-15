@@ -44,20 +44,6 @@
     keyMap = "us";
   };
 
-  # Support flashing the Ergodox EZ with QMK
-  # https://github.com/zsa/docs/issues/14
-  services.udev.extraRules =
-    /*
-    udev
-    */
-    ''
-      # UDEV rules for Teensy USB devices
-      ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", ENV{ID_MM_DEVICE_IGNORE}="1"
-      ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789A]?", ENV{MTP_NO_PROBE}="1"
-      SUBSYSTEMS=="usb", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789ABCD]?", MODE:="0666"
-      KERNEL=="ttyACM*", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", MODE:="0666"
-    '';
-
   # Enable sound.
   security.rtkit.enable = true;
   services.pipewire = {
