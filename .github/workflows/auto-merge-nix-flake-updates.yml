@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Get PR labels
         id: metadata
-        uses: joerick/pr-labels-action@v1
+        uses: joerick/pr-labels-action@v1.0.7
 
       - name: Enable auto-merge for Dependabot PRs
         if: contains(steps.metadata.outputs.dependency-names, 'helix')
