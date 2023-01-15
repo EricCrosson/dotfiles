@@ -1,5 +1,6 @@
 ---
 name: Update flake inputs
+
 on:
   workflow_dispatch: # allows manual triggering
   schedule:
@@ -19,7 +20,7 @@ jobs:
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
       - name: Update helix flake input
-        uses: DeterminateSystems/update-flake-lock@v15
+        uses: EricCrosson/update-flake-lock@v15
         with:
           commit-msg: "chore(nix): update helix flake input"
           inputs: helix

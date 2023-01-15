@@ -1,0 +1,27 @@
+---
+name: auto-merge-dependabot-updates
+
+on:
+  workflow_dispatch: # allows manual triggering
+  pull_request:
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  helix:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+
+    steps:
+      - name: Get PR labels
+        id: metadata
+        uses: joerick/pr-labels-action@v1
+
+      - name: Enable auto-merge for Dependabot PRs
+        if: contains(steps.metadata.outputs.dependency-names, 'helix')
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
