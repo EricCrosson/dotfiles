@@ -265,7 +265,7 @@ in {
         d = "diff";
         di = "diff ':(exclude)./**/package-lock.json' ':(exclude)./**/yarn.lock'";
         dc = "diff --cached";
-        dci = "diff --cached ':(exclude)./**/package-lock.json' ':(exclude)./**/yarn.lock'";
+        dci = "diff --cached ':(exclude)**/package-lock.json' ':(exclude)**/yarn.lock'";
         dn = "diff --name-only";
         f = "fetch";
         l = "log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'";
