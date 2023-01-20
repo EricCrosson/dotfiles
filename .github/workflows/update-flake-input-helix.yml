@@ -20,7 +20,7 @@ jobs:
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
 
       - name: Update helix flake input
-        uses: EricCrosson/update-flake-lock@v15
+        uses: DeterminateSystems/update-flake-lock@v16
         with:
           commit-msg: "chore(nix): update helix flake input"
           inputs: helix
