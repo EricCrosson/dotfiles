@@ -27,7 +27,7 @@ jobs:
           git-author-email: action@github.com
           git-committer-name: github-actions
           git-committer-email: action@github.com
-          pr-reviewers: EricCrosson
+          pr-assignees: EricCrosson
           pr-title: Update fenix flake input
           pr-labels: |
             dependencies
