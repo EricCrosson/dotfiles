@@ -11,3 +11,5 @@ jobs:
     uses: ./.github/workflows/update-flake-input.yml
     with:
       flake-input: git-disjoint
+    secrets:
+      token: ${{ secrets.GH_TOKEN_PR }}
