@@ -50,6 +50,7 @@ in {
       gnupg
       htop
       jq
+      mprocs
       passage
       python310Packages.grip
       ripgrep
