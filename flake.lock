@@ -440,11 +440,11 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1675037547,
-        "narHash": "sha256-sygWuovkN+vIs7chUs5H5XI2n4R0twjzuh90WeUAvKE=",
+        "lastModified": 1675165344,
+        "narHash": "sha256-Y3tOlrYYzoKlNnpjkmTxzSTaSeRDHh/QThwIlylumLA=",
         "owner": "ericcrosson",
         "repo": "git-disjoint",
-        "rev": "0847f94376b661abae372cf7ebef70a66e59e8ff",
+        "rev": "06a10706b2a1f4177f3c58dbf776b5b72b3cd028",
         "type": "github"
       },
       "original": {
