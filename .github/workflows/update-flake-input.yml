@@ -8,10 +8,12 @@ on:
         description: The name of the flake input to update
         required: true
         type: string
-    secrets:
-      token:
-        description: PAT
+  workflow_dispatch:
+    inputs:
+      flake-input:
+        description: The name of the flake input to update
         required: true
+        type: string
 
 jobs:
   update-flake-input:
@@ -36,4 +38,4 @@ jobs:
             dependencies
             nix
             ${{ inputs.flake-input }}
-          token: ${{ secrets.token }}
+          token: ${{ secrets.GH_TOKEN_PR }}
