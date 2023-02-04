@@ -1,0 +1,44 @@
+---
+name: Auto-update nix flake inputs
+
+on:
+  workflow_dispatch: # allow manual triggering
+  schedule:
+    - cron: "0 8 * * *" # runs every day at 08:00 UTC
+
+jobs:
+  check-if-flake-input-needs-update:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        flake-input:
+          - name: fenix
+            update-on: Monday
+          - name: git-disjoint
+          - name: git-dl
+          - name: helix
+
+    steps:
+      - id: should-update
+        run: |
+          : calculate if flake input should be updated
+          if [ -z "$day" ]; then
+            echo "update=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$(date +%A)" = "$day" ]; then
+            echo "update=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "update=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          LC_TIME: C
+          day: ${{ matrix.flake-input.update-on }}
+
+      - if: steps.should-update.outputs.update == 'true'
+        uses: EricCrosson/dotfiles/update-flake-input@master
+        with:
+          flake-input: ${{ matrix.flake-input.name }}
