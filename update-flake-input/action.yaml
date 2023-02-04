@@ -31,4 +31,4 @@ runs:
           dependencies
           nix
           ${{ inputs.flake-input }}
-        token: ${{ secrets.GH_TOKEN_PR }}
+        token: ${{ inputs.token }}
