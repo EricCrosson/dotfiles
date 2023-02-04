@@ -5,7 +5,9 @@ inputs:
   flake-input:
     description: The name of the flake input to update
     required: true
-    type: string
+  token:
+    description: GitHub Personal Access Token capable of opening PRs
+    required: true
 
 runs:
   using: composite

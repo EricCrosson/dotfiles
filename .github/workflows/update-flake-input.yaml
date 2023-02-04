@@ -16,3 +16,4 @@ jobs:
       - uses: EricCrosson/dotfiles/update-flake-input@master
         with:
           flake-input: ${{ inputs.flake-input }}
+          token: ${{ secrets.GH_TOKEN_PR }}

@@ -43,3 +43,4 @@ jobs:
         uses: EricCrosson/dotfiles/update-flake-input@master
         with:
           flake-input: ${{ matrix.flake-input.name }}
+          token: ${{ secrets.GH_TOKEN_PR }}
