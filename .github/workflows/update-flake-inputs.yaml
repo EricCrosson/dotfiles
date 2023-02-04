@@ -29,6 +29,6 @@ jobs:
     strategy:
       matrix:
         flake-input: ${{ fromJSON(needs.download-configuration.outputs.flake-inputs) }}
-    uses: ./.github/workflows/update-flake-input.yml
+    uses: ./.github/workflows/update-flake-input.yaml
     with:
       flake-input: ${{ matrix.flake-input }}
