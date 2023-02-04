@@ -11,4 +11,8 @@ on:
 
 jobs:
   update-flake-input:
-    uses: EricCrosson/dotfiles/update-flake-input@master
+    runs-on: ubuntu-latest
+    steps:
+      - uses: EricCrosson/dotfiles/update-flake-input@master
+        with:
+          flake-input: ${{ inputs.flake-input }}
