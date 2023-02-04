@@ -8,6 +8,7 @@ on:
 
 jobs:
   check-if-flake-input-needs-update:
+    name: Update ${{ matrix.flake-input.name }}
     runs-on: ubuntu-latest
 
     strategy:
