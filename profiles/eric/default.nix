@@ -29,6 +29,7 @@ in {
     packages = with pkgs; [
       inputs.ast-grep.packages.${pkgs.system}.default
       inputs.bash-barrier.packages.${pkgs.system}.default
+      inputs.bell.packages.${pkgs.system}.default
       inputs.git-diff-regex.packages.${pkgs.system}.default
       inputs.git-disjoint.packages.${pkgs.system}.default
       inputs.git-dl.packages.${pkgs.system}.default
