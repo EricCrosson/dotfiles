@@ -41,6 +41,7 @@ in {
       amber
       bottom
       cargo-watch
+      comma
       curl
       delta
       du-dust
