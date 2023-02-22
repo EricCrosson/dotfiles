@@ -19,6 +19,7 @@ jobs:
             update-on: Monday
           - name: git-disjoint
           - name: git-dl
+          - name: git-review
           - name: helix
 
     steps:

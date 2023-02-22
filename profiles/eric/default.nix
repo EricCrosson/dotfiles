@@ -33,6 +33,7 @@ in {
       inputs.git-diff-regex.packages.${pkgs.system}.default
       inputs.git-disjoint.packages.${pkgs.system}.default
       inputs.git-dl.packages.${pkgs.system}.default
+      inputs.git-review.packages.${pkgs.system}.default
       inputs.nurl.packages.${pkgs.system}.default
       inputs.ouch.packages.${pkgs.system}.default
 

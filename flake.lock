@@ -504,6 +504,32 @@
         "type": "github"
       }
     },
+    "git-review": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pre-commit-hooks": [
+          "pre-commit-hooks"
+        ]
+      },
+      "locked": {
+        "lastModified": 1677090985,
+        "narHash": "sha256-sKQklufwRyGTUSPlF8B8tDudpBCBP3AVNCfaDwP/8s8=",
+        "owner": "ericcrosson",
+        "repo": "git-review",
+        "rev": "5cc7b908a4a309d0c70889fe435fd056d5c9deb1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ericcrosson",
+        "repo": "git-review",
+        "type": "github"
+      }
+    },
     "gitignore": {
       "inputs": {
         "nixpkgs": [
@@ -860,6 +886,7 @@
         "git-diff-regex": "git-diff-regex",
         "git-disjoint": "git-disjoint",
         "git-dl": "git-dl",
+        "git-review": "git-review",
         "helix": "helix",
         "home-manager": "home-manager",
         "jsonnet-language-server": "jsonnet-language-server",
