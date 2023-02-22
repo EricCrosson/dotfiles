@@ -17,6 +17,7 @@ jobs:
         flake-input:
           - name: fenix
             update-on: Monday
+          - name: git-diff-regex
           - name: git-disjoint
           - name: git-dl
           - name: git-review
