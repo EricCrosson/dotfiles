@@ -64,11 +64,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1675479458,
-        "narHash": "sha256-Gma21t7dUQp7ecvi9GMgm2R/q/sHC/fEhQ53NVV7yts=",
+        "lastModified": 1677245897,
+        "narHash": "sha256-rKr6keBDTtw3oTCFe1s43uKTCWgOIQoRhVD/CFqlXmk=",
         "owner": "ericcrosson",
         "repo": "bell",
-        "rev": "ca44dbcd324a736a3bc8100514da85e27a324eeb",
+        "rev": "28333c690adb85a7c482f1407ebf2dde0f3f6c5e",
         "type": "github"
       },
       "original": {
@@ -517,11 +517,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1677090985,
-        "narHash": "sha256-sKQklufwRyGTUSPlF8B8tDudpBCBP3AVNCfaDwP/8s8=",
+        "lastModified": 1677245736,
+        "narHash": "sha256-+xBH8zG6m5aIAVXwQowPqL61JTW0Yj8W2uZMRfFJpVc=",
         "owner": "ericcrosson",
         "repo": "git-review",
-        "rev": "5cc7b908a4a309d0c70889fe435fd056d5c9deb1",
+        "rev": "8fb6cebc1d6b3bc159dd67042b7fa8b97d6f4da0",
         "type": "github"
       },
       "original": {
