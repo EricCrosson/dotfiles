@@ -36,6 +36,7 @@ in {
       inputs.git-review.packages.${pkgs.system}.default
       inputs.nurl.packages.${pkgs.system}.default
       inputs.ouch.packages.${pkgs.system}.default
+      inputs.retry.packages.${pkgs.system}.default
 
       age-plugin-yubikey
       amber
