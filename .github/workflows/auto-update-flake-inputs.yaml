@@ -15,6 +15,10 @@ jobs:
       fail-fast: false
       matrix:
         flake-input:
+          - name: bash-barrier
+            update-on: Monday
+          - name: bell
+            update-on: Monday
           - name: fenix
             update-on: Monday
           - name: git-diff-regex
@@ -22,6 +26,8 @@ jobs:
           - name: git-dl
           - name: git-review
           - name: helix
+          - name: retry
+            update-on: Monday
 
     steps:
       - id: should-update
