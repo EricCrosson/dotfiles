@@ -32,6 +32,15 @@
   programs.helix = {
     enable = true;
     package = inputs.helix.packages.${pkgs.system}.default;
+    # TODO: Customize; might need to update home-manager first
+    # Introducing PR: https://github.com/helix-editor/helix/pull/5934
+    # Instructions: https://github.com/helix-editor/helix/issues/2070
+    # Settings: https://rust-analyzer.github.io/manual.html#inlay-hints
+    # language.config = {
+    #   rust.inlayHints = {
+    #       closureReturnTypeHints.enable = "with_block";
+    #   };
+    # };
     languages = [
       {
         name = "markdown";
@@ -56,6 +65,9 @@
         };
         file-picker = {
           hidden = false;
+        };
+        lsp = {
+          display-inlay-hints = true;
         };
         whitespace.render.tab = "all";
       };
