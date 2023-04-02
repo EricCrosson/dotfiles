@@ -18,7 +18,7 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@main
 
       - name: Update ${{ inputs.flake-input }} flake input
-        uses: DeterminateSystems/update-flake-lock@v16
+        uses: DeterminateSystems/update-flake-lock@v18
         with:
           branch: update-flake-inout-${{ inputs.flake-input }}
           commit-msg: "chore(nix): update ${{ inputs.flake-input }} flake input"
