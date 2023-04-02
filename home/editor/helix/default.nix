@@ -54,6 +54,7 @@
         C-j = "jump_view_down";
         C-k = "jump_view_up";
         C-l = "jump_view_right";
+        space.l = ":toggle-option lsp.display-inlay-hints";
         space.t = ":tree-sitter-subtree";
       };
       editor = {
@@ -67,7 +68,7 @@
           hidden = false;
         };
         lsp = {
-          display-inlay-hints = true;
+          display-inlay-hints = false;
         };
         whitespace.render.tab = "all";
       };
