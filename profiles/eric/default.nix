@@ -53,6 +53,7 @@ in {
       git-extras
       gnupg
       htop
+      hyperfine
       jq
       mprocs
       passage
