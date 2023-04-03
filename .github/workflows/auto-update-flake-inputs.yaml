@@ -47,8 +47,29 @@ jobs:
           LC_TIME: C
           day: ${{ matrix.flake-input.update-on }}
 
+      # REFACTOR: there's duplication in updatte-flake-input.yaml,
+      # the manually-invoked workflow
       - if: steps.should-update.outputs.update == 'true'
-        uses: EricCrosson/dotfiles/update-flake-input@master
+        uses: actions/checkout@v3
+
+      - if: steps.should-update.outputs.update == 'true'
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - if: steps.should-update.outputs.update == 'true'
+        name: Update ${{ matrix.flake-input.name }} flake input
+        uses: DeterminateSystems/update-flake-lock@v18
         with:
-          flake-input: ${{ matrix.flake-input.name }}
+          branch: update-flake-inout-${{ matrix.flake-input.name }}
+          commit-msg: "chore(nix): update ${{ matrix.flake-input.name }} flake input"
+          inputs: ${{ matrix.flake-input.name }}
+          git-author-name: github-actions
+          git-author-email: action@github.com
+          git-committer-name: github-actions
+          git-committer-email: action@github.com
+          pr-assignees: EricCrosson
+          pr-title: Update ${{ matrix.flake-input.name }} flake input
+          pr-labels: |
+            dependencies
+            nix
+            ${{ matrix.flake-input.name }}
           token: ${{ secrets.GH_TOKEN_PR }}
