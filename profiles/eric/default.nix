@@ -64,6 +64,7 @@ in {
       viu
       vim
       wget
+      yq-go
 
       # Still missing
       # kubectx
