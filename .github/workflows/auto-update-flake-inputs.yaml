@@ -57,7 +57,7 @@ jobs:
 
       - if: steps.should-update.outputs.update == 'true'
         name: Update ${{ matrix.flake-input.name }} flake input
-        uses: DeterminateSystems/update-flake-lock@v18
+        uses: DeterminateSystems/update-flake-lock@v19
         with:
           branch: update-flake-inout-${{ matrix.flake-input.name }}
           commit-msg: "chore(nix): update ${{ matrix.flake-input.name }} flake input"
