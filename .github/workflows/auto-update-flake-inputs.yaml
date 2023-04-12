@@ -59,7 +59,7 @@ jobs:
         name: Update ${{ matrix.flake-input.name }} flake input
         uses: DeterminateSystems/update-flake-lock@v19
         with:
-          branch: update-flake-inout-${{ matrix.flake-input.name }}
+          branch: update-flake-input-${{ matrix.flake-input.name }}
           commit-msg: "chore(nix): update ${{ matrix.flake-input.name }} flake input"
           inputs: ${{ matrix.flake-input.name }}
           git-author-name: github-actions
