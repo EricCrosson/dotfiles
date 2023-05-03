@@ -181,7 +181,7 @@
     enable = true;
   };
   services.xserver.displayManager.sessionCommands = ''
-    ${pkgs.xorg.xset}/bin/xset r rate 172 83
+    ${pkgs.xorg.xset}/bin/xset r rate 165 60
   '';
   services.picom.enable = true;
 
