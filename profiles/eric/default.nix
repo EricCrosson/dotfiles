@@ -310,7 +310,7 @@ in {
         };
         core = {
           editor = "hx";
-          excludesfile = "~/.gitignore_global";
+          excludesfile = "~/.config/git/ignore";
           autocrlf = false;
 
           diff-highlight = {
