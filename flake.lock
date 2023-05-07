@@ -393,17 +393,14 @@
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
-        ],
-        "pre-commit-hooks": [
-          "pre-commit-hooks"
         ]
       },
       "locked": {
-        "lastModified": 1683424417,
-        "narHash": "sha256-HjW8nJcXKxMWSJ0iTPOGLjn6SOjPd7PdOYkBFdxRE+E=",
+        "lastModified": 1683466860,
+        "narHash": "sha256-saBmebmYrdB965NA0in3JZIDIYY+lfVqFfgMnGCz0/A=",
         "owner": "ericcrosson",
         "repo": "git-diff-regex",
-        "rev": "e5b5c8a4e1c1b95cc50c49ae7a5b2cbeb4e61835",
+        "rev": "1f87151d875753022ee0728420dd26d3b01611b3",
         "type": "github"
       },
       "original": {
