@@ -53,22 +53,16 @@
     },
     "bell": {
       "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
         "nixpkgs": [
           "nixpkgs"
-        ],
-        "pre-commit-hooks": [
-          "pre-commit-hooks"
         ]
       },
       "locked": {
-        "lastModified": 1677245897,
-        "narHash": "sha256-rKr6keBDTtw3oTCFe1s43uKTCWgOIQoRhVD/CFqlXmk=",
+        "lastModified": 1683467393,
+        "narHash": "sha256-HB6r9rFDzZBtmQwLnlyBuuJ2TjcqLLTPdyFAdnAvMVU=",
         "owner": "ericcrosson",
         "repo": "bell",
-        "rev": "28333c690adb85a7c482f1407ebf2dde0f3f6c5e",
+        "rev": "a269edde3e32b32e3309c3367e2509c9d31d5551",
         "type": "github"
       },
       "original": {

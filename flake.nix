@@ -70,9 +70,7 @@
     };
     bell = {
       url = "github:ericcrosson/bell";
-      inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
     };
     crane = {
       url = "github:ipetkov/crane";
