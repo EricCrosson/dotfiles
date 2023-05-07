@@ -64,9 +64,7 @@
     };
     bash-barrier = {
       url = "github:ericcrosson/bash-barrier";
-      inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
     };
     bell = {
       url = "github:ericcrosson/bell";

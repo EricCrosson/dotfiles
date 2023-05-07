@@ -27,22 +27,16 @@
     },
     "bash-barrier": {
       "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
         "nixpkgs": [
           "nixpkgs"
-        ],
-        "pre-commit-hooks": [
-          "pre-commit-hooks"
         ]
       },
       "locked": {
-        "lastModified": 1669032660,
-        "narHash": "sha256-YmlnwAMEptkjvY4vRWpfFUu/Sgui70EkQnNDA5oleF8=",
+        "lastModified": 1683467642,
+        "narHash": "sha256-PUzziy9fY/ahuVgIdh4/LSdVIiqJTWG0SHCuYrx2BU8=",
         "owner": "ericcrosson",
         "repo": "bash-barrier",
-        "rev": "bb50eee04d5e013172aa2a2bec24ec3d5dcabc6a",
+        "rev": "4603460f8ab1201ebae9645f2ca2a44165c07fcf",
         "type": "github"
       },
       "original": {
