@@ -391,9 +391,6 @@
     },
     "git-diff-regex": {
       "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -402,11 +399,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1675479475,
-        "narHash": "sha256-Z7s/rP+2dacSEMvvbtvjCvaOuR6VawgFnRpkbWiYa7A=",
+        "lastModified": 1683424417,
+        "narHash": "sha256-HjW8nJcXKxMWSJ0iTPOGLjn6SOjPd7PdOYkBFdxRE+E=",
         "owner": "ericcrosson",
         "repo": "git-diff-regex",
-        "rev": "b53209feef384912736b725e9dc7df392f77f7a8",
+        "rev": "e5b5c8a4e1c1b95cc50c49ae7a5b2cbeb4e61835",
         "type": "github"
       },
       "original": {
