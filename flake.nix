@@ -151,9 +151,7 @@
     retry = {
       url = "github:ericcrosson/retry";
       inputs.crane.follows = "crane";
-      inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
     };
     sops-nix = {
       url = "github:mic92/sops-nix";
