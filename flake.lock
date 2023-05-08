@@ -403,22 +403,16 @@
           "crane"
         ],
         "fenix": "fenix_2",
-        "flake-utils": [
-          "flake-utils"
-        ],
         "nixpkgs": [
           "nixpkgs"
-        ],
-        "pre-commit-hooks": [
-          "pre-commit-hooks"
         ]
       },
       "locked": {
-        "lastModified": 1683435420,
-        "narHash": "sha256-QJqVY2zOECjs7fFAJx2MEoKIZUc7SaI9VwgEw9Ln50I=",
+        "lastModified": 1683551557,
+        "narHash": "sha256-rCwLgCrcv1wKXrc5nFF9KzvQKNc5hkhQlGGWITVi7m0=",
         "owner": "ericcrosson",
         "repo": "git-disjoint",
-        "rev": "2e69456156e153743ff26e11b4e4038c5aaf2ea9",
+        "rev": "1fcb4abd2054b0c2d8888f44c568e9ed85337243",
         "type": "github"
       },
       "original": {

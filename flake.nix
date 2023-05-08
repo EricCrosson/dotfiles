@@ -98,9 +98,7 @@
     git-disjoint = {
       url = "github:ericcrosson/git-disjoint";
       inputs.crane.follows = "crane";
-      inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
     };
     git-dl = {
       url = "github:ericcrosson/git-dl";
