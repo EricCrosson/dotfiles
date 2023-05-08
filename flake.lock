@@ -452,22 +452,16 @@
     },
     "git-review": {
       "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
         "nixpkgs": [
           "nixpkgs"
-        ],
-        "pre-commit-hooks": [
-          "pre-commit-hooks"
         ]
       },
       "locked": {
-        "lastModified": 1677245736,
-        "narHash": "sha256-+xBH8zG6m5aIAVXwQowPqL61JTW0Yj8W2uZMRfFJpVc=",
+        "lastModified": 1683549753,
+        "narHash": "sha256-90yA/E8OKKIRJCeLo9fr1VnNcj1iGuqHl8FqPDBq6nE=",
         "owner": "ericcrosson",
         "repo": "git-review",
-        "rev": "8fb6cebc1d6b3bc159dd67042b7fa8b97d6f4da0",
+        "rev": "b1e5afd2f1273628a2dd3dbc464316c7d4db1479",
         "type": "github"
       },
       "original": {
