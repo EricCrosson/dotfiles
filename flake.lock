@@ -432,22 +432,16 @@
         "crane": [
           "crane"
         ],
-        "flake-utils": [
-          "flake-utils"
-        ],
         "nixpkgs": [
           "nixpkgs"
-        ],
-        "pre-commit-hooks": [
-          "pre-commit-hooks"
         ]
       },
       "locked": {
-        "lastModified": 1683336026,
-        "narHash": "sha256-Spz7OnYxQHpSDpndb5lRcjoK1LxXLcRo0OOsAydRg/A=",
+        "lastModified": 1683508574,
+        "narHash": "sha256-4qlcytOgDL02X1meCZMwiu70zjmbf1jSApM+0Z+va18=",
         "owner": "ericcrosson",
         "repo": "git-dl",
-        "rev": "b20e90213c86932210b49f4c9a5d65fa538da4db",
+        "rev": "26a814a8c29bf56108dab4c1c7636460763d0b65",
         "type": "github"
       },
       "original": {

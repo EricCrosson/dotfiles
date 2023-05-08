@@ -105,9 +105,7 @@
     git-dl = {
       url = "github:ericcrosson/git-dl";
       inputs.crane.follows = "crane";
-      inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
     };
     git-review = {
       url = "github:ericcrosson/git-review";
