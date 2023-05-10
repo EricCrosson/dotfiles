@@ -32,11 +32,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1683467642,
-        "narHash": "sha256-PUzziy9fY/ahuVgIdh4/LSdVIiqJTWG0SHCuYrx2BU8=",
+        "lastModified": 1683494326,
+        "narHash": "sha256-PppmcyQKjb9svlTjMYXQ8F6Sna/XsKWoE9PKOB8QIRM=",
         "owner": "ericcrosson",
         "repo": "bash-barrier",
-        "rev": "4603460f8ab1201ebae9645f2ca2a44165c07fcf",
+        "rev": "33e1de5e2f0868c9eb9eafcae219aba780c1597b",
         "type": "github"
       },
       "original": {
