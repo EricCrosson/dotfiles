@@ -94,12 +94,18 @@ in {
   };
 
   programs = {
-    # FIXME: this doesn't appear to be active
+    # FIXME: atuin is not running without the zsh hook
     atuin = {
       enable = true;
+      package = inputs.atuin.packages.${pkgs.system}.default;
+      # FIXME: update home-manager for this option
+      # flags = [
+      #   "--disable-up-arrow"
+      # ];
       settings = {
         dialect = "us";
-        auto_sync = false;
+        auto_sync = true;
+        sync_frequency = "5m";
         update_check = false;
         search_mode = "fuzzy";
       };

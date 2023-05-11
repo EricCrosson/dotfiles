@@ -57,6 +57,12 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    atuin = {
+      url = "github:ellie/atuin";
+      inputs.flake-utils.follows = "flake-utils";
+      # don't follow nixpkgs until I'm using nixpkgs with Rust 1.67 or higher
+      # https://github.com/ellie/atuin/issues/737
+    };
     ast-grep = {
       url = "github:ericcrosson/escpkgs?dir=ast-grep";
       inputs.flake-utils.follows = "flake-utils";
