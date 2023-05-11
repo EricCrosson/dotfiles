@@ -91,7 +91,6 @@
     age
     curl
     discord
-    firefox
     git
     gnupg
     kitty

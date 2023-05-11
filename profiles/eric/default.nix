@@ -137,10 +137,11 @@ in {
 
     firefox = {
       enable = true;
+      # DISCUSS: is the nightly firefox flake compatible with darwin?
       package =
         if stdenv.isDarwin
         then pkgs.firefox-bin
-        else pkgs.firefox;
+        else inputs.firefox.packages.${pkgs.system}.firefox-nightly-bin;
       extensions = with pkgs.nur.repos.rycee.firefox-addons; [
         onepassword-password-manager
         ublock-origin

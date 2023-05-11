@@ -21,6 +21,7 @@ jobs:
             update-on: Monday
           - name: fenix
             update-on: Monday
+          - name: firefox
           - name: git-diff-regex
           - name: git-disjoint
           - name: git-dl

@@ -89,6 +89,9 @@
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    firefox = {
+      url = "github:colemickens/flake-firefox-nightly";
+    };
     firefox-darwin = {
       url = "github:bandithedoge/nixpkgs-firefox-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
