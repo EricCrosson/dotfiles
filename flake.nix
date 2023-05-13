@@ -1,5 +1,5 @@
 {
-  description = "Eric's NixOS and Home-Manager flake.";
+  description = "Eric's NixOS and Home-Manager flake";
 
   outputs = inputs @ {
     self,
