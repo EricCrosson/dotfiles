@@ -4,8 +4,6 @@
   outputs = inputs @ {
     self,
     flake-parts,
-    pre-commit-hooks,
-    sops-nix,
     ...
   }:
     flake-parts.lib.mkFlake {inherit (inputs) self;} {
@@ -18,40 +16,6 @@
         ./profiles
         ./hosts
       ];
-
-      perSystem = {
-        pkgs,
-        system,
-        ...
-      }: let
-        checks = {
-          pre-commit-check = pre-commit-hooks.lib.${system}.run {
-            src = ./.;
-            hooks = {
-              actionlint.enable = true;
-              alejandra.enable = true;
-              deadnix.enable = true;
-              prettier.enable = true;
-              statix.enable = true;
-              stylua.enable = true;
-            };
-          };
-        };
-      in {
-        formatter = pkgs.alejandra;
-
-        devShells.default = pkgs.mkShell {
-          inherit (checks.pre-commit-check) shellHook;
-          # imports all files ending in .asc/.gpg
-          sopsPGPKeyDirs = [
-            "${toString ./.}/keys/hosts"
-            "${toString ./.}/keys/users"
-          ];
-          nativeBuildInputs = [
-            (pkgs.callPackage sops-nix {}).sops-import-keys-hook
-          ];
-        };
-      };
     };
 
   inputs = {
@@ -142,11 +106,6 @@
     };
     ouch = {
       url = "github:ericcrosson/escpkgs?dir=ouch";
-      inputs.flake-utils.follows = "flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
       inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
