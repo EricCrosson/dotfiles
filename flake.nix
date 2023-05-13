@@ -104,11 +104,6 @@
       url = "github:nix-community/nurl";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    ouch = {
-      url = "github:ericcrosson/escpkgs?dir=ouch";
-      inputs.flake-utils.follows = "flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     retry = {
       url = "github:ericcrosson/retry";
       inputs.crane.follows = "crane";

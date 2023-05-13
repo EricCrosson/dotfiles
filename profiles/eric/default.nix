@@ -35,7 +35,6 @@ in {
       inputs.git-dl.packages.${pkgs.system}.default
       inputs.git-review.packages.${pkgs.system}.default
       inputs.nurl.packages.${pkgs.system}.default
-      inputs.ouch.packages.${pkgs.system}.default
       inputs.retry.packages.${pkgs.system}.default
 
       age-plugin-yubikey
@@ -45,6 +44,7 @@ in {
       comma
       curl
       delta
+      dtrx
       du-dust
       entr
       fd

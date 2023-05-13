@@ -842,31 +842,6 @@
         "type": "github"
       }
     },
-    "ouch": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "dir": "ouch",
-        "lastModified": 1672574413,
-        "narHash": "sha256-lYijvWSgYUK/2WY2jbiQuwBzZXcxL3kinwp5B7YGpsg=",
-        "owner": "ericcrosson",
-        "repo": "escpkgs",
-        "rev": "0b2501b751237c9d57c6cc295dbad4ad46c4832d",
-        "type": "github"
-      },
-      "original": {
-        "dir": "ouch",
-        "owner": "ericcrosson",
-        "repo": "escpkgs",
-        "type": "github"
-      }
-    },
     "parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -954,7 +929,6 @@
         "nixpkgs": "nixpkgs_3",
         "nur": "nur",
         "nurl": "nurl",
-        "ouch": "ouch",
         "retry": "retry",
         "sops-nix": "sops-nix"
       }
