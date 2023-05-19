@@ -44,7 +44,11 @@
     languages = [
       {
         name = "markdown";
-        language-server.command = "ltex-ls";
+        language-servers = [
+          {
+            name = "ltex-ls";
+          }
+        ];
       }
     ];
     settings = {
