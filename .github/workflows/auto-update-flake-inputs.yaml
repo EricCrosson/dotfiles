@@ -48,7 +48,7 @@ jobs:
           LC_TIME: C
           day: ${{ matrix.flake-input.update-on }}
 
-      # REFACTOR: there's duplication in updatte-flake-input.yaml,
+      # REFACTOR: there's duplication in update-flake-input.yaml,
       # the manually-invoked workflow
       - if: steps.should-update.outputs.update == 'true'
         uses: actions/checkout@v3
