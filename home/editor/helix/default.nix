@@ -7,10 +7,10 @@
   # DISCUSS: moving my helix config to its own flake for reuse
 
   home.packages = with pkgs; [
-    inputs.jsonnet-language-server.packages.${pkgs.system}.jsonnet-tool
-    hadolint
-    ltex-ls
     gopls
+    hadolint
+    jsonnet-language-server
+    ltex-ls
     nil
     nodePackages.bash-language-server
     nodePackages.dockerfile-language-server-nodejs
