@@ -57,6 +57,7 @@ in {
       jq
       mprocs
       passage
+      pueue
       python310Packages.grip
       ripgrep
       rm-improved
