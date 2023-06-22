@@ -782,6 +782,26 @@
         "type": "github"
       }
     },
+    "npm-dep-version": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1687472150,
+        "narHash": "sha256-tKkuo4wSJZB2LsmoJmc+SGVi4ZQmdiC0ij8Zq0lswMs=",
+        "owner": "ericcrosson",
+        "repo": "npm-dep-version",
+        "rev": "7cffe2d5f63af7a16c4191638fc3592a40210428",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ericcrosson",
+        "repo": "npm-dep-version",
+        "type": "github"
+      }
+    },
     "nur": {
       "locked": {
         "lastModified": 1668255064,
@@ -901,6 +921,7 @@
         "home-manager": "home-manager",
         "kmonad": "kmonad",
         "nixpkgs": "nixpkgs_3",
+        "npm-dep-version": "npm-dep-version",
         "nur": "nur",
         "nurl": "nurl",
         "retry": "retry",
