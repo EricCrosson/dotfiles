@@ -26,6 +26,7 @@ jobs:
           - name: git-disjoint
           - name: git-dl
           - name: git-review
+          - name: npm-dep-version
           - name: helix
           - name: retry
             update-on: Monday

@@ -107,6 +107,10 @@
       url = "github:kmonad/kmonad?dir=nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    npm-dep-version = {
+      url = "github:ericcrosson/npm-dep-version";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nur.url = "github:nix-community/nur";
     nurl = {
       url = "github:nix-community/nurl";
