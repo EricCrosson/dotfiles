@@ -34,7 +34,7 @@ in {
       inputs.git-disjoint.packages.${pkgs.system}.default
       inputs.git-dl.packages.${pkgs.system}.default
       inputs.git-review.packages.${pkgs.system}.default
-      inputs.npm-dep-version.${pkgs.system}.default
+      inputs.npm-dep-version.packages.${pkgs.system}.default
       inputs.nurl.packages.${pkgs.system}.default
       inputs.retry.packages.${pkgs.system}.default
 
