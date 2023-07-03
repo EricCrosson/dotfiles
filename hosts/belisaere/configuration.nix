@@ -79,9 +79,14 @@
       "networkmanager"
       "input"
       "uinput"
+      "user-with-access-to-virtualbox"
     ];
   };
   security.sudo.wheelNeedsPassword = false;
+  virtualisation.virtualbox.host = {
+    enable = true;
+    enableExtensionPack = true;
+  };
 
   environment.systemPackages = with pkgs; [
     direnv
