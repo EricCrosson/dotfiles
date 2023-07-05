@@ -322,11 +322,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1688425585,
-        "narHash": "sha256-bXQqJDoXEgG38xsDK8U5AjoyPYo1brqGLl74RcbacY0=",
+        "lastModified": 1688516512,
+        "narHash": "sha256-U/gdizAfTVveutUo96W6TcvVY4kVCvtcBu5Pff5uaDY=",
         "owner": "colemickens",
         "repo": "flake-firefox-nightly",
-        "rev": "576264e38dff3b28f931d3961be68436bd955381",
+        "rev": "604da4206d4f3c66ffd53bad6f9f013e585ea1b5",
         "type": "github"
       },
       "original": {
@@ -752,11 +752,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1688231357,
-        "narHash": "sha256-ZOn16X5jZ6X5ror58gOJAxPfFLAQhZJ6nOUeS4tfFwo=",
+        "lastModified": 1688322751,
+        "narHash": "sha256-eW62dC5f33oKZL7VWlomttbUnOTHrAbte9yNUNW8rbk=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "645ff62e09d294a30de823cb568e9c6d68e92606",
+        "rev": "0fbe93c5a7cac99f90b60bdf5f149383daaa615f",
         "type": "github"
       },
       "original": {
