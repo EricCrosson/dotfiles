@@ -148,7 +148,6 @@ in {
         then pkgs.firefox-bin
         else inputs.firefox.packages.${pkgs.system}.firefox-nightly-bin;
       extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-        lastpass-password-manager
         onepassword-password-manager
         # To disable cursor animation on Google Docs:
         # `.docs-text-ui-cursor-blink { animation: none !important; }`
