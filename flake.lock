@@ -1040,11 +1040,11 @@
       },
       "locked": {
         "dir": "samwho/spacer",
-        "lastModified": 1688918771,
-        "narHash": "sha256-vMcRdA43K6p3ptDi0TEd4Cxlw4Se+35u1Vns+cBEQ1M=",
+        "lastModified": 1688940332,
+        "narHash": "sha256-GqavqsIKKgRIgW3HUi3CildE4hxG5j2t5aH5Xcl9oPY=",
         "owner": "ericcrosson",
         "repo": "escpkgs",
-        "rev": "9d34af2d71f914528019f89d8e35cf67e3781ac1",
+        "rev": "a52fc15733ac529d2dab99052dd4411d27b7f7af",
         "type": "github"
       },
       "original": {
