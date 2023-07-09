@@ -66,7 +66,7 @@
   # Define a user account.
   users.users.${user.username} = {
     isNormalUser = true;
-    home = "/home/${user.username}";
+    home = user.homeDirectory;
     description = "Eric Crosson";
     extraGroups = [
       "wheel" # Enable 'sudo' for the user.
@@ -87,6 +87,7 @@
     enableExtensionPack = true;
   };
 
+  # REFACTOR: can we reduce duplication here?
   environment.systemPackages = with pkgs; [
     direnv
     nix-direnv
@@ -104,7 +105,7 @@
     tree
     vim
     wget
-    xclip
+    xclip # DISCUSS: should xclip belong in the user-profile packages?
     yubikey-manager
   ];
 

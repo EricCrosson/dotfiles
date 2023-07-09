@@ -1,13 +1,5 @@
-{
-  pkgs,
-  user,
-  ...
-}: {
+{pkgs, ...}: {
   home = {
-    username = "${user.username}";
-    homeDirectory = "${user.homeDirectory}";
-    stateVersion = "22.05";
-
     packages = with pkgs; [
       amazon-ecr-credential-helper
       dive

@@ -7,6 +7,7 @@
   preferences = {
     theme = "mocha";
   };
+  # REFACTOR: rename as `profiles`
   profile = {
     # REFACTOR: can we type this? Using mkOption or something
     eric = rec {
@@ -28,66 +29,103 @@
     };
   };
 in {
-  flake.nixosConfigurations = withSystem "x86_64-linux" ({system, ...}: let
-    # REFACTOR: apply overlays in one spot, for entire nixos config
-    pkgs = import inputs.nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-      overlays = [
-        inputs.fenix.overlays.default
-        inputs.nur.overlay
-        (_self: super: {
-          # Enable Nix flakes with direnv.
-          nix-direnv = super.nix-direnv.override {enableFlakes = true;};
-        })
-      ];
-    };
-    inherit (pkgs) stdenv;
-  in {
-    belisaere = let
-      user = profile.eric;
-    in
-      inputs.nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs pkgs user;
-        };
-        # inherit specialArgs;
-        modules = [
-          ./belisaere/configuration.nix
-          inputs.sops-nix.nixosModules.sops
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = {inherit inputs pkgs user;};
-              users.${user.username}.imports = homeImports."eric@belisaere";
-            };
-          }
+  flake.nixosConfigurations =
+    withSystem "x86_64-linux" ({system, ...}: let
+      # REFACTOR: apply overlays in one spot, for entire nixos config
+      pkgs = import inputs.nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = [
+          inputs.fenix.overlays.default
+          inputs.nur.overlay
+          (_self: super: {
+            # Enable Nix flakes with direnv.
+            nix-direnv = super.nix-direnv.override {enableFlakes = true;};
+          })
         ];
       };
-    corvere = let
-      user = profile.bitgo stdenv;
-    in
-      inputs.nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs pkgs user;
+      inherit (pkgs) stdenv;
+    in {
+      belisaere = let
+        user = profile.eric;
+      in
+        inputs.nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs pkgs user;
+          };
+          # inherit specialArgs;
+          modules = [
+            ./belisaere/configuration.nix
+            inputs.sops-nix.nixosModules.sops
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = {inherit inputs pkgs user;};
+                users.${user.username}.imports = homeImports."eric@belisaere";
+              };
+            }
+          ];
         };
-        modules = [
-          ./corvere/configuration.nix
-          inputs.sops-nix.nixosModules.sops
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = {inherit inputs pkgs user;};
-              users.${user.username}.imports = homeImports."ericcrosson@corvere";
-            };
-          }
+      corvere = let
+        user = profile.bitgo stdenv;
+      in
+        inputs.nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs pkgs user;
+          };
+          modules = [
+            ./corvere/configuration.nix
+            inputs.sops-nix.nixosModules.sops
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = {inherit inputs pkgs user;};
+                users.${user.username}.imports = homeImports."ericcrosson@corvere";
+              };
+            }
+          ];
+        };
+    })
+    // withSystem "aarch64-linux" ({system, ...}: let
+      pkgs = import inputs.nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = [
+          inputs.fenix.overlays.default
+          inputs.nur.overlay
+          (_self: super: {
+            # Enable Nix flakes with direnv.
+            nix-direnv = super.nix-direnv.override {enableFlakes = true;};
+          })
         ];
       };
-  });
+    in {
+      bain = let
+        user = profile.eric;
+      in
+        inputs.nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs pkgs user;
+          };
+          modules = [
+            ./bain/configuration.nix
+            inputs.sops-nix.nixosModules.sops
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = {inherit inputs pkgs user;};
+                users.${user.username}.imports = homeImports."eric@bain";
+              };
+            }
+          ];
+        };
+    });
 
   flake.darwinConfigurations = withSystem "aarch64-darwin" ({system, ...}: let
     pkgs = import inputs.nixpkgs {
