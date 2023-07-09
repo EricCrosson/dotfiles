@@ -277,10 +277,6 @@ in {
       enable = true;
       userName = "Eric Crosson";
       userEmail = "${user.email}";
-      signing = {
-        key = "0AB49222C769F13EDE3EBFB2352FBA3B4180A44A";
-        signByDefault = true;
-      };
       aliases = {
         a = "add";
         b = "branch";
@@ -352,9 +348,6 @@ in {
         github = {
           user = "${user.email}";
         };
-        # gpg = {
-        #   program = "${pkgs.gnupg}";
-        # };
         init = {
           defaultBranch = "master";
         };

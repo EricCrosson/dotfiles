@@ -36,6 +36,10 @@
 
   programs = {
     git = {
+      signing = {
+        key = "0AB49222C769F13EDE3EBFB2352FBA3B4180A44A";
+        signByDefault = true;
+      };
       extraConfig = {
         includeIf = {
           "gitdir:~/workspace/EricCrosson/" = {
