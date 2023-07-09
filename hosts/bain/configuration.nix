@@ -46,6 +46,8 @@
     keyMap = "us";
   };
 
+  # TODO: enable sound?
+
   programs.zsh.enable = true; # Set zsh as the default shell for all users.
   users.defaultUserShell = pkgs.zsh;
   environment = {
@@ -131,6 +133,7 @@
   };
   services.xserver.displayManager.sessionCommands = ''
     ${pkgs.xorg.xset}/bin/xset r rate 165 60
+    ${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1 --mode 1920x1080
   '';
 
   hardware.pulseaudio.enable = true;
