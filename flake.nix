@@ -41,7 +41,7 @@
       # https://github.com/ellie/atuin/issues/737
     };
     ast-grep = {
-      url = "github:ericcrosson/escpkgs?dir=ast-grep";
+      url = "github:ericcrosson/escpkgs?dir=ast-grep/ast-grep";
       inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };

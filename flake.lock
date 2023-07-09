@@ -10,16 +10,16 @@
         ]
       },
       "locked": {
-        "dir": "ast-grep",
-        "lastModified": 1668902776,
-        "narHash": "sha256-KxiCTvGg3NRG9jwXxTbbEh+8VJl4/7xfmlceZso1OSo=",
+        "dir": "ast-grep/ast-grep",
+        "lastModified": 1688918771,
+        "narHash": "sha256-vMcRdA43K6p3ptDi0TEd4Cxlw4Se+35u1Vns+cBEQ1M=",
         "owner": "ericcrosson",
         "repo": "escpkgs",
-        "rev": "932a2a44bf4ac7843b04870df56a916d37e5ede7",
+        "rev": "9d34af2d71f914528019f89d8e35cf67e3781ac1",
         "type": "github"
       },
       "original": {
-        "dir": "ast-grep",
+        "dir": "ast-grep/ast-grep",
         "owner": "ericcrosson",
         "repo": "escpkgs",
         "type": "github"
