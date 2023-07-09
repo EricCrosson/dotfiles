@@ -926,7 +926,8 @@
         "nur": "nur",
         "nurl": "nurl",
         "retry": "retry",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "spacer": "spacer"
       }
     },
     "rust-analyzer-src": {
@@ -1028,6 +1029,28 @@
       "original": {
         "owner": "mic92",
         "repo": "sops-nix",
+        "type": "github"
+      }
+    },
+    "spacer": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "dir": "samwho/spacer",
+        "lastModified": 1688918771,
+        "narHash": "sha256-vMcRdA43K6p3ptDi0TEd4Cxlw4Se+35u1Vns+cBEQ1M=",
+        "owner": "ericcrosson",
+        "repo": "escpkgs",
+        "rev": "9d34af2d71f914528019f89d8e35cf67e3781ac1",
+        "type": "github"
+      },
+      "original": {
+        "dir": "samwho/spacer",
+        "owner": "ericcrosson",
+        "repo": "escpkgs",
         "type": "github"
       }
     },

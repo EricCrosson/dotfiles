@@ -37,6 +37,7 @@ in {
       inputs.npm-dep-version.packages.${pkgs.system}.default
       inputs.nurl.packages.${pkgs.system}.default
       inputs.retry.packages.${pkgs.system}.default
+      inputs.spacer.packages.${pkgs.system}.default
 
       age-plugin-yubikey
       amber
