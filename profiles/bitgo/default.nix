@@ -2,8 +2,10 @@
   home = {
     packages = with pkgs; [
       amazon-ecr-credential-helper
+      awscli2
       dive
       go-jira
+      k9s
       kubectl
       yq-go
 

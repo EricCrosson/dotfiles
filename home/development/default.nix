@@ -19,9 +19,7 @@
       inputs.npm-dep-version.packages.${pkgs.system}.default
       inputs.nurl.packages.${pkgs.system}.default
 
-      awscli2
       cargo-watch
-      k9s
     ];
   };
 }
