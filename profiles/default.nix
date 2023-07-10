@@ -18,6 +18,7 @@
       sharedModules
       ++ [
         ../home/development
+        {develops = true;}
         ../home/firefox
         ../home/window-manager/awesome
       ];
