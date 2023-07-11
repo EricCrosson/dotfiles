@@ -24,4 +24,4 @@ jobs:
       # Retry this step because sometimes there is a network blip
       - run: |
           : nix flake check
-          retry --up-to 2x -- nix flake check --keep-going --print-build-logs
+          retry --up-to 2x -- nix flake check ./nix --keep-going --print-build-logs
