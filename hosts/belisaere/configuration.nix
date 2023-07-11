@@ -53,6 +53,16 @@
     pulse.enable = true;
   };
   services.pcscd.enable = true; # For YubiKey TOTP.
+  # Fixes too many open files
+  # https://github.com/NixOS/nixpkgs/issues/171218
+  security.pam.loginLimits = [
+    {
+      domain = "*";
+      type = "soft";
+      item = "nofile";
+      value = "262144";
+    }
+  ];
 
   programs.zsh.enable = true; # Set zsh as the default shell for all users.
   users.defaultUserShell = pkgs.zsh;
