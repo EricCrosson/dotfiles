@@ -16,13 +16,6 @@
         then inputs.firefox.packages.${pkgs.system}.firefox-nightly-bin
         # FIXME: firefox isn't supported on aarch64-linux either
         else pkgs.firefox-bin;
-      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-        onepassword-password-manager
-        # To disable cursor animation on Google Docs:
-        # `.docs-text-ui-cursor-blink { animation: none !important; }`
-        stylus
-        ublock-origin
-      ];
       profiles = {
         default = {
           id = 0;
@@ -49,6 +42,13 @@
               keyword = "hx";
               url = "https://docs.helix-editor.com/master/keymap.html";
             }
+          ];
+          extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+            onepassword-password-manager
+            # To disable cursor animation on Google Docs:
+            # `.docs-text-ui-cursor-blink { animation: none !important; }`
+            stylus
+            ublock-origin
           ];
           search = {
             default = "Google";

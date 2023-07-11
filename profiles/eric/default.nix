@@ -68,7 +68,7 @@ in {
       exa
       fzf
       hub
-      python
+      python3Full
       starship
       wakatime
     ];

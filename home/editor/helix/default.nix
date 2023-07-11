@@ -43,7 +43,7 @@
     #       closureReturnTypeHints.enable = "with_block";
     #   };
     # };
-    languages = [
+    languages.language = [
       {
         name = "markdown";
         language-servers = [
