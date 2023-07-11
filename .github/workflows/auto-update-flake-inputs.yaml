@@ -28,6 +28,7 @@ jobs:
           - name: git-review
           - name: npm-dep-version
           - name: helix
+          - name: nixpkgs
           - name: retry
             update-on: Monday
 
