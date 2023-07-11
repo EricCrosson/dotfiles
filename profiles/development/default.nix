@@ -19,6 +19,16 @@
       inputs.npm-dep-version.packages.${pkgs.system}.default
       inputs.nurl.packages.${pkgs.system}.default
 
+      # DISCUSS: switch between nightly and precompiled releases
+      (fenix.complete.withComponents [
+        "cargo"
+        "clippy"
+        "rust-src"
+        "rustc"
+        "rustfmt"
+      ])
+      rust-analyzer-nightly
+
       cargo-watch
     ];
   };

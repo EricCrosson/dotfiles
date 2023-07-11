@@ -5,12 +5,12 @@
 }: let
   sharedModules = [
     ./eric
+    # DISCUSS: a lightweight helix -- can we download from a precompiled release?
+    #          https://github.com/helix-editor/helix/releases/tag/23.05
     ../home/editor/helix
   ];
 
   # DISCUSS: is coupling to the host the right direction for a profile here?
-  # DISCUSS: a lightweight helix -- can we download from a precompiled release?
-  #          https://github.com/helix-editor/helix/releases/tag/23.05
   homeImports = {
     "eric@MBP-0954" = sharedModules;
 
