@@ -7,10 +7,8 @@
       go-jira
       k9s
       kubectl
+      kubectx
       yq-go
-
-      # Still missing
-      # kubectx
     ];
 
     file = {
