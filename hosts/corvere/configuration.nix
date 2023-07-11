@@ -80,6 +80,16 @@
     pulse.enable = true;
   };
   services.pcscd.enable = true; # For YubiKey TOTP.
+  # Fixes too many open files
+  # https://github.com/NixOS/nixpkgs/issues/171218
+  security.pam.loginLimits = [
+    {
+      domain = "*";
+      type = "soft";
+      item = "nofile";
+      value = "262144";
+    }
+  ];
 
   programs.zsh.enable = true; # Set zsh as the default shell for all users.
   users.defaultUserShell = pkgs.zsh;
@@ -195,7 +205,7 @@
       dockerCompat = true;
 
       # Required for containers under podman-compose to be able to talk to each other.
-      defaultNetwork.dnsname.enable = true;
+      defaultNetwork.settings.dns_enabled = true;
     };
   };
 
