@@ -17,7 +17,7 @@
     "eric@belisaere" =
       sharedModules
       ++ [
-        ../home/development
+        ./development
         ../home/firefox
         ../home/window-manager/awesome
       ];
@@ -26,7 +26,7 @@
       sharedModules
       ++ [
         ./bitgo
-        ../home/development
+        ./development
         ../home/firefox
         ../home/window-manager/awesome
       ];
