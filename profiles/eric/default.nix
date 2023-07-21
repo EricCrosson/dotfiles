@@ -50,6 +50,7 @@ in {
       jq
       keychain
       maim
+      moreutils
       mprocs
       pass
       passage
