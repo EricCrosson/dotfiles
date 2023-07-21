@@ -56,7 +56,6 @@ in {
       passage
       pueue
       python310Packages.grip
-      ripgrep
       rm-improved
       sd
       viddy
@@ -243,6 +242,16 @@ in {
         cursor_blink_interval = 0;
         scrollback_lines = 50000;
       };
+    };
+
+    ripgrep = {
+      enable = true;
+      arguments = [
+        "-."
+        "--glob=!.git/"
+        "--no-heading"
+        "--smart-case"
+      ];
     };
 
     starship = {
