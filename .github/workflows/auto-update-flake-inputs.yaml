@@ -13,6 +13,7 @@ jobs:
 
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         flake-input:
           - name: bash-barrier
