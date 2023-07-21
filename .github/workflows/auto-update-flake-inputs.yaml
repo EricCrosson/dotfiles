@@ -27,6 +27,7 @@ jobs:
           - name: git-dl
           - name: git-review
           - name: helix
+          - name: home-manager
           - name: nixpkgs
           - name: npm-dep-version
           - name: retry
