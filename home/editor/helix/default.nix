@@ -13,52 +13,30 @@
   };
   # DISCUSS: moving my helix config to its own flake for reuse
 
-  home.packages = with pkgs; [
-    gopls
-    hadolint
-    jsonnet-language-server
-    ltex-ls
-    nil
-    nodePackages.bash-language-server
-    nodePackages.dockerfile-language-server-nodejs
-    nodePackages.typescript-language-server
-    nodePackages.vscode-langservers-extracted
-    (fenix.complete.withComponents [
-      "cargo"
-      "clippy"
-      "rust-src"
-      "rustc"
-      "rustfmt"
-    ])
-    # DISCUSS: in lightweight environments, using a pre-compiled rust-analyzer
-    # would save a lot of time compiling
-    rust-analyzer-nightly
-    shellcheck
-    sumneko-lua-language-server
-    taplo-lsp # TOML
-  ];
-
-  programs.helix = {
-    enable = true;
-    package = inputs.helix.packages.${pkgs.system}.default;
-    # TODO: Customize; might need to update home-manager first
-    # Introducing PR: https://github.com/helix-editor/helix/pull/5934
-    # Instructions: https://github.com/helix-editor/helix/issues/2070
-    # Settings: https://rust-analyzer.github.io/manual.html#inlay-hints
-    # language.config = {
-    #   rust.inlayHints = {
-    #       closureReturnTypeHints.enable = "with_block";
-    #   };
-    # };
-    languages = [
-      {
-        name = "markdown";
-        language-servers = [
-          {
-            name = "ltex-ls";
-          }
-        ];
-      }
+  config = {
+    home.packages = with pkgs; [
+      gopls
+      hadolint
+      jsonnet-language-server
+      ltex-ls
+      nil
+      nodePackages.bash-language-server
+      nodePackages.dockerfile-language-server-nodejs
+      nodePackages.typescript-language-server
+      nodePackages.vscode-langservers-extracted
+      (fenix.complete.withComponents [
+        "cargo"
+        "clippy"
+        "rust-src"
+        "rustc"
+        "rustfmt"
+      ])
+      # DISCUSS: in lightweight environments, using a pre-compiled rust-analyzer
+      # would save a lot of time compiling
+      rust-analyzer-nightly
+      shellcheck
+      sumneko-lua-language-server
+      taplo-lsp # TOML
     ];
 
     programs.helix = {
