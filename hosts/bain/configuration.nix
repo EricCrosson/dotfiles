@@ -2,7 +2,6 @@
   config,
   pkgs,
   user,
-  inputs,
   ...
 }: {
   # To build compute-heavy derivations, I had to set
@@ -17,7 +16,7 @@
       }
     }/raspberry-pi/4"
     ../../modules/sops.nix
-    inputs.kmonad.nixosModules.default
+    # inputs.kmonad.nixosModules.default
   ];
 
   fileSystems = {
@@ -95,46 +94,46 @@
   ];
 
   # List services that you want to enable:
-  services.kmonad = {
-    enable = true;
-    package = inputs.kmonad.packages.${pkgs.system}.default;
-    keyboards = {
-      kinesis-advantage-pro = {
-        name = "kinesis-advantage-pro";
-        device = "/dev/input/by-id/usb-0c45_7403-event-kbd";
-        defcfg = {
-          enable = true;
-          compose.key = null;
-          fallthrough = true;
-          allowCommands = false;
-        };
-        config = builtins.readFile ../../kmonad/kinesis-advantage-pro.kbd;
-      };
-    };
-  };
+  # services.kmonad = {
+  #   enable = true;
+  #   package = inputs.kmonad.packages.${pkgs.system}.default;
+  #   keyboards = {
+  #     kinesis-advantage-pro = {
+  #       name = "kinesis-advantage-pro";
+  #       device = "/dev/input/by-id/usb-0c45_7403-event-kbd";
+  #       defcfg = {
+  #         enable = true;
+  #         compose.key = null;
+  #         fallthrough = true;
+  #         allowCommands = false;
+  #       };
+  #       config = builtins.readFile ../../kmonad/kinesis-advantage-pro.kbd;
+  #     };
+  #   };
+  # };
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
   # Enable GPU acceleration
-  hardware.raspberry-pi."4".fkms-3d.enable = true;
+  # hardware.raspberry-pi."4".fkms-3d.enable = true;
 
   # Enable the X11 windowing system.
-  services.xserver = {
-    enable = true;
-  };
+  # services.xserver = {
+  #   enable = true;
+  # };
 
   # Configure keymap in X11
-  services.xserver.layout = "us";
+  # services.xserver.layout = "us";
 
   # DISCUSS: may belong in user configuration?
-  services.xserver.windowManager.awesome = {
-    enable = true;
-  };
-  services.xserver.displayManager.sessionCommands = ''
-    ${pkgs.xorg.xset}/bin/xset r rate 165 60
-    ${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1 --mode 1920x1080
-  '';
+  # services.xserver.windowManager.awesome = {
+  #   enable = true;
+  # };
+  # services.xserver.displayManager.sessionCommands = ''
+  #   ${pkgs.xorg.xset}/bin/xset r rate 165 60
+  #   ${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1 --mode 1920x1080
+  # '';
 
   hardware.pulseaudio.enable = true;
 
