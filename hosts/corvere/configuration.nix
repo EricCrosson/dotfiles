@@ -162,7 +162,7 @@
     keyboards = {
       kinesis-advantage-pro = {
         name = "kinesis-advantage-pro";
-        device = "/dev/input/by-id/usb-05f3_0007-event-kbd";
+        device = "/dev/input/by-id/usb-0c45_7403-event-kbd";
         defcfg = {
           enable = true;
           compose.key = null;
