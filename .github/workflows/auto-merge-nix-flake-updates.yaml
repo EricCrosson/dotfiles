@@ -15,10 +15,26 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.label.name == 'nix'
 
+    env:
+      PR_URL: ${{ github.event.pull_request.html_url }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
-      - run: |
-          : enable auto-merge for flake-update PRs
+      - name: Enable auto-merge for flake-update PR
+        id: enable-auto-merge-attempt-1
+        run: gh pr merge --auto --merge "$PR_URL"
+        continue-on-error: true
+
+      - if: steps.enable-auto-merge-attempt-1.outcome == 'failure'
+        name: Retry enable auto-merge for flake-update PR
+        id: enable-auto-merge-attempt-2
+        run: |
+          sleep 3
           gh pr merge --auto --merge "$PR_URL"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - if: steps.enable-auto-merge-attempt-1.outcome == 'failure' && steps.enable-auto-merge-attempt-2.outcome == 'failure'
+        name: Retry enable auto-merge for flake-update PR
+        run: |
+          sleep 9
+          gh pr merge --auto --merge "$PR_URL"
