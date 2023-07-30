@@ -36,7 +36,6 @@ in {
       comma
       curl
       delta
-      dtrx
       du-dust
       entr
       fd
@@ -49,7 +48,6 @@ in {
       hyperfine
       jq
       keychain
-      maim
       moreutils
       mprocs
       pass

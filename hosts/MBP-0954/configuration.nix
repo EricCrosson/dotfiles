@@ -1,13 +1,12 @@
 {pkgs, ...}: let
+  # TODO: use ncurses-pinentry
   pinentry-program = "${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac";
 in {
   config = {
     environment = {
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
-      systemPackages = with pkgs; [
-        bash
-      ];
+      systemPackages = [];
 
       shells = [pkgs.zsh];
 

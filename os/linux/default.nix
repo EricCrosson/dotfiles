@@ -1,7 +1,9 @@
 {pkgs, ...}: {
   home.packages = with pkgs;
     [
+      dtrx
       evtest
+      maim
     ]
     ++
     # These packages are only supported on x86_64-linux

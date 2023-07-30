@@ -17,6 +17,8 @@
     "eric@MBP-0954" =
       sharedModules
       ++ [
+        ./bitgo
+        ./development
         ../home/editor/helix
       ];
 
