@@ -56,6 +56,7 @@ in {
       python310Packages.grip
       rm-improved
       sd
+      units
       viddy
       viu
       vim
