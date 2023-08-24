@@ -88,14 +88,9 @@
       "networkmanager"
       "input"
       "uinput"
-      "user-with-access-to-virtualbox"
     ];
   };
   security.sudo.wheelNeedsPassword = false;
-  virtualisation.virtualbox.host = {
-    enable = true;
-    enableExtensionPack = true;
-  };
 
   # REFACTOR: can we reduce duplication here?
   environment.systemPackages = with pkgs; [
