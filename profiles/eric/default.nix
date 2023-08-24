@@ -230,7 +230,10 @@ in {
       enable = true;
       font = {
         name = "DejaVu Sans Mono";
-        size = 14;
+        size =
+          if pkgs.stdenv.isLinux
+          then 14
+          else 18;
       };
       settings = {
         cursor_blink_interval = 0;
