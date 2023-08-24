@@ -235,6 +235,7 @@ in {
       settings = {
         cursor_blink_interval = 0;
         scrollback_lines = 50000;
+        macos_option_as_alt = "yes";
       };
     };
 
