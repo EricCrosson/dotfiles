@@ -16,7 +16,7 @@
   config = {
     home.packages = with pkgs; [
       gopls
-      hadolint
+      # hadolint # temporarily disabled because dependency `ilist` is marked as broken
       jsonnet-language-server
       ltex-ls
       nil
