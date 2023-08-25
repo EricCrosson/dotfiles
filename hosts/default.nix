@@ -157,8 +157,7 @@ in {
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = {inherit inputs pkgs user;};
-              # FIXME: this should import ericcrosson I suspect
-              users.${user.username}.imports = homeImports."eric@MBP-0954";
+              users.${user.username}.imports = homeImports."ericcrosson@MBP-0954";
             };
           }
         ];
