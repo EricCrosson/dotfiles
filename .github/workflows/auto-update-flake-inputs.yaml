@@ -55,7 +55,7 @@ jobs:
       # REFACTOR: there's duplication in update-flake-input.yaml,
       # the manually-invoked workflow
       - if: steps.should-update.outputs.update == 'true'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - if: steps.should-update.outputs.update == 'true'
         uses: DeterminateSystems/nix-installer-action@main
