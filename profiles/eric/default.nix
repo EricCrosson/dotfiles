@@ -63,7 +63,7 @@ in {
       wget
 
       # for shell
-      exa
+      eza
       fzf
       hub
       python3Full
