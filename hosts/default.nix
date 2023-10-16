@@ -38,10 +38,6 @@ in {
         overlays = [
           inputs.fenix.overlays.default
           inputs.nur.overlay
-          (_self: super: {
-            # Enable Nix flakes with direnv.
-            nix-direnv = super.nix-direnv.override {enableFlakes = true;};
-          })
         ];
       };
       inherit (pkgs) stdenv;
@@ -97,10 +93,6 @@ in {
         overlays = [
           inputs.fenix.overlays.default
           inputs.nur.overlay
-          (_self: super: {
-            # Enable Nix flakes with direnv.
-            nix-direnv = super.nix-direnv.override {enableFlakes = true;};
-          })
         ];
       };
     in {
@@ -135,10 +127,6 @@ in {
         inputs.fenix.overlays.default
         inputs.firefox-darwin.overlay
         inputs.nur.overlay
-        (_self: super: {
-          # Enable Nix flakes with direnv.
-          nix-direnv = super.nix-direnv.override {enableFlakes = true;};
-        })
       ];
     };
     inherit (pkgs) stdenv;
