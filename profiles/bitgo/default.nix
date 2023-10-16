@@ -8,6 +8,7 @@
       k9s
       kubectl
       kubectx
+      gpodder
       yq-go
     ];
 
