@@ -30,6 +30,8 @@
       rust-analyzer-nightly
 
       cargo-watch
+
+      bc
     ];
   };
 }
