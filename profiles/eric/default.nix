@@ -61,6 +61,7 @@ in {
       viddy
       viu
       vim
+      vlc
       wget
 
       # for shell
