@@ -29,6 +29,7 @@
       ])
       rust-analyzer-nightly
 
+      cargo-tarpaulin
       cargo-watch
 
       bc
