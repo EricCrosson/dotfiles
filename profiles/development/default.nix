@@ -33,6 +33,7 @@
       cargo-watch
 
       bc
+      vscode
     ];
   };
 }
