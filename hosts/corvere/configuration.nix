@@ -42,9 +42,6 @@
 
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
-  # Required for Apple Magic Trackpad
-  services.xserver.libinput.enable = true;
-  services.xserver.libinput.touchpad.naturalScrolling = true;
 
   # Enable networking
   # networking.networkmanager.enable = true;
@@ -181,18 +178,23 @@
   services.xserver = {
     enable = true;
     # videoDrivers = ["nvidia"];
+
+    # Required for Apple Magic Trackpad
+    libinput.enable = true;
+    libinput.touchpad.naturalScrolling = true;
+
+    # Configure keymap in X11
+    layout = "us";
+
+    # DISCUSS: may belong in user configuration?
+    windowManager.awesome = {
+      enable = true;
+    };
+    displayManager.sessionCommands = ''
+      ${pkgs.xorg.xset}/bin/xset r rate 165 60
+    '';
   };
 
-  # Configure keymap in X11
-  services.xserver.layout = "us";
-
-  # DISCUSS: may belong in user configuration?
-  services.xserver.windowManager.awesome = {
-    enable = true;
-  };
-  services.xserver.displayManager.sessionCommands = ''
-    ${pkgs.xorg.xset}/bin/xset r rate 165 60
-  '';
   services.picom.enable = true;
 
   # https://discourse.nixos.org/t/warning-boot-enablecontainers-virtualisation-containers-unsupported/21249
