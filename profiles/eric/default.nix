@@ -150,7 +150,7 @@ in {
         # https://stackoverflow.com/a/70205254
         continue = "-c core.editor=true rebase --continue";
         d = "diff";
-        di = "diff ':(exclude)./**/package-lock.json' ':(exclude)./**/yarn.lock'";
+        di = "diff ':(exclude):package-lock.json' ':(exclude)./**/package-lock.json' ':(exclude)yarn.lock' ':(exclude)./**/yarn.lock'";
         ds = "diff --cached";
         dsi = "diff --cached ':(exclude):package-lock.json' ':(exclude)**/package-lock.json' ':(exclude)yarn.lock' ':(exclude)**/yarn.lock'";
         dn = "diff --name-only";
