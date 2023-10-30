@@ -34,6 +34,7 @@ in {
       alsa-utils
       amber
       bottom
+      chromium
       comma
       curl
       delta
