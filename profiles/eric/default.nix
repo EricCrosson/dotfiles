@@ -151,9 +151,7 @@ in {
         continue = "-c core.editor=true rebase --continue";
         d = "diff";
         di = "diff ':(exclude)./**/package-lock.json' ':(exclude)./**/yarn.lock'";
-        dc = "diff --cached";
         ds = "diff --cached";
-        dci = "diff --cached ':(exclude):package-lock.json' ':(exclude)**/package-lock.json' ':(exclude)yarn.lock' ':(exclude)**/yarn.lock'";
         dsi = "diff --cached ':(exclude):package-lock.json' ':(exclude)**/package-lock.json' ':(exclude)yarn.lock' ':(exclude)**/yarn.lock'";
         dn = "diff --name-only";
         f = "fetch";
