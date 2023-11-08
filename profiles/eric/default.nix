@@ -31,10 +31,8 @@ in {
       inputs.spacer.packages.${pkgs.system}.default
 
       age-plugin-yubikey
-      alsa-utils
       amber
       bottom
-      chromium
       comma
       curl
       delta
@@ -62,7 +60,6 @@ in {
       viddy
       viu
       vim
-      vlc
       wget
 
       # for shell

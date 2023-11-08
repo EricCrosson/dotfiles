@@ -1,9 +1,12 @@
 {pkgs, ...}: {
   home = {
     packages = with pkgs; [
+      alsa-utils
+      chromium
       dtrx
       evtest
       maim
+      vlc
     ];
 
     file = {
