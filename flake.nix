@@ -50,6 +50,10 @@
       url = "github:ericcrosson/bash-barrier";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    batch-edit-prs = {
+      url = "github:ericcrosson/batch-edit-prs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     bell = {
       url = "github:ericcrosson/bell";
       inputs.nixpkgs.follows = "nixpkgs";

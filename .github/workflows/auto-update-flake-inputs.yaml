@@ -18,6 +18,7 @@ jobs:
         flake-input:
           - name: bash-barrier
             update-on: Monday
+          - name: batch-edit-prs
           - name: bell
             update-on: Monday
           - name: fenix
