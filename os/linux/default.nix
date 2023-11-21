@@ -2,6 +2,7 @@
   home = {
     packages = with pkgs; [
       alsa-utils
+      caffeine-ng
       chromium
       dtrx
       evtest
