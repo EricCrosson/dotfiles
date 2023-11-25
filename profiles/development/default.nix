@@ -34,6 +34,7 @@
       cargo-watch
 
       bc
+      csvq
       vscode
     ];
   };
