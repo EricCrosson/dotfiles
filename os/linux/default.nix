@@ -5,6 +5,7 @@
       chromium
       dtrx
       evtest
+      google-chrome
       maim
       vlc
     ];
