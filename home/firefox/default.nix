@@ -49,6 +49,9 @@
             # `.docs-text-ui-cursor-blink { animation: none !important; }`
             stylus
             ublock-origin
+
+            # For Rapid Serial Visual Presentation, reedy is nice (must be installed manually for now)
+            # https://github.com/skywinder/Reedy-for-Firefox
           ];
           search = {
             default = "Google";
