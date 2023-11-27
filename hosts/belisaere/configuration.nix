@@ -37,6 +37,9 @@
   networking.enableIPv6 = false;
   # boot.kernel.sysctl."net.ipv6.conf.enp8s0.disable_ipv6" = true;
 
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
+
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
