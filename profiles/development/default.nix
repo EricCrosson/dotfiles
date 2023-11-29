@@ -35,6 +35,7 @@
 
       bc
       csvq
+      duckdb
       vscode
     ];
   };
