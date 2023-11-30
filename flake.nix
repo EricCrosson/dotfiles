@@ -41,11 +41,6 @@
       # don't follow nixpkgs until I'm using nixpkgs with Rust 1.67 or higher
       # https://github.com/ellie/atuin/issues/737
     };
-    ast-grep = {
-      url = "github:ericcrosson/escpkgs?dir=ast-grep/ast-grep";
-      inputs.flake-utils.follows = "flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     bash-barrier = {
       url = "github:ericcrosson/bash-barrier";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -1,30 +1,5 @@
 {
   "nodes": {
-    "ast-grep": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "dir": "ast-grep/ast-grep",
-        "lastModified": 1688918771,
-        "narHash": "sha256-vMcRdA43K6p3ptDi0TEd4Cxlw4Se+35u1Vns+cBEQ1M=",
-        "owner": "ericcrosson",
-        "repo": "escpkgs",
-        "rev": "9d34af2d71f914528019f89d8e35cf67e3781ac1",
-        "type": "github"
-      },
-      "original": {
-        "dir": "ast-grep/ast-grep",
-        "owner": "ericcrosson",
-        "repo": "escpkgs",
-        "type": "github"
-      }
-    },
     "atuin": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -805,7 +780,6 @@
     },
     "root": {
       "inputs": {
-        "ast-grep": "ast-grep",
         "atuin": "atuin",
         "bash-barrier": "bash-barrier",
         "batch-edit-prs": "batch-edit-prs",
