@@ -152,6 +152,25 @@ fi
 bindkey '^X^T' fzf-file-widget
 bindkey '^T' transpose-chars
 
+# Function sourced from https://news.ycombinator.com/item?id=38474106
+# Ripgrep-to-Helix
+function rh {
+  result=$(rg --ignore-case --color=always --line-number --no-heading "$@" |
+    fzf --ansi \
+        --color 'hl:-1:underline,hl+:-1:underline:reverse' \
+        --delimiter ':' \
+        --preview "bat --color=always {1} --theme='Solarized (light)' --highlight-line {2}" \
+        --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')
+  file=${result%%:*}
+  linenumber=$(echo "${result}" | cut -d: -f2)
+  if [[ -n "$file" ]]; then
+    # Possible improvement: use this syntax if EDITOR is helix,
+    $EDITOR "${file}:+${linenumber}"
+    # otherwise default to
+    # $EDITOR +"${linenumber}" "$file"
+  fi
+}
+
 #####################################################################
 # jira config
 #####################################################################
