@@ -136,6 +136,10 @@ in {
 
     gh = {
       enable = true;
+      extensions = [
+        # Not yet available from nixpkgs
+        # pkgs.gh-copilot
+      ];
       settings = {
         git_protocol = "https";
         prompt = "enabled";
