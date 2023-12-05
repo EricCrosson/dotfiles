@@ -139,6 +139,11 @@ mc() {
   mkdir -p -- "$1" && cd -P -- "$1"
 }
 
+# Invoke GitHub Copilot for shell completions
+function copilot {
+  GITHUB_TOKEN="" gh copilot suggest -t shell "$@"
+}
+
 #####################################################################
 # fzf config
 #####################################################################
