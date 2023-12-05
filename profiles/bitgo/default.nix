@@ -4,6 +4,7 @@
       amazon-ecr-credential-helper
       awscli2
       dive
+      element-desktop
       go-jira
       k9s
       kubectl
