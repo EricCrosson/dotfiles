@@ -25,3 +25,22 @@ jobs:
       - run: |
           : nix flake check
           retry --up-to 2x -- nix flake check ./nix --keep-going --print-build-logs
+
+  belisaere:
+    name: Build belisaere
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v9
+
+      # This is sourced from the output of DeterminateSystems/nix-installer-action
+      - name: Activate Nix
+        run: . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+
+      - run: |
+          : nixos-rebuild .#belisaere
+          sudo nixos-rebuild --flake .#belisaere --keep-going --print-build-logs build
