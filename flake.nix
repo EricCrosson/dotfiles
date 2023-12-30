@@ -38,8 +38,7 @@
     atuin = {
       url = "github:ellie/atuin";
       inputs.flake-utils.follows = "flake-utils";
-      # don't follow nixpkgs until I'm using nixpkgs with Rust 1.67 or higher
-      # https://github.com/ellie/atuin/issues/737
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     bash-barrier = {
       url = "github:ericcrosson/bash-barrier";
