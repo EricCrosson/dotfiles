@@ -32,6 +32,7 @@ jobs:
           - name: home-manager
           - name: nixpkgs
           - name: npm-dep-version
+          - name: percentage-changed-calculator
           - name: retry
             update-on: Monday
 

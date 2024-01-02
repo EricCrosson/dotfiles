@@ -694,6 +694,29 @@
         "type": "github"
       }
     },
+    "percentage-changed-calculator": {
+      "inputs": {
+        "crane": [
+          "crane"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1704226906,
+        "narHash": "sha256-AKFtASAPhzA5EDdVGLLKZyCcpL1PGyQfSAIwX08c4+Y=",
+        "owner": "ericcrosson",
+        "repo": "percentage-changed-calculator",
+        "rev": "6bc95453dfb6b01feeadf3d03b0483a0ce1fa2d6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ericcrosson",
+        "repo": "percentage-changed-calculator",
+        "type": "github"
+      }
+    },
     "pre-commit-hooks": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -763,6 +786,7 @@
         "npm-dep-version": "npm-dep-version",
         "nur": "nur",
         "nurl": "nurl",
+        "percentage-changed-calculator": "percentage-changed-calculator",
         "retry": "retry",
         "sops-nix": "sops-nix",
         "spacer": "spacer"

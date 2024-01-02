@@ -19,6 +19,10 @@
       inputs.npm-dep-version.packages.${pkgs.system}.default
       inputs.nurl.packages.${pkgs.system}.default
 
+      # This isn't specific to development but it takes a system that can
+      # compile Rust from source
+      inputs.percentage-changed-calculator.packages.${pkgs.system}.default
+
       # DISCUSS: switch between nightly and precompiled releases
       (fenix.complete.withComponents [
         "cargo"

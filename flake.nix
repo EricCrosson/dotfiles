@@ -115,6 +115,11 @@
       url = "github:nix-community/nurl";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    percentage-changed-calculator = {
+      url = "github:ericcrosson/percentage-changed-calculator";
+      inputs.crane.follows = "crane";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     retry = {
       url = "github:ericcrosson/retry";
       inputs.crane.follows = "crane";
