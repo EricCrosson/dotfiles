@@ -27,9 +27,9 @@
       (fenix.complete.withComponents [
         "cargo"
         "clippy"
-        "rust-src"
         "rustc"
         "rustfmt"
+        "rust-src"
       ])
       rust-analyzer-nightly
 

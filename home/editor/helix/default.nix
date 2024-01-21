@@ -27,9 +27,9 @@
       (fenix.complete.withComponents [
         "cargo"
         "clippy"
-        "rust-src"
         "rustc"
         "rustfmt"
+        "rust-src"
       ])
       # DISCUSS: in lightweight environments, using a pre-compiled rust-analyzer
       # would save a lot of time compiling
