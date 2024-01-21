@@ -5,9 +5,15 @@ setopt appendhistory
 setopt interactivecomments
 setopt histfindnodups
 
+# cycle through last-words with M-,
 autoload copy-earlier-word && \
   zle -N copy-earlier-word && \
-  bindkey '^[,' copy-earlier-word  # cycle through last-words with M-,
+  bindkey '^[,' copy-earlier-word
+
+# edit the current line with C-x C-e
+autoload -Uz edit-command-line && \
+  zle -N edit-command-line && \
+  bindkey '^X^E' edit-command-line
 
 zstyle ':completion:*' group-name ""
 zstyle ':completion:*:messages' format '%d'
