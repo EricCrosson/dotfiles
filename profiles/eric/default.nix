@@ -31,6 +31,8 @@ in {
       FZF_ALT_C_COMMAND = "fd --type d";
       FZF_DEFAULT_COMMAND = "fd --type f";
       FZF_CTRL_T_COMMAND = "fd --type f";
+      MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+      MANROFFOPT = "-c";
       # Though home-manager [sets] this environment variable, it isn't
       # sourced by Xorg and awesome-wm for some reason (possibly [this
       # one]).
