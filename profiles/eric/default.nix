@@ -25,6 +25,23 @@ in {
     homeDirectory = "${user.homeDirectory}";
     stateVersion = "22.05";
 
+    sessionVariables = {
+      DIRENV_LOG_FORMAT = "";
+      EDITOR = "hx";
+      FZF_ALT_C_COMMAND = "fd --type d";
+      FZF_DEFAULT_COMMAND = "fd --type f";
+      FZF_CTRL_T_COMMAND = "fd --type f";
+      # Though home-manager [sets] this environment variable, it isn't
+      # sourced by Xorg and awesome-wm for some reason (possibly [this
+      # one]).
+      #
+      # [sets]: https://github.com/nix-community/home-manager/blob/ee5673246de0254186e469935909e821b8f4ec15/modules/programs/ripgrep.nix#L38
+      # [this one]: https://github.com/nix-community/home-manager/issues/1011
+      RIPGREP_CONFIG_PATH = "${user.homeDirectory}/.config/ripgrep/ripgreprc";
+      SMART_CD_ONLY_IF_FITS_RATIO = 66;
+      ZSH_WAKATIME_BIN = "/etc/profiles/per-user/${user.username}/bin/wakatime-cli";
+    };
+
     packages = with pkgs; [
       inputs.bell.packages.${pkgs.system}.default
       inputs.retry.packages.${pkgs.system}.default
@@ -75,20 +92,18 @@ in {
       ".xprofile".source = ../../.xprofile;
       # Shell
       # REFACTOR: use shellAliases
-      ".zshenv".source = ../../.zshenv;
-      ".zshrc".source = ../../.zshrc;
+      # ".zshenv".source = ../../.zshenv;
+      # ".zshrc".source = ../../.zshrc;
     };
   };
 
   programs = {
-    # FIXME: atuin is not running without the zsh hook
     atuin = {
       enable = true;
       package = inputs.atuin.packages.${pkgs.system}.default;
-      # FIXME: update home-manager for this option
-      # flags = [
-      #   "--disable-up-arrow"
-      # ];
+      flags = [
+        "--disable-up-arrow"
+      ];
       settings = {
         dialect = "us";
         auto_sync = true;
@@ -134,6 +149,11 @@ in {
       };
     };
 
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
+
     gh = {
       enable = true;
       extensions = [
@@ -170,6 +190,7 @@ in {
         f = "fetch";
         l = "log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'";
         p = "pull";
+        fa = "fetch --all --prune --jobs=10";
         fsl = "push --force-with-lease";
         re = "restore";
         rs = "restore --staged";
@@ -253,8 +274,10 @@ in {
       };
       settings = {
         cursor_blink_interval = 0;
-        scrollback_lines = 50000;
+        cursor_shape = "block";
         macos_option_as_alt = "yes";
+        scrollback_lines = 50000;
+        shell_integration = "no-cursor";
       };
     };
 
@@ -320,5 +343,175 @@ in {
         };
       };
     };
+
+    zsh = {
+      enable = true;
+      # My global NixOS config does `compinit` already.
+      # Disabling it in my user's `.zshrc` because calling it multiple
+      # times causes startup delay, see
+      # https://github.com/nix-community/home-manager/blob/990b82ecd31f6372bc4c3f39a9171961bc370a22/modules/programs/zsh.nix#L518-L524
+      enableCompletion = false;
+
+      # TODO:
+      # envExtra = ''
+      # '';
+
+      history = {
+        expireDuplicatesFirst = true;
+        extended = true;
+        ignoreAllDups = true;
+        ignoreDups = false;
+        share = false;
+      };
+
+      initExtra = builtins.readFile ../../zsh/login-shell.zsh;
+
+      # FIXME: source this in a cleaner way
+      envExtra = ''
+        #####################################################################
+        # BitGo configuration
+        #####################################################################
+        if [ -f "${user.homeDirectory}/.zshenv_bitgo" ]
+        then
+          . "${user.homeDirectory}/.zshenv_bitgo"
+        fi
+      '';
+
+      plugins = [
+        {
+          name = "esc-zsh/smart-cd";
+          file = "smart-cd.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "esc-zsh";
+            repo = "smart-cd";
+            rev = "57051138141179c293dcaef2da659e42ad4f9eeb";
+            sha256 = "sha256-TgWwvJqQvIjRXpYuSVZ4ZqJCqLF7a5IIqLPzyYNWaTs=";
+          };
+        }
+        {
+          name = "hlissner/zsh-autopair";
+          file = "zsh-autopair.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "hlissner";
+            repo = "zsh-autopair";
+            rev = "396c38a7468458ba29011f2ad4112e4fd35f78e6";
+            sha256 = "sha256-PXHxPxFeoYXYMOC29YQKDdMnqTO0toyA7eJTSCV6PGE=";
+          };
+        }
+        {
+          name = "jreese/zsh-titles";
+          file = "titles.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "jreese";
+            repo = "zsh-titles";
+            rev = "116324bb384cc10b66eea5875782051e492e27e1";
+            sha256 = "sha256-f22ND+A01/4uPwZf4N5zsJRjVgJTgXu3UVGuSe/Atn0=";
+          };
+        }
+        {
+          name = "lukechilds/zsh-better-npm-completion";
+          file = "zsh-better-npm-completion.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "lukechilds";
+            repo = "zsh-better-npm-completion";
+            rev = "47e5987ca422de43784f9d76311d764f82af2717";
+            sha256 = "sha256-ruQZ3R0Efbe2jnw/WBvTukdtSWoX/kx2mcafnJNoN1k=";
+          };
+        }
+        {
+          name = "reegnz/jq-zsh-plugin";
+          file = "jq.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "reegnz";
+            repo = "jq-zsh-plugin";
+            rev = "2084e0d9b6244f12e0d95686a647b3db8f27acb7";
+            sha256 = "sha256-e0p+FXTP4IM1wavfh5bzbEv3J3dQylTB4+xcMRbjzfg=";
+          };
+        }
+        # I migrated this but it tried to write a file into the read-only
+        # Nix store. I've disabled it to see if I can tell what it was used
+        # for. If this comment ages and there's no smoking gun, delete this
+        # plugin.
+        #
+        # {
+        #   name = "robsis/zsh-completion-generator";
+        #   file = "zsh-completion-generator.plugin.zsh";
+        #   src = pkgs.fetchFromGitHub {
+        #     owner = "robsis";
+        #     repo = "zsh-completion-generator";
+        #     rev = "d01700d037e87db97f51c5da201d63a3fef7e9f6";
+        #     sha256 = "sha256-OoK+LMUaFYxLrGG6awb5fU97jXNT0SFACO3AbLheZNU=";
+        #   };
+        # }
+        {
+          name = "sobolevn/wakatime-zsh-plugin";
+          file = "wakatime.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "sobolevn";
+            repo = "wakatime-zsh-plugin";
+            rev = "69c6028b0c8f72e2afcfa5135b1af29afb49764a";
+            sha256 = "sha256-pA1VOkzbHQjmcI2skzB/OP5pXn8CFUz5Ok/GLC6KKXQ=";
+          };
+        }
+        {
+           # does incur a runtime slowdown, especially during paste
+          name = "zsh-users/zsh-autosuggestions";
+          file = "zsh-autosuggestions.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "zsh-users";
+            repo = "zsh-autosuggestions";
+            rev = "c3d4e576c9c86eac62884bd47c01f6faed043fc5";
+            sha256 = "sha256-B+Kz3B7d97CM/3ztpQyVkE6EfMipVF8Y4HJNfSRXHtU=";
+          };
+        }
+        {
+          name = "zsh-users/zsh-completions";
+          file = "zsh-completions.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "zsh-users";
+            repo = "zsh-completions";
+            rev = "f7c3173886f4f56bf97d622677c6d46ab005831f";
+            sha256 = "sha256-sZCHI4ZFfRjcG1XF/3ABf9+zv7f2Di8Xrh4Dr+qt4Us=";
+          };
+        }
+        {
+          name = "zsh-users/zsh-history-substring-search";
+          file = "zsh-history-substring-search.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "zsh-users";
+            repo = "zsh-history-substring-search";
+            rev = "8dd05bfcc12b0cd1ee9ea64be725b3d9f713cf64";
+            sha256 = "sha256-houujb1CrRTjhCc+dp3PRHALvres1YylgxXwjjK6VZA=";
+          };
+        }
+      ];
+
+      shellAliases = {
+        g = "hub";
+        git = "hub";
+        grip = "grip --pass $GITHUB_TOKEN";
+        h = "hx --vsplit";
+        j = "jira";
+        l = "eza -lg --git --time-style=long-iso";
+        npx = "npx --no-install";
+        rip = "rip --graveyard $HOME/.local/share/Trash";
+        ssh = "ssh -t";
+        viddy = "viddy --differences";
+      };
+    };
   };
+
+  xdg.userDirs = {
+    createDirectories = true;
+    desktop = "${user.homeDirectory}/tmp";
+    download = "${user.homeDirectory}/tmp";
+    documents = "${user.homeDirectory}/files";
+    music = "${user.homeDirectory}/files/media";
+    pictures = "${user.homeDirectory}/files/media";
+    videos = "${user.homeDirectory}/files/media";
+    extraConfig = {
+      XDG_DATA_HOME = "${user.homeDirectory}/.local/share";
+    };
+  };
+
 }

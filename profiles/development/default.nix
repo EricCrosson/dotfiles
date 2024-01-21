@@ -32,9 +32,12 @@
         "rust-src"
       ])
       rust-analyzer-nightly
-
       cargo-tarpaulin
       cargo-watch
+      gcc
+      # RESUME: these didn't do the trick
+      pkg-config
+      openssl
 
       bc
       csvq
