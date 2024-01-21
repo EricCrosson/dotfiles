@@ -89,11 +89,9 @@ in {
     ];
 
     file = {
+      # Not sure why setting `xsession.profileExtra` doesn't seem to write .xprofile.
+      # Well, this isn't ideal, but it's working, so no need to bugger with it.
       ".xprofile".source = ../../.xprofile;
-      # Shell
-      # REFACTOR: use shellAliases
-      # ".zshenv".source = ../../.zshenv;
-      # ".zshrc".source = ../../.zshrc;
     };
   };
 
@@ -454,7 +452,7 @@ in {
           };
         }
         {
-           # does incur a runtime slowdown, especially during paste
+          # does incur a runtime slowdown, especially during paste
           name = "zsh-users/zsh-autosuggestions";
           file = "zsh-autosuggestions.plugin.zsh";
           src = pkgs.fetchFromGitHub {
@@ -513,5 +511,4 @@ in {
       XDG_DATA_HOME = "${user.homeDirectory}/.local/share";
     };
   };
-
 }
