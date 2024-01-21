@@ -34,8 +34,9 @@
       rust-analyzer-nightly
       cargo-tarpaulin
       cargo-watch
+
+      # Allows cargo to build Rust projects that don't have a dev shell
       gcc
-      # RESUME: these didn't do the trick
       pkg-config
       openssl
 
@@ -44,5 +45,12 @@
       duckdb
       vscode
     ];
+
+    # Allows cargo to build Rust projects that don't have a dev shell
+    sessionVariables = {
+      OPENSSL_LIB_DIR = "${pkgs.openssl.out}/lib";
+      OPENSSL_INCLUDE_DIR = "${pkgs.openssl.dev}/include";
+      OPENSSL_DIR = "${pkgs.openssl.out}";
+    };
   };
 }
