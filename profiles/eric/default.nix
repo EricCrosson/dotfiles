@@ -482,6 +482,16 @@ in {
             sha256 = "sha256-houujb1CrRTjhCc+dp3PRHALvres1YylgxXwjjK6VZA=";
           };
         }
+        {
+          name = "peterhurford/up.zsh";
+          file = "up.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "peterhurford";
+            repo = "up.zsh";
+            rev = "c8cc0d0edd6be2d01f467267e3ed385c386a0acb";
+            sha256 = "sha256-yUWmKi95l7UFcjk/9Cfy/dDXQD3K/m2Q+q72YLZvZak=";
+          };
+        }
       ];
 
       shellAliases = {
