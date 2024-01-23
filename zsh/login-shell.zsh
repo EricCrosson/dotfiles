@@ -48,6 +48,9 @@ zstyle ':completion:*' completer \
 
 zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cputime,command"
 
+# configure my preferred ctrl-w behavior
+export WORDCHARS=''
+
 # Make and change directory
 # Usage: mc <dir>
 #
