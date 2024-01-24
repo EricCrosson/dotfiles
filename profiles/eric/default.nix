@@ -419,13 +419,13 @@ in {
           };
         }
         {
-          name = "reegnz/jq-zsh-plugin";
+          name = "esc-zsh/jq-zsh-plugin";
           file = "jq.plugin.zsh";
           src = pkgs.fetchFromGitHub {
-            owner = "reegnz";
+            owner = "esc-zsh";
             repo = "jq-zsh-plugin";
-            rev = "2084e0d9b6244f12e0d95686a647b3db8f27acb7";
-            sha256 = "sha256-e0p+FXTP4IM1wavfh5bzbEv3J3dQylTB4+xcMRbjzfg=";
+            rev = "205675c7fdc0a2ad3c3fab1b9bcf6d8fd0e4c585";
+            sha256 = "sha256-q/xQZ850kifmd8rCMW+aAEhuA43vB9ZAW22sss9e4SE=";
           };
         }
         # I migrated this but it tried to write a file into the read-only
