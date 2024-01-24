@@ -494,6 +494,26 @@ in {
             sha256 = "sha256-yUWmKi95l7UFcjk/9Cfy/dDXQD3K/m2Q+q72YLZvZak=";
           };
         }
+        {
+          name = "esc-zsh/mc";
+          file = "mc.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "esc-zsh";
+            repo = "mc";
+            rev = "53f446969e5ddf8f7d0c42cdfe476203f1871414";
+            sha256 = "sha256-Ll4gEV38nmtuLzu00JUDpDxm8Uq6oxDrOebio1zGV7A=";
+          };
+        }
+        {
+          name = "esc-zsh/rh";
+          file = "rh.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "esc-zsh";
+            repo = "rh";
+            rev = "2e7ba9f0e71fc7090c22e7cf1872592361296d48";
+            sha256 = "sha256-vWHbPnGPNQT3VytHzy1vS63C0vl26x+5lYIumDC2ei4=";
+          };
+        }
       ];
 
       shellAliases = {

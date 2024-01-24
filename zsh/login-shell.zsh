@@ -51,16 +51,6 @@ zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cput
 # configure my preferred ctrl-w behavior
 export WORDCHARS=''
 
-# Make and change directory
-# Usage: mc <dir>
-#
-# @example
-# mc new-directory
-mc() {
-  local namespace="${1:?"Directory must be specified"}"
-  mkdir -p -- "$1" && cd -P -- "$1"
-}
-
 # Invoke GitHub Copilot for shell completions
 function copilot {
   GITHUB_TOKEN="" gh copilot suggest -t shell "$@"
@@ -78,25 +68,6 @@ fi
 
 bindkey '^X^T' fzf-file-widget
 bindkey '^T' transpose-chars
-
-# Function sourced from https://news.ycombinator.com/item?id=38474106
-# Ripgrep-to-Helix
-function rh {
-  result=$(rg --ignore-case --color=always --line-number --no-heading "$@" |
-    fzf --ansi \
-        --color 'hl:-1:underline,hl+:-1:underline:reverse' \
-        --delimiter ':' \
-        --preview "bat --color=always {1} --highlight-line {2}" \
-        --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')
-  file=${result%%:*}
-  linenumber=$(echo "${result}" | cut -d: -f2)
-  if [[ -n "$file" ]]; then
-    # Possible improvement: use this syntax if EDITOR is helix,
-    $EDITOR "${file}:+${linenumber}"
-    # otherwise default to
-    # $EDITOR +"${linenumber}" "$file"
-  fi
-}
 
 #####################################################################
 # Highlighting help messages
