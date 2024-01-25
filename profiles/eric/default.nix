@@ -91,6 +91,10 @@ in {
     ];
 
     file = {
+      # REFACTOR: this only _needs_ to be present on work machines,
+      # though it doesn't interfere with anything on personal machines.
+      ".config/git/personal-config".source = ../../.config/git/personal-config;
+
       # Not sure why setting `xsession.profileExtra` doesn't seem to write .xprofile.
       # Well, this isn't ideal, but it's working, so no need to bugger with it.
       ".xprofile".source = ../../.xprofile;
@@ -213,6 +217,20 @@ in {
       };
       ignores = [
         "/scratch/"
+      ];
+      includes = [
+        {
+          condition = "gitdir:~/workspace/EricCrosson/";
+          path = "~/.config/git/personal-config";
+        }
+        {
+          condition = "gitdir:~/workspace/semantic-release-action/";
+          path = "~/.config/git/personal-config";
+        }
+        {
+          condition = "gitdir:~/workspace/typescript-tools/";
+          path = "~/.config/git/personal-config";
+        }
       ];
       extraConfig = {
         advice = {
