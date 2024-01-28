@@ -52,6 +52,7 @@ in {
       age-plugin-yubikey
       amber
       bottom
+      broot
       comma
       curl
       delta
