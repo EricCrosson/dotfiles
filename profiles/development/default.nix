@@ -37,20 +37,11 @@
 
       # Allows cargo to build Rust projects that don't have a dev shell
       gcc
-      pkg-config
-      openssl
 
       bc
       csvq
       duckdb
       vscode
     ];
-
-    # Allows cargo to build Rust projects that don't have a dev shell
-    sessionVariables = {
-      OPENSSL_LIB_DIR = "${pkgs.openssl.out}/lib";
-      OPENSSL_INCLUDE_DIR = "${pkgs.openssl.dev}/include";
-      OPENSSL_DIR = "${pkgs.openssl.out}";
-    };
   };
 }
