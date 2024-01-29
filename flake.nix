@@ -81,7 +81,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     git-disjoint = {
-      url = "github:ericcrosson/git-disjoint/beta";
+      url = "github:ericcrosson/git-disjoint";
       inputs.crane.follows = "crane";
       inputs.nixpkgs.follows = "nixpkgs";
     };
