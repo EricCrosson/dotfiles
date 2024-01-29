@@ -47,7 +47,6 @@ in {
     packages = with pkgs; [
       inputs.bell.packages.${pkgs.system}.default
       inputs.retry.packages.${pkgs.system}.default
-      inputs.spacer.packages.${pkgs.system}.default
 
       age-plugin-yubikey
       amber
@@ -76,6 +75,7 @@ in {
       python310Packages.grip
       rm-improved
       sd
+      spacer
       units
       viddy
       viu

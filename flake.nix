@@ -129,9 +129,5 @@
       url = "github:mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    spacer = {
-      url = "github:ericcrosson/escpkgs?dir=samwho/spacer";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 }
