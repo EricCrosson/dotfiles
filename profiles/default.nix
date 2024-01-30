@@ -37,7 +37,7 @@
         ./bitgo
         ./development
         ../home/editor/helix
-        ../home/firefox
+        # ../home/firefox
         ../home/window-manager/awesome
       ];
 
