@@ -21,9 +21,10 @@
 
   nixConfig.substituters = [
     "https://cache.nixos.org"
-    "https://nix-community.cachix.org"
-    "https://helix.cachix.org"
     "https://ericcrosson.cachix.org"
+    "https://helix.cachix.org"
+    "https://nix-community.cachix.org"
+    "https://pre-commit-hooks.cachix.org"
   ];
   nixConfig.trusted-public-keys = [
     "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
