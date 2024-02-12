@@ -159,7 +159,7 @@
   };
 
   # Configure keymap in X11
-  services.xserver.layout = "us";
+  services.xserver.xkb.layout = "us";
 
   # DISCUSS: may belong in user configuration?
   services.xserver.windowManager.awesome = {

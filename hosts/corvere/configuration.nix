@@ -189,8 +189,7 @@
 
     # From https://www.reddit.com/r/NixOS/comments/cwbl76/comment/eybcv97/
     exportConfiguration = true;
-    layout = "us,in";
-    xkbOptions = "grp:alt_space_toggle";
+    xkb.layout = "us";
 
     # DISCUSS: may belong in user configuration?
     windowManager.awesome = {
