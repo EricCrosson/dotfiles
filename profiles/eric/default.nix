@@ -72,7 +72,7 @@ in {
       pass
       passage
       pueue
-      python310Packages.grip
+      # python310Packages.grip # Temporary disabled due to build error
       rm-improved
       sd
       spacer
