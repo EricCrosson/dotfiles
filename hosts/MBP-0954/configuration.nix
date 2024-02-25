@@ -28,6 +28,8 @@ in {
       experimental-features = nix-command flakes
     '';
 
+    nix.gc.automatic = true;
+
     programs.gnupg = {
       agent = {
         enable = true;
