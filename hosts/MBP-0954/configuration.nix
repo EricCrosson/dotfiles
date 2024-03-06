@@ -29,6 +29,7 @@ in {
     '';
 
     nix.gc.automatic = true;
+    nix.gc.user = "ericcrosson";
 
     programs.gnupg = {
       agent = {
