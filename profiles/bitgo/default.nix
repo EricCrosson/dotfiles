@@ -29,7 +29,7 @@
   programs = {
     git = {
       signing = {
-        key = "0AB49222C769F13EDE3EBFB2352FBA3B4180A44A";
+        key = "5BD755D7FD4AFCB6";
         signByDefault = true;
       };
     };
