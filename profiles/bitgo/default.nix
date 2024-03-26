@@ -2,7 +2,7 @@
   home = {
     packages = with pkgs; [
       amazon-ecr-credential-helper
-      awscli2
+      # awscli2 # temporarily broken upstream
       dive
       element-desktop
       go-jira
