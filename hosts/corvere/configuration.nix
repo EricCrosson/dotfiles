@@ -145,7 +145,7 @@
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
-      pinentryFlavor = "curses";
+      pinentryPackage = pkgs.pinentry-curses;
     };
     zsh = {
       enable = true; # Set zsh as the default shell for all users.
