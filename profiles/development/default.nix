@@ -42,6 +42,9 @@
       csvq
       duckdb
       vscode
+
+      # TypeScript
+      yarn
     ];
   };
 }
