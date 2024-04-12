@@ -1,6 +1,5 @@
 {
   pkgs,
-  user,
   inputs,
   ...
 }: {
@@ -63,7 +62,7 @@
         }
       ];
       settings = {
-        theme = "catppuccin_${user.preferences.theme}";
+        theme = "everforest_light";
         keys.normal = {
           C-h = "jump_view_left";
           C-j = "jump_view_down";
