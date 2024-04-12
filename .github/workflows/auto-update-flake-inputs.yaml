@@ -19,20 +19,27 @@ jobs:
           - name: bash-barrier
             update-on: Monday
           - name: batch-edit-prs
+            update-on: Monday
           - name: bell
+            update-on: Monday
+          - name: darwin
             update-on: Monday
           - name: fenix
             update-on: Monday
           - name: firefox
           - name: git-diff-regex
+            update-on: Monday
           - name: git-disjoint
           - name: git-dl
           - name: git-review
+            update-on: Monday
           - name: helix
           - name: home-manager
           - name: nixpkgs
           - name: npm-dep-version
+            update-on: Monday
           - name: percentage-changed-calculator
+            update-on: Monday
           - name: retry
             update-on: Monday
 
