@@ -26,10 +26,23 @@ in {
       keep-derivations = true
       keep-outputs = true
       experimental-features = nix-command flakes
+
+      min-free = ${toString (20 * 1024 * 1024 * 1024)}
+      max-free = ${toString (30 * 1024 * 1024 * 1024)}
     '';
 
-    nix.gc.automatic = true;
-    nix.gc.user = "ericcrosson";
+    nix = {
+      gc = {
+        user = "ericcrosson";
+        automatic = true;
+        interval = {
+          Weekday = 0;
+          Hour = 0;
+          Minute = 0;
+        };
+        options = "--delete-older-than 7d";
+      };
+    };
 
     programs.gnupg = {
       agent = {
