@@ -703,11 +703,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1711040532,
-        "narHash": "sha256-69qBNyer9y4HZefqPBtdlAgjQKw4m3AqnInbfeVOh4A=",
+        "lastModified": 1714319618,
+        "narHash": "sha256-Eqp1H5tWxkeXs89HUKttD5xb54oGnLmpwNF1x1Uc5nQ=",
         "owner": "ericcrosson",
         "repo": "percentage-changed-calculator",
-        "rev": "b7ced372fdf80089c3ee65000ffe554df7128eb5",
+        "rev": "cb109b325f9bf65171cd0159fe771183c407d79c",
         "type": "github"
       },
       "original": {
