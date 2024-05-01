@@ -1,2 +1,0 @@
-export GITHUB_TOKEN="$(cat $HOME/.config/sops-nix/secrets/github_token_bitgo)"
-export NIX_CONFIG="access-tokens = github.com=${GITHUB_TOKEN}"

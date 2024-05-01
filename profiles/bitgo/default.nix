@@ -23,10 +23,6 @@
         recursive = false;
         source = ../../.jira.d;
       };
-      # Shell
-      # REFACTOR: use shellAliases
-      ".zshenv_bitgo".source = ../../.zshenv_bitgo;
-      ".zshrc_bitgo".source = ../../.zshrc_bitgo;
     };
   };
 
@@ -36,6 +32,11 @@
         key = "5BD755D7FD4AFCB6";
         signByDefault = true;
       };
+    };
+
+    zsh = {
+      envExtra = builtins.readFile ../../zsh/bitgo_zshenv.zsh;
+      initExtra = builtins.readFile ../../zsh/bitgo_zshrc.zsh;
     };
   };
 

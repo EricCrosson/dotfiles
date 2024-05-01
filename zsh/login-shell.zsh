@@ -125,12 +125,3 @@ bindkey '^T' transpose-chars
 #####################################################################
 # Do not colorize `-h` output because not all `-h` flags correspond to help
 alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
-
-#####################################################################
-# BitGo configuration
-#####################################################################
-
-if [ -f "${HOME}/.zshrc_bitgo" ]
-then
-  . "${HOME}/.zshrc_bitgo"
-fi

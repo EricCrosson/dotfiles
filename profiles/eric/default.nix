@@ -375,10 +375,6 @@ in {
       # https://github.com/nix-community/home-manager/blob/990b82ecd31f6372bc4c3f39a9171961bc370a22/modules/programs/zsh.nix#L518-L524
       enableCompletion = false;
 
-      # TODO:
-      # envExtra = ''
-      # '';
-
       history = {
         expireDuplicatesFirst = true;
         extended = true;
@@ -388,17 +384,6 @@ in {
       };
 
       initExtra = builtins.readFile ../../zsh/login-shell.zsh;
-
-      # FIXME: source this in a cleaner way
-      envExtra = ''
-        #####################################################################
-        # BitGo configuration
-        #####################################################################
-        if [ -f "${user.homeDirectory}/.zshenv_bitgo" ]
-        then
-          . "${user.homeDirectory}/.zshenv_bitgo"
-        fi
-      '';
 
       plugins = [
         {
