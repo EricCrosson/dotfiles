@@ -146,6 +146,9 @@ in {
               useUserPackages = true;
               extraSpecialArgs = {inherit inputs pkgs user;};
               users.${user.username}.imports = homeImports."ericcrosson@MBP-0954";
+              sharedModules = [
+                inputs.sops-nix.homeManagerModules.sops
+              ];
             };
           }
         ];
