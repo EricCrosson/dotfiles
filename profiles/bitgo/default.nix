@@ -43,15 +43,8 @@
     defaultSopsFile = ../../secrets/main.yaml;
     gnupg.home = user.homeDirectory + "/.gnupg";
     secrets = {
-      github_token_bitgo = {
-        # TODO: really delete if this is not necessary.
-        # What does that mean, that the value needs to be an empty object?
-        # Strange.
-        # path = "%r/github-token.txt";
-      };
-      jira_token_bitgo = {
-        # path = "%r/jira-token.txt";
-      };
+      github_token_bitgo = {};
+      jira_token_bitgo = {};
     };
   };
 }

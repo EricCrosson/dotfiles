@@ -1,2 +1,3 @@
 flake.lock
 secrets/main.yaml
+keys/**/*.asc
