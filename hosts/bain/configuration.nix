@@ -147,15 +147,11 @@
       options = "--delete-older-than 7d";
     };
     package = pkgs.nixVersions.unstable; # Enable Nix flakes on system.
-    extraOptions =
-      /*
-      conf
-      */
-      ''
-        experimental-features = nix-command flakes
-        keep-outputs = true
-        keep-derivations = true
-      '';
+    extraOptions = ''
+      experimental-features = nix-command flakes
+      keep-outputs = true
+      keep-derivations = true
+    '';
   };
   nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = "aarch64-linux";

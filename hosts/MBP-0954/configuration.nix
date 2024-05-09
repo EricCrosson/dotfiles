@@ -3,7 +3,7 @@
     environment = {
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
-      systemPackages = [];
+      # systemPackages = [];
 
       shells = [pkgs.zsh];
 
@@ -21,44 +21,21 @@
         };
       };
 
-      # Create /etc/zshrc that loads the nix-darwin environment.
       zsh = {
         enable = true;
       };
     };
 
-    home-manager.sharedModules = [
-      {
-        home.file = {
-          gpg-agent = {
-            target = ".gnupg/gpg-agent.conf";
-            text = ''
-              pinentry-program ${pkgs.pinentry-curses}/bin/pinentry-curses
-              default-cache-ttl 43200
-              default-cache-ttl-ssh 43200
-              max-cache-ttl 43200
-              max-cache-ttl-ssh 43200
-            '';
-          };
-
-          scdaemon = {
-            target = ".gnupg/scdaemon.conf";
-            text = ''
-              disable-ccid
-            '';
-          };
-        };
-      }
-    ];
+    home-manager = {
+      useGlobalPkgs = true;
+      useUserPackages = true;
+    };
 
     nix = {
-      # Required to use flakes, which are an experimental module
-      package = pkgs.nixUnstable;
-
       extraOptions = ''
+        experimental-features = nix-command flakes
         keep-derivations = true
         keep-outputs = true
-        experimental-features = nix-command flakes
 
         min-free = ${toString (20 * 1024 * 1024 * 1024)}
         max-free = ${toString (30 * 1024 * 1024 * 1024)}
@@ -74,18 +51,37 @@
         };
         options = "--delete-older-than 7d";
       };
+
+      # Required to use flakes, which are an experimental module
+      package = pkgs.nixVersions.git;
+
+      settings = {
+        trusted-users = [
+          "@admin"
+        ];
+      };
     };
 
-    home-manager = {
-      useUserPackages = true;
-      useGlobalPkgs = true;
+    system = {
+      defaults = {
+        dock = {
+          autohide = true;
+        };
+        NSGlobalDomain = {
+          NSAutomaticCapitalizationEnabled = false;
+          NSAutomaticDashSubstitutionEnabled = true;
+          NSAutomaticPeriodSubstitutionEnabled = false;
+          NSAutomaticQuoteSubstitutionEnabled = false;
+          NSAutomaticSpellingCorrectionEnabled = false;
+        };
+      };
+
+      # Used for backwards compatibility, please read the changelog before changing:
+      # $ darwin-rebuild changelog
+      stateVersion = 4;
     };
 
-    # Auto upgrade nix package and the daemon service.
+    # Auto upgrade Nix and the daemon service.
     services.nix-daemon.enable = true;
-
-    # Used for backwards compatibility, please read the changelog before changing:
-    # $ darwin-rebuild changelog
-    system.stateVersion = 4;
   };
 }
