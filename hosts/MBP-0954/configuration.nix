@@ -63,8 +63,12 @@
           autohide = true;
         };
         NSGlobalDomain = {
+          ApplePressAndHoldEnabled = false;
+          AppleShowAllExtensions = true;
+          AppleShowAllFiles = true;
+          InitialKeyRepeat = 15;
+          KeyRepeat = 2;
           NSAutomaticCapitalizationEnabled = false;
-          NSAutomaticDashSubstitutionEnabled = true;
           NSAutomaticPeriodSubstitutionEnabled = false;
           NSAutomaticQuoteSubstitutionEnabled = false;
           NSAutomaticSpellingCorrectionEnabled = false;
