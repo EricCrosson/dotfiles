@@ -26,11 +26,6 @@
       };
     };
 
-    home-manager = {
-      useGlobalPkgs = true;
-      useUserPackages = true;
-    };
-
     nix = {
       extraOptions = ''
         experimental-features = nix-command flakes
