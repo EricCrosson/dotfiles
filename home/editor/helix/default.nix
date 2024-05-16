@@ -10,7 +10,6 @@
       description = "Control compute requirements by selecting whether to build the latest nightly versions or use precompiled releases";
     };
   };
-  # DISCUSS: moving my helix config to its own flake for reuse
 
   config = {
     home.packages = with pkgs; [
@@ -34,7 +33,7 @@
       # would save a lot of time compiling
       rust-analyzer-nightly
       shellcheck
-      sumneko-lua-language-server
+      # sumneko-lua-language-server # temporarily disabled because dependency `ilist` is marked as broken
       taplo-lsp # TOML
     ];
 

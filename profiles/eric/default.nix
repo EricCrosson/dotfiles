@@ -14,6 +14,11 @@ let
   linuxImports = [
     ../../os/linux
   ];
+  # Create an inline derivation for the Homebrew-installed Kitty
+  homebrewKitty = pkgs.runCommand "homebrew-kitty" {} ''
+    mkdir -p $out/bin
+    ln -s /opt/homebrew/bin/kitty $out/bin/kitty
+  '';
 in {
   imports =
     if stdenv.isDarwin
@@ -288,6 +293,10 @@ in {
 
     kitty = {
       enable = true;
+      package =
+        if pkgs.stdenv.isDarwin
+        then homebrewKitty
+        else pkgs.kitty;
       font = {
         name = "DejaVu Sans Mono";
         size =

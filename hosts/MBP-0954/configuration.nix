@@ -13,6 +13,44 @@
       };
     };
 
+    fonts = {
+      fontDir.enable = true;
+      fonts = [
+        pkgs.hack-font
+      ];
+    };
+
+    homebrew = {
+      enable = true;
+      onActivation.cleanup = "uninstall";
+
+      brews = [
+        "colima"
+        "docker"
+        "docker-buildx"
+        "ffmpeg"
+        "joshdk/tap/aws-console"
+        "joshdk/tap/aws-saml"
+        "md5sha1sum"
+        "pass-otp"
+        "xcodegen"
+        "ykman"
+      ];
+
+      caskArgs = {
+        no_quarantine = true;
+        require_sha = true;
+      };
+
+      casks = [
+        "kitty"
+      ];
+
+      taps = [
+        "joshdk/tap"
+      ];
+    };
+
     programs = {
       gnupg = {
         agent = {
@@ -55,6 +93,10 @@
           "@admin"
         ];
       };
+    };
+
+    security = {
+      pam.enableSudoTouchIdAuth = true;
     };
 
     system = {
