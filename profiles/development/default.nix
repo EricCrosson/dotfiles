@@ -53,4 +53,17 @@
         pkgs.libiconv
       ];
   };
+
+  programs = {
+    fzf = {
+      tmux = {
+        enableShellIntegration = true;
+      };
+    };
+    tmux = {
+      enable = true;
+      clock24 = true;
+      historyLimit = 10000;
+    };
+  };
 }
