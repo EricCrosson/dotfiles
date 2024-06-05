@@ -18,5 +18,9 @@
         text = "disable-ccid";
       };
     };
+
+    packages = with pkgs; [
+      coreutils-full
+    ];
   };
 }
