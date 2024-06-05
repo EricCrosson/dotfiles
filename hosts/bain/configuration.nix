@@ -135,7 +135,11 @@
   #   ${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1 --mode 1920x1080
   # '';
 
-  hardware.pulseaudio.enable = true;
+  hardware = {
+    # NOTE: untested
+    # bluetooth.enable = true;
+    pulseaudio.enable = true;
+  };
 
   nix = {
     settings = {
