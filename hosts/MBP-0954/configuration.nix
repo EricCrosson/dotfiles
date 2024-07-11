@@ -14,8 +14,7 @@
     };
 
     fonts = {
-      fontDir.enable = true;
-      fonts = [
+      packages = [
         pkgs.hack-font
       ];
     };
