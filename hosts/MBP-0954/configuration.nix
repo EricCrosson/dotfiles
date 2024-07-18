@@ -27,6 +27,7 @@
         "colima"
         "docker"
         "docker-buildx"
+        "docker-compose"
         "ffmpeg"
         "joshdk/tap/aws-console"
         "joshdk/tap/aws-saml"
