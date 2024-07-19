@@ -67,6 +67,7 @@
     nix = {
       extraOptions = ''
         experimental-features = nix-command flakes
+        extra-trusted-users = ericcrosson
         keep-derivations = true
         keep-outputs = true
 
