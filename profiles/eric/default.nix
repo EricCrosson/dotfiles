@@ -304,6 +304,9 @@ in {
           then 14
           else 18;
       };
+      keybindings = {
+        "ctrl+shift+o" = "toggle_layout stack";
+      };
       settings = {
         cursor_blink_interval = 0;
         cursor_shape = "block";
