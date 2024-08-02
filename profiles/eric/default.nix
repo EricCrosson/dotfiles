@@ -299,10 +299,7 @@ in {
         else pkgs.kitty;
       font = {
         name = "DejaVu Sans Mono";
-        size =
-          if pkgs.stdenv.isLinux
-          then 14
-          else 18;
+        size = 14;
       };
       keybindings = {
         "ctrl+shift+o" = "toggle_layout stack";
