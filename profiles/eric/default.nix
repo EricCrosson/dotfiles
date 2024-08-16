@@ -77,7 +77,7 @@ in {
       pass
       passage
       pueue
-      # python310Packages.grip # Temporary disabled due to build error
+      python310Packages.grip
       rm-improved
       sd
       spacer
@@ -86,6 +86,7 @@ in {
       viu
       vim
       wget
+      yt-dlp
 
       # for shell
       eza
