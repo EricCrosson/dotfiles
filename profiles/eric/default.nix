@@ -77,7 +77,7 @@ in {
       pass
       passage
       pueue
-      python310Packages.grip
+      python312Packages.grip
       rm-improved
       sd
       spacer
