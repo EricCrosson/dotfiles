@@ -210,6 +210,16 @@ in {
         re = "restore";
         rs = "restore --staged";
         s = "status";
+        step-towards = ''
+          !f() { \
+            commit=$(git rev-list --ancestry-path HEAD..$1 | tail -n $2 | head -n 1); \
+            if [ -n \"$commit\" ]; then \
+              git checkout $commit; \
+            else \
+              echo \"No more commits to step towards $1\"; \
+            fi; \
+          }; f
+        '';
         su = "submodule update";
 
         exec = "!exec ";
