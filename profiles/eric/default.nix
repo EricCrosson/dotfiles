@@ -220,6 +220,18 @@ in {
             fi; \
           }; f
         '';
+        # [c]heck[o]ut [f]uzzy
+        cof = ''
+          !f() { \
+            git branch --no-color --sort=-committerdate --format='%(refname:short)' | fzf --header 'git checkout' | xargs git checkout
+          }; f
+        '';
+        # [c]heck[o]ut [p]ull request
+        cop = ''
+          !f() { \
+            gh pr list --author "@me" | fzf --header 'checkout PR' | awk '{print $(NF-5)}' | xargs git checkout
+          }; f
+        '';
         su = "submodule update";
 
         exec = "!exec ";
