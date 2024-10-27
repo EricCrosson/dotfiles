@@ -217,7 +217,7 @@ in {
               git checkout $commit; \
             else \
               echo \"No more commits to step towards $1\"; \
-            fi; \
+            fi
           }; f
         '';
         # [c]heck[o]ut [f]uzzy
