@@ -44,6 +44,7 @@
 
       casks = [
         "kitty"
+        "postman"
       ];
 
       taps = [
