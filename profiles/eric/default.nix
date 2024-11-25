@@ -249,6 +249,7 @@ in {
         };
       };
       ignores = [
+        ".aider*"
         "/scratch/"
       ];
       includes = [
