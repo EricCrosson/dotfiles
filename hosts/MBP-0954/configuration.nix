@@ -72,8 +72,8 @@
         keep-derivations = true
         keep-outputs = true
 
-        min-free = ${toString (20 * 1024 * 1024 * 1024)}
-        max-free = ${toString (30 * 1024 * 1024 * 1024)}
+        min-free = ${toString (2 * 1024 * 1024 * 1024)}
+        max-free = ${toString (10 * 1024 * 1024 * 1024)}
       '';
 
       gc = {
