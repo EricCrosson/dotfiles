@@ -21,6 +21,7 @@
 
     packages = with pkgs; [
       coreutils-full
+      gawk
     ];
   };
 }
