@@ -77,7 +77,6 @@ in {
       pass
       passage
       pueue
-      python312Packages.grip
       rm-improved
       sd
       spacer
@@ -86,7 +85,9 @@ in {
       viu
       vim
       wget
-      yt-dlp
+
+      # TODO: move to an "extras" profile, when space is plentiful
+      # yt-dlp
 
       # for shell
       eza

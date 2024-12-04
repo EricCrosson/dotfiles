@@ -55,8 +55,6 @@
     };
     crane = {
       url = "github:ipetkov/crane";
-      inputs.flake-utils.follows = "flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     darwin = {
       url = "github:lnl7/nix-darwin";

@@ -22,6 +22,8 @@ jobs:
             update-on: Monday
           - name: bell
             update-on: Monday
+          - name: crane
+            update-on: Monday
           - name: darwin
             update-on: Monday
           - name: fenix
@@ -31,6 +33,7 @@ jobs:
             update-on: Monday
           - name: git-disjoint
           - name: git-dl
+            update-on: Monday
           - name: git-review
             update-on: Monday
           - name: helix

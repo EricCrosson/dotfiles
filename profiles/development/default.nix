@@ -45,6 +45,7 @@
         vscode
 
         # TypeScript
+        pnpm
         yarn
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
