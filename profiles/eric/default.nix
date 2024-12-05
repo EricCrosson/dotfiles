@@ -250,7 +250,8 @@ in {
         };
       };
       ignores = [
-        ".aider*"
+        "/.aider.*"
+        "/.direnv"
         "/scratch/"
       ];
       includes = [
@@ -277,7 +278,6 @@ in {
         };
         core = {
           editor = "hx";
-          excludesfile = "~/.config/git/ignore";
           autocrlf = false;
 
           diff-highlight = {
