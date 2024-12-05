@@ -250,6 +250,7 @@ in {
         };
       };
       ignores = [
+        ".DS_Store"
         "/.aider.*"
         "/.direnv"
         "/scratch/"
