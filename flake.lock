@@ -671,11 +671,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1733259627,
-        "narHash": "sha256-HahQ//pGEJ/rSCxylPGuWWF2xf6wAisg11qmYeOOGLQ=",
+        "lastModified": 1734540789,
+        "narHash": "sha256-tieEcPqqOXZ3ZbNd9GU3LLN+cQec7wPEnUrtxcPJftY=",
         "owner": "ericcrosson",
         "repo": "percentage-changed-calculator",
-        "rev": "17a056c427ef241ce95e416b7fb8e16cf2f67ce7",
+        "rev": "d837720ffa660d87b948a4dd534623128d5b6b30",
         "type": "github"
       },
       "original": {
