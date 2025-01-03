@@ -194,7 +194,6 @@ in {
         a = "add";
         b = "branch";
         c = "commit";
-        cl = "clone";
         co = "checkout";
         # https://stackoverflow.com/a/70205254
         continue = "-c core.editor=true rebase --continue";
