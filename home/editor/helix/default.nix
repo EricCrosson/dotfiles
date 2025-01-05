@@ -85,6 +85,10 @@
             display-inlay-hints = false;
           };
           whitespace.render.tab = "all";
+          inline-diagnostics = {
+            cursor-line = "error";
+            other-lines = "error";
+          };
         };
       };
     };
