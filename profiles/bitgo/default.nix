@@ -13,6 +13,7 @@
       k9s
       kubectl
       kubectx
+      kustomize
       yq-go
     ];
 
