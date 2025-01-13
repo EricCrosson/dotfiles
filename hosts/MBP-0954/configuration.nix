@@ -87,6 +87,10 @@
         options = "--delete-older-than 7d";
       };
 
+      optimise = {
+        automatic = true;
+      };
+
       # Required to use flakes, which are an experimental module
       package = pkgs.nixVersions.nix_2_24;
 
