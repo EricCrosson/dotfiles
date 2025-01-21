@@ -13,3 +13,9 @@ aider() {
         --watch-files \
         "$@"
 }
+
+# To configure llm, I ran
+# ```
+# llm models default bedrock-claude-sonnet
+# ```
+alias llm="AWS_PROFILE=dev llm"
