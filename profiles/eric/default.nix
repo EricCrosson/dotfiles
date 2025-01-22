@@ -240,6 +240,8 @@ in {
         # Source: https://stackoverflow.com/a/25930432
         recommit = "commit --reuse-message=HEAD@{1}";
 
+        automerge = "!f() { gh pr merge --auto --merge \"$1\"; }; f";
+
         alias = "!git config --list | grep \"alias\\\\.\" | sed \"s/alias\\\\.\\\\([^=]*\\\\)=\\\\(.*\\\\)/\\\\1\\\\\\t => \\\\2/\" | sort";
       };
       delta = {
