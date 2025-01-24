@@ -241,6 +241,7 @@ in {
         recommit = "commit --reuse-message=HEAD@{1}";
 
         automerge = "!f() { gh pr merge --auto --merge \"$1\"; }; f";
+        ready-for-review = "!f() { gh pr ready \"$1\"; }; f";
 
         alias = "!git config --list | grep \"alias\\\\.\" | sed \"s/alias\\\\.\\\\([^=]*\\\\)=\\\\(.*\\\\)/\\\\1\\\\\\t => \\\\2/\" | sort";
       };
