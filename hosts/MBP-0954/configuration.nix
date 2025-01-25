@@ -29,8 +29,6 @@
         "docker-buildx"
         "docker-compose"
         "ffmpeg"
-        "joshdk/tap/aws-console"
-        "joshdk/tap/aws-saml"
         "llm"
         "md5sha1sum"
         "pass-otp"
@@ -46,10 +44,6 @@
       casks = [
         "kitty"
         "postman"
-      ];
-
-      taps = [
-        "joshdk/tap"
       ];
     };
 

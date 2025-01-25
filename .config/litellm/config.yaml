@@ -1,0 +1,7 @@
+proxy_port: 4000
+
+model_list:
+  - model_name: bedrock-claude-sonnet
+    litellm_params:
+      model: bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0
+      aws_profile_name: dev

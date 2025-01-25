@@ -1,23 +1,37 @@
 {
   pkgs,
   user,
+  lib,
   ...
-}: {
+}: let
+  aws-console = pkgs.callPackage ../../pkgs/aws-console {};
+  aws-saml = pkgs.callPackage ../../pkgs/aws-saml {};
+  litellm = pkgs.callPackage ../../pkgs/litellm {};
+in {
   home = {
     packages = with pkgs; [
       amazon-ecr-credential-helper
-      # awscli2 # temporarily broken upstream
+      aws-console
+      aws-saml
       dive
       element-desktop
+      fabric-ai
       go-jira
       k9s
       kubectl
       kubectx
       kustomize
+      litellm
       yq-go
     ];
 
     file = {
+      ".config/litellm/config.yaml" = {
+        source = ../../.config/litellm/config.yaml;
+      };
+      ".config/fabric/.env" = {
+        source = ../../.config/fabric/.env;
+      };
       ".jira.d" = {
         # I would prefer this to be true but that doesn't appear to be working right now
         recursive = false;
@@ -37,6 +51,28 @@
     zsh = {
       envExtra = builtins.readFile ../../zsh/bitgo_zshenv.zsh;
       initExtra = builtins.readFile ../../zsh/bitgo_zshrc.zsh;
+    };
+  };
+
+  launchd = {
+    agents = {
+      litellm-proxy = {
+        enable = true;
+        config = {
+          ProgramArguments = [
+            "${litellm}/bin/litellm"
+            "--config"
+            "/Users/ericcrosson/.config/litellm/config.yaml"
+          ];
+          EnvironmentVariables = {
+            PATH = lib.makeBinPath [aws-saml];
+          };
+          KeepAlive = true;
+          RunAtLoad = true;
+          StandardOutPath = "/dev/null";
+          StandardErrorPath = "${user.homeDirectory}/Library/Logs/litellm-proxy.error.log";
+        };
+      };
     };
   };
 
