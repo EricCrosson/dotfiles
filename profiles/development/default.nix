@@ -34,7 +34,8 @@
         ])
         rust-analyzer-nightly
         cargo-tarpaulin
-        cargo-watch
+        cargo-watch # deprecated in favor of bacon -- remove me once you are comfortable with bacon
+        bacon
 
         # Allows cargo to build Rust projects that don't have a dev shell
         gcc
