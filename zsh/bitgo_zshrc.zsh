@@ -19,3 +19,5 @@ aider() {
 # llm models default bedrock-claude-sonnet
 # ```
 alias llm="AWS_PROFILE=dev llm"
+
+export PATH=$PATH:/Users/ericcrosson/workspace/danielmiessler/fabric
