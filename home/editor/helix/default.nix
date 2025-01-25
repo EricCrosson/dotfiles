@@ -67,11 +67,11 @@
           C-j = "jump_view_down";
           C-k = "jump_view_up";
           C-l = "jump_view_right";
-          space.k = ":reload";
-          space.K = ":reload-all";
-          space.l = ":toggle-option lsp.display-inlay-hints";
+          space.l = ":reload";
+          space.L = ":reload-all";
           space.o = ":reflow";
-          space.t = ":tree-sitter-subtree";
+          space.t = ":toggle-option lsp.display-inlay-hints";
+          space.T = ":tree-sitter-subtree";
         };
         editor = {
           idle-timeout = 0;
