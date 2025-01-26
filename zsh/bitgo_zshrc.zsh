@@ -14,9 +14,4 @@ aider() {
         "$@"
 }
 
-# To configure llm, I ran
-# ```
-# llm models default bedrock-claude-sonnet
-# ```
-alias llm="AWS_PROFILE=dev llm"
 alias fabric="fabric --config ~/.config/fabric/config.yaml"

@@ -41,6 +41,12 @@ in {
         recursive = false;
         source = ../../.jira.d;
       };
+      "Library/Application Support/io.datasette.llm/default_model.txt" = {
+        source = ../.. + "/Library/Application Support/io.datasette.llm/default_model.txt";
+      };
+      "Library/Application Support/io.datasette.llm/extra-openai-models.yaml" = {
+        source = ../.. + "/Library/Application Support/io.datasette.llm/extra-openai-models.yaml";
+      };
     };
   };
 
