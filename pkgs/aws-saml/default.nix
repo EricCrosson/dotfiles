@@ -2,7 +2,8 @@
   lib,
   buildGoModule,
   fetchFromGitHub,
-  xdg-utils,
+  makeWrapper,
+  stdenv,
 }:
 buildGoModule rec {
   pname = "aws-saml";
@@ -17,7 +18,12 @@ buildGoModule rec {
 
   vendorHash = "sha256-fpVicjHomS9ZWYfjOJhqxbr5F+HLKshZvLgcG0D+KZQ=";
 
-  runtimeDependencies = [ xdg-utils ];
+  nativeBuildInputs = [makeWrapper];
+
+  postFixup = lib.optionalString stdenv.isDarwin ''
+    wrapProgram $out/bin/aws-saml \
+      --prefix PATH : /usr/bin
+  '';
 
   meta = with lib; {
     description = "🔏 Generate AWS credentials from a SAML IdP login";
