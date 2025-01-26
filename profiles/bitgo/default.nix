@@ -33,6 +33,9 @@ in {
       ".config/fabric/.env" = {
         source = ../../.config/fabric/.env;
       };
+      ".config/fabric/config" = {
+        source = ../../.config/fabric/config.yaml;
+      };
       ".jira.d" = {
         # I would prefer this to be true but that doesn't appear to be working right now
         recursive = false;
