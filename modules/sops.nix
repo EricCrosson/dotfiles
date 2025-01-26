@@ -22,6 +22,11 @@
           owner = user.username;
           group = "users";
         };
+        youtube_api_key = {
+          mode = "0400";
+          owner = user.username;
+          group = "users";
+        };
       }
       # This means user.organization == "personal", but this
       # would ideally be type-checked and exhaustive
