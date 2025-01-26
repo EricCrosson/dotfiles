@@ -33,7 +33,7 @@ in {
       ".config/fabric/.env" = {
         source = ../../.config/fabric/.env;
       };
-      ".config/fabric/config" = {
+      ".config/fabric/config.yaml" = {
         source = ../../.config/fabric/config.yaml;
       };
       ".jira.d" = {
