@@ -31,7 +31,6 @@
         "ffmpeg"
         "llm"
         "md5sha1sum"
-        "oasdiff" # While experimenting with breaking changes
         "pass-otp"
         "xcodegen"
         "ykman"
