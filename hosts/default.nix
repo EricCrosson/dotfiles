@@ -40,7 +40,6 @@ in {
           inputs.nur.overlay
         ];
       };
-      inherit (pkgs) stdenv;
     in {
       belisaere = let
         user = profile.eric;
@@ -60,27 +59,6 @@ in {
                 useUserPackages = true;
                 extraSpecialArgs = {inherit inputs pkgs user;};
                 users.${user.username}.imports = homeImports."eric@belisaere";
-              };
-            }
-          ];
-        };
-      corvere = let
-        user = profile.bitgo stdenv;
-      in
-        inputs.nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            inherit inputs pkgs user;
-          };
-          modules = [
-            ./corvere/configuration.nix
-            inputs.sops-nix.nixosModules.sops
-            inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = {inherit inputs pkgs user;};
-                users.${user.username}.imports = homeImports."ericcrosson@corvere";
               };
             }
           ];

@@ -31,16 +31,6 @@
         ../home/window-manager/awesome
       ];
 
-    "ericcrosson@corvere" =
-      sharedModules
-      ++ [
-        ./bitgo
-        ./development
-        ../home/editor/helix
-        # ../home/firefox
-        ../home/window-manager/awesome
-      ];
-
     "eric@bain" =
       sharedModules
       ++ [
@@ -67,12 +57,6 @@ in {
       // withSystem "x86_64-linux" ({pkgs, ...}: {
         "eric@belisaere" = homeManagerConfiguration {
           modules = homeImports."eric@belisaere";
-          inherit pkgs;
-        };
-      })
-      // withSystem "x86_64-linux" ({pkgs, ...}: {
-        "ericcrosson@corvere" = homeManagerConfiguration {
-          modules = homeImports."ericcrosson@corvere";
           inherit pkgs;
         };
       })
