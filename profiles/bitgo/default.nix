@@ -22,6 +22,7 @@ in {
       kubectx
       kustomize
       litellm
+      openai-whisper
       yq-go
     ];
 
