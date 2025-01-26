@@ -2,6 +2,7 @@
   lib,
   buildGoModule,
   fetchFromGitHub,
+  xdg-utils,
 }:
 buildGoModule rec {
   pname = "aws-saml";
@@ -15,6 +16,8 @@ buildGoModule rec {
   };
 
   vendorHash = "sha256-fpVicjHomS9ZWYfjOJhqxbr5F+HLKshZvLgcG0D+KZQ=";
+
+  runtimeDependencies = [ xdg-utils ];
 
   meta = with lib; {
     description = "🔏 Generate AWS credentials from a SAML IdP login";
