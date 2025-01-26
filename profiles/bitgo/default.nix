@@ -82,6 +82,7 @@ in {
     secrets = {
       github_token_bitgo = {};
       jira_token_bitgo = {};
+      youtube_api_key = {};
     };
   };
 }
