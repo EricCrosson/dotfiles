@@ -12,4 +12,5 @@ aider() {
         "$@"
 }
 
+alias cmd="llm cmd"
 alias fabric="fabric --config ~/.config/fabric/config.yaml"
