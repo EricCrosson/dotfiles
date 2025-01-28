@@ -1,0 +1,8 @@
+read:
+  - CONVENTIONS.md
+
+code-theme: lightbulb
+detect-urls: false
+gitignore: false
+subtree-only: true
+watch-files: true

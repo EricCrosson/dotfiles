@@ -9,9 +9,6 @@ aider() {
       --python 3.9 \
       --from git+ssh://git@github.com/BitGo/aider \
       aider \
-        --no-gitignore \
-        --subtree-only \
-        --watch-files \
         "$@"
 }
 

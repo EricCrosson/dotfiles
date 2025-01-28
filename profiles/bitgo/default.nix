@@ -27,6 +27,9 @@ in {
     ];
 
     file = {
+      ".aider.conf.yml" = {
+        source = ../../.aider.conf.yml;
+      };
       ".config/litellm/config.yaml" = {
         source = ../../.config/litellm/config.yaml;
       };
