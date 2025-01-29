@@ -2,91 +2,55 @@
 name: Auto-update nix flake inputs
 
 on:
-  workflow_dispatch: # allow manual triggering
+  workflow_dispatch:
   schedule:
     - cron: "0 8 * * *" # runs every day at 08:00 UTC
 
 jobs:
-  check-if-flake-input-needs-update:
-    name: Update ${{ matrix.flake-input.name }}
+  enumerate-flake-inputs:
+    name: Update flake inputs
     runs-on: ubuntu-latest
 
+    outputs:
+      matrix: ${{ steps.get-inputs.outputs.matrix }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+
+      - id: get-inputs
+        name: Get flake inputs
+        run: |
+          inputs=$(nix flake metadata --json | jq --raw-output '.locks.nodes.root.inputs | keys[]' | jq --raw-input --slurp --compact-output 'split("\n")[:-1]')
+          echo "matrix=$inputs" >> "$GITHUB_OUTPUT"
+
+  update-flake-inputs:
+    needs: enumerate-flake-inputs
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       max-parallel: 1
       matrix:
-        flake-input:
-          - name: bash-barrier
-            update-on: Monday
-          - name: batch-edit-prs
-            update-on: Monday
-          - name: bell
-            update-on: Monday
-          - name: crane
-            update-on: Monday
-          - name: darwin
-            update-on: Monday
-          - name: fenix
-            update-on: Monday
-          - name: firefox
-          - name: git-diff-regex
-            update-on: Monday
-          - name: git-disjoint
-          - name: git-dl
-            update-on: Monday
-          - name: git-review
-            update-on: Monday
-          - name: helix
-          - name: home-manager
-          - name: nixpkgs
-          - name: npm-dep-version
-            update-on: Monday
-          - name: percentage-changed-calculator
-            update-on: Monday
-          - name: retry
-            update-on: Monday
+        flake-input: ${{ fromJson(needs.enumerate-flake-inputs.outputs.matrix) }}
 
     steps:
-      - id: should-update
-        run: |
-          : calculate if flake input should be updated
-          if [ -z "$day" ]; then
-            echo "update=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
 
-          if [ "$(date +%A)" = "$day" ]; then
-            echo "update=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "update=false" >> "$GITHUB_OUTPUT"
-          fi
-        env:
-          LC_TIME: C
-          day: ${{ matrix.flake-input.update-on }}
-
-      # REFACTOR: there's duplication in update-flake-input.yaml,
-      # the manually-invoked workflow
-      - if: steps.should-update.outputs.update == 'true'
-        uses: actions/checkout@v4
-
-      - if: steps.should-update.outputs.update == 'true'
-        uses: DeterminateSystems/nix-installer-action@main
-
-      - if: steps.should-update.outputs.update == 'true'
-        name: Update ${{ matrix.flake-input.name }} flake input
+      - name: Update ${{ matrix.flake-input }} flake input
         uses: DeterminateSystems/update-flake-lock@v23
         with:
-          branch: update-flake-input-${{ matrix.flake-input.name }}
-          commit-msg: "chore(nix): update ${{ matrix.flake-input.name }} flake input"
-          inputs: ${{ matrix.flake-input.name }}
+          branch: update-flake-input-${{ matrix.flake-input }}
+          commit-msg: "chore(nix): update ${{ matrix.flake-input }} flake input"
+          inputs: ${{ matrix.flake-input }}
           git-author-name: github-actions
           git-author-email: action@github.com
           git-committer-name: github-actions
           git-committer-email: action@github.com
           pr-assignees: EricCrosson
-          pr-title: Update ${{ matrix.flake-input.name }} flake input
+          pr-title: Update ${{ matrix.flake-input }} flake input
           pr-labels: |
             dependencies
             nix
-            ${{ matrix.flake-input.name }}
+            ${{ matrix.flake-input }}
           token: ${{ secrets.GH_TOKEN_PR }}
