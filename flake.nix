@@ -1,12 +1,8 @@
 {
   description = "Eric's NixOS and Home-Manager flake";
 
-  outputs = inputs @ {
-    self,
-    flake-parts,
-    ...
-  }:
-    flake-parts.lib.mkFlake {inherit (inputs) self;} {
+  outputs = inputs @ {flake-parts, ...}:
+    flake-parts.lib.mkFlake {inherit inputs;} {
       systems = [
         "aarch64-darwin"
         "aarch64-linux"
