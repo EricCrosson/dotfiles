@@ -2,15 +2,18 @@
   pkgs,
   user,
   lib,
+  config,
   ...
 }: let
   aws-console = pkgs.callPackage ../../pkgs/aws-console {};
   aws-saml = pkgs.callPackage ../../pkgs/aws-saml {};
+  auto-merge-previously-reviewed-api-docs-prs = pkgs.callPackage ../../pkgs/auto-merge-previously-reviewed-api-docs-prs {};
   litellm = pkgs.callPackage ../../pkgs/litellm {};
 in {
   home = {
     packages = with pkgs; [
       amazon-ecr-credential-helper
+      auto-merge-previously-reviewed-api-docs-prs
       aws-console
       aws-saml
       dive
@@ -69,6 +72,22 @@ in {
 
   launchd = {
     agents = {
+      auto-merge-previously-reviewed-api-docs-prs = {
+        enable = true;
+        config = {
+          ProgramArguments = [
+            "${auto-merge-previously-reviewed-api-docs-prs}/bin/auto-merge-previously-reviewed-api-docs-prs"
+          ];
+          EnvironmentVariables = {
+            GITHUB_TOKEN_PATH = "${config.sops.secrets.github_token_bitgo.path}";
+          };
+          StartInterval = 300; # every 5 minutes
+          RunAtLoad = true;
+          StandardOutPath = "${user.homeDirectory}/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.log";
+          StandardErrorPath = "${user.homeDirectory}/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.error.log";
+          ServiceDependencies = ["sops-nix"];
+        };
+      };
       litellm-proxy = {
         enable = true;
         config = {
