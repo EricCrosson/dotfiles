@@ -83,7 +83,7 @@ in {
           };
           StartInterval = 300; # every 5 minutes
           RunAtLoad = true;
-          StandardOutPath = "${user.homeDirectory}/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.log";
+          StandardOutPath = "/dev/null";
           StandardErrorPath = "${user.homeDirectory}/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.error.log";
           ServiceDependencies = ["sops-nix"];
         };
