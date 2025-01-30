@@ -13,6 +13,17 @@
         ./profiles
         ./hosts
       ];
+
+      perSystem = {system, ...}: {
+        packages.nurl = inputs.nurl.packages.${system}.default.override {
+          runtimeInputs = pkgs:
+            with pkgs; [
+              gitMinimal
+              mercurial
+              nixVersions.latest
+            ];
+        };
+      };
     };
 
   nixConfig.substituters = [
