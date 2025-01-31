@@ -10,6 +10,59 @@ trap 'echo "[$(date -Iseconds)] Script execution completed"' EXIT
 
 BOT_NAME="dev-portal-updater[bot]"
 
+# Check PR status and take needed actions
+process_pr() {
+  local repo="$1"
+  local pr_number="$2"
+  local approve_message="$3"
+  
+  # Get PR details and reviews in separate API calls
+  local pr_details reviews
+  pr_details=$(gh api \
+    -H "Accept: application/vnd.github+json" \
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    "/repos/$repo/pulls/$pr_number")
+
+  reviews=$(gh api \
+    -H "Accept: application/vnd.github+json" \
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    "/repos/$repo/pulls/$pr_number/reviews")
+
+  # Combine the information
+  pr_details=$(echo "$pr_details" | jq --argjson reviews "$reviews" '{
+    auto_merge: (.auto_merge != null),
+    reviews: [$reviews[] | select(.user.login == "ericcrosson-bitgo" and .state == "APPROVED")] | length
+  }')
+
+  local needs_merge=false
+  local needs_approval=false
+
+  # Check if PR needs auto-merge
+  if [[ $(echo "$pr_details" | jq '.auto_merge') == "false" ]]; then
+    needs_merge=true
+  fi
+
+  # Check if PR needs approval
+  if [[ $(echo "$pr_details" | jq '.reviews') == "0" ]]; then
+    needs_approval=true
+  fi
+
+  # Take needed actions
+  if [[ "$needs_merge" == "true" ]]; then
+    echo "Marking PR #$pr_number as auto-mergeable"
+    gh pr merge --repo "$repo" "$pr_number" --auto --merge
+  fi
+
+  if [[ "$needs_approval" == "true" ]]; then
+    echo "Approving PR #$pr_number"
+    gh pr review --repo "$repo" "$pr_number" --approve --body "$approve_message"
+  fi
+
+  if [[ "$needs_merge" == "false" && "$needs_approval" == "false" ]]; then
+    echo "PR #$pr_number already processed (auto-merge: yes, approved: yes)"
+  fi
+}
+
 # Get open PRs from the bot with matching title and their titles, sorted by PR number
 process_api_doc_prs() {
   local prs
@@ -34,11 +87,7 @@ process_api_doc_prs() {
     local service_name
     service_name=${pr_title#"Update API docs for "}
 
-    # Mark the PR as auto-mergeable
-    gh pr merge --repo BitGo/dev-portal "$pr_number" --auto --merge
-
-    # Approve the PR
-    gh pr review --repo BitGo/dev-portal "$pr_number" --approve --body "Updates API docs for $service_name"
+    process_pr "BitGo/dev-portal" "$pr_number" "Updates API docs for $service_name"
   done
 }
 
@@ -62,11 +111,7 @@ process_api_changelog_prs() {
   echo "$prs" | jq --raw-output '"\(.number)\t\(.title)"' | while IFS=$'\t' read -r pr_number pr_title; do
     echo "Processing BitGo/api-changelog#$pr_number"
 
-    # Mark the PR as auto-mergeable
-    gh pr merge --repo BitGo/api-changelog "$pr_number" --auto --merge
-
-    # Approve the PR
-    gh pr review --repo BitGo/api-changelog "$pr_number" --approve --body "Updates API reference"
+    process_pr "BitGo/api-changelog" "$pr_number" "Updates API reference"
   done
 }
 
