@@ -12,27 +12,46 @@ BOT_NAME="dev-portal-updater[bot]"
 
 # Check PR status and take needed actions
 process_pr() {
-  local repo="$1"
+  local slug="$1"
   local pr_number="$2"
   local approve_message="$3"
   
-  # Get PR details and reviews in separate API calls
-  local pr_details reviews
-  pr_details=$(gh api \
-    -H "Accept: application/vnd.github+json" \
-    -H "X-GitHub-Api-Version: 2022-11-28" \
-    "/repos/$repo/pulls/$pr_number")
+  # Get PR details and reviews in a single GraphQL query
+  local pr_data
+  # shellcheck disable=SC2016
+  pr_data="$(
+    gh api graphql -f query='
+      query($owner: String!, $repo: String!, $pr_number: Int!) {
+        repository(owner: $owner, name: $repo) {
+          pullRequest(number: $pr_number) {
+            autoMergeRequest {
+              enabledAt
+            }
+            reviews(first: 100) {
+              nodes {
+                author {
+                  login
+                }
+                state
+              }
+            }
+          }
+        }
+      }' \
+      -F owner="$(echo "$slug" | cut -d'/' -f1)" \
+      -F repo="$(echo "$slug" | cut -d'/' -f2)" \
+      -F pr_number="$pr_number"
+  )"
 
-  reviews=$(gh api \
-    -H "Accept: application/vnd.github+json" \
-    -H "X-GitHub-Api-Version: 2022-11-28" \
-    "/repos/$repo/pulls/$pr_number/reviews")
-
-  # Combine the information
-  pr_details=$(echo "$pr_details" | jq --argjson reviews "$reviews" '{
-    auto_merge: (.auto_merge != null),
-    reviews: [$reviews[] | select(.user.login == "ericcrosson-bitgo" and .state == "APPROVED")] | length
-  }')
+  # Process the GraphQL response
+  local pr_details
+  pr_details="$(
+    echo "$pr_data" \
+    | jq '{
+        auto_merge: (.data.repository.pullRequest.autoMergeRequest != null),
+        reviews: [.data.repository.pullRequest.reviews.nodes[] | select(.author.login == "ericcrosson-bitgo" and .state == "APPROVED")] | length
+      }'
+  )"
 
   local needs_merge=false
   local needs_approval=false
@@ -50,12 +69,12 @@ process_pr() {
   # Take needed actions
   if [[ "$needs_merge" == "true" ]]; then
     echo "Marking PR #$pr_number as auto-mergeable"
-    gh pr merge --repo "$repo" "$pr_number" --auto --merge
+    gh pr merge --repo "$slug" "$pr_number" --auto --merge
   fi
 
   if [[ "$needs_approval" == "true" ]]; then
     echo "Approving PR #$pr_number"
-    gh pr review --repo "$repo" "$pr_number" --approve --body "$approve_message"
+    gh pr review --repo "$slug" "$pr_number" --approve --body "$approve_message"
   fi
 
   if [[ "$needs_merge" == "false" && "$needs_approval" == "false" ]]; then
