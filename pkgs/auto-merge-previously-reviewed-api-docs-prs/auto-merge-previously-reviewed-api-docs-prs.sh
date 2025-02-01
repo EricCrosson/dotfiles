@@ -4,11 +4,15 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+log() {
+  echo "[$(date -Iseconds)] $*" >&2
+}
+
 readonly bot_name="dev-portal-updater[bot]"
 
 process_repository() {
   local owner="" repo="" title_pattern="" approve_message_template=""
-
+  
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --owner) owner="$2"; shift 2 ;;
@@ -18,6 +22,8 @@ process_repository() {
       *) echo "Unknown parameter: $1"; return 1 ;;
     esac
   done
+
+  log "Processing $owner/$repo"
 
   # Get PRs and their status in one query
   local prs
@@ -68,12 +74,23 @@ process_repository() {
     # shellcheck disable=SC2059
     approve_message=$(printf "$approve_message_template" "$service_name")
 
-    [[ "$needs_approval" == "true" ]] && gh pr review --repo "$owner/$repo" "$number" --approve --body "$approve_message"
-    [[ "$needs_merge" == "true" ]] && gh pr merge --repo "$owner/$repo" "$number" --auto --merge
+    log "Processing $owner/$repo#$number"
+    
+    if [[ "$needs_approval" == "true" ]]; then
+      log "Approving $owner/$repo#$number"
+      gh pr review --repo "$owner/$repo" "$number" --approve --body "$approve_message"
+    fi
+    
+    if [[ "$needs_merge" == "true" ]]; then
+      log "Enabling auto-merge for $owner/$repo#$number"
+      gh pr merge --repo "$owner/$repo" "$number" --auto --merge
+    fi
   done
 }
 
 # Process each repository
+log "Starting auto-merge script"
+
 process_repository \
   --owner "BitGo" \
   --repo "dev-portal" \
@@ -85,3 +102,5 @@ process_repository \
   --repo "api-changelog" \
   --title-pattern "^Update API reference" \
   --approve-message-template "Updates API reference"
+
+log "Completed auto-merge script"
