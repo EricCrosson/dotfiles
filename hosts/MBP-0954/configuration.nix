@@ -11,6 +11,14 @@
         SHELL = "${pkgs.zsh}/bin/zsh";
         LANG = "en_US.UTF-8";
       };
+
+      etc."newsyslog.d/bitgo-services.conf".text = ''
+        # logfilename                                                           [owner:group]    mode count size when  flags
+        /Users/ericcrosson/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.log        644  5     1024  *     
+        /Users/ericcrosson/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.error.log  644  5     1024  *     
+        /Users/ericcrosson/Library/Logs/litellm-proxy.log                                      644  5     1024  *     
+        /Users/ericcrosson/Library/Logs/litellm-proxy.error.log                                644  5     1024  *     
+      '';
     };
 
     fonts = {

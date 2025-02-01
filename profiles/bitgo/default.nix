@@ -47,9 +47,11 @@ in {
         recursive = false;
         source = ../../.jira.d;
       };
+      # NOTE: this is a darwin-specific path, will need to be modified on Linux
       "Library/Application Support/io.datasette.llm/default_model.txt" = {
         source = ../.. + "/Library/Application Support/io.datasette.llm/default_model.txt";
       };
+      # NOTE: this is a darwin-specific path, will need to be modified on Linux
       "Library/Application Support/io.datasette.llm/extra-openai-models.yaml" = {
         source = ../.. + "/Library/Application Support/io.datasette.llm/extra-openai-models.yaml";
       };
@@ -83,7 +85,7 @@ in {
           };
           StartInterval = 300; # every 5 minutes
           RunAtLoad = true;
-          StandardOutPath = "/dev/null";
+          StandardOutPath = "${user.homeDirectory}/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.log";
           StandardErrorPath = "${user.homeDirectory}/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.error.log";
           ServiceDependencies = ["sops-nix"];
         };
@@ -101,7 +103,7 @@ in {
           };
           KeepAlive = true;
           RunAtLoad = true;
-          StandardOutPath = "/dev/null";
+          StandardOutPath = "${user.homeDirectory}/Library/Logs/litellm-proxy.log";
           StandardErrorPath = "${user.homeDirectory}/Library/Logs/litellm-proxy.error.log";
         };
       };
