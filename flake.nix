@@ -13,17 +13,6 @@
         ./profiles
         ./hosts
       ];
-
-      perSystem = {system, ...}: {
-        packages.nurl = inputs.nurl.packages.${system}.default.override {
-          runtimeInputs = pkgs:
-            with pkgs; [
-              gitMinimal
-              mercurial
-              nixVersions.latest
-            ];
-        };
-      };
     };
 
   nixConfig.substituters = [
@@ -117,10 +106,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/nur";
-    nurl = {
-      url = "github:nix-community/nurl";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     percentage-changed-calculator = {
       url = "github:ericcrosson/percentage-changed-calculator";
       inputs.crane.follows = "crane";

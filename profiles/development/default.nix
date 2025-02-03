@@ -18,7 +18,6 @@
         inputs.git-dl.packages.${pkgs.system}.default
         inputs.git-review.packages.${pkgs.system}.default
         inputs.npm-dep-version.packages.${pkgs.system}.default
-        pkgs.nurl
 
         # This isn't specific to development but it takes a system that can
         # compile Rust from source
@@ -51,6 +50,9 @@
 
         # Python
         uv
+
+        # Nix
+        nurl
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
         pkgs.darwin.apple_sdk.frameworks.Security
