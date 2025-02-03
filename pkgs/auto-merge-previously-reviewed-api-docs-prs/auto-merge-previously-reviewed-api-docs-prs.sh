@@ -8,7 +8,7 @@ log() {
   echo "[$(date -Iseconds)] $*" >&2
 }
 
-readonly bot_name="dev-portal-updater[bot]"
+readonly bot_name="dev-portal-updater"
 
 process_repository() {
   local owner="" repo="" title_pattern="" approve_message_template=""
