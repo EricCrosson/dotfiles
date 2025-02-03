@@ -61,7 +61,7 @@
         }
       ];
       settings = {
-        theme = "everforest_light";
+        theme = "github_dark";
         keys.normal = {
           C-h = "jump_view_left";
           C-j = "jump_view_down";
