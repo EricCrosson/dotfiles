@@ -13,6 +13,7 @@ in {
   home = {
     packages = with pkgs; [
       amazon-ecr-credential-helper
+      audacity
       auto-merge-previously-reviewed-api-docs-prs
       aws-console
       aws-saml
