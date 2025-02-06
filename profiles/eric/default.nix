@@ -95,7 +95,7 @@ in {
       hub
       python3Full
       starship
-      (wakatime.overrideAttrs (old: {
+      (wakatime.overrideAttrs (_: {
         doCheck = false;
       }))
     ];
