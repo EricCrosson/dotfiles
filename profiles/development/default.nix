@@ -53,6 +53,8 @@
 
         # Nix
         nurl
+
+        nodePackages.prettier
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
         pkgs.darwin.apple_sdk.frameworks.Security
