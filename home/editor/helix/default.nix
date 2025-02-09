@@ -1,6 +1,7 @@
 {
   pkgs,
   inputs,
+  user,
   ...
 }: {
   options = {
@@ -61,7 +62,7 @@
         }
       ];
       settings = {
-        theme = "github_dark";
+        theme = "catppuccin_${user.preferences.theme}";
         keys.normal = {
           C-h = "jump_view_left";
           C-j = "jump_view_down";
