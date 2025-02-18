@@ -50,7 +50,6 @@
       };
 
       casks = [
-        "blackhole-2ch"
         "kitty"
         "postman"
         "vlc"
