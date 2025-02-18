@@ -82,7 +82,6 @@
       '';
 
       gc = {
-        user = "ericcrosson";
         automatic = true;
         interval = {
           Weekday = 0;
@@ -132,8 +131,5 @@
       # $ darwin-rebuild changelog
       stateVersion = 4;
     };
-
-    # Auto upgrade Nix and the daemon service.
-    services.nix-daemon.enable = true;
   };
 }
