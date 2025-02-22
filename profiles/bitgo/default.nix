@@ -127,6 +127,7 @@ in {
     secrets = {
       github_ssh_private_key_personal = {};
       github_token_bitgo = {};
+      github_token_personal = {};
       jira_token_bitgo = {};
       youtube_api_key = {};
     };
