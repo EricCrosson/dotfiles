@@ -246,8 +246,6 @@ in {
         ready-for-review = "!f() { gh pr ready \"$1\"; }; f";
 
         commit-with-message = "!f() { git diff --staged | fabric --pattern create_git_diff_commit | bash; }; f";
-
-        alias = "!git config --list | grep \"alias\\\\.\" | sed \"s/alias\\\\.\\\\([^=]*\\\\)=\\\\(.*\\\\)/\\\\1\\\\\\t => \\\\2/\" | sort";
       };
       delta = {
         enable = true;
