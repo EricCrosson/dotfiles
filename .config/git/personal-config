@@ -1,3 +1,5 @@
+[core]
+	sshCommand = "ssh -i ~/.ssh/id_rsa_personal"
 [user]
 	email = eric.s.crosson@utexas.edu
 [commit]

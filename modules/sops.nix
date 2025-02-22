@@ -12,6 +12,11 @@
     // (
       if user.organization == "bitgo"
       then {
+        github_ssh_private_key_personal = {
+          mode = "0400";
+          owner = user.username;
+          group = "users";
+        };
         github_token_bitgo = {
           mode = "0400";
           owner = user.username;

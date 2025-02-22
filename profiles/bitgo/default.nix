@@ -56,6 +56,16 @@ in {
       "Library/Application Support/io.datasette.llm/extra-openai-models.yaml" = {
         source = ../.. + "/Library/Application Support/io.datasette.llm/extra-openai-models.yaml";
       };
+
+      ".ssh/id_rsa_personal.pub".source = ../../.ssh/id_rsa_personal.pub;
+    };
+
+    activation = {
+      copySSHKey = config.lib.dag.entryAfter ["writeBoundary"] ''
+        if [ -f "${config.sops.secrets.github_ssh_private_key_personal.path}" ]; then
+          run install -m600 "${config.sops.secrets.github_ssh_private_key_personal.path}" "${config.home.homeDirectory}/.ssh/id_rsa_personal"
+        fi
+      '';
     };
   };
 
@@ -115,6 +125,7 @@ in {
     defaultSopsFile = ../../secrets/main.yaml;
     gnupg.home = user.homeDirectory + "/.gnupg";
     secrets = {
+      github_ssh_private_key_personal = {};
       github_token_bitgo = {};
       jira_token_bitgo = {};
       youtube_api_key = {};
