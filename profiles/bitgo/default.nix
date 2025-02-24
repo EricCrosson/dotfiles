@@ -8,6 +8,7 @@
   aws-console = pkgs.callPackage ../../pkgs/aws-console {};
   aws-saml = pkgs.callPackage ../../pkgs/aws-saml {};
   auto-merge-previously-reviewed-api-docs-prs = pkgs.callPackage ../../pkgs/auto-merge-previously-reviewed-api-docs-prs {};
+  auto-merge-prs-that-only-bump-openapi-spec-version-numbers = pkgs.callPackage ../../pkgs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers {};
   litellm = pkgs.callPackage ../../pkgs/litellm {};
 in {
   home = {
@@ -85,6 +86,22 @@ in {
 
   launchd = {
     agents = {
+      auto-merge-prs-that-only-bump-openapi-spec-version-numbers = {
+        enable = true;
+        config = {
+          ProgramArguments = [
+            "${auto-merge-prs-that-only-bump-openapi-spec-version-numbers}/bin/auto-merge-prs-that-only-bump-openapi-spec-version-numbers"
+          ];
+          EnvironmentVariables = {
+            GITHUB_TOKEN_PATH = "${config.sops.secrets.github_token_bitgo.path}";
+          };
+          StartInterval = 300; # every 5 minutes
+          RunAtLoad = true;
+          StandardOutPath = "${user.homeDirectory}/Library/Logs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers.log";
+          StandardErrorPath = "${user.homeDirectory}/Library/Logs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers.error.log";
+          ServiceDependencies = ["sops-nix"];
+        };
+      };
       auto-merge-previously-reviewed-api-docs-prs = {
         enable = true;
         config = {
