@@ -12,13 +12,14 @@
         LANG = "en_US.UTF-8";
       };
 
-      # add log rotation for auto-merge-prs-that-only-bump-openapi-spec-version-numbers. Also, rotate logs at 512 size, not 1024. AI!
       etc."newsyslog.d/bitgo-services.conf".text = ''
-        # logfilename                                                           [owner:group]    mode count size when  flags
-        /Users/ericcrosson/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.log        644  5     1024  *
-        /Users/ericcrosson/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.error.log  644  5     1024  *
-        /Users/ericcrosson/Library/Logs/litellm-proxy.log                                      644  5     1024  *
-        /Users/ericcrosson/Library/Logs/litellm-proxy.error.log                                644  5     1024  *
+        # logfilename                                                                          [owner:group]  mode count size when  flags
+        /Users/ericcrosson/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.log                       644  5     512   *
+        /Users/ericcrosson/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.error.log                 644  5     512   *
+        /Users/ericcrosson/Library/Logs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers.log        644  5     512   *
+        /Users/ericcrosson/Library/Logs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers.error.log  644  5     512   *
+        /Users/ericcrosson/Library/Logs/litellm-proxy.log                                                     644  5     512   *
+        /Users/ericcrosson/Library/Logs/litellm-proxy.error.log                                               644  5     512   *
       '';
     };
 
