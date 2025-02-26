@@ -138,8 +138,6 @@ in {
       };
     };
 
-    # Note: I had to run "bat cache --build" to get this theme to be picked up.
-    # Closed issue: https://github.com/nix-community/home-manager/issues/2482
     bat = {
       enable = true;
       config = {
