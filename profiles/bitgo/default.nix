@@ -18,6 +18,7 @@ in {
       auto-merge-previously-reviewed-api-docs-prs
       aws-console
       aws-saml
+      awscli2
       dive
       element-desktop
       fabric-ai
