@@ -23,7 +23,7 @@
     enable = true;
     plugins = [pkgs.rofi-calc];
     terminal = "${pkgs.kitty}/bin/kitty";
-    theme = "catppuccin-${user.preferences.theme}";
+    theme = "Catppuccin ${user.preferences.theme}";
     extraConfig = {
       modi = "run,drun,window";
       icon-theme = "Oranchelo";

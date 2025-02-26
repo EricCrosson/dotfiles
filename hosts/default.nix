@@ -5,7 +5,7 @@
   ...
 }: let
   preferences = {
-    theme = "mocha";
+    theme = "Mocha";
   };
   # REFACTOR: rename as `profiles`
   profile = {

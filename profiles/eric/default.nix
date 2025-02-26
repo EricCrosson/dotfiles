@@ -19,6 +19,14 @@ let
     mkdir -p $out/bin
     ln -s /opt/homebrew/bin/kitty $out/bin/kitty
   '';
+
+  # Fetch catppuccin delta theme
+  catppuccinDelta = pkgs.fetchFromGitHub {
+    owner = "catppuccin";
+    repo = "delta";
+    rev = "e9e21cffd98787f1b59e6f6e42db599f9b8ab399";
+    sha256 = "sha256-04po0A7bVMsmYdJcKL6oL39RlMLij1lRKvWl5AUXJ7Q=";
+  };
 in {
   imports =
     if stdenv.isDarwin
@@ -108,6 +116,9 @@ in {
       # Not sure why setting `xsession.profileExtra` doesn't seem to write .xprofile.
       # Well, this isn't ideal, but it's working, so no need to bugger with it.
       ".xprofile".source = ../../.xprofile;
+
+      # Add catppuccin delta theme configuration
+      ".config/git/catppuccin.gitconfig".source = "${catppuccinDelta}/catppuccin.gitconfig";
     };
   };
 
@@ -132,7 +143,7 @@ in {
     bat = {
       enable = true;
       config = {
-        theme = "catppuccin-${user.preferences.theme}";
+        theme = "Catppuccin ${user.preferences.theme}";
         style = "plain";
         paging = "never";
       };
@@ -140,25 +151,25 @@ in {
         catppuccin-bat = pkgs.fetchFromGitHub {
           owner = "catppuccin";
           repo = "bat";
-          rev = "ba4d16880d63e656acced2b7d4e034e4a93f74b1";
-          sha256 = "sha256-6WVKQErGdaqb++oaXnY3i6/GuH2FhTgK0v4TN4Y0Wbw=";
+          rev = "699f60fc8ec434574ca7451b444b880430319941";
+          sha256 = "sha256-6fWoCH90IGumAMc4buLRWL0N61op+AuMNN9CAR9/OdI=";
         };
       in {
-        catppuccin-frappe = {
+        "Catppuccin Frappe" = {
           src = catppuccin-bat;
-          file = "Catppuccin-frappe.tmTheme";
+          file = "themes/Catppuccin Frappe.tmTheme";
         };
-        catppuccin-latte = {
+        "Catppuccin Latte" = {
           src = catppuccin-bat;
-          file = "Catppuccin-latte.tmTheme";
+          file = "themes/Catppuccin Latte.tmTheme";
         };
-        catppuccin-macchiato = {
+        "Catppuccin Macchiato" = {
           src = catppuccin-bat;
-          file = "Catppuccin-macchiato.tmTheme";
+          file = "themes/Catppuccin Macchiato.tmTheme";
         };
-        catppuccin-mocha = {
+        "Catppuccin Mocha" = {
           src = catppuccin-bat;
-          file = "Catppuccin-mocha.tmTheme";
+          file = "themes/Catppuccin Mocha.tmTheme";
         };
       };
     };
@@ -207,7 +218,6 @@ in {
         f = "fetch";
         l = "log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'";
         p = "pull";
-        fa = "fetch --all --prune --jobs=10";
         fsl = "push --force-with-lease";
         re = "restore";
         rs = "restore --staged";
@@ -251,6 +261,7 @@ in {
         enable = true;
         options = {
           line-numbers = true;
+          features = "catppuccin-${pkgs.lib.strings.toLower user.preferences.theme}";
         };
       };
       ignores = [
@@ -272,34 +283,44 @@ in {
           condition = "gitdir:~/workspace/typescript-tools/";
           path = "~/.config/git/personal-config";
         }
+        {
+          path = "~/.config/git/catppuccin.gitconfig";
+        }
       ];
       extraConfig = {
         advice = {
           skippedCherryPicks = false;
         };
+        branch = {
+          sort = "-committerdate";
+        };
         color = {
           ui = true;
           interactive = "auto";
         };
+        column = {
+          ui = "auto";
+        };
+        commit = {
+          verbose = true;
+        };
         core = {
-          editor = "hx";
           autocrlf = false;
-
-          diff-highlight = {
-            oldNormal = "red bold";
-            oldHighlight = "red bold reverse";
-            newNormal = "green bold";
-            newHighlight = "green bold reverse";
-          };
-
-          diff = {
-            meta = 11;
-            frag = "magenta bold";
-            commit = "yellow bold";
-            old = "red bold";
-            new = "green bold";
-            whitespace = "red reverse";
-          };
+          editor = "hx";
+          fsmonitor = true;
+          untrackedCache = true;
+        };
+        diff = {
+          algorithm = "histogram";
+          colorMoved = "plain";
+          mnemonicPrefix = true;
+          renames = true;
+        };
+        fetch = {
+          all = true;
+          parallel = 10;
+          prune = true;
+          pruneTags = true;
         };
         github = {
           user = "${user.email}";
@@ -307,14 +328,27 @@ in {
         init = {
           defaultBranch = "master";
         };
+        merge = {
+          conflictStyle = "zdiff3";
+        };
         pull = {
           rebase = true;
         };
         push = {
+          autoSetupRemote = true;
           default = "simple";
         };
+        rebase = {
+          autoSquash = true;
+          autoStash = true;
+          updateRefs = true;
+        };
         rerere = {
+          autoupdate = true;
           enabled = true;
+        };
+        tag = {
+          sort = "version:refname";
         };
       };
     };
