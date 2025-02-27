@@ -278,6 +278,10 @@ in {
           path = "~/.config/git/personal-config";
         }
         {
+          condition = "gitdir:~/workspace/semantic-release-cargo/";
+          path = "~/.config/git/personal-config";
+        }
+        {
           condition = "gitdir:~/workspace/typescript-tools/";
           path = "~/.config/git/personal-config";
         }
