@@ -322,7 +322,6 @@ in {
           all = true;
           parallel = 10;
           prune = true;
-          pruneTags = true;
         };
         github = {
           user = "${user.email}";
