@@ -30,6 +30,7 @@ in {
       litellm
       openai-whisper
       yq-go
+      nodejs # Ensure nodejs is installed for npm
     ];
 
     file = {
@@ -50,6 +51,11 @@ in {
         recursive = false;
         source = ../../.jira.d;
       };
+      ".npmrc" = {
+        text = ''
+          prefix=${config.home.homeDirectory}/.local/share/npm
+        '';
+      };
       # NOTE: this is a darwin-specific path, will need to be modified on Linux
       "Library/Application Support/io.datasette.llm/default_model.txt" = {
         source = ../.. + "/Library/Application Support/io.datasette.llm/default_model.txt";
@@ -60,12 +66,55 @@ in {
       };
 
       ".ssh/id_rsa_personal.pub".source = ../../.ssh/id_rsa_personal.pub;
+
+      # Create a wrapper script for claude-code
+      ".local/bin/claude" = {
+        executable = true;
+        text = ''
+           #!/bin/sh
+           export ANTHROPIC_MODEL="arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-3-7-sonnet-20250219-v1:0"
+           export AWS_PROFILE="dev"
+           export AWS_REGION="us-west-2"
+           export CLAUDE_CODE_USE_BEDROCK="1"
+           export DISABLE_PROMPT_CACHING="1"
+
+          exec ~/.local/share/npm/bin/claude "$@"
+        '';
+      };
     };
+
+    # Add ~/.local/bin to PATH
+    sessionPath = [
+      "$HOME/.local/bin"
+      "$HOME/.local/share/npm/bin"
+    ];
 
     activation = {
       copySSHKey = config.lib.dag.entryAfter ["writeBoundary"] ''
         if [ -f "${config.sops.secrets.github_ssh_private_key_personal.path}" ]; then
           run install -m600 "${config.sops.secrets.github_ssh_private_key_personal.path}" "${config.home.homeDirectory}/.ssh/id_rsa_personal"
+        fi
+      '';
+
+      updateClaudeConfig = config.lib.dag.entryAfter ["writeBoundary"] ''
+        CLAUDE_CONFIG="${config.home.homeDirectory}/.claude.json"
+
+        if [ ! -f "$CLAUDE_CONFIG" ]; then
+          # Create the file if it doesn't exist
+          run echo '{}' > "$CLAUDE_CONFIG"
+        fi
+
+        # Use jq to ensure the keys are set with the specified values
+        run ${pkgs.jq}/bin/jq '.preferredNotifChannel = "terminal_bell" | .autoUpdaterStatus = "disabled"' "$CLAUDE_CONFIG" > "$CLAUDE_CONFIG.tmp"
+        run mv "$CLAUDE_CONFIG.tmp" "$CLAUDE_CONFIG"
+      '';
+
+      installClaudeCode = config.lib.dag.entryAfter ["writeBoundary"] ''
+        # Check if claude-code is already installed
+        if ! npm list --global @anthropic-ai/claude-code >/dev/null 2>&1; then
+          run echo "Installing claude-code via npm..."
+          # Set PATH to include nodejs bin directory so that 'node' is available during npm install
+          PATH="${pkgs.nodejs}/bin:$PATH" run ${pkgs.nodejs}/bin/npm install --global @anthropic-ai/claude-code
         fi
       '';
     };
