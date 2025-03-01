@@ -12,14 +12,5 @@ aider() {
         "$@"
 }
 
-claude-code() {
-  ANTHROPIC_MODEL="arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-3-7-sonnet-20250219-v1:0" \
-  AWS_PROFILE=dev \
-  AWS_REGION=us-west-2 \
-  CLAUDE_CODE_USE_BEDROCK=1 \
-  DISABLE_PROMPT_CACHING=1 \
-    \npx @anthropic-ai/claude-code
-}
-
 alias cmd="llm cmd"
 alias fabric="fabric --config ~/.config/fabric/config.yaml"

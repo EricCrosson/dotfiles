@@ -54,6 +54,9 @@
         # Nix
         nurl
 
+        # AI assistants
+        claude-code
+
         nodePackages.prettier
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
