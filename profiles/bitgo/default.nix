@@ -114,7 +114,7 @@ in {
         if ! npm list --global @anthropic-ai/claude-code >/dev/null 2>&1; then
           run echo "Installing claude-code via npm..."
           # Set PATH to include nodejs bin directory so that 'node' is available during npm install
-          PATH="${pkgs.nodejs}/bin:$PATH" run ${pkgs.nodejs}/bin/npm install --global @anthropic-ai/claude-code
+          PATH="${pkgs.nodejs}/bin:$PATH" run ${pkgs.nodejs}/bin/npm install --global @anthropic-ai/claude-code@0.2.27
         fi
       '';
     };
