@@ -110,8 +110,8 @@ in {
       '';
 
       installClaudeCode = config.lib.dag.entryAfter ["writeBoundary"] ''
-        # Check if claude-code is already installed
-        if ! npm list --global @anthropic-ai/claude-code >/dev/null 2>&1; then
+        # Check if claude binary is already installed
+        if [ ! -f "${config.home.homeDirectory}/.local/share/npm/bin/claude" ]; then
           run echo "Installing claude-code via npm..."
           # Set PATH to include nodejs bin directory so that 'node' is available during npm install
           PATH="${pkgs.nodejs}/bin:$PATH" run ${pkgs.nodejs}/bin/npm install --global @anthropic-ai/claude-code@0.2.27
