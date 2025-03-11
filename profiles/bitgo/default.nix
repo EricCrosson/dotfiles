@@ -46,6 +46,12 @@ in {
       ".config/fabric/config.yaml" = {
         source = ../../.config/fabric/config.yaml;
       };
+      ".config/librechat/docker-compose.yml" = {
+        source = ../../.config/librechat/docker-compose.yml;
+      };
+      ".config/librechat/docker-compose.override.yml" = {
+        source = ../../.config/librechat/docker-compose.override.yml;
+      };
       ".jira.d" = {
         # I would prefer this to be true but that doesn't appear to be working right now
         recursive = false;
@@ -107,6 +113,26 @@ in {
         # Use jq to ensure the keys are set with the specified values
         run ${pkgs.jq}/bin/jq '.preferredNotifChannel = "terminal_bell" | .autoUpdaterStatus = "disabled"' "$CLAUDE_CONFIG" > "$CLAUDE_CONFIG.tmp"
         run mv "$CLAUDE_CONFIG.tmp" "$CLAUDE_CONFIG"
+      '';
+
+      createLibreChatDirs = config.lib.dag.entryAfter ["writeBoundary"] ''
+        # NOTE: These are commented out because I'm not sure if they're necessary.
+        # Create necessary directories for LibreChat
+        # run mkdir -p "$HOME/.config/librechat/images"
+        # run mkdir -p "$HOME/.config/librechat/uploads"
+        # run mkdir -p "$HOME/.config/librechat/logs"
+        # run mkdir -p "$HOME/.config/librechat/data-node"
+        # run mkdir -p "$HOME/.config/librechat/meili_data_v1.12"
+
+        # Create a real .env file (not a symlink) that Docker can use
+        if [ -f "$HOME/.config/librechat/.env" ]; then
+          run install -m644 "$HOME/.config/librechat/.env" "$HOME/.config/librechat/.env.docker"
+        fi
+
+        # Do the same for librechat.yaml
+        if [ -f "$HOME/.config/librechat/librechat.yaml" ]; then
+          run install -m644 "$HOME/.config/librechat/librechat.yaml" "$HOME/.config/librechat/librechat.yaml.docker"
+        fi
       '';
 
       installClaudeCode = config.lib.dag.entryAfter ["writeBoundary"] ''
@@ -183,6 +209,54 @@ in {
           RunAtLoad = true;
           StandardOutPath = "${user.homeDirectory}/Library/Logs/litellm-proxy.log";
           StandardErrorPath = "${user.homeDirectory}/Library/Logs/litellm-proxy.error.log";
+        };
+      };
+      colima = {
+        enable = true;
+        config = {
+          ProgramArguments = [
+            "/opt/homebrew/bin/colima"
+            "start"
+            "--cpu"
+            "8"
+            "--memory"
+            "8"
+            "--arch"
+            "aarch64"
+            "--vm-type=vz"
+            "--vz-rosetta"
+          ];
+          EnvironmentVariables = {
+            PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin";
+          };
+          RunAtLoad = true;
+          KeepAlive = false; # Only run once at startup
+          StandardOutPath = "${user.homeDirectory}/Library/Logs/colima.log";
+          StandardErrorPath = "${user.homeDirectory}/Library/Logs/colima.error.log";
+        };
+      };
+      librechat = {
+        enable = true;
+        config = {
+          ProgramArguments = [
+            "/opt/homebrew/bin/docker-compose"
+            "-f"
+            "${user.homeDirectory}/.config/librechat/docker-compose.yml"
+            "-f"
+            "${user.homeDirectory}/.config/librechat/docker-compose.override.yml"
+            "up"
+            "-d"
+          ];
+          WorkingDirectory = "${user.homeDirectory}/.config/librechat";
+          EnvironmentVariables = {
+            PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin";
+          };
+          KeepAlive = true;
+          RunAtLoad = true;
+          StandardOutPath = "${user.homeDirectory}/Library/Logs/librechat.log";
+          StandardErrorPath = "${user.homeDirectory}/Library/Logs/librechat.error.log";
+          # Make sure colima is started first
+          ServiceDependencies = ["org.nixos.home-manager.colima"];
         };
       };
     };

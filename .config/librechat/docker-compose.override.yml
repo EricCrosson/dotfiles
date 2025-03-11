@@ -1,0 +1,13 @@
+version: "3.4"
+
+services:
+  api:
+    ports:
+      - "4000:4000"
+    volumes:
+      - type: bind
+        source: ./librechat.yaml.docker
+        target: /app/librechat.yaml
+      - type: bind
+        source: ./.env.docker
+        target: /app/.env

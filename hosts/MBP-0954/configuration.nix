@@ -20,6 +20,10 @@
         /Users/ericcrosson/Library/Logs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers.error.log  644  5     512   *
         /Users/ericcrosson/Library/Logs/litellm-proxy.log                                                     644  5     512   *
         /Users/ericcrosson/Library/Logs/litellm-proxy.error.log                                               644  5     512   *
+        /Users/ericcrosson/Library/Logs/colima.log                                                            644  5     512   *
+        /Users/ericcrosson/Library/Logs/colima.error.log                                                      644  5     512   *
+        /Users/ericcrosson/Library/Logs/librechat.log                                                         644  5     512   *
+        /Users/ericcrosson/Library/Logs/librechat.error.log                                                   644  5     512   *
       '';
     };
 
