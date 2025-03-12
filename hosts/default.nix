@@ -62,6 +62,7 @@ in {
             };
           }
         ];
+        specialArgs = {inherit user;};
       };
   });
 }

@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  user,
+  ...
+}: {
   config = {
     environment = {
       # List packages installed in system profile. To search by name, run:
@@ -13,17 +17,17 @@
       };
 
       etc."newsyslog.d/bitgo-services.conf".text = ''
-        # logfilename                                                                          [owner:group]  mode count size when  flags
-        /Users/ericcrosson/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.log                       644  5     512   *
-        /Users/ericcrosson/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.error.log                 644  5     512   *
-        /Users/ericcrosson/Library/Logs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers.log        644  5     512   *
-        /Users/ericcrosson/Library/Logs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers.error.log  644  5     512   *
-        /Users/ericcrosson/Library/Logs/litellm-proxy.log                                                     644  5     512   *
-        /Users/ericcrosson/Library/Logs/litellm-proxy.error.log                                               644  5     512   *
-        /Users/ericcrosson/Library/Logs/colima.log                                                            644  5     512   *
-        /Users/ericcrosson/Library/Logs/colima.error.log                                                      644  5     512   *
-        /Users/ericcrosson/Library/Logs/librechat.log                                                         644  5     512   *
-        /Users/ericcrosson/Library/Logs/librechat.error.log                                                   644  5     512   *
+        # logfilename                                                                                         [owner:group]          mode count size when  flags
+        /Users/ericcrosson/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.log                       ${user.username}:staff 644  5     512   *     C
+        /Users/ericcrosson/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.error.log                 ${user.username}:staff 644  5     512   *     C
+        /Users/ericcrosson/Library/Logs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers.log        ${user.username}:staff 644  5     512   *     C
+        /Users/ericcrosson/Library/Logs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers.error.log  ${user.username}:staff 644  5     512   *     C
+        /Users/ericcrosson/Library/Logs/litellm-proxy.log                                                     ${user.username}:staff 644  5     512   *     C
+        /Users/ericcrosson/Library/Logs/litellm-proxy.error.log                                               ${user.username}:staff 644  5     512   *     C
+        /Users/ericcrosson/Library/Logs/colima.log                                                            ${user.username}:staff 644  5     512   *     C
+        /Users/ericcrosson/Library/Logs/colima.error.log                                                      ${user.username}:staff 644  5     512   *     C
+        /Users/ericcrosson/Library/Logs/librechat.log                                                         ${user.username}:staff 644  5     512   *     C
+        /Users/ericcrosson/Library/Logs/librechat.error.log                                                   ${user.username}:staff 644  5     512   *     C
       '';
     };
 
