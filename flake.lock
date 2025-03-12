@@ -86,22 +86,6 @@
         "type": "github"
       }
     },
-    "cachix": {
-      "locked": {
-        "lastModified": 1635350005,
-        "narHash": "sha256-tAMJnUwfaDEB2aa31jGcu7R7bzGELM9noc91L2PbVjg=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "1c1f5649bb9c1b0d98637c8c365228f57126f361",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-20.09",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "crane": {
       "locked": {
         "lastModified": 1741481578,
@@ -204,18 +188,16 @@
     },
     "firefox": {
       "inputs": {
-        "cachix": "cachix",
         "flake-compat": "flake-compat_2",
         "lib-aggregate": "lib-aggregate",
-        "mozilla": "mozilla",
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1741655706,
-        "narHash": "sha256-pIZhLfBYp/tsrjS3ngBW5kOMml0t3iG38U6Sr6HRJZk=",
+        "lastModified": 1741744571,
+        "narHash": "sha256-qxrbfB2hJOAQBaHtLPXv5tgIUbD12p8NFo1KSuzJceg=",
         "owner": "colemickens",
         "repo": "flake-firefox-nightly",
-        "rev": "3b2958e8e47aa68d14c7b4a5e4ef448ad273b58a",
+        "rev": "83997cf19427335d56bc19aae8445b983a08f1d6",
         "type": "github"
       },
       "original": {
@@ -558,34 +540,18 @@
         "type": "github"
       }
     },
-    "mozilla": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1740762144,
-        "narHash": "sha256-I7a6e3IYJAp9u3PwUSW1+oilO1tAfnbeN3/YJQ+ObCo=",
-        "owner": "mozilla",
-        "repo": "nixpkgs-mozilla",
-        "rev": "e35b0e071cae97469d80222be988fdd972b22c3b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mozilla",
-        "repo": "nixpkgs-mozilla",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1741513245,
-        "narHash": "sha256-7rTAMNTY1xoBwz0h7ZMtEcd8LELk9R5TzBPoHuhNSCk=",
+        "lastModified": 1741715534,
+        "narHash": "sha256-IDtwLhWMKvydW9GrB6ETwhij+vma0hYHln8pR/rTd+U=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "e3e32b642a31e6714ec1b712de8c91a3352ce7e1",
+        "rev": "0d534853a55b5d02a4ababa1d71921ce8f0aee4c",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
-        "ref": "nixos-unstable",
+        "ref": "nixos-unstable-small",
         "repo": "nixpkgs",
         "type": "github"
       }
