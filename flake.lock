@@ -507,11 +507,11 @@
       },
       "locked": {
         "dir": "nix",
-        "lastModified": 1741375996,
-        "narHash": "sha256-T8E8pfz2GttulXhnUBfuoiIFS/xuG6BY1q0KDEqhxy4=",
+        "lastModified": 1741693735,
+        "narHash": "sha256-u3y4EGk1wRa2Gf4ns9G9xdD76v8jY0qTlxJ/VjlQSFU=",
         "owner": "kmonad",
         "repo": "kmonad",
-        "rev": "74a0bf46fe7942126f22588d8a574de2dddb8942",
+        "rev": "838f8ec2ad33e84094ea13f50af2d6e0a8137511",
         "type": "github"
       },
       "original": {
