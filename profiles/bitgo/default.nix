@@ -89,7 +89,6 @@ in {
       };
     };
 
-    # Add ~/.local/bin to PATH
     sessionPath = [
       "$HOME/.local/bin"
       "$HOME/.local/share/npm/bin"
@@ -125,13 +124,13 @@ in {
         # run mkdir -p "$HOME/.config/librechat/meili_data_v1.12"
 
         # Create a real .env file (not a symlink) that Docker can use
-        if [ -f "$HOME/.config/librechat/.env" ]; then
-          run install -m644 "$HOME/.config/librechat/.env" "$HOME/.config/librechat/.env.docker"
+        if [ ! -f "${config.home.homeDirectory}/.config/librechat/.env" ]; then
+          run install -m644 "${../../.config/librechat/.env}" "${config.home.homeDirectory}/.config/librechat/.env"
         fi
 
         # Do the same for librechat.yaml
-        if [ -f "$HOME/.config/librechat/librechat.yaml" ]; then
-          run install -m644 "$HOME/.config/librechat/librechat.yaml" "$HOME/.config/librechat/librechat.yaml.docker"
+        if [ ! -f "${config.home.homeDirectory}/.config/librechat/librechat.yaml" ]; then
+          run install -m644 "${../../.config/librechat/librechat.yaml}" "${config.home.homeDirectory}/.config/librechat/librechat.yaml"
         fi
       '';
 

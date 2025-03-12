@@ -6,8 +6,8 @@ services:
       - "4000:4000"
     volumes:
       - type: bind
-        source: ./librechat.yaml.docker
+        source: ./librechat.yaml
         target: /app/librechat.yaml
       - type: bind
-        source: ./.env.docker
+        source: ./.env
         target: /app/.env
