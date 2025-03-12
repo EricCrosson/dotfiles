@@ -40,7 +40,7 @@ in {
 
     sessionVariables = {
       DIRENV_LOG_FORMAT = "";
-      EDITOR = "hx";
+      EDITOR = "${inputs.helix.packages.${pkgs.system}.default}/bin/hx";
       FZF_ALT_C_COMMAND = "fd --type d";
       FZF_DEFAULT_COMMAND = "fd --type f";
       FZF_CTRL_T_COMMAND = "fd --type f";
@@ -308,7 +308,7 @@ in {
         };
         core = {
           autocrlf = false;
-          editor = "hx";
+          editor = "${inputs.helix.packages.${pkgs.system}.default}/bin/hx";
           fsmonitor = true;
           untrackedCache = true;
         };
