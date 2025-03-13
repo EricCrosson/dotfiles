@@ -5,7 +5,6 @@
   ...
 }: let
   fabric-config = pkgs.writeText "fabric-config.yaml" (builtins.readFile ../../.config/fabric/config.yaml);
-  litellm = pkgs.callPackage ../../pkgs/litellm {};
 in {
   imports = [
     ../../modules/home-manager/launchd-with-logs.nix
@@ -28,8 +27,6 @@ in {
       kubectl
       kubectx
       kustomize
-      # DISCUSS: do we need to add litellm here?
-      litellm
       openai-whisper
       yq-go
       nodejs # Ensure nodejs is installed for npm
