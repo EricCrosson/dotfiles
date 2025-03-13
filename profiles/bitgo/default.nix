@@ -33,12 +33,8 @@ in {
     ];
 
     file = {
-      ".aider.conf.yml" = {
-        source = ../../.aider.conf.yml;
-      };
-      ".config/fabric/.env" = {
-        source = ../../.config/fabric/.env;
-      };
+      ".aider.conf.yml".source = ../../.aider.conf.yml;
+      ".config/fabric/.env".source = ../../.config/fabric/.env;
       ".jira.d" = {
         # I would prefer this to be true but that doesn't appear to be working right now
         recursive = false;
