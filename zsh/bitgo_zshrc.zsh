@@ -1,6 +1,3 @@
-eval "$(keychain --eval --agents ssh --quiet id_rsa)"
-eval "$(keychain --eval --agents ssh --quiet id_rsa_personal)"
-
 aider() {
   AWS_PROFILE=dev \
   SMART_CD_GIT_STATUS=false \

@@ -1,23 +1,20 @@
 {
   pkgs,
   user,
-  lib,
   config,
   ...
-}: let
-  aws-console = pkgs.callPackage ../../pkgs/aws-console {};
-  aws-saml = pkgs.callPackage ../../pkgs/aws-saml {};
-  auto-merge-previously-reviewed-api-docs-prs = pkgs.callPackage ../../pkgs/auto-merge-previously-reviewed-api-docs-prs {};
-  auto-merge-prs-that-only-bump-openapi-spec-version-numbers = pkgs.callPackage ../../pkgs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers {};
-  litellm = pkgs.callPackage ../../pkgs/litellm {};
-in {
+}: {
+  imports = [
+    ../../modules/home-manager/launchd-with-logs.nix
+    ./darwin-services.nix
+  ];
+
   home = {
     packages = with pkgs; [
       amazon-ecr-credential-helper
       audacity
-      auto-merge-previously-reviewed-api-docs-prs
-      aws-console
-      aws-saml
+      (callPackage ../../pkgs/aws-console {})
+      (callPackage ../../pkgs/aws-saml {})
       awscli2
       dive
       element-desktop
@@ -27,7 +24,6 @@ in {
       kubectl
       kubectx
       kustomize
-      litellm
       openai-whisper
       yq-go
       nodejs # Ensure nodejs is installed for npm
@@ -78,7 +74,7 @@ in {
         executable = true;
         text = ''
            #!/bin/sh
-           export ANTHROPIC_MODEL="arn:aws:bedrock:us-west-2::foundation-model/anthropic.claude-3-7-sonnet-20250219-v1:0"
+           export ANTHROPIC_MODEL="arn:aws:bedrock:us-west-2:319156457634:inference-profile%2Fus.anthropic.claude-3-7-sonnet-20250219-v1:0"
            export AWS_PROFILE="dev"
            export AWS_REGION="us-west-2"
            export CLAUDE_CODE_USE_BEDROCK="1"
@@ -101,7 +97,7 @@ in {
         fi
       '';
 
-      updateClaudeConfig = config.lib.dag.entryAfter ["writeBoundary"] ''
+      configureClaudeConfig = config.lib.dag.entryAfter ["writeBoundary"] ''
         CLAUDE_CONFIG="${config.home.homeDirectory}/.claude.json"
 
         if [ ! -f "$CLAUDE_CONFIG" ]; then
@@ -115,14 +111,6 @@ in {
       '';
 
       createLibreChatDirs = config.lib.dag.entryAfter ["writeBoundary"] ''
-        # NOTE: These are commented out because I'm not sure if they're necessary.
-        # Create necessary directories for LibreChat
-        # run mkdir -p "$HOME/.config/librechat/images"
-        # run mkdir -p "$HOME/.config/librechat/uploads"
-        # run mkdir -p "$HOME/.config/librechat/logs"
-        # run mkdir -p "$HOME/.config/librechat/data-node"
-        # run mkdir -p "$HOME/.config/librechat/meili_data_v1.12"
-
         # Create a real .env file (not a symlink) that Docker can use
         if [ ! -f "${config.home.homeDirectory}/.config/librechat/.env" ]; then
           run install -m644 "${../../.config/librechat/.env}" "${config.home.homeDirectory}/.config/librechat/.env"
@@ -139,7 +127,7 @@ in {
         if [ ! -f "${config.home.homeDirectory}/.local/share/npm/bin/claude" ]; then
           run echo "Installing claude-code via npm..."
           # Set PATH to include nodejs bin directory so that 'node' is available during npm install
-          PATH="${pkgs.nodejs}/bin:$PATH" run ${pkgs.nodejs}/bin/npm install --global @anthropic-ai/claude-code@0.2.27
+          PATH="${pkgs.nodejs}/bin:$PATH" run ${pkgs.nodejs}/bin/npm install --global @anthropic-ai/claude-code@0.2.39
         fi
       '';
     };
@@ -156,108 +144,6 @@ in {
     zsh = {
       envExtra = builtins.readFile ../../zsh/bitgo_zshenv.zsh;
       initExtra = builtins.readFile ../../zsh/bitgo_zshrc.zsh;
-    };
-  };
-
-  launchd = {
-    agents = {
-      auto-merge-prs-that-only-bump-openapi-spec-version-numbers = {
-        enable = true;
-        config = {
-          ProgramArguments = [
-            "${auto-merge-prs-that-only-bump-openapi-spec-version-numbers}/bin/auto-merge-prs-that-only-bump-openapi-spec-version-numbers"
-          ];
-          EnvironmentVariables = {
-            GITHUB_TOKEN_PATH = "${config.sops.secrets.github_token_bitgo.path}";
-          };
-          StartInterval = 300; # every 5 minutes
-          RunAtLoad = true;
-          StandardOutPath = "${user.homeDirectory}/Library/Logs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers.log";
-          StandardErrorPath = "${user.homeDirectory}/Library/Logs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers.error.log";
-          ServiceDependencies = ["sops-nix"];
-        };
-      };
-      auto-merge-previously-reviewed-api-docs-prs = {
-        enable = true;
-        config = {
-          ProgramArguments = [
-            "${auto-merge-previously-reviewed-api-docs-prs}/bin/auto-merge-previously-reviewed-api-docs-prs"
-          ];
-          EnvironmentVariables = {
-            GITHUB_TOKEN_PATH = "${config.sops.secrets.github_token_bitgo.path}";
-          };
-          StartInterval = 300; # every 5 minutes
-          RunAtLoad = true;
-          StandardOutPath = "${user.homeDirectory}/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.log";
-          StandardErrorPath = "${user.homeDirectory}/Library/Logs/auto-merge-previously-reviewed-api-docs-prs.error.log";
-          ServiceDependencies = ["sops-nix"];
-        };
-      };
-      litellm-proxy = {
-        enable = true;
-        config = {
-          ProgramArguments = [
-            "${litellm}/bin/litellm"
-            "--config"
-            "/Users/ericcrosson/.config/litellm/config.yaml"
-          ];
-          EnvironmentVariables = {
-            PATH = lib.makeBinPath [aws-saml];
-          };
-          KeepAlive = true;
-          RunAtLoad = true;
-          StandardOutPath = "${user.homeDirectory}/Library/Logs/litellm-proxy.log";
-          StandardErrorPath = "${user.homeDirectory}/Library/Logs/litellm-proxy.error.log";
-        };
-      };
-      colima = {
-        enable = true;
-        config = {
-          ProgramArguments = [
-            "/opt/homebrew/bin/colima"
-            "start"
-            "--cpu"
-            "8"
-            "--memory"
-            "8"
-            "--arch"
-            "aarch64"
-            "--vm-type=vz"
-            "--vz-rosetta"
-          ];
-          EnvironmentVariables = {
-            PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin";
-          };
-          RunAtLoad = true;
-          KeepAlive = false; # Only run once at startup
-          StandardOutPath = "${user.homeDirectory}/Library/Logs/colima.log";
-          StandardErrorPath = "${user.homeDirectory}/Library/Logs/colima.error.log";
-        };
-      };
-      librechat = {
-        enable = true;
-        config = {
-          ProgramArguments = [
-            "/opt/homebrew/bin/docker-compose"
-            "-f"
-            "${user.homeDirectory}/.config/librechat/docker-compose.yml"
-            "-f"
-            "${user.homeDirectory}/.config/librechat/docker-compose.override.yml"
-            "up"
-            "-d"
-          ];
-          WorkingDirectory = "${user.homeDirectory}/.config/librechat";
-          EnvironmentVariables = {
-            PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin";
-          };
-          KeepAlive = true;
-          RunAtLoad = true;
-          StandardOutPath = "${user.homeDirectory}/Library/Logs/librechat.log";
-          StandardErrorPath = "${user.homeDirectory}/Library/Logs/librechat.error.log";
-          # Make sure colima is started first
-          ServiceDependencies = ["org.nixos.home-manager.colima"];
-        };
-      };
     };
   };
 
