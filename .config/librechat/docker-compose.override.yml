@@ -2,8 +2,6 @@ version: "3.4"
 
 services:
   api:
-    ports:
-      - "4000:4000"
     volumes:
       - type: bind
         source: ./librechat.yaml
@@ -11,3 +9,6 @@ services:
       - type: bind
         source: ./.env
         target: /app/.env
+    # Allow the container to access the host machine's services
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

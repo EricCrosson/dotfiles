@@ -3,9 +3,13 @@
   user,
   config,
   ...
-}: {
+}: let
+  fabric-config = pkgs.writeText "fabric-config.yaml" (builtins.readFile ../../.config/fabric/config.yaml);
+  litellm = pkgs.callPackage ../../pkgs/litellm {};
+in {
   imports = [
     ../../modules/home-manager/launchd-with-logs.nix
+    ../../modules/home-manager/librechat.nix
     ./darwin-services.nix
   ];
 
@@ -24,6 +28,8 @@
       kubectl
       kubectx
       kustomize
+      # DISCUSS: do we need to add litellm here?
+      litellm
       openai-whisper
       yq-go
       nodejs # Ensure nodejs is installed for npm
@@ -32,21 +38,6 @@
     file = {
       ".aider.conf.yml" = {
         source = ../../.aider.conf.yml;
-      };
-      ".config/litellm/config.yaml" = {
-        source = ../../.config/litellm/config.yaml;
-      };
-      ".config/fabric/.env" = {
-        source = ../../.config/fabric/.env;
-      };
-      ".config/fabric/config.yaml" = {
-        source = ../../.config/fabric/config.yaml;
-      };
-      ".config/librechat/docker-compose.yml" = {
-        source = ../../.config/librechat/docker-compose.yml;
-      };
-      ".config/librechat/docker-compose.override.yml" = {
-        source = ../../.config/librechat/docker-compose.override.yml;
       };
       ".jira.d" = {
         # I would prefer this to be true but that doesn't appear to be working right now
@@ -83,12 +74,33 @@
           exec ~/.local/share/npm/bin/claude "$@"
         '';
       };
+
+      # Create a wrapper script for aider
+      ".local/bin/aider" = {
+        executable = true;
+        text = ''
+          #!/bin/sh
+          export AWS_PROFILE="dev"
+          export SMART_CD_GIT_STATUS="false"
+          export SMART_CD_LS="false"
+
+          exec uvx --python 3.9 --from git+ssh://git@github.com/BitGo/aider aider "$@"
+        '';
+      };
     };
 
     sessionPath = [
       "$HOME/.local/bin"
       "$HOME/.local/share/npm/bin"
     ];
+
+    sessionVariables = {
+      GITHUB_TOKEN = "$(cat ${config.sops.secrets.github_token_bitgo.path} 2>/dev/null || echo '')";
+      GITHUB_TOKEN_PERSONAL = "$(cat  ${config.sops.secrets.github_token_personal.path} 2>/dev/null || echo '')";
+      JIRA_API_TOKEN = "$(cat ${config.sops.secrets.jira_token_bitgo.path} 2>/dev/null || echo '')";
+      YOUTUBE_API_KEY = "$(cat ${config.sops.secrets.youtube_api_key.path} 2>/dev/null || echo '')";
+      NIX_CONFIG = "access-tokens = github.com=\${GITHUB_TOKEN}";
+    };
 
     activation = {
       copySSHKey = config.lib.dag.entryAfter ["writeBoundary"] ''
@@ -108,18 +120,6 @@
         # Use jq to ensure the keys are set with the specified values
         run ${pkgs.jq}/bin/jq '.preferredNotifChannel = "terminal_bell" | .autoUpdaterStatus = "disabled"' "$CLAUDE_CONFIG" > "$CLAUDE_CONFIG.tmp"
         run mv "$CLAUDE_CONFIG.tmp" "$CLAUDE_CONFIG"
-      '';
-
-      createLibreChatDirs = config.lib.dag.entryAfter ["writeBoundary"] ''
-        # Create a real .env file (not a symlink) that Docker can use
-        if [ ! -f "${config.home.homeDirectory}/.config/librechat/.env" ]; then
-          run install -m644 "${../../.config/librechat/.env}" "${config.home.homeDirectory}/.config/librechat/.env"
-        fi
-
-        # Do the same for librechat.yaml
-        if [ ! -f "${config.home.homeDirectory}/.config/librechat/librechat.yaml" ]; then
-          run install -m644 "${../../.config/librechat/librechat.yaml}" "${config.home.homeDirectory}/.config/librechat/librechat.yaml"
-        fi
       '';
 
       installClaudeCode = config.lib.dag.entryAfter ["writeBoundary"] ''
@@ -142,8 +142,10 @@
     };
 
     zsh = {
-      envExtra = builtins.readFile ../../zsh/bitgo_zshenv.zsh;
-      initExtra = builtins.readFile ../../zsh/bitgo_zshrc.zsh;
+      shellAliases = {
+        cmd = "llm cmd";
+        fabric = "fabric --config ${fabric-config}";
+      };
     };
   };
 
@@ -157,5 +159,10 @@
       jira_token_bitgo = {};
       youtube_api_key = {};
     };
+  };
+
+  # Enable the LibreChat service with our configuration
+  services.librechat = {
+    enable = true;
   };
 }

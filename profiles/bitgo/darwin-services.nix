@@ -9,6 +9,9 @@
   auto-merge-prs-that-only-bump-openapi-spec-version-numbers = pkgs.callPackage ../../pkgs/auto-merge-prs-that-only-bump-openapi-spec-version-numbers {};
   litellm = pkgs.callPackage ../../pkgs/litellm {};
   aws-saml = pkgs.callPackage ../../pkgs/aws-saml {};
+
+  # Nix store reference for litellm config
+  litellm-config = pkgs.writeText "litellm-config.yaml" (builtins.readFile ../../.config/litellm/config.yaml);
 in {
   # Enable the launchd-with-logs services
   launchd-with-logs = {
@@ -47,7 +50,7 @@ in {
         command = "${litellm}/bin/litellm";
         args = [
           "--config"
-          "/Users/ericcrosson/.config/litellm/config.yaml"
+          "${litellm-config}"
         ];
         environment = {
           PATH = lib.makeBinPath [aws-saml];
@@ -80,29 +83,6 @@ in {
         logging = {
           stdout = "${user.homeDirectory}/Library/Logs/colima.log";
           stderr = "${user.homeDirectory}/Library/Logs/colima.error.log";
-        };
-      };
-
-      # Define librechat service
-      librechat = {
-        command = "/opt/homebrew/bin/docker-compose";
-        args = [
-          "-f"
-          "${user.homeDirectory}/.config/librechat/docker-compose.yml"
-          "-f"
-          "${user.homeDirectory}/.config/librechat/docker-compose.override.yml"
-          "up"
-          "-d"
-        ];
-        workingDirectory = "${user.homeDirectory}/.config/librechat";
-        environment = {
-          PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin";
-        };
-        keepAlive = true;
-        serviceDependencies = ["org.nixos.home-manager.colima"];
-        logging = {
-          stdout = "${user.homeDirectory}/Library/Logs/librechat.log";
-          stderr = "${user.homeDirectory}/Library/Logs/librechat.error.log";
         };
       };
 
