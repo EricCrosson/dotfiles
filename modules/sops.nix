@@ -5,8 +5,7 @@
       github_token_personal = {
         mode = "0400";
         owner = user.username;
-        # TODO: use more restrictive group (in this entire file)
-        group = "users";
+        group = user.username;
       };
     }
     // (
@@ -15,22 +14,22 @@
         github_ssh_private_key_personal = {
           mode = "0400";
           owner = user.username;
-          group = "users";
+          group = user.username;
         };
         github_token_bitgo = {
           mode = "0400";
           owner = user.username;
-          group = "users";
+          group = user.username;
         };
         jira_token_bitgo = {
           mode = "0400";
           owner = user.username;
-          group = "users";
+          group = user.username;
         };
         youtube_api_key = {
           mode = "0400";
           owner = user.username;
-          group = "users";
+          group = user.username;
         };
       }
       # This means user.organization == "personal", but this
