@@ -29,29 +29,30 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # Install configuration files to ~/.config/librechat
     home.file = {
       ".config/librechat/docker-compose.yml" = {
         source = cfg.configDir + "/docker-compose.yml";
-      };
-
-      ".config/librechat/.env" = {
-        source = cfg.configDir + "/.env";
-      };
-
-      ".config/librechat/librechat.yaml" = {
-        # Create a modified librechat.yaml to use the configured litellm host and port
-        text =
-          replaceStrings
-          ["http://host.docker.internal:4000"]
-          ["http://${cfg.litellmHost}:${toString cfg.litellmPort}"]
-          (builtins.readFile (cfg.configDir + "/librechat.yaml"));
       };
 
       ".config/librechat/docker-compose.override.yml" = {
         source = cfg.configDir + "/docker-compose.override.yml";
       };
     };
+
+    # Install docker mount files as regular files
+    home.activation.installLibreChatConfigs = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      # Ensure librechat config directory exists
+      run mkdir -p "$HOME/.config/librechat"
+
+      # Install .env file directly as a regular file
+      run install -m 644 "${cfg.configDir}/.env" "$HOME/.config/librechat/.env"
+
+      # Create modified librechat.yaml directly as a regular file
+      run cat "${cfg.configDir}/librechat.yaml" | \
+        sed 's|http://host.docker.internal:4000|http://${cfg.litellmHost}:${toString cfg.litellmPort}|g' > \
+        "$HOME/.config/librechat/librechat.yaml"
+      run chmod 644 "$HOME/.config/librechat/librechat.yaml"
+    '';
 
     # Define the librechat launchd service
     launchd-with-logs.services.librechat = {
