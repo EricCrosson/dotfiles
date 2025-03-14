@@ -21,21 +21,6 @@
         ./development
         ../home/editor/helix
       ];
-
-    "eric@belisaere" =
-      sharedModules
-      ++ [
-        ./development
-        ../home/editor/helix
-        ../home/firefox
-        ../home/window-manager/awesome
-      ];
-
-    "eric@bain" =
-      sharedModules
-      ++ [
-        # ../home/window-manager/awesome
-      ];
   };
 
   inherit (inputs.home-manager.lib) homeManagerConfiguration;
