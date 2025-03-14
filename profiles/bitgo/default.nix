@@ -17,7 +17,15 @@
       awscli2
       dive
       element-desktop
-      go-jira
+      (pkgs.symlinkJoin {
+        name = "go-jirarenamed";
+        paths = [pkgs.go-jira];
+        postBuild = ''
+          rm $out/bin/jira
+          ln -s ${pkgs.go-jira}/bin/jira $out/bin/j
+        '';
+      })
+      jira-cli-go
       k9s
       kubectl
       kubectx
@@ -28,6 +36,9 @@
     ];
 
     file = {
+      ".config/.jira/.config.yml" = {
+        source = ../../.config/.jira/.config.yml;
+      };
       ".jira.d" = {
         # I would prefer this to be true but that doesn't appear to be working right now
         recursive = false;

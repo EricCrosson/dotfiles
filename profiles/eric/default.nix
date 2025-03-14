@@ -603,7 +603,6 @@ in {
         git = "hub";
         grip = "grip --pass $GITHUB_TOKEN";
         h = "hx --vsplit";
-        j = "jira";
         l = "eza -lg --git --time-style=long-iso";
         npx = "npx --no-install";
         rip = "rip --graveyard $HOME/.local/share/Trash";
