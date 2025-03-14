@@ -88,8 +88,14 @@
 
     fabric = {
       enable = true;
-      configFile = ../../.config/fabric/config.yaml;
-      envFile = ../../.config/fabric/.env;
+      env = {
+        # Configured to proxy through litellm to Amazon Bedrock
+        DEFAULT_VENDOR = "OpenAI";
+        DEFAULT_MODEL = "bedrock-claude-sonnet";
+        DEFAULT_MODEL_CONTEXT_LENGTH = "200000";
+        OPENAI_API_KEY = "has-to-be-populated-but-this-is-definitely-not-a-secret";
+        OPENAI_API_BASE_URL = "http://localhost:4000";
+      };
     };
 
     git = {
