@@ -116,14 +116,15 @@ in {
 
     # Install Claude Code via npm
     home.activation.installClaudeCode = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      # Set up nodejs path without adding to user's global PATH
-      NODEJS_PATH="${lib.makeBinPath [pkgs.nodejs]}"
+      # Set up path to use the specific Node.js version from nixpkgs
+      NODEJS_BIN="${pkgs.nodejs}/bin"
+      NPM="$NODEJS_BIN/npm"
 
-      # Check if claude binary is already installed
-      if [ ! -f "${config.home.homeDirectory}/.local/share/npm/bin/claude" ]; then
+      # Check if the specific version of claude-code is installed using npm itself
+      if ! PATH="$NODEJS_BIN:$PATH" $NPM list -g ${cfg.package}@${cfg.version} &>/dev/null; then
         run echo "Installing claude-code via npm..."
         # Use nodejs from Nix store for installation without affecting user's PATH
-        PATH="$NODEJS_PATH:$PATH" run $NODEJS_PATH/npm install --global ${cfg.package}@${cfg.version}
+        PATH="$NODEJS_BIN:$PATH" run $NPM install --global ${cfg.package}@${cfg.version}
       fi
     '';
   };
