@@ -6,7 +6,6 @@
 }: {
   imports = [
     ../../modules/home-manager
-    ./darwin-services.nix
   ];
 
   home = {
@@ -103,7 +102,37 @@
   };
 
   services = {
+    # Enable auto-merge services for BitGo PRs
+    auto-merge-bitgo-prs = {
+      previouslyReviewedOpenapiSpecs.enable = true;
+      trivialOpenapiSpecVersionBump.enable = true;
+    };
+
+    # Enable colima for Docker containers
+    colima = {
+      enable = true;
+      cpus = 8;
+      memory = 8; # GB
+      arch = "aarch64";
+    };
+
+    # Enable keychain for SSH key management
+    keychain = {
+      enable = true;
+      keys = [
+        "${user.homeDirectory}/.ssh/id_rsa"
+        "${user.homeDirectory}/.ssh/id_rsa_personal"
+      ];
+    };
+
+    # Enable LibreChat service
     librechat.enable = true;
+
+    # Enable LiteLLM proxy for AI models
+    litellm-proxy = {
+      enable = true;
+      configFile = ../../.config/litellm/config.yaml;
+    };
   };
 
   sops = {
