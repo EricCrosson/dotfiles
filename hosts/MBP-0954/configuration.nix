@@ -11,8 +11,6 @@
         SHELL = "${pkgs.zsh}/bin/zsh";
         LANG = "en_US.UTF-8";
       };
-
-      # Log rotation is now handled by the launchd-with-logs module
     };
 
     fonts = {
