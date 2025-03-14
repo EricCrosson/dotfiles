@@ -125,6 +125,12 @@
   };
 
   programs = {
+    fabric = {
+      enable = true;
+      configFile = ../../.config/fabric/config.yaml;
+      envFile = ../../.config/fabric/.env;
+    };
+
     git = {
       signing = {
         key = "5BD755D7FD4AFCB6";
@@ -137,13 +143,10 @@
         cmd = "llm cmd";
       };
     };
+  };
 
-    # Enable and configure fabric
-    fabric = {
-      enable = true;
-      configFile = ../../.config/fabric/config.yaml;
-      envFile = ../../.config/fabric/.env;
-    };
+  services = {
+    librechat.enable = true;
   };
 
   sops = {
@@ -157,7 +160,4 @@
       youtube_api_key = {};
     };
   };
-
-  # Enable services
-  services.librechat.enable = true;
 }
