@@ -51,21 +51,6 @@
 
       ".ssh/id_rsa_personal.pub".source = ../../.ssh/id_rsa_personal.pub;
 
-      # Create a wrapper script for claude-code
-      ".local/bin/claude" = {
-        executable = true;
-        text = ''
-           #!/bin/sh
-           export ANTHROPIC_MODEL="arn:aws:bedrock:us-west-2:319156457634:inference-profile%2Fus.anthropic.claude-3-7-sonnet-20250219-v1:0"
-           export AWS_PROFILE="dev"
-           export AWS_REGION="us-west-2"
-           export CLAUDE_CODE_USE_BEDROCK="1"
-           export DISABLE_PROMPT_CACHING="1"
-
-          exec ~/.local/share/npm/bin/claude "$@"
-        '';
-      };
-
       # Create a wrapper script for aider
       ".local/bin/aider" = {
         executable = true;
@@ -99,32 +84,14 @@
           run install -m600 "${config.sops.secrets.github_ssh_private_key_personal.path}" "${config.home.homeDirectory}/.ssh/id_rsa_personal"
         fi
       '';
-
-      configureClaudeConfig = config.lib.dag.entryAfter ["writeBoundary"] ''
-        CLAUDE_CONFIG="${config.home.homeDirectory}/.claude.json"
-
-        if [ ! -f "$CLAUDE_CONFIG" ]; then
-          # Create the file if it doesn't exist
-          run echo '{}' > "$CLAUDE_CONFIG"
-        fi
-
-        # Use jq to ensure the keys are set with the specified values
-        run ${pkgs.jq}/bin/jq '.preferredNotifChannel = "terminal_bell" | .autoUpdaterStatus = "disabled"' "$CLAUDE_CONFIG" > "$CLAUDE_CONFIG.tmp"
-        run mv "$CLAUDE_CONFIG.tmp" "$CLAUDE_CONFIG"
-      '';
-
-      installClaudeCode = config.lib.dag.entryAfter ["writeBoundary"] ''
-        # Check if claude binary is already installed
-        if [ ! -f "${config.home.homeDirectory}/.local/share/npm/bin/claude" ]; then
-          run echo "Installing claude-code via npm..."
-          # Set PATH to include nodejs bin directory so that 'node' is available during npm install
-          PATH="${pkgs.nodejs}/bin:$PATH" run ${pkgs.nodejs}/bin/npm install --global @anthropic-ai/claude-code@0.2.39
-        fi
-      '';
     };
   };
 
   programs = {
+    claude-code = {
+      enable = true;
+    };
+
     fabric = {
       enable = true;
       configFile = ../../.config/fabric/config.yaml;
