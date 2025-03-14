@@ -29,7 +29,6 @@
     ];
 
     file = {
-      ".aider.conf.yml".source = ../../.aider.conf.yml;
       ".jira.d" = {
         # I would prefer this to be true but that doesn't appear to be working right now
         recursive = false;
@@ -50,25 +49,7 @@
       };
 
       ".ssh/id_rsa_personal.pub".source = ../../.ssh/id_rsa_personal.pub;
-
-      # Create a wrapper script for aider
-      ".local/bin/aider" = {
-        executable = true;
-        text = ''
-          #!/bin/sh
-          export AWS_PROFILE="dev"
-          export SMART_CD_GIT_STATUS="false"
-          export SMART_CD_LS="false"
-
-          exec uvx --python 3.9 --from git+ssh://git@github.com/BitGo/aider aider "$@"
-        '';
-      };
     };
-
-    sessionPath = [
-      "$HOME/.local/bin"
-      "$HOME/.local/share/npm/bin"
-    ];
 
     sessionVariables = {
       GITHUB_TOKEN = "$(cat ${config.sops.secrets.github_token_bitgo.path} 2>/dev/null || echo '')";
@@ -88,6 +69,15 @@
   };
 
   programs = {
+    aider = {
+      enable = true;
+      configFile = ../../.aider.conf.yml;
+      extraEnv = {
+        SMART_CD_GIT_STATUS = "false";
+        SMART_CD_LS = "false";
+      };
+    };
+
     claude-code = {
       enable = true;
     };

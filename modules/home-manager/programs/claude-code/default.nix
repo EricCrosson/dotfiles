@@ -68,23 +68,37 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # Add nodejs to path
-    home.packages = [pkgs.nodejs];
+    # Create claude wrapper without adding nodejs to user's path
+    home.packages = [
+      # Create a properly wrapped executable using symlinkJoin and makeWrapper
+      (pkgs.symlinkJoin {
+        name = "claude-code-wrapped";
+        paths = []; # We're creating a wrapper, not including other packages
+        buildInputs = [pkgs.makeWrapper];
 
-    # Create wrapper script
-    home.file.".local/bin/claude" = {
-      executable = true;
-      text = ''
-        #!/bin/sh
-        export ANTHROPIC_MODEL="${cfg.model}"
-        export AWS_PROFILE="${cfg.awsProfile}"
-        export AWS_REGION="${cfg.awsRegion}"
-        export CLAUDE_CODE_USE_BEDROCK="${lib.boolToString cfg.useBedrock}"
-        export DISABLE_PROMPT_CACHING="${lib.boolToString cfg.disablePromptCaching}"
+        # After the symlink join build phase, we wrap the executable
+        postBuild = ''
+          mkdir -p $out/bin
 
-        exec ~/.local/share/npm/bin/claude "$@"
-      '';
-    };
+          # Create the base script
+          cat > $out/bin/claude << 'EOF'
+          #!/bin/sh
+          exec ${config.home.homeDirectory}/.local/share/npm/bin/claude "$@"
+          EOF
+
+          chmod +x $out/bin/claude
+
+          # Wrap the script with proper environment variables and PATH
+          wrapProgram $out/bin/claude \
+            --prefix PATH : ${lib.makeBinPath [pkgs.nodejs]} \
+            --set ANTHROPIC_MODEL "${cfg.model}" \
+            --set AWS_PROFILE "${cfg.awsProfile}" \
+            --set AWS_REGION "${cfg.awsRegion}" \
+            --set CLAUDE_CODE_USE_BEDROCK "${lib.boolToString cfg.useBedrock}" \
+            --set DISABLE_PROMPT_CACHING "${lib.boolToString cfg.disablePromptCaching}"
+        '';
+      })
+    ];
 
     # Ensure the claude config exists and has the right settings
     home.activation.configureClaudeConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
@@ -102,11 +116,14 @@ in {
 
     # Install Claude Code via npm
     home.activation.installClaudeCode = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      # Set up nodejs path without adding to user's global PATH
+      NODEJS_PATH="${lib.makeBinPath [pkgs.nodejs]}"
+
       # Check if claude binary is already installed
       if [ ! -f "${config.home.homeDirectory}/.local/share/npm/bin/claude" ]; then
         run echo "Installing claude-code via npm..."
-        # Set PATH to include nodejs bin directory so that 'node' is available during npm install
-        PATH="${pkgs.nodejs}/bin:$PATH" run ${pkgs.nodejs}/bin/npm install --global ${cfg.package}@${cfg.version}
+        # Use nodejs from Nix store for installation without affecting user's PATH
+        PATH="$NODEJS_PATH:$PATH" run $NODEJS_PATH/npm install --global ${cfg.package}@${cfg.version}
       fi
     '';
   };
