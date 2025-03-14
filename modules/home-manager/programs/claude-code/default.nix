@@ -18,7 +18,7 @@ in {
 
     version = mkOption {
       type = types.str;
-      default = "0.2.39";
+      default = "0.2.38";
       description = "Version of Claude Code to install";
     };
 
