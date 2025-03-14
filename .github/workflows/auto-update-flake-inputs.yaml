@@ -54,3 +54,53 @@ jobs:
             nix
             ${{ matrix.flake-input }}
           token: ${{ secrets.GH_TOKEN_PR }}
+
+  enumerate-dev-shell-inputs:
+    name: Update nix/flake.nix inputs
+    needs: update-flake-inputs
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrix: ${{ steps.get-inputs.outputs.matrix }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+
+      - id: get-inputs
+        name: Get nix/flake.nix inputs
+        run: |
+          inputs=$(nix flake metadata --json --directory nix | jq --raw-output '.locks.nodes.root.inputs | keys[]' | jq --raw-input --slurp --compact-output 'split("\n")[:-1]')
+          echo "matrix=$inputs" >> "$GITHUB_OUTPUT"
+
+  update-nix-flake-inputs:
+    needs: enumerate-dev-shell-inputs
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        flake-input: ${{ fromJson(needs.enumerate-dev-shell-inputs.outputs.matrix) }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Update ${{ matrix.flake-input }} in nix/flake.nix
+        uses: DeterminateSystems/update-flake-lock@v24
+        with:
+          path-to-flake-dir: nix
+          branch: update-nix-flake-input-${{ matrix.flake-input }}
+          commit-msg: "chore(nix): update ${{ matrix.flake-input }} in nix/flake.nix"
+          inputs: ${{ matrix.flake-input }}
+          git-author-name: github-actions
+          git-author-email: action@github.com
+          git-committer-name: github-actions
+          git-committer-email: action@github.com
+          pr-assignees: EricCrosson
+          pr-title: Update ${{ matrix.flake-input }} in nix/flake.nix
+          pr-labels: |
+            dependencies
+            nix
+            ${{ matrix.flake-input }}
+          token: ${{ secrets.GH_TOKEN_PR }}
