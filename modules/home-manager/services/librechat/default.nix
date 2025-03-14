@@ -54,6 +54,14 @@ in {
       run chmod 644 "$HOME/.config/librechat/librechat.yaml"
     '';
 
+    # Restart LibreChat containers when config changes
+    home.activation.restartLibreChat = lib.hm.dag.entryAfter ["installLibreChatConfigs"] ''
+      if [[ -d "$HOME/.config/librechat" && -f "$HOME/.config/librechat/docker-compose.yml" ]]; then
+        run echo "Restarting LibreChat containers..."
+        run cd "$HOME/.config/librechat" && /opt/homebrew/bin/docker-compose -f docker-compose.yml -f docker-compose.override.yml restart
+      fi
+    '';
+
     # Define the librechat launchd service
     launchd-with-logs.services.librechat = {
       command = "/opt/homebrew/bin/docker-compose";
