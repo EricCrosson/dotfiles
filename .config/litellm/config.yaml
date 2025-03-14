@@ -1,5 +1,3 @@
-proxy_port: 4000
-
 model_list:
   - model_name: bedrock-claude-sonnet
     litellm_params:
