@@ -12,7 +12,7 @@ with lib; let
     environment = {
       GITHUB_TOKEN_PATH = "${config.sops.secrets.github_token_bitgo.path}";
     };
-    interval = serviceCfg.interval;
+    inherit (serviceCfg) interval;
     serviceDependencies = ["sops-nix"];
     logging = {
       stdout = "${config.home.homeDirectory}/Library/Logs/${name}.log";

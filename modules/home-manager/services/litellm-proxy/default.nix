@@ -65,10 +65,9 @@ in {
       environment = {
         PATH = lib.makeBinPath [cfg.aws-saml];
       };
-      keepAlive = cfg.keepAlive;
+      inherit (cfg) keepAlive;
       logging = {
-        stdout = cfg.logging.stdout;
-        stderr = cfg.logging.stderr;
+        inherit (cfg.logging) stdout stderr;
       };
     };
   };

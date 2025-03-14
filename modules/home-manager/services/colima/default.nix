@@ -82,8 +82,7 @@ in {
       };
       keepAlive = false;
       logging = {
-        stdout = cfg.logging.stdout;
-        stderr = cfg.logging.stderr;
+        inherit (cfg.logging) stdout stderr;
       };
     };
   };

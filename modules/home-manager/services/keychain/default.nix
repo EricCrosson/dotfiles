@@ -44,8 +44,7 @@ in {
       args = cfg.extraArgs ++ cfg.keys;
       runAtLoad = true;
       logging = {
-        stdout = cfg.logging.stdout;
-        stderr = cfg.logging.stderr;
+        inherit (cfg.logging) stdout stderr;
       };
     };
   };
