@@ -12,7 +12,7 @@ in {
 
     keys = mkOption {
       type = types.listOf types.str;
-      default = [];
+      default = ["$HOME/.ssh/id_rsa"];
       description = "SSH keys to add to the agent";
       example = literalExpression ''[ "$HOME/.ssh/id_rsa" "$HOME/.ssh/id_rsa_personal" ]'';
     };
