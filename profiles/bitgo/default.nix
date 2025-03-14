@@ -3,12 +3,9 @@
   user,
   config,
   ...
-}: let
-  fabric-config = pkgs.writeText "fabric-config.yaml" (builtins.readFile ../../.config/fabric/config.yaml);
-in {
+}: {
   imports = [
-    ../../modules/home-manager/launchd-with-logs.nix
-    ../../modules/home-manager/librechat.nix
+    ../../modules/home-manager
     ./darwin-services.nix
   ];
 
@@ -21,7 +18,6 @@ in {
       awscli2
       dive
       element-desktop
-      fabric-ai
       go-jira
       k9s
       kubectl
@@ -34,7 +30,6 @@ in {
 
     file = {
       ".aider.conf.yml".source = ../../.aider.conf.yml;
-      ".config/fabric/.env".source = ../../.config/fabric/.env;
       ".jira.d" = {
         # I would prefer this to be true but that doesn't appear to be working right now
         recursive = false;
@@ -140,8 +135,14 @@ in {
     zsh = {
       shellAliases = {
         cmd = "llm cmd";
-        fabric = "fabric --config ${fabric-config}";
       };
+    };
+
+    # Enable and configure fabric
+    fabric = {
+      enable = true;
+      configFile = ../../.config/fabric/config.yaml;
+      envFile = ../../.config/fabric/.env;
     };
   };
 
@@ -157,8 +158,6 @@ in {
     };
   };
 
-  # Enable the LibreChat service with our configuration
-  services.librechat = {
-    enable = true;
-  };
+  # Enable services
+  services.librechat.enable = true;
 }

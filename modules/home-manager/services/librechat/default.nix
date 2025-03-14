@@ -23,7 +23,7 @@ in {
 
     configDir = mkOption {
       type = types.path;
-      default = ../../.config/librechat;
+      default = ../../../../.config/librechat;
       description = "Directory containing LibreChat configuration files";
     };
   };
