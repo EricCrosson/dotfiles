@@ -3,5 +3,5 @@ proxy_port: 4000
 model_list:
   - model_name: bedrock-claude-sonnet
     litellm_params:
-      model: bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0
+      model: bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0
       aws_profile_name: dev
