@@ -70,7 +70,12 @@
   programs = {
     aider = {
       enable = true;
-      configFile = ../../.aider.conf.yml;
+      codeTheme = "lightbulb";
+      detectUrls = false;
+      gitignore = false;
+      subtreeOnly = true;
+      watchFiles = true;
+      read = ["CONVENTIONS.md"];
       extraEnv = {
         SMART_CD_GIT_STATUS = "false";
         SMART_CD_LS = "false";

@@ -10,10 +10,46 @@ in {
   options.programs.aider = {
     enable = mkEnableOption "Aider AI coding assistant";
 
-    configFile = mkOption {
-      type = types.nullOr types.path;
+    codeTheme = mkOption {
+      type = types.str;
+      default = "default";
+      description = "Code theme for aider";
+    };
+
+    detectUrls = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether to detect URLs in code";
+    };
+
+    gitignore = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether to respect .gitignore files";
+    };
+
+    subtreeOnly = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Whether to only operate on a subtree of the repository";
+    };
+
+    watchFiles = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Whether to watch files for changes";
+    };
+
+    read = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = "List of files to read on startup";
+    };
+
+    extraConfig = mkOption {
+      type = types.nullOr types.lines;
       default = null;
-      description = "Path to aider configuration file";
+      description = "Extra configuration to append to the aider config file";
     };
 
     awsProfile = mkOption {
@@ -42,10 +78,32 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # Set up aider configuration file if provided
-    home.file = mkIf (cfg.configFile != null) {
-      ".aider.conf.yml".source = cfg.configFile;
-    };
+    # Generate aider config file
+    home.file.".aider.conf.yml".text = ''
+      code-theme: ${cfg.codeTheme}
+      detect-urls: ${
+        if cfg.detectUrls
+        then "true"
+        else "false"
+      }
+      gitignore: ${
+        if cfg.gitignore
+        then "true"
+        else "false"
+      }
+      subtree-only: ${
+        if cfg.subtreeOnly
+        then "true"
+        else "false"
+      }
+      watch-files: ${
+        if cfg.watchFiles
+        then "true"
+        else "false"
+      }
+      ${optionalString (cfg.read != []) "read:${concatMapStrings (file: "\n  - ${file}") cfg.read}"}
+      ${optionalString (cfg.extraConfig != null) cfg.extraConfig}
+    '';
 
     # Create aider wrapper script as a proper package
     home.packages = [
