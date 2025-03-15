@@ -70,7 +70,7 @@ jobs:
       - id: get-inputs
         name: Get nix/flake.nix inputs
         run: |
-          inputs=$(nix flake metadata --json --directory nix | jq --raw-output '.locks.nodes.root.inputs | keys[]' | jq --raw-input --slurp --compact-output 'split("\n")[:-1]')
+          inputs=$(nix flake metadata --json nix/ | jq --raw-output '.locks.nodes.root.inputs | keys[]' | jq --raw-input --slurp --compact-output 'split("\n")[:-1]')
           echo "matrix=$inputs" >> "$GITHUB_OUTPUT"
 
   update-nix-flake-inputs:
