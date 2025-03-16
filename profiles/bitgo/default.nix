@@ -79,6 +79,28 @@
   };
 
   programs = {
+    aichat = {
+      enable = true;
+      keybindings = "emacs";
+      wrap = "auto";
+      clients = [
+        {
+          type = "openai-compatible";
+          name = "bedrock-claude";
+          api_base = "http://localhost:4000/v1";
+          api_key = "xxx";
+          models = [
+            {
+              name = "bedrock-claude-sonnet";
+              max_input_tokens = 200000;
+              supports_function_calling = false;
+              supports_vision = false;
+            }
+          ];
+        }
+      ];
+    };
+
     aider = {
       enable = true;
       codeTheme = "lightbulb";
