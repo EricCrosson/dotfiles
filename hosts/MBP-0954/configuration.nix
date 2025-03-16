@@ -29,7 +29,6 @@
         "docker-buildx"
         "docker-compose"
         "ffmpeg"
-        "llm"
         "md5sha1sum"
         "pass-otp"
         "xcodegen"
