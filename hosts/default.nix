@@ -49,6 +49,7 @@ in {
         modules = [
           ./MBP-0954/configuration.nix
           inputs.home-manager.darwinModules.home-manager
+          ../modules/darwin
           {
             users.users.${user.username}.home = user.homeDirectory;
             home-manager = {

@@ -153,14 +153,6 @@
       trivialOpenapiSpecVersionBump.enable = true;
     };
 
-    # Enable colima for Docker containers
-    colima = {
-      enable = true;
-      cpus = 8;
-      memory = 8; # GB
-      arch = "aarch64";
-    };
-
     # Enable keychain for SSH key management
     keychain = {
       enable = true;

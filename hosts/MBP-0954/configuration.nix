@@ -24,10 +24,6 @@
       onActivation.cleanup = "uninstall";
 
       brews = [
-        "colima"
-        "docker"
-        "docker-buildx"
-        "docker-compose"
         "ffmpeg"
         "md5sha1sum"
         "pass-otp"
@@ -45,6 +41,13 @@
         "postman"
         "vlc"
       ];
+    };
+
+    services.colima = {
+      enable = true;
+      cpus = 8;
+      memory = 8;
+      arch = "aarch64";
     };
 
     programs = {
