@@ -140,7 +140,7 @@
 
     zsh = {
       shellAliases = {
-        cmd = "llm cmd";
+        cmd = "aichat -e";
       };
     };
   };
