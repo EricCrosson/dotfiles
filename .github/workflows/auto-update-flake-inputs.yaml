@@ -59,6 +59,8 @@ jobs:
     name: Update nix/flake.nix inputs
     needs: update-flake-inputs
     runs-on: ubuntu-latest
+    # Run only once per week on Monday at 08:00 UTC
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && github.event.schedule == '0 8 * * 1')
 
     outputs:
       matrix: ${{ steps.get-inputs.outputs.matrix }}
