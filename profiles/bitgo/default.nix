@@ -30,6 +30,7 @@
       kubectl
       kubectx
       kustomize
+      obsidian
       openai-whisper
       yq-go
       nodejs # Ensure nodejs is installed for npm
