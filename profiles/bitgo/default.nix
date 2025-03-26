@@ -14,6 +14,7 @@
       audacity
       (callPackage ../../pkgs/aws-console {})
       (callPackage ../../pkgs/aws-saml {})
+      (callPackage ../../pkgs/yt-summarize {})
       awscli2
       dive
       element-desktop
