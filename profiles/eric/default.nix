@@ -354,6 +354,17 @@ in {
       };
     };
 
+    # Temporarily marked as broken
+    ghostty = {
+      enable = false;
+      enableZshIntegration = true;
+      installBatSyntax = true;
+      installVimSyntax = true;
+      settings = {
+        theme = "catppuccin-${pkgs.lib.strings.toLower user.preferences.theme}";
+      };
+    };
+
     home-manager.enable = true; # Let Home Manager install and manage itself.
 
     kitty = {
