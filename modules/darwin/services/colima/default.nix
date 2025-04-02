@@ -64,6 +64,26 @@ in {
       default = true;
       description = "Whether to install colima and related packages via Homebrew";
     };
+
+    enableBuildKit = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether to enable BuildKit and set up the CLI plugin";
+    };
+
+    username = mkOption {
+      type = types.str;
+      default = "";
+      description = "Username for setting up BuildKit CLI plugin";
+      example = "johndoe";
+    };
+
+    homeDirectory = mkOption {
+      type = types.str;
+      default = "";
+      description = "Home directory for setting up BuildKit CLI plugin";
+      example = "/Users/johndoe";
+    };
   };
 
   config = mkMerge [
@@ -79,6 +99,22 @@ in {
 
     # This part configures the launchd service
     (mkIf cfg.enable {
+      # Validate that required fields are set when BuildKit is enabled
+      assertions = [
+        {
+          assertion = !cfg.enableBuildKit || (cfg.homeDirectory != "" && cfg.username != "");
+          message = "When enableBuildKit is true, you must set username and homeDirectory";
+        }
+      ];
+
+      # Ensure ~/.docker/cli-plugins directory exists and set up BuildKit symlink
+      system.activationScripts.postActivation.text = mkIf (cfg.enableBuildKit && cfg.username != "" && cfg.homeDirectory != "") ''
+        echo "Setting up Docker BuildKit CLI plugin for user ${cfg.username}..."
+        mkdir -p "${cfg.homeDirectory}/.docker/cli-plugins"
+        sudo -u "${cfg.username}" ln -sfn /opt/homebrew/bin/docker-buildx "${cfg.homeDirectory}/.docker/cli-plugins/docker-buildx"
+        echo "Setting up Docker BuildKit CLI plugin for user ${cfg.username}...done"
+      '';
+
       launchd.user.agents.colima = {
         serviceConfig = {
           Label = "com.user.colima";

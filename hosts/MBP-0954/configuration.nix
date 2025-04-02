@@ -48,6 +48,9 @@
       cpus = 8;
       memory = 8;
       arch = "aarch64";
+      enableBuildKit = true;
+      username = "ericcrosson";
+      homeDirectory = "/Users/ericcrosson";
     };
 
     programs = {
