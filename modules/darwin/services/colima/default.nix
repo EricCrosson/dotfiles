@@ -109,10 +109,9 @@ in {
 
       # Ensure ~/.docker/cli-plugins directory exists and set up BuildKit symlink
       system.activationScripts.postActivation.text = mkIf (cfg.enableBuildKit && cfg.username != "" && cfg.homeDirectory != "") ''
-        echo "Setting up Docker BuildKit CLI plugin for user ${cfg.username}..."
+        echo "Configuring Docker BuildKit CLI plugin for user ${cfg.username}..."
         mkdir -p "${cfg.homeDirectory}/.docker/cli-plugins"
         sudo -u "${cfg.username}" ln -sfn /opt/homebrew/bin/docker-buildx "${cfg.homeDirectory}/.docker/cli-plugins/docker-buildx"
-        echo "Setting up Docker BuildKit CLI plugin for user ${cfg.username}...done"
       '';
 
       launchd.user.agents.colima = {

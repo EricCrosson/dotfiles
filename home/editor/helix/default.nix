@@ -34,8 +34,11 @@
       # would save a lot of time compiling
       rust-analyzer-nightly
       shellcheck
-      # sumneko-lua-language-server # temporarily disabled because dependency `ilist` is marked as broken
       taplo-lsp # TOML
+
+      # Python
+      pyright
+      ruff-lsp
     ];
 
     programs.helix = {
@@ -57,6 +60,14 @@
           language-servers = [
             {
               name = "ltex-ls";
+            }
+          ];
+        }
+        {
+          name = "python";
+          language-servers = [
+            {
+              name = "pyright";
             }
           ];
         }
