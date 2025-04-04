@@ -374,8 +374,8 @@ in {
         then homebrewKitty
         else pkgs.kitty;
       font = {
-        name = "DejaVu Sans Mono";
-        size = 14;
+        name = "JetBrains Mono";
+        size = 12;
       };
       keybindings = {
         "ctrl+shift+o" = "toggle_layout stack";

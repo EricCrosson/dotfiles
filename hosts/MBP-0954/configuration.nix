@@ -14,8 +14,9 @@
     };
 
     fonts = {
-      packages = [
-        pkgs.hack-font
+      packages = with pkgs; [
+        hack-font
+        nerd-fonts.jetbrains-mono
       ];
     };
 
