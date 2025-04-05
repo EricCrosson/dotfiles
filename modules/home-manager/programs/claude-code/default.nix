@@ -48,7 +48,7 @@ in {
 
     disablePromptCaching = mkOption {
       type = types.bool;
-      default = true;
+      default = false;
       description = "Whether to disable prompt caching";
     };
 
@@ -96,7 +96,7 @@ in {
               --set AWS_PROFILE "${cfg.awsProfile}" \
               --set AWS_REGION "${cfg.awsRegion}" \
               --set CLAUDE_CODE_USE_BEDROCK "${lib.boolToString cfg.useBedrock}" \
-              --set DISABLE_PROMPT_CACHING "${lib.boolToString cfg.disablePromptCaching}" \
+              ${lib.optionalString cfg.disablePromptCaching ''--set DISABLE_PROMPT_CACHING "1"''} \
               --set SMART_CD_GIT_STATUS "false" \
               --set SMART_CD_LS "false"
           '';
