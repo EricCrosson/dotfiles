@@ -94,8 +94,7 @@ in {
       vim
       wget
 
-      # TODO: move to an "extras" profile, when space is plentiful
-      # yt-dlp
+      yt-dlp
 
       # for shell
       eza
