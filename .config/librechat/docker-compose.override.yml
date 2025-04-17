@@ -2,10 +2,10 @@ services:
   api:
     volumes:
       - type: bind
-        source: ./librechat.yaml
+        source: librechat.yaml
         target: /app/librechat.yaml
       - type: bind
-        source: ./.env
+        source: .env
         target: /app/.env
     # Allow the container to access the host machine's services
     extra_hosts:
