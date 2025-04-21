@@ -8,6 +8,7 @@ pkgs.writeShellApplication {
   runtimeInputs = with pkgs; [
     curl
     fabric-ai
+    gnused
     jq
   ];
 
