@@ -35,7 +35,7 @@ services:
         target: /app/api/logs
   mongodb:
     container_name: chat-mongodb
-    image: mongo@sha256:2c5f154f4e47ef5008c53ff0c9006b6f5c7d6b119c96015aba4136c50ef48b98
+    image: mongo@sha256:cc62438c8ef61ce02f89b4f7c026e735df4580e8cd8857980d12e0eae73bf044
     restart: always
     user: "${UID}:${GID}"
     volumes:
