@@ -38,7 +38,7 @@
 
       # Python
       pyright
-      ruff-lsp
+      ruff
     ];
 
     programs.helix = {
