@@ -46,11 +46,16 @@
         recursive = false;
         source = ../../.jira.d;
       };
+
+      ".config/fabric/patterns/write_useful_git_commit_message/readme.md".source = ../../.config/fabric/patterns/write_useful_git_commit_message/readme.md;
+      ".config/fabric/patterns/write_useful_git_commit_message/system.md".source = ../../.config/fabric/patterns/write_useful_git_commit_message/system.md;
+
       ".npmrc" = {
         text = ''
           prefix=${config.home.homeDirectory}/.local/share/npm
         '';
       };
+
       # NOTE: this is a darwin-specific path, will need to be modified on Linux
       "Library/Application Support/io.datasette.llm/default_model.txt" = {
         source = ../.. + "/Library/Application Support/io.datasette.llm/default_model.txt";
