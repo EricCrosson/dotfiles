@@ -467,7 +467,7 @@ in {
         share = false;
       };
 
-      initExtra = builtins.readFile ../../zsh/login-shell.zsh;
+      initContent = builtins.readFile ../../zsh/login-shell.zsh;
 
       plugins = [
         {
