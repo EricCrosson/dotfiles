@@ -255,7 +255,7 @@ in {
         commit-with-message = "!f() {
           message=$(git diff --staged | fabric --pattern write_useful_git_commit_message)
           if [ -n \"$message\" ]; then
-            git commit -m \"$message\"
+            git commit --edit --message=\"$message\"
           else
             echo \"No commit message generated. Commit aborted.\" >&2
             exit 1
