@@ -50,6 +50,10 @@
       ".config/fabric/patterns/write_useful_git_commit_message/readme.md".source = ../../.config/fabric/patterns/write_useful_git_commit_message/readme.md;
       ".config/fabric/patterns/write_useful_git_commit_message/system.md".source = ../../.config/fabric/patterns/write_useful_git_commit_message/system.md;
 
+      ".claude/CLAUDE.md" = {
+        source = ../../.claude/CLAUDE.md;
+      };
+
       ".npmrc" = {
         text = ''
           prefix=${config.home.homeDirectory}/.local/share/npm
