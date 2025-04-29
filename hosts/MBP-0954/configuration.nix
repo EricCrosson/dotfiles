@@ -110,6 +110,15 @@
       defaults = {
         dock = {
           autohide = true;
+          wvous-tr-corner = null;
+        };
+        finder = {
+          AppleShowAllExtensions = true;
+          FXPreferredViewStyle = "Nlsv";
+          FXRemoveOldTrashItems = true;
+          ShowStatusBar = true;
+          _FXSortFoldersFirst = true;
+          _FXSortFoldersFirstOnDesktop = true;
         };
         NSGlobalDomain = {
           ApplePressAndHoldEnabled = false;
