@@ -39,7 +39,6 @@ in {
     stateVersion = "22.05";
 
     sessionVariables = {
-      DIRENV_LOG_FORMAT = "";
       EDITOR = "${inputs.helix.packages.${pkgs.system}.default}/bin/hx";
       FZF_ALT_C_COMMAND = "fd --type d";
       FZF_DEFAULT_COMMAND = "fd --type f";
@@ -177,6 +176,11 @@ in {
 
     direnv = {
       enable = true;
+      config = {
+        global = {
+          hide_env_diff = true;
+        };
+      };
       nix-direnv.enable = true;
     };
 
