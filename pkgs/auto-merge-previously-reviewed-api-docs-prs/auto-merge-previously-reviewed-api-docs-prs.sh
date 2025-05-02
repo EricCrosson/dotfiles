@@ -12,7 +12,7 @@ readonly bot_name="dev-portal-updater"
 
 process_repository() {
   local owner="" repo="" title_pattern="" approve_message_template=""
-  
+
   while [[ $# -gt 0 ]]; do
     case "$1" in
       --owner) owner="$2"; shift 2 ;;
@@ -37,6 +37,15 @@ process_repository() {
             title
             author { login }
             autoMergeRequest { enabledAt }
+            commits(first: 20) {
+              nodes {
+                commit {
+                  author {
+                    user { login }
+                  }
+                }
+              }
+            }
             reviews(first: 100) {
               nodes {
                 author { login }
@@ -51,10 +60,16 @@ process_repository() {
     -F repo="$repo" \
     | jq --arg bot "$bot_name" \
          --arg pattern "$title_pattern" \
-      '.data.repository.pullRequests.nodes[] 
+      '.data.repository.pullRequests.nodes[]
       | select(
-          .author.login == $bot 
+          .author.login == $bot
           and (.title | test($pattern))
+          and (
+            .commits.nodes | length <= 15
+          )
+          and (
+            [.commits.nodes[] | .commit.author.user.login] | all(. == $bot)
+          )
         )
       | {
           number,
@@ -75,12 +90,12 @@ process_repository() {
     approve_message=$(printf "$approve_message_template" "$service_name")
 
     log "Processing $owner/$repo#$number"
-    
+
     if [[ "$needs_approval" == "true" ]]; then
       log "Approving $owner/$repo#$number"
       gh pr review --repo "$owner/$repo" "$number" --approve --body "$approve_message"
     fi
-    
+
     if [[ "$needs_merge" == "true" ]]; then
       log "Enabling auto-merge for $owner/$repo#$number"
       gh pr merge --repo "$owner/$repo" "$number" --auto --merge
