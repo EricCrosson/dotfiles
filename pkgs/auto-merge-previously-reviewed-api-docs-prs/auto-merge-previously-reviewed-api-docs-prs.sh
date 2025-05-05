@@ -68,7 +68,7 @@ process_repository() {
             .commits.nodes | length <= 15
           )
           and (
-            [.commits.nodes[] | .commit.author.user.login] | all(. == $bot)
+            [.commits.nodes[] | .commit.author.user.login] | all(. == $bot + "[bot]")
           )
         )
       | {
