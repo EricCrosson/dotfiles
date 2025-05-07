@@ -1,7 +1,5 @@
 {
   lib,
-  stdenv,
-  darwin,
   rustPlatform,
   fetchFromGitHub,
   pkg-config,
@@ -25,12 +23,6 @@ rustPlatform.buildRustPackage rec {
   nativeBuildInputs = [
     pkg-config
     installShellFiles
-  ];
-
-  buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [
-    darwin.apple_sdk.frameworks.AppKit
-    darwin.apple_sdk.frameworks.CoreFoundation
-    darwin.apple_sdk.frameworks.Security
   ];
 
   postInstall = ''
