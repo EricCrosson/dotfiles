@@ -79,6 +79,7 @@
       JIRA_USERNAME = "ericcrosson@bitgo.com";
       YOUTUBE_API_KEY = "$(cat ${config.sops.secrets.youtube_api_key.path} 2>/dev/null || echo '')";
       NIX_CONFIG = "access-tokens = github.com=\${GITHUB_TOKEN}";
+      ZED_AWS_PROFILE = "dev";
     };
 
     activation = {
