@@ -108,6 +108,9 @@
 
     system = {
       defaults = {
+        ActivityMonitor = {
+          IconType = 5; # CPU Usage
+        };
         dock = {
           autohide = true;
           wvous-tr-corner = null;
