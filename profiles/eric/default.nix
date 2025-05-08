@@ -75,6 +75,7 @@ in {
       git-absorb
       git-extras
       gnupg
+      htmlq
       htop
       hyperfine
       jq
