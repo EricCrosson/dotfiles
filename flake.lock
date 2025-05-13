@@ -86,6 +86,18 @@
         "type": "github"
       }
     },
+    "claude-code": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-gJQJo6agtFda4a9QUeeM3gJXboPgU8chr0jRhRns+2c=",
+        "type": "file",
+        "url": "https://registry.npmjs.org/@anthropic-ai/claude-code"
+      },
+      "original": {
+        "type": "file",
+        "url": "https://registry.npmjs.org/@anthropic-ai/claude-code"
+      }
+    },
     "crane": {
       "locked": {
         "lastModified": 1746291859,
@@ -698,6 +710,7 @@
         "bash-barrier": "bash-barrier",
         "batch-edit-prs": "batch-edit-prs",
         "bell": "bell",
+        "claude-code": "claude-code",
         "crane": "crane",
         "darwin": "darwin",
         "fenix": "fenix_2",

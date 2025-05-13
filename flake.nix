@@ -49,6 +49,10 @@
       url = "github:ericcrosson/bell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    claude-code = {
+      url = "https://registry.npmjs.org/@anthropic-ai/claude-code";
+      flake = false;
+    };
     crane = {
       url = "github:ipetkov/crane";
     };

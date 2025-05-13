@@ -130,6 +130,7 @@
 
     claude-code = {
       enable = true;
+      version = (builtins.fromJSON (builtins.readFile "${inputs.claude-code}"))."dist-tags".latest;
     };
 
     fabric = {
