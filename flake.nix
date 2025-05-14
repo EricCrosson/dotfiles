@@ -99,10 +99,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    kmonad = {
-      url = "github:kmonad/kmonad?dir=nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     npm-dep-version = {
       url = "github:ericcrosson/npm-dep-version";
       inputs.nixpkgs.follows = "nixpkgs";
