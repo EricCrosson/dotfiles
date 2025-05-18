@@ -26,6 +26,7 @@
 
       brews = [
         "ffmpeg"
+        "julia"
         "md5sha1sum"
         "pass-otp"
         "xcodegen"
