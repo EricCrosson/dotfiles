@@ -22,12 +22,6 @@ in {
       description = "Version of Claude Code to install";
     };
 
-    model = mkOption {
-      type = types.str;
-      default = "arn:aws:bedrock:us-west-2:319156457634:inference-profile%2Fus.anthropic.claude-3-7-sonnet-20250219-v1:0";
-      description = "Claude model ARN to use";
-    };
-
     awsProfile = mkOption {
       type = types.str;
       default = "dev";
@@ -92,7 +86,6 @@ in {
             # Wrap the script with proper environment variables and PATH
             wrapProgram $out/bin/claude \
               --prefix PATH : ${lib.makeBinPath [pkgs.nodejs]} \
-              --set ANTHROPIC_MODEL "${cfg.model}" \
               --set AWS_PROFILE "${cfg.awsProfile}" \
               --set AWS_REGION "${cfg.awsRegion}" \
               --set CLAUDE_CODE_USE_BEDROCK "${lib.boolToString cfg.useBedrock}" \
