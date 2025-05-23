@@ -9,7 +9,7 @@ services:
     depends_on:
       - mongodb
       - rag_api
-    image: ghcr.io/danny-avila/librechat-dev@sha256:91d62f4d4f83d1d499393aad2d503aa01168b88477a64299f0a3f3b48178425e
+    image: ghcr.io/danny-avila/librechat-dev@sha256:1dc0090b878781010d3079e4c11a25bf3e52eecc441cc2af45da5ed3f2d263d3
     restart: always
     user: "${UID}:${GID}"
     extra_hosts:
