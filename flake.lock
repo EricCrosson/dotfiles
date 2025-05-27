@@ -10,11 +10,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1747874183,
-        "narHash": "sha256-gyZcxiQSXswwhqmg6tw1hqU4Kq88MEMTnl43GRGZgHU=",
+        "lastModified": 1748282024,
+        "narHash": "sha256-y+mR+g9D/HaLl5Zk4UwEkPrfd0q3VTY7PqnTLcFnlQI=",
         "owner": "ellie",
         "repo": "atuin",
-        "rev": "87a963600cb6bea8f594d53f3a19920af7560169",
+        "rev": "719aef96eef4ff3d3d6cfc4dafd851a6a1ddd95c",
         "type": "github"
       },
       "original": {
