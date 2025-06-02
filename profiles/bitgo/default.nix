@@ -185,6 +185,9 @@
       enable = true;
       configFile = ../../.config/litellm/config.yaml;
     };
+
+    # Enable Open WebUI service
+    open-webui.enable = true;
   };
 
   sops = {

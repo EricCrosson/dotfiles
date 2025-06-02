@@ -5,5 +5,6 @@
     ./launchd-with-logs
     ./librechat
     ./litellm-proxy
+    ./open-webui
   ];
 }

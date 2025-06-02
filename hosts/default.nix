@@ -32,7 +32,10 @@ in {
   flake.darwinConfigurations = withSystem "aarch64-darwin" ({system, ...}: let
     pkgs = import inputs.nixpkgs {
       inherit system;
-      config.allowUnfree = true;
+      config = {
+        allowUnfree = true;
+        allowBroken = true; # Needed for open-webui
+      };
       overlays = [
         inputs.fenix.overlays.default
         inputs.firefox-darwin.overlay
