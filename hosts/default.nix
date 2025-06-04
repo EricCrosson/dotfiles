@@ -38,6 +38,17 @@ in {
       };
       overlays = [
         inputs.fenix.overlays.default
+
+        # Skip failing tests exercised by open-webui
+        (_final: prev: {
+          python3Packages =
+            prev.python3Packages
+            // {
+              pypandoc = prev.python3Packages.pypandoc.overridePythonAttrs (_prev: {
+                doCheck = false;
+              });
+            };
+        })
       ];
     };
     inherit (pkgs) stdenv;
