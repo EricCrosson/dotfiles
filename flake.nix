@@ -62,13 +62,6 @@
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    firefox = {
-      url = "github:colemickens/flake-firefox-nightly";
-    };
-    firefox-darwin = {
-      url = "github:bandithedoge/nixpkgs-firefox-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -103,7 +96,6 @@
       url = "github:ericcrosson/npm-dep-version";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nur.url = "github:nix-community/nur";
     percentage-changed-calculator = {
       url = "github:ericcrosson/percentage-changed-calculator";
       inputs.crane.follows = "crane";

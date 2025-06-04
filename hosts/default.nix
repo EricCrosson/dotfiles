@@ -38,8 +38,6 @@ in {
       };
       overlays = [
         inputs.fenix.overlays.default
-        inputs.firefox-darwin.overlay
-        inputs.nur.overlays.default
       ];
     };
     inherit (pkgs) stdenv;
