@@ -12,8 +12,7 @@
     preferences = {
       theme = "Mocha";
     };
-    # REFACTOR: rename as `profiles`
-    profile = {
+    profiles = {
       # REFACTOR: can we type this? Using mkOption or something
       bitgo = rec {
         inherit preferences;
@@ -25,7 +24,7 @@
     };
   in {
     darwinConfigurations.MBP-0954 = let
-      user = profile.bitgo;
+      user = profiles.bitgo;
       pkgs = import inputs.nixpkgs {
         system = "aarch64-darwin";
         config = {
