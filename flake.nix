@@ -1,19 +1,68 @@
 {
-  description = "Eric's NixOS and Home-Manager flake";
+  description = "Eric's nix-darwin and Home Manager flake";
 
-  outputs = inputs @ {flake-parts, ...}:
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      systems = [
-        "aarch64-darwin"
-        "aarch64-linux"
-        "x86_64-linux"
-      ];
-
-      imports = [
-        ./profiles
-        ./hosts
-      ];
+  outputs = {
+    # deadnix: skip
+    self,
+    home-manager,
+    nix-darwin,
+    nixpkgs,
+    ...
+  } @ inputs: let
+    preferences = {
+      theme = "Mocha";
     };
+    # REFACTOR: rename as `profiles`
+    profile = {
+      # REFACTOR: can we type this? Using mkOption or something
+      bitgo = rec {
+        inherit preferences;
+        username = "ericcrosson";
+        organization = "bitgo";
+        email = "${username}@bitgo.com";
+        homeDirectory = "/Users/${username}";
+      };
+    };
+  in {
+    darwinConfigurations.MBP-0954 = let
+      user = profile.bitgo;
+      pkgs = import inputs.nixpkgs {
+        system = "aarch64-darwin";
+        config = {
+          allowUnfree = true;
+          allowBroken = true; # Needed for open-webui
+        };
+        overlays = [
+          inputs.fenix.overlays.default
+          (import ./overlays).combined
+        ];
+      };
+    in
+      nix-darwin.lib.darwinSystem {
+        modules = [
+          hosts/MBP-0954/configuration.nix
+          home-manager.darwinModules.home-manager
+          modules/darwin
+          {
+            users.users.${user.username}.home = user.homeDirectory;
+            home-manager = {
+              extraSpecialArgs = {inherit pkgs inputs user;};
+              sharedModules = [
+                inputs.sops-nix.homeManagerModules.sops
+              ];
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.${user.username}.imports = [
+                profiles/eric
+                profiles/bitgo
+                profiles/development
+                home/editor/helix
+              ];
+            };
+          }
+        ];
+      };
+  };
 
   nixConfig.substituters = [
     "https://cache.nixos.org"
@@ -54,17 +103,13 @@
     crane = {
       url = "github:ipetkov/crane";
     };
-    darwin = {
+    nix-darwin = {
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     fenix = {
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs";
     };
     git-diff-regex = {
       url = "github:ericcrosson/git-diff-regex";
