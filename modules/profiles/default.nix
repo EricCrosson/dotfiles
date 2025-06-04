@@ -54,8 +54,12 @@ in {
               This is used by home-manager and other services that need to know
               the location of the user's home directory. The path must be absolute.
             '';
-            default = "/Users/${config.username}";
-            example = "/Users/alice";
+            default = lib.mkDefault (
+              if stdenv.isDarwin
+              then "/Users/${config.username}"
+              else "/home/${config.username}"
+            );
+            example = "On macOS: /Users/alice, On Linux: /home/alice";
           };
 
           preferences = mkOption {
