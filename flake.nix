@@ -8,23 +8,8 @@
     nix-darwin,
     nixpkgs,
     ...
-  } @ inputs: let
-    preferences = {
-      theme = "Mocha";
-    };
-    profiles = {
-      # REFACTOR: can we type this? Using mkOption or something
-      bitgo = rec {
-        inherit preferences;
-        username = "ericcrosson";
-        organization = "bitgo";
-        email = "${username}@bitgo.com";
-        homeDirectory = "/Users/${username}";
-      };
-    };
-  in {
+  } @ inputs: {
     darwinConfigurations.MBP-0954 = let
-      user = profiles.bitgo;
       pkgs = import inputs.nixpkgs {
         system = "aarch64-darwin";
         config = {
@@ -38,27 +23,38 @@
       };
     in
       nix-darwin.lib.darwinSystem {
+        specialArgs = {inherit inputs;};
         modules = [
-          hosts/MBP-0954/configuration.nix
+          # Import profile modules
+          ./modules/profiles
+          ./modules/profiles/profiles.nix
+
+          # Standard modules
+          ./hosts/MBP-0954/configuration.nix
           home-manager.darwinModules.home-manager
-          modules/darwin
-          {
-            users.users.${user.username}.home = user.homeDirectory;
+          ./modules/darwin
+
+          # Home Manager configuration
+          ({config, ...}: {
+            users.users.${config.profiles.bitgo.username}.home = config.profiles.bitgo.homeDirectory;
             home-manager = {
-              extraSpecialArgs = {inherit pkgs inputs user;};
+              extraSpecialArgs = {
+                inherit pkgs inputs;
+                user = config.profiles.bitgo;
+              };
               sharedModules = [
                 inputs.sops-nix.homeManagerModules.sops
               ];
               useGlobalPkgs = true;
               useUserPackages = true;
-              users.${user.username}.imports = [
-                profiles/eric
-                profiles/bitgo
-                profiles/development
-                home/editor/helix
+              users.${config.profiles.bitgo.username}.imports = [
+                ./profiles/eric
+                ./profiles/bitgo
+                ./profiles/development
+                ./home/editor/helix
               ];
             };
-          }
+          })
         ];
       };
   };
