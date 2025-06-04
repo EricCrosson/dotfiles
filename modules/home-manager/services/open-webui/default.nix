@@ -135,7 +135,7 @@ in {
           }
           else {}
         )
-        // cfg.environment; # Add custom environment variables last to allow overriding
+        // cfg.environment;
       serviceDependencies =
         (
           if cfg.litellmProxy.enable
