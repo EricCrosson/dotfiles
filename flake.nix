@@ -10,8 +10,9 @@
     ...
   } @ inputs: {
     darwinConfigurations.MBP-0954 = let
+      system = "aarch64-darwin";
       pkgs = import inputs.nixpkgs {
-        system = "aarch64-darwin";
+        inherit system;
         config = {
           allowUnfree = true;
           allowBroken = true; # Needed for open-webui
@@ -23,7 +24,7 @@
       };
     in
       nix-darwin.lib.darwinSystem {
-        specialArgs = {inherit inputs;};
+        specialArgs = {inherit inputs system;};
         modules = [
           # Import profile modules
           ./modules/profiles
