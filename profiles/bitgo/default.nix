@@ -138,8 +138,8 @@
       env = {
         # Configured to proxy through litellm to Amazon Bedrock
         DEFAULT_VENDOR = "OpenAI";
-        DEFAULT_MODEL = "bedrock-claude-sonnet";
-        DEFAULT_MODEL_CONTEXT_LENGTH = "200000";
+        DEFAULT_MODEL = config.claude-options.models.default;
+        DEFAULT_MODEL_CONTEXT_LENGTH = toString config.claude-options.models.sonnet.contextLength;
         OPENAI_API_KEY = "has-to-be-populated-but-this-is-definitely-not-a-secret";
         OPENAI_API_BASE_URL = config.services-options.litellm-proxy.baseUrl;
       };
@@ -147,11 +147,9 @@
 
     llm = {
       enable = true;
-      defaultModel = "bedrock-claude-sonnet";
       models = [
         {
-          id = "bedrock-claude-sonnet";
-          name = "bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0";
+          inherit (config.claude-options.models.sonnet) id name;
           api_base = config.services-options.litellm-proxy.baseUrl;
         }
       ];
@@ -191,7 +189,13 @@
     # Enable LiteLLM proxy for AI models
     litellm-proxy = {
       enable = true;
-      configFile = ../../.config/litellm/config.yaml;
+      models = [
+        {
+          name = config.claude-options.models.sonnet.id;
+          model = config.claude-options.models.sonnet.name;
+          aws_profile_name = config.claude-options.bedrock.profile;
+        }
+      ];
     };
 
     # Enable Open WebUI service

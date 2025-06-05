@@ -7,6 +7,10 @@
 with lib; let
   cfg = config.programs.claude-code;
 in {
+  imports = [
+    ../../options/claude.nix
+  ];
+
   options.programs.claude-code = {
     enable = mkEnableOption "Claude Code CLI";
 
@@ -24,25 +28,25 @@ in {
 
     awsProfile = mkOption {
       type = types.str;
-      default = "dev";
+      default = config.claude-options.bedrock.profile;
       description = "AWS profile to use for authentication";
     };
 
     awsRegion = mkOption {
       type = types.str;
-      default = "us-west-2";
+      default = config.claude-options.bedrock.region;
       description = "AWS region to use for Bedrock";
     };
 
     useBedrock = mkOption {
       type = types.bool;
-      default = true;
-      description = "Whether to use AWS Bedrock for Claude";
+      default = config.claude-options.bedrock.enabled;
+      description = "Whether to use AWS Bedrock for claude-code";
     };
 
     disablePromptCaching = mkOption {
       type = types.bool;
-      default = false;
+      default = config.claude-options.tools.disablePromptCaching;
       description = "Whether to disable prompt caching";
     };
 
@@ -90,9 +94,9 @@ in {
               --set AWS_REGION "${cfg.awsRegion}" \
               --set CLAUDE_CODE_USE_BEDROCK "${lib.boolToString cfg.useBedrock}" \
               ${lib.optionalString cfg.disablePromptCaching ''--set DISABLE_PROMPT_CACHING "true"''} \
-              --set DISABLE_TELEMETRY "true" \
-              --set SMART_CD_GIT_STATUS "false" \
-              --set SMART_CD_LS "false"
+              --set DISABLE_TELEMETRY "${lib.boolToString config.claude-options.tools.disableTelemetry}" \
+              --set SMART_CD_GIT_STATUS "${lib.boolToString config.claude-options.tools.smartCd.gitStatus}" \
+              --set SMART_CD_LS "${lib.boolToString config.claude-options.tools.smartCd.ls}"
           '';
         })
       ];

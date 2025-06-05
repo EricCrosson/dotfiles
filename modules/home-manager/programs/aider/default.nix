@@ -7,6 +7,10 @@
 with lib; let
   cfg = config.programs.aider;
 in {
+  imports = [
+    ../../options/claude.nix
+  ];
+
   options.programs.aider = {
     enable = mkEnableOption "Aider AI coding assistant";
 
@@ -54,7 +58,7 @@ in {
 
     awsProfile = mkOption {
       type = types.str;
-      default = "dev";
+      default = config.claude-options.bedrock.profile;
       description = "AWS profile to use for authentication";
     };
 

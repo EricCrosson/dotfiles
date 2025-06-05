@@ -6,9 +6,25 @@
 }:
 with lib; let
   cfg = config.services.litellm-proxy;
+
+  # Helper function to generate YAML for models
+  modelToYaml = model: ''
+    - model_name: ${model.name}
+      litellm_params:
+        model: ${model.model}
+        ${optionalString (model.aws_profile_name != null) "aws_profile_name: ${model.aws_profile_name}"}
+        ${model.extraConfig}
+  '';
+
+  # Generate complete config YAML
+  configToYaml = models: ''
+    model_list:
+    ${concatMapStrings modelToYaml models}
+  '';
 in {
   imports = [
     ../../options/services.nix
+    ../../options/claude.nix
   ];
 
   options.services.litellm-proxy = {
@@ -18,12 +34,6 @@ in {
       type = types.package;
       default = pkgs.callPackage ../../../../pkgs/litellm {};
       description = "LiteLLM package";
-    };
-
-    configFile = mkOption {
-      type = types.nullOr types.path;
-      default = null;
-      description = "Path to litellm config file";
     };
 
     aws-saml = mkOption {
@@ -52,6 +62,40 @@ in {
       description = "Port for the LiteLLM proxy service";
     };
 
+    # Structured model definition, similar to llm module
+    models = mkOption {
+      type = types.listOf (types.submodule {
+        options = {
+          name = mkOption {
+            type = types.str;
+            description = "Model name for the litellm proxy";
+            example = "bedrock-claude-sonnet";
+          };
+
+          model = mkOption {
+            type = types.str;
+            description = "Full model identifier";
+            example = "bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0";
+          };
+
+          aws_profile_name = mkOption {
+            type = types.nullOr types.str;
+            default = null;
+            description = "AWS profile name for Bedrock models";
+            example = "dev";
+          };
+
+          extraConfig = mkOption {
+            type = types.lines;
+            default = "";
+            description = "Additional model configuration in YAML format";
+          };
+        };
+      });
+      default = [];
+      description = "List of models to configure for LiteLLM proxy";
+    };
+
     logging = {
       stdout = mkOption {
         type = types.str;
@@ -73,15 +117,18 @@ in {
       inherit (cfg) host port;
     };
 
+    # Generate config file from Nix models definition
+    home.file = {
+      ".config/litellm/config.yaml" = {
+        text = configToYaml cfg.models;
+      };
+    };
+
     launchd-with-logs.services.litellm-proxy = {
       command = "${cfg.package}/bin/litellm";
       args = [
         "--config"
-        (
-          if cfg.configFile != null
-          then "${toString cfg.configFile}"
-          else "${config.home.homeDirectory}/.config/litellm/config.yaml"
-        )
+        "${config.home.homeDirectory}/.config/litellm/config.yaml"
         "--host"
         cfg.host
         "--port"

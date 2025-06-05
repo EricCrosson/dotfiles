@@ -16,6 +16,7 @@ with lib; let
 in {
   imports = [
     ../../options/services.nix
+    ../../options/claude.nix
   ];
 
   options.programs.llm = {
@@ -41,6 +42,7 @@ in {
 
     defaultModel = mkOption {
       type = types.str;
+      inherit (config.claude-options.models) default;
       description = "Default model to use";
     };
 
