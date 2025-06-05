@@ -3,6 +3,7 @@
 {
   # Individual overlays for selective importing
   pypandoc-disable-tests = import ./pypandoc-disable-tests.nix;
+  wakatime-disable-tests = import ./wakatime-disable-tests.nix;
 
   # Combined overlay that applies all overlays in this directory
   combined = final: prev:
@@ -11,5 +12,6 @@
     {}
     [
       (import ./pypandoc-disable-tests.nix)
+      (import ./wakatime-disable-tests.nix)
     ];
 }

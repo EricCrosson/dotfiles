@@ -102,9 +102,7 @@ in {
       hub
       python3Full
       starship
-      (wakatime.overrideAttrs (_: {
-        doCheck = false;
-      }))
+      wakatime
     ];
 
     file = {
