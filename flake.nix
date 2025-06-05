@@ -4,60 +4,18 @@
   outputs = {
     # deadnix: skip
     self,
-    home-manager,
-    nix-darwin,
-    nixpkgs,
     ...
-  } @ inputs: {
-    darwinConfigurations.MBP-0954 = let
-      system = "aarch64-darwin";
-      pkgs = import inputs.nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-          allowBroken = true; # Needed for open-webui
-        };
-        overlays = [
-          inputs.fenix.overlays.default
-          (import ./overlays).combined
-        ];
-      };
-    in
-      nix-darwin.lib.darwinSystem {
-        specialArgs = {inherit inputs system;};
-        modules = [
-          # Import profile modules
-          ./modules/profiles
-          ./modules/profiles/profiles.nix
-
-          # Standard modules
-          ./hosts/MBP-0954/configuration.nix
-          home-manager.darwinModules.home-manager
-          ./modules/darwin
-
-          # Home Manager configuration
-          ({config, ...}: {
-            users.users.${config.profiles.bitgo.username}.home = config.profiles.bitgo.homeDirectory;
-            home-manager = {
-              extraSpecialArgs = {
-                inherit pkgs inputs;
-                user = config.profiles.bitgo;
-              };
-              sharedModules = [
-                inputs.sops-nix.homeManagerModules.sops
-              ];
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              users.${config.profiles.bitgo.username}.imports = [
-                ./profiles/eric
-                ./profiles/bitgo
-                ./profiles/development
-                ./home/editor/helix
-              ];
-            };
-          })
-        ];
-      };
+  } @ inputs: let
+    hostBuilder = import ./hosts {inherit inputs;};
+  in {
+    darwinConfigurations =
+      builtins.mapAttrs
+      (hostName: hostConfig:
+        hostBuilder.mkDarwinHost {
+          inherit hostName;
+          inherit (hostConfig) system modules;
+        })
+      hostBuilder.hosts;
   };
 
   inputs = {
