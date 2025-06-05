@@ -534,21 +534,6 @@ in {
             sha256 = "sha256-q/xQZ850kifmd8rCMW+aAEhuA43vB9ZAW22sss9e4SE=";
           };
         }
-        # I migrated this but it tried to write a file into the read-only
-        # Nix store. I've disabled it to see if I can tell what it was used
-        # for. If this comment ages and there's no smoking gun, delete this
-        # plugin.
-        #
-        # {
-        #   name = "robsis/zsh-completion-generator";
-        #   file = "zsh-completion-generator.plugin.zsh";
-        #   src = pkgs.fetchFromGitHub {
-        #     owner = "robsis";
-        #     repo = "zsh-completion-generator";
-        #     rev = "d01700d037e87db97f51c5da201d63a3fef7e9f6";
-        #     sha256 = "sha256-OoK+LMUaFYxLrGG6awb5fU97jXNT0SFACO3AbLheZNU=";
-        #   };
-        # }
         {
           name = "sobolevn/wakatime-zsh-plugin";
           file = "wakatime.plugin.zsh";
