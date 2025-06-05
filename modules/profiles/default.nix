@@ -1,4 +1,8 @@
-{lib, ...}:
+{
+  lib,
+  pkgs,
+  ...
+}:
 with lib; let
   # Default values and shared settings
   defaultPreferences = {
@@ -54,11 +58,10 @@ in {
               This is used by home-manager and other services that need to know
               the location of the user's home directory. The path must be absolute.
             '';
-            default = lib.mkDefault (
-              if stdenv.isDarwin
+            default =
+              if pkgs.stdenv.isDarwin
               then "/Users/${config.username}"
-              else "/home/${config.username}"
-            );
+              else "/home/${config.username}";
             example = "On macOS: /Users/alice, On Linux: /home/alice";
           };
 
