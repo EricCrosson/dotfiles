@@ -8,6 +8,7 @@ with lib; let
   cfg = config.programs.claude-code;
 in {
   imports = [
+    ../../options/aws.nix
     ../../options/claude.nix
   ];
 

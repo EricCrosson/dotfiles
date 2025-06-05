@@ -7,24 +7,30 @@
 with lib; let
   cfg = config.services.litellm-proxy;
 
-  # Helper function to generate YAML for models
-  modelToYaml = model: ''
-    - model_name: ${model.name}
-      litellm_params:
-        model: ${model.model}
-        ${optionalString (model.aws_profile_name != null) "aws_profile_name: ${model.aws_profile_name}"}
-        ${model.extraConfig}
-  '';
+  # Convert model data to attributes for JSON conversion
+  modelToAttrs = model: {
+    model_name = model.name;
+    litellm_params =
+      {
+        inherit (model) model;
+      }
+      // optionalAttrs (model.aws_profile_name != null) {
+        inherit (model) aws_profile_name;
+      }
+      // (
+        if model.extraConfig != ""
+        then builtins.fromJSON model.extraConfig
+        else {}
+      );
+  };
 
-  # Generate complete config YAML
-  configToYaml = models: ''
-    model_list:
-    ${concatMapStrings modelToYaml models}
-  '';
+  # Generate config using builtins.toJSON
+  configToJson = models: builtins.toJSON {model_list = map modelToAttrs models;};
 in {
   imports = [
-    ../../options/services.nix
+    ../../options/aws.nix
     ../../options/claude.nix
+    ../../options/services.nix
   ];
 
   options.services.litellm-proxy = {
@@ -88,7 +94,7 @@ in {
           extraConfig = mkOption {
             type = types.lines;
             default = "";
-            description = "Additional model configuration in YAML format";
+            description = "Additional model configuration in JSON format. Will be merged with the model's litellm_params.";
           };
         };
       });
@@ -117,10 +123,10 @@ in {
       inherit (cfg) host port;
     };
 
-    # Generate config file from Nix models definition
+    # Generate config file from Nix models definition using built-in JSON converter
     home.file = {
       ".config/litellm/config.yaml" = {
-        text = configToYaml cfg.models;
+        text = configToJson cfg.models;
       };
     };
 

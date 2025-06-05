@@ -7,16 +7,17 @@
 with lib; let
   cfg = config.programs.llm;
 
-  # Helper function to generate YAML for models
-  modelToYaml = model: ''
-    - model_id: ${model.id}
-      model_name: ${model.name}
-      api_base: "${model.api_base}"
-  '';
+  # Helper function to convert model to attributes
+  modelToAttrs = model: {
+    model_id = model.id;
+    model_name = model.name;
+    inherit (model) api_base;
+  };
 in {
   imports = [
-    ../../options/services.nix
+    ../../options/aws.nix
     ../../options/claude.nix
+    ../../options/services.nix
   ];
 
   options.programs.llm = {
@@ -80,7 +81,7 @@ in {
         };
 
         "${cfg.configDir}/extra-openai-models.yaml" = {
-          text = concatMapStrings modelToYaml cfg.models;
+          text = builtins.toJSON (map modelToAttrs cfg.models);
         };
       };
 
