@@ -7,6 +7,10 @@
 with lib; let
   cfg = config.services.open-webui;
 in {
+  imports = [
+    ../../options/services.nix
+  ];
+
   options.services.open-webui = {
     enable = mkEnableOption "Open WebUI service";
 
@@ -39,13 +43,14 @@ in {
     litellmProxy = {
       enable = mkOption {
         type = types.bool;
-        default = true;
+        default = config.services-options.litellm-proxy.enabled;
         description = "Whether to connect to LiteLLM Proxy";
       };
 
+      # Keep for backward compatibility but prefer the shared options
       url = mkOption {
         type = types.str;
-        default = "http://localhost:4000";
+        default = config.services-options.litellm-proxy.baseUrl;
         description = "URL for connecting to LiteLLM Proxy";
       };
     };
@@ -130,7 +135,7 @@ in {
         // (
           if cfg.litellmProxy.enable
           then {
-            OPENAI_API_BASE_URL = "${cfg.litellmProxy.url}/v1";
+            OPENAI_API_BASE_URL = "${config.services-options.litellm-proxy.apiUrl}";
             OPENAI_API_KEY = "dummy-key-for-litellm-proxy";
           }
           else {}

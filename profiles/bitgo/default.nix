@@ -7,6 +7,7 @@
 }: {
   imports = [
     ../../modules/home-manager
+    ../../modules/home-manager/options/services.nix
   ];
 
   home = {
@@ -105,7 +106,7 @@
           {
             type = "openai-compatible";
             name = "bedrock-claude";
-            api_base = "http://localhost:4000/v1";
+            api_base = config.services-options.litellm-proxy.apiUrl;
             api_key = "xxx";
             models = [
               {
@@ -147,7 +148,7 @@
         DEFAULT_MODEL = "bedrock-claude-sonnet";
         DEFAULT_MODEL_CONTEXT_LENGTH = "200000";
         OPENAI_API_KEY = "has-to-be-populated-but-this-is-definitely-not-a-secret";
-        OPENAI_API_BASE_URL = "http://localhost:4000";
+        OPENAI_API_BASE_URL = config.services-options.litellm-proxy.baseUrl;
       };
     };
 

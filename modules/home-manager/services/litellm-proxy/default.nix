@@ -7,6 +7,10 @@
 with lib; let
   cfg = config.services.litellm-proxy;
 in {
+  imports = [
+    ../../options/services.nix
+  ];
+
   options.services.litellm-proxy = {
     enable = mkEnableOption "LiteLLM proxy service";
 
@@ -34,6 +38,20 @@ in {
       description = "Whether to keep the service alive";
     };
 
+    # Use fixed defaults, not derived from services-options
+    # to break circular dependency
+    host = mkOption {
+      type = types.str;
+      default = "localhost";
+      description = "Host for the LiteLLM proxy service";
+    };
+
+    port = mkOption {
+      type = types.port;
+      default = 4000;
+      description = "Port for the LiteLLM proxy service";
+    };
+
     logging = {
       stdout = mkOption {
         type = types.str;
@@ -50,7 +68,10 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # We don't need to copy the config file anywhere - we'll use it directly
+    # Set shared options for other modules to use
+    services-options.litellm-proxy = {
+      inherit (cfg) host port;
+    };
 
     launchd-with-logs.services.litellm-proxy = {
       command = "${cfg.package}/bin/litellm";
@@ -61,6 +82,10 @@ in {
           then "${toString cfg.configFile}"
           else "${config.home.homeDirectory}/.config/litellm/config.yaml"
         )
+        "--host"
+        cfg.host
+        "--port"
+        "${toString cfg.port}"
       ];
       environment = {
         PATH = lib.makeBinPath [cfg.aws-saml];

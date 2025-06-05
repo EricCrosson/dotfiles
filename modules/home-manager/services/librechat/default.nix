@@ -6,18 +6,22 @@
 with lib; let
   cfg = config.services.librechat;
 in {
+  imports = [
+    ../../options/services.nix
+  ];
+
   options.services.librechat = {
     enable = mkEnableOption "LibreChat service";
 
     litellmHost = mkOption {
       type = types.str;
-      default = "host.docker.internal";
+      default = config.services-options.litellm-proxy.host;
       description = "Hostname for connecting to litellm service";
     };
 
     litellmPort = mkOption {
       type = types.port;
-      default = 4000;
+      default = config.services-options.litellm-proxy.port;
       description = "Port for connecting to litellm service";
     };
 
