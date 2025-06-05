@@ -4,14 +4,6 @@
   user,
   ...
 }: {
-  options = {
-    channel = pkgs.lib.mkOption {
-      default = true;
-      type = pkgs.lib.types.enum ["nightly" "precompiled-release"];
-      description = "Control compute requirements by selecting whether to build the latest nightly versions or use precompiled releases";
-    };
-  };
-
   config = {
     home.packages = with pkgs; [
       gopls
@@ -41,7 +33,6 @@
 
     programs.helix = {
       enable = true;
-      # TODO: switch between channel
       package = inputs.helix.packages.${pkgs.system}.default;
       # TODO: Customize; might need to update home-manager first
       # Introducing PR: https://github.com/helix-editor/helix/pull/5934
