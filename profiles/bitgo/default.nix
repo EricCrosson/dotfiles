@@ -183,9 +183,6 @@
       ];
     };
 
-    # Enable LibreChat service
-    librechat.enable = true;
-
     # Enable LiteLLM proxy for AI models
     litellm-proxy = {
       enable = true;
