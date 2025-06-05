@@ -62,14 +62,7 @@
         '';
       };
 
-      # NOTE: this is a darwin-specific path, will need to be modified on Linux
-      "Library/Application Support/io.datasette.llm/default_model.txt" = {
-        source = ../.. + "/Library/Application Support/io.datasette.llm/default_model.txt";
-      };
-      # NOTE: this is a darwin-specific path, will need to be modified on Linux
-      "Library/Application Support/io.datasette.llm/extra-openai-models.yaml" = {
-        source = ../.. + "/Library/Application Support/io.datasette.llm/extra-openai-models.yaml";
-      };
+      # LLM CLI configuration is now handled by the programs.llm module
 
       ".ssh/id_rsa_personal.pub".source = ../../.ssh/id_rsa_personal.pub;
     };
@@ -150,6 +143,18 @@
         OPENAI_API_KEY = "has-to-be-populated-but-this-is-definitely-not-a-secret";
         OPENAI_API_BASE_URL = config.services-options.litellm-proxy.baseUrl;
       };
+    };
+
+    llm = {
+      enable = true;
+      defaultModel = "bedrock-claude-sonnet";
+      models = [
+        {
+          id = "bedrock-claude-sonnet";
+          name = "bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0";
+          api_base = config.services-options.litellm-proxy.baseUrl;
+        }
+      ];
     };
 
     git = {
