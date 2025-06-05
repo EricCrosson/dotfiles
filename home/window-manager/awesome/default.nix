@@ -1,6 +1,6 @@
 {
   pkgs,
-  user,
+  profile,
   ...
 }: {
   home = {
@@ -23,7 +23,7 @@
     enable = true;
     plugins = [pkgs.rofi-calc];
     terminal = "${pkgs.kitty}/bin/kitty";
-    theme = "Catppuccin ${user.preferences.theme}";
+    theme = "Catppuccin ${profile.preferences.theme}";
     extraConfig = {
       modi = "run,drun,window";
       icon-theme = "Oranchelo";

@@ -12,8 +12,7 @@
       builtins.mapAttrs
       (hostName: hostConfig:
         hostBuilder.mkDarwinHost {
-          inherit hostName;
-          inherit (hostConfig) system modules;
+          inherit hostName hostConfig;
         })
       hostBuilder.hosts;
   };

@@ -1,12 +1,12 @@
 {
   pkgs,
-  user,
+  profile,
   inputs,
   ...
 }: {
   home = {
-    username = "${user.username}";
-    homeDirectory = "${user.homeDirectory}";
+    username = "${profile.username}";
+    homeDirectory = "${profile.homeDirectory}";
     stateVersion = "22.05";
 
     packages = with pkgs;

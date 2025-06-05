@@ -1,10 +1,32 @@
 {inputs, ...}: {
-  # Function to create a Darwin system configuration
+  # Creates a Darwin system configuration for a specific host
+  #
+  # Arguments:
+  #   hostName: The name of the host (must match directory name under hosts/)
+  #   hostConfig: The complete host configuration data
+  #
+  # Returns: A nix-darwin system configuration
+  #
+  # Example:
+  #   mkDarwinHost {
+  #     hostName = "my-macbook";
+  #     hostConfig = {
+  #       system = "aarch64-darwin";
+  #       profileName = "personal";
+  #       homeManagerModules = [ ../modules/home-manager/personal.nix ];
+  #       nixDarwinModules = [ ./modules/custom.nix ];
+  #     };
+  #   }
+  #
   mkDarwinHost = {
     hostName,
-    system,
-    modules ? [],
+    hostConfig,
   }: let
+    # Extract values from hostConfig
+    inherit (hostConfig) system profileName;
+    homeManagerModules = hostConfig.homeManagerModules or [];
+    nixDarwinModules = hostConfig.nixDarwinModules or [];
+
     pkgs = import inputs.nixpkgs {
       inherit system;
       config = {
@@ -35,35 +57,40 @@
 
           # Home Manager configuration
           inputs.home-manager.darwinModules.home-manager
-          ({config, ...}: {
-            users.users.${config.profiles.bitgo.username}.home = config.profiles.bitgo.homeDirectory;
+          ({config, ...}: let
+            profile = config.profiles.${profileName};
+          in {
+            users.users.${profile.username}.home =
+              profile.homeDirectory;
+
             home-manager = {
               extraSpecialArgs = {
-                inherit pkgs inputs;
-                user = config.profiles.bitgo;
+                inherit pkgs inputs profile;
               };
               sharedModules = [
                 inputs.sops-nix.homeManagerModules.sops
               ];
               useGlobalPkgs = true;
               useUserPackages = true;
-              users.${config.profiles.bitgo.username}.imports = [
-                ../profiles/eric
-                ../profiles/bitgo
-                ../profiles/development
-                ../home/editor/helix
-              ];
+              users.${profile.username}.imports = homeManagerModules;
             };
           })
         ]
-        ++ modules;
+        ++ nixDarwinModules;
     };
 
-  # Available hosts to build
+  # Available host configurations
   hosts = {
     "MBP-0954" = {
       system = "aarch64-darwin";
-      modules = [];
+      profileName = "bitgo";
+      homeManagerModules = [
+        ../profiles/eric
+        ../profiles/bitgo
+        ../profiles/development
+        ../home/editor/helix
+      ];
+      nixDarwinModules = [];
     };
   };
 }

@@ -1,6 +1,6 @@
 {
   pkgs,
-  user,
+  profile,
   inputs,
   ...
 }:
@@ -34,8 +34,8 @@ in {
     else linuxImports;
 
   home = {
-    username = "${user.username}";
-    homeDirectory = "${user.homeDirectory}";
+    username = "${profile.username}";
+    homeDirectory = "${profile.homeDirectory}";
     stateVersion = "22.05";
 
     sessionVariables = {
@@ -51,9 +51,9 @@ in {
       #
       # [sets]: https://github.com/nix-community/home-manager/blob/ee5673246de0254186e469935909e821b8f4ec15/modules/programs/ripgrep.nix#L38
       # [this one]: https://github.com/nix-community/home-manager/issues/1011
-      RIPGREP_CONFIG_PATH = "${user.homeDirectory}/.config/ripgrep/ripgreprc";
+      RIPGREP_CONFIG_PATH = "${profile.homeDirectory}/.config/ripgrep/ripgreprc";
       SMART_CD_ONLY_IF_FITS_RATIO = 66;
-      ZSH_WAKATIME_BIN = "/etc/profiles/per-user/${user.username}/bin/wakatime-cli";
+      ZSH_WAKATIME_BIN = "/etc/profiles/per-user/${profile.username}/bin/wakatime-cli";
     };
 
     packages = with pkgs; [
@@ -138,7 +138,7 @@ in {
     bat = {
       enable = true;
       config = {
-        theme = "Catppuccin ${user.preferences.theme}";
+        theme = "Catppuccin ${profile.preferences.theme}";
         style = "plain";
         paging = "never";
       };
@@ -202,7 +202,7 @@ in {
     git = {
       enable = true;
       userName = "Eric Crosson";
-      userEmail = "${user.email}";
+      userEmail = "${profile.email}";
       aliases = {
         a = "add";
         b = "branch";
@@ -269,7 +269,7 @@ in {
         enable = true;
         options = {
           line-numbers = true;
-          features = "catppuccin-${pkgs.lib.strings.toLower user.preferences.theme}";
+          features = "catppuccin-${pkgs.lib.strings.toLower profile.preferences.theme}";
         };
       };
       ignores = [
@@ -335,7 +335,7 @@ in {
           prune = true;
         };
         github = {
-          user = "${user.email}";
+          user = "${profile.email}";
         };
         init = {
           defaultBranch = "master";
@@ -372,7 +372,7 @@ in {
       installBatSyntax = true;
       installVimSyntax = true;
       settings = {
-        theme = "catppuccin-${pkgs.lib.strings.toLower user.preferences.theme}";
+        theme = "catppuccin-${pkgs.lib.strings.toLower profile.preferences.theme}";
       };
     };
 
@@ -621,14 +621,14 @@ in {
 
   xdg.userDirs = {
     createDirectories = true;
-    desktop = "${user.homeDirectory}/tmp";
-    download = "${user.homeDirectory}/tmp";
-    documents = "${user.homeDirectory}/files";
-    music = "${user.homeDirectory}/files/media";
-    pictures = "${user.homeDirectory}/files/media";
-    videos = "${user.homeDirectory}/files/media";
+    desktop = "${profile.homeDirectory}/tmp";
+    download = "${profile.homeDirectory}/tmp";
+    documents = "${profile.homeDirectory}/files";
+    music = "${profile.homeDirectory}/files/media";
+    pictures = "${profile.homeDirectory}/files/media";
+    videos = "${profile.homeDirectory}/files/media";
     extraConfig = {
-      XDG_DATA_HOME = "${user.homeDirectory}/.local/share";
+      XDG_DATA_HOME = "${profile.homeDirectory}/.local/share";
     };
   };
 }

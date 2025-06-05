@@ -1,6 +1,6 @@
 {
   pkgs,
-  user,
+  profile,
   config,
   inputs,
   ...
@@ -172,8 +172,8 @@
     keychain = {
       enable = true;
       keys = [
-        "${user.homeDirectory}/.ssh/id_rsa"
-        "${user.homeDirectory}/.ssh/id_rsa_personal"
+        "${profile.homeDirectory}/.ssh/id_rsa"
+        "${profile.homeDirectory}/.ssh/id_rsa_personal"
       ];
     };
 
@@ -192,7 +192,7 @@
 
   sops = {
     defaultSopsFile = ../../secrets/main.yaml;
-    gnupg.home = user.homeDirectory + "/.gnupg";
+    gnupg.home = profile.homeDirectory + "/.gnupg";
     secrets = {
       github_ssh_private_key_personal = {};
       github_token_bitgo = {};
