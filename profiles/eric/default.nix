@@ -3,9 +3,7 @@
   profile,
   inputs,
   ...
-}:
-# TODO: set font to Hack
-let
+}: let
   inherit (pkgs) stdenv;
   darwinImports = [
     ../../os/darwin

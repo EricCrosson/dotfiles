@@ -14,9 +14,6 @@
     packages = with pkgs; [
       amazon-ecr-credential-helper
       audacity
-      (callPackage ../../pkgs/aws-console {})
-      (callPackage ../../pkgs/aws-saml {})
-      (callPackage ../../pkgs/yt-summarize {})
       awscli2
       dive
       element-desktop
@@ -37,6 +34,12 @@
       openai-whisper
       yq-go
       nodejs # Ensure nodejs is installed for npm
+
+      inputs.percentage-changed-calculator.packages.${pkgs.system}.default
+
+      (callPackage ../../pkgs/aws-console {})
+      (callPackage ../../pkgs/aws-saml {})
+      (callPackage ../../pkgs/yt-summarize {})
     ];
 
     file = {
@@ -61,8 +64,6 @@
           prefix=${config.home.homeDirectory}/.local/share/npm
         '';
       };
-
-      # LLM CLI configuration is now handled by the programs.llm module
 
       ".ssh/id_rsa_personal.pub".source = ../../.ssh/id_rsa_personal.pub;
     };

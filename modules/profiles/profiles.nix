@@ -1,4 +1,4 @@
-{...}: {
+{config, ...}: {
   config.profiles = {
     bitgo = {
       username = "ericcrosson";
