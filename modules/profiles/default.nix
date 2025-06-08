@@ -3,16 +3,8 @@
   pkgs,
   ...
 }:
-with lib; let
-  # Default values and shared settings
-  defaultPreferences = {
-    theme = "Mocha";
-  };
-in {
-  ###### interface
-
+with lib; {
   options = {
-    # Define the top-level profiles module
     profiles = mkOption {
       type = types.attrsOf (types.submodule ({config, ...}: {
         options = {
@@ -67,7 +59,9 @@ in {
 
           preferences = mkOption {
             type = types.attrs;
-            default = defaultPreferences;
+            default = {
+              theme = "Mocha";
+            };
             description = ''
               User preferences that affect configuration options.
 
