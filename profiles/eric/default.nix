@@ -5,7 +5,6 @@
   ...
 }:
 # TODO: set font to Hack
-# FIXME: screen tearing
 let
   inherit (pkgs) stdenv;
   darwinImports = [
@@ -51,6 +50,7 @@ in {
       #
       # [sets]: https://github.com/nix-community/home-manager/blob/ee5673246de0254186e469935909e821b8f4ec15/modules/programs/ripgrep.nix#L38
       # [this one]: https://github.com/nix-community/home-manager/issues/1011
+      # TODO: test if RIPGREP_CONFIG_PATH is set in darwin without this line
       RIPGREP_CONFIG_PATH = "${profile.homeDirectory}/.config/ripgrep/ripgreprc";
       SMART_CD_ONLY_IF_FITS_RATIO = 66;
       ZSH_WAKATIME_BIN = "/etc/profiles/per-user/${profile.username}/bin/wakatime-cli";
@@ -109,10 +109,6 @@ in {
       # REFACTOR: this only _needs_ to be present on work machines,
       # though it doesn't interfere with anything on personal machines.
       ".config/git/personal-config".source = ../../.config/git/personal-config;
-
-      # Not sure why setting `xsession.profileExtra` doesn't seem to write .xprofile.
-      # Well, this isn't ideal, but it's working, so no need to bugger with it.
-      ".xprofile".source = ../../.xprofile;
 
       # Add catppuccin delta theme configuration
       ".config/git/catppuccin.gitconfig".source = "${catppuccinDelta}/catppuccin.gitconfig";
