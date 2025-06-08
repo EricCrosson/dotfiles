@@ -59,8 +59,9 @@
           ({config, ...}: let
             profile = config.profiles.${profileName};
           in {
-            users.users.${profile.username}.home =
-              profile.homeDirectory;
+            users.users.${profile.username} = {
+              home = profile.homeDirectory;
+            };
 
             home-manager = {
               extraSpecialArgs = {
