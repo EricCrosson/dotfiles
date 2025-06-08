@@ -107,14 +107,12 @@ in {
             username = "john";
             email = "john@company.com";
             organization = "company";
-            homeDirectory = "/Users/john";
             preferences.theme = "Frappe";
           };
 
           personal = {
             username = "john";
             email = "john@example.com";
-            homeDirectory = "/Users/john";
             # organization defaults to null
             # preferences defaults to the default preferences
           };

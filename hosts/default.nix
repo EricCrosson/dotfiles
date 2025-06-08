@@ -22,7 +22,6 @@
     hostName,
     hostConfig,
   }: let
-    # Extract values from hostConfig
     inherit (hostConfig) system profileName;
     homeManagerModules = hostConfig.homeManagerModules or [];
     nixDarwinModules = hostConfig.nixDarwinModules or [];
