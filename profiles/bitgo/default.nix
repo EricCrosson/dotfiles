@@ -30,6 +30,7 @@
       kubectl
       kubectx
       kustomize
+      mkvtoolnix-cli
       nodejs # Ensure nodejs is installed for npm
       obsidian
       openai-whisper
