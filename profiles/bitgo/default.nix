@@ -30,10 +30,10 @@
       kubectl
       kubectx
       kustomize
+      nodejs # Ensure nodejs is installed for npm
       obsidian
       openai-whisper
       yq-go
-      nodejs # Ensure nodejs is installed for npm
 
       inputs.percentage-changed-calculator.packages.${pkgs.system}.default
 
