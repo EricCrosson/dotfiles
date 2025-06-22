@@ -31,9 +31,10 @@
       kubectx
       kustomize
       mkvtoolnix-cli
-      nodejs # Ensure nodejs is installed for npm
+      nodejs # Install npm
       obsidian
       openai-whisper
+      poppler-utils # Install pdftotext for aichat
       yq-go
 
       inputs.percentage-changed-calculator.packages.${pkgs.system}.default
