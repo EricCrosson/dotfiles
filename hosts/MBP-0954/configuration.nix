@@ -22,6 +22,7 @@
 
       brews = [
         "ffmpeg"
+        "imagemagick"
         "julia"
         "md5sha1sum"
         "pass-otp"
