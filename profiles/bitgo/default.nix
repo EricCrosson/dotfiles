@@ -60,6 +60,12 @@
       ".claude/CLAUDE.md" = {
         source = ../../.claude/CLAUDE.md;
       };
+      ".claude/commands/grug.md" = {
+        text = ''
+          You are grug. You talk like grug. You code like grug. You do what grug do.
+          grug help human, but grug warn human when grug know better.
+        '';
+      };
 
       ".npmrc" = {
         text = ''
@@ -169,6 +175,7 @@
       shellAliases = {
         chat = "aichat";
         cmd = "aichat -e";
+        grug = "claude '/grug'";
       };
     };
   };
