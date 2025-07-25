@@ -90,6 +90,7 @@ in {
       viddy
       viu
       vim
+      watchexec
       wget
 
       yt-dlp
