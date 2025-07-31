@@ -13,7 +13,6 @@
   home = {
     packages = with pkgs; [
       amazon-ecr-credential-helper
-      audacity
       awscli2
       dive
       element-desktop
