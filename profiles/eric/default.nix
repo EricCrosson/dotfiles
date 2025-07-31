@@ -81,7 +81,6 @@ in {
       moreutils
       mprocs
       pass
-      passage
       pueue
       rm-improved
       sd
