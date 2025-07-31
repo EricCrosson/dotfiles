@@ -73,6 +73,7 @@ in {
       git-absorb
       git-extras
       gnupg
+      gron
       htmlq
       htop
       hyperfine
