@@ -38,7 +38,7 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@main
 
       - name: Update ${{ matrix.flake-input }} flake input
-        uses: DeterminateSystems/update-flake-lock@v25
+        uses: DeterminateSystems/update-flake-lock@v27
         with:
           branch: update-flake-input-${{ matrix.flake-input }}
           commit-msg: "chore(nix): update ${{ matrix.flake-input }} flake input"
@@ -89,7 +89,7 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@main
 
       - name: Update ${{ matrix.flake-input }} in nix/flake.nix
-        uses: DeterminateSystems/update-flake-lock@v25
+        uses: DeterminateSystems/update-flake-lock@v27
         with:
           path-to-flake-dir: nix
           branch: update-nix-flake-input-${{ matrix.flake-input }}
