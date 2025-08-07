@@ -78,6 +78,7 @@
     sessionVariables = {
       GITHUB_TOKEN = "$(cat ${config.sops.secrets.github_token_bitgo.path} 2>/dev/null || echo '')";
       GITHUB_TOKEN_PERSONAL = "$(cat  ${config.sops.secrets.github_token_personal.path} 2>/dev/null || echo '')";
+      GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = "$(cat ${config.sops.secrets.google_service_account_private_key.path} 2>/dev/null || echo '')";
       JIRA_API_TOKEN = "$(cat ${config.sops.secrets.jira_token_bitgo.path} 2>/dev/null || echo '')";
       JIRA_USERNAME = "ericcrosson@bitgo.com";
       YOUTUBE_API_KEY = "$(cat ${config.sops.secrets.youtube_api_key.path} 2>/dev/null || echo '')";
@@ -218,6 +219,7 @@
       github_ssh_private_key_personal = {};
       github_token_bitgo = {};
       github_token_personal = {};
+      google_service_account_private_key = {};
       jira_token_bitgo = {};
       youtube_api_key = {};
     };

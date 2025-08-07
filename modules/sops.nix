@@ -21,6 +21,11 @@
           owner = profile.username;
           group = profile.username;
         };
+        google_service_account_private_key = {
+          mode = "0400";
+          owner = profile.username;
+          group = profile.username;
+        };
         jira_token_bitgo = {
           mode = "0400";
           owner = profile.username;
