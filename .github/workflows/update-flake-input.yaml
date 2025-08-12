@@ -13,7 +13,7 @@ jobs:
   update-flake-input:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: DeterminateSystems/nix-installer-action@main
 
       - name: Update ${{ inputs.flake-input }} flake input
