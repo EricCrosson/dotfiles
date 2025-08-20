@@ -87,7 +87,7 @@
     "claude-code": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-djit3owegN21Z4tLQHzGLuAkynFQMlRdf8rVjwipckI=",
+        "narHash": "sha256-GLEAcc3BMf5rMDEQD4x7obPb36d484qZYQcnZXnrEsk=",
         "type": "file",
         "url": "https://registry.npmjs.org/@anthropic-ai/claude-code"
       },
