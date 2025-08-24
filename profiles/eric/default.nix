@@ -206,10 +206,7 @@ in {
         # https://stackoverflow.com/a/70205254
         continue = "-c core.editor=true rebase --continue";
         d = "diff";
-        di = "diff ':(exclude):package-lock.json' ':(exclude)./**/package-lock.json' ':(exclude)yarn.lock' ':(exclude)./**/yarn.lock'";
         ds = "diff --cached";
-        dsi = "diff --cached ':(exclude):package-lock.json' ':(exclude)**/package-lock.json' ':(exclude)yarn.lock' ':(exclude)**/yarn.lock'";
-        dn = "diff --name-only";
         f = "fetch";
         l = "log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'";
         p = "pull";
@@ -217,16 +214,6 @@ in {
         re = "restore";
         rs = "restore --staged";
         s = "status";
-        step-towards = ''
-          !f() { \
-            commit=$(git rev-list --ancestry-path HEAD..$1 | tail -n $2 | head -n 1); \
-            if [ -n \"$commit\" ]; then \
-              git checkout $commit; \
-            else \
-              echo \"No more commits to step towards $1\"; \
-            fi
-          }; f
-        '';
         # [c]heck[o]ut [f]uzzy
         cof = ''
           !f() { \
