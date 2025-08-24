@@ -574,27 +574,7 @@ It turned out to be caused by an unclosed div in one of our files.
 
 Beyond error messages, think about other terms that you or a teammate might search to find related commits, such as names of components, projects, or client implementations.
 
-### Screenshots or videos
-
-For changes to an app’s user interface, videos and screenshots can be helpful, especially if you show the before and after.
-
-Don’t spend hours trying to produce a perfect, Oscar-winning screencast — a simple 15-second demo can make a major difference for your teammates trying to understand the change.
-
-A video should supplement the commit message, not replace it. A rambly, five-minute screencast is a poor substitute for a succinct and well-organized commit message.
-
-The drawback of embedded media is that git doesn’t support it natively. If you use git through a platform like GitHub or GitLab, it’s easy to embed images in pull request descriptions, which you can subsequently convert to be the commit message for the change.
-
-If you don’t use a UI for git that supports embedded media, you can still upload your media to permanent storage and link it as a plain URL in your commit message, though that increases the risk of links going dead if the storage location goes offline or moves. In these cases, it makes more sense to share the screenshots or video in a review comment rather than in the commit message.
-
-### Rants and stories
-
-Stories and passionate rants about the code are fun and sometimes informative, so feel free to include them, but save them until the end.
-
-If someone’s chasing a high-priority bug at 2 AM, they don’t want to read 20 paragraphs about your adventure writing this change or your snarky critiques of a bad library.
-
-Present critical details succinctly at the top of the commit message, and append the rant to make it obviously extra credit reading.
-
-### Anything you’re tempted to explain outside of the commit message
+### Anything you’re tempted to explain outside the commit message
 
 Sometimes, when someone sends me code to review, they write me an accompanying email to explain background information. If I’m particularly unlucky, they’ll interrupt me at my desk to give me a brief lecture that I’m supposed to remember while reviewing their code.
 
