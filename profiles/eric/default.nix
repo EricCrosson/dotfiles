@@ -230,7 +230,7 @@ in {
 
         exec = "!exec ";
 
-        # After `git reset --soft HEAD^1`, commit with the same commit message
+        # After `git reset --soft HEAD~1`, commit with the same commit message
         # Source: https://stackoverflow.com/a/25930432
         recommit = "commit --reuse-message=HEAD@{1}";
 
