@@ -11,6 +11,16 @@
     // (
       if profile.organization == "bitgo"
       then {
+        claude_code_github_token = {
+          mode = "0400";
+          owner = profile.username;
+          group = profile.username;
+        };
+        claude_code_atlassian_api_token = {
+          mode = "0400";
+          owner = profile.username;
+          group = profile.username;
+        };
         github_ssh_private_key_personal = {
           mode = "0400";
           owner = profile.username;

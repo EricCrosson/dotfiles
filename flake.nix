@@ -20,7 +20,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     atuin = {
-      url = "github:ellie/atuin";
+      url = "github:ellie/atuin/9e42043fbaf65010120d8d3dfe1e8d9a388c00e7";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     bash-barrier = {
@@ -35,15 +35,11 @@
       url = "github:ericcrosson/bell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    claude-code = {
-      url = "https://registry.npmjs.org/@anthropic-ai/claude-code";
-      flake = false;
-    };
     crane = {
       url = "github:ipetkov/crane";
     };
     fenix = {
-      url = "github:nix-community/fenix";
+      url = "github:nix-community/fenix/0c944d7de8c590857228dfd4fd3e890849818346";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     git-diff-regex = {

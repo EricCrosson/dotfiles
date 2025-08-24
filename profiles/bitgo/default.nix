@@ -56,14 +56,9 @@
       ".config/fabric/patterns/write_useful_git_commit_message/readme.md".source = ../../.config/fabric/patterns/write_useful_git_commit_message/readme.md;
       ".config/fabric/patterns/write_useful_git_commit_message/system.md".source = ../../.config/fabric/patterns/write_useful_git_commit_message/system.md;
 
+      # TODO: turn these into agents
       ".claude/CLAUDE.md" = {
         source = ../../.claude/CLAUDE.md;
-      };
-      ".claude/commands/grug.md" = {
-        text = ''
-          You are grug. You talk like grug. You code like grug. You do what grug do.
-          grug help human, but grug warn human when grug know better.
-        '';
       };
 
       ".npmrc" = {
@@ -76,6 +71,8 @@
     };
 
     sessionVariables = {
+      CLAUDE_CODE_GITHUB_TOKEN = "$(cat ${config.sops.secrets.claude_code_github_token.path} 2>/dev/null || echo '')";
+      CLAUDE_CODE_ATLASSIAN_API_TOKEN = "$(cat ${config.sops.secrets.claude_code_atlassian_api_token.path} 2>/dev/null || echo '')";
       GITHUB_TOKEN = "$(cat ${config.sops.secrets.github_token_bitgo.path} 2>/dev/null || echo '')";
       GITHUB_TOKEN_PERSONAL = "$(cat  ${config.sops.secrets.github_token_personal.path} 2>/dev/null || echo '')";
       GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = "$(cat ${config.sops.secrets.google_service_account_private_key.path} 2>/dev/null || echo '')";
@@ -139,7 +136,69 @@
 
     claude-code = {
       enable = true;
-      version = (builtins.fromJSON (builtins.readFile "${inputs.claude-code}"))."dist-tags".latest;
+      package = pkgs.symlinkJoin {
+        name = "claude-code-wrapped";
+        paths = [pkgs.claude-code];
+        buildInputs = [pkgs.makeWrapper];
+        postBuild = ''
+          wrapProgram $out/bin/claude \
+            --set AWS_PROFILE "${config.aws-options.profile.default}" \
+            --set AWS_REGION "${config.aws-options.region.default}"
+        '';
+      };
+      commands = {
+        grug = ''
+          You are grug. You talk like grug. You code like grug. You do what grug do.
+          grug help human, but grug warn human when grug know better.
+        '';
+      };
+      mcpServers = {
+        github = {
+          type = "http";
+          url = "https://api.githubcopilot.com/mcp/";
+          headers = {
+            Authorization = "Bearer \${CLAUDE_CODE_GITHUB_TOKEN}";
+          };
+        };
+        jira = {
+          command = "uvx";
+          args = [
+            "mcp-atlassian"
+          ];
+          env = {
+            JIRA_URL = "https=//bitgoinc.atlassian.net";
+            JIRA_USERNAME = "ericcrosson@bitgo.com";
+            JIRA_API_TOKEN = "\${CLAUDE_CODE_ATLASSIAN_API_TOKEN}";
+          };
+        };
+        confluence = {
+          command = "uvx";
+          args = [
+            "mcp-atlassian"
+          ];
+          env = {
+            CONFLUENCE_URL = "https=//bitgoinc.atlassian.net/wiki";
+            CONFLUENCE_USERNAME = "ericcrosson@bitgo.com";
+            CONFLUENCE_API_TOKEN = "\${CLAUDE_CODE_ATLASSIAN_API_TOKEN}";
+          };
+        };
+        context7 = {
+          command = "npx";
+          args = [
+            "-y"
+            "@upstash/context7-mcp"
+          ];
+        };
+      };
+      settings = {
+        env = {
+          CLAUDE_CODE_USE_BEDROCK = "1";
+          DISABLE_TELEMETRY = "1";
+        };
+        model = "arn:aws:bedrock:us-west-2:319156457634:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0";
+        preferredNotifChannel = "terminal_bell";
+        theme = "dark";
+      };
     };
 
     fabric = {
@@ -216,6 +275,8 @@
     defaultSopsFile = ../../secrets/main.yaml;
     gnupg.home = profile.homeDirectory + "/.gnupg";
     secrets = {
+      claude_code_github_token = {};
+      claude_code_atlassian_api_token = {};
       github_ssh_private_key_personal = {};
       github_token_bitgo = {};
       github_token_personal = {};
