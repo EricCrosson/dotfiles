@@ -235,16 +235,6 @@ in {
 
         automerge = "!f() { gh pr merge --auto --merge \"$1\"; }; f";
         ready-for-review = "!f() { gh pr ready \"$1\"; }; f";
-
-        commit-with-message = "!f() {
-          message=$(git diff --staged | fabric --pattern write_useful_git_commit_message)
-          if [ -n \"$message\" ]; then
-            git commit --edit --message=\"$message\"
-          else
-            echo \"No commit message generated. Commit aborted.\" >&2
-            exit 1
-          fi
-        }; f";
       };
       delta = {
         enable = true;
