@@ -98,7 +98,6 @@ in {
       # for shell
       eza
       fzf
-      hub
       python3Full
       starship
       wakatime
@@ -588,8 +587,7 @@ in {
       ];
 
       shellAliases = {
-        g = "hub";
-        git = "hub";
+        g = "git";
         grip = "grip --pass $GITHUB_TOKEN";
         h = "hx --vsplit";
         l = "eza -lg --git --time-style=long-iso";
