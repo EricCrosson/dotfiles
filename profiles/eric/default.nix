@@ -232,9 +232,6 @@ in {
         # After `git reset --soft HEAD~1`, commit with the same commit message
         # Source: https://stackoverflow.com/a/25930432
         recommit = "commit --reuse-message=HEAD@{1}";
-
-        automerge = "!f() { gh pr merge --auto --merge \"$1\"; }; f";
-        ready-for-review = "!f() { gh pr ready \"$1\"; }; f";
       };
       delta = {
         enable = true;
