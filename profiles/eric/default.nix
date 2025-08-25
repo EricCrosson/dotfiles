@@ -249,6 +249,7 @@ in {
         ".DS_Store"
         "/.claude/settings.local.json"
         "/.direnv"
+        "/.pre-commit-config.yaml"
         "/scratch/"
       ];
       includes = [
