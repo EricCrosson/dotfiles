@@ -238,6 +238,26 @@
         "type": "github"
       }
     },
+    "gh-automerge": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1756087591,
+        "narHash": "sha256-uVrigP0i+EFR8Q+27VhoIV3eQHJQaa01FCofoYcIifw=",
+        "owner": "ericcrosson",
+        "repo": "gh-automerge",
+        "rev": "308a1f04b60fc2847dc06316021d45ab697ddd12",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ericcrosson",
+        "repo": "gh-automerge",
+        "type": "github"
+      }
+    },
     "git-diff-regex": {
       "inputs": {
         "nixpkgs": [
@@ -499,6 +519,7 @@
         "crane": "crane",
         "fenix": "fenix_2",
         "gh-arm": "gh-arm",
+        "gh-automerge": "gh-automerge",
         "git-diff-regex": "git-diff-regex",
         "git-disjoint": "git-disjoint",
         "git-dl": "git-dl",

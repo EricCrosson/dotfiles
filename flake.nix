@@ -46,6 +46,10 @@
       url = "github:ericcrosson/gh-arm";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    gh-automerge = {
+      url = "github:ericcrosson/gh-automerge";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     git-diff-regex = {
       url = "github:ericcrosson/git-diff-regex";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -181,6 +181,7 @@ in {
       enable = true;
       extensions = [
         inputs.gh-arm.packages.${pkgs.system}.default
+        inputs.gh-automerge.packages.${pkgs.system}.default
       ];
       settings = {
         git_protocol = "https";
