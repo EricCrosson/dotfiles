@@ -247,7 +247,6 @@ in {
       };
       ignores = [
         ".DS_Store"
-        "/.aider.*"
         "/.claude/settings.local.json"
         "/.direnv"
         "/scratch/"
