@@ -218,6 +218,26 @@
         "type": "github"
       }
     },
+    "gh-arm": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1756085513,
+        "narHash": "sha256-nq59YO4fl/j8ftH1b9x5VL0H/6HhoZR/GrAxIunfFz8=",
+        "owner": "ericcrosson",
+        "repo": "gh-arm",
+        "rev": "d7927f2152ed5566a9b72d096fcb0e3161056251",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ericcrosson",
+        "repo": "gh-arm",
+        "type": "github"
+      }
+    },
     "git-diff-regex": {
       "inputs": {
         "nixpkgs": [
@@ -478,6 +498,7 @@
         "bell": "bell",
         "crane": "crane",
         "fenix": "fenix_2",
+        "gh-arm": "gh-arm",
         "git-diff-regex": "git-diff-regex",
         "git-disjoint": "git-disjoint",
         "git-dl": "git-dl",

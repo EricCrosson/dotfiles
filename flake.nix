@@ -42,6 +42,10 @@
       url = "github:nix-community/fenix/0c944d7de8c590857228dfd4fd3e890849818346";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    gh-arm = {
+      url = "github:ericcrosson/gh-arm";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     git-diff-regex = {
       url = "github:ericcrosson/git-diff-regex";
       inputs.nixpkgs.follows = "nixpkgs";
