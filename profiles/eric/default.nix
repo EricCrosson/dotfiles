@@ -180,9 +180,6 @@ in {
     gh = {
       enable = true;
       extensions = [
-        # Not yet available from nixpkgs
-        # pkgs.gh-copilot
-
         inputs.gh-arm.packages.${pkgs.system}.default
       ];
       settings = {
