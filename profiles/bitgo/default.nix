@@ -221,10 +221,28 @@
     };
 
     git = {
-      signing = {
-        key = "5BD755D7FD4AFCB6";
-        signByDefault = true;
-      };
+      includes = [
+        {
+          condition = "gitdir:~/workspace/BitGo/";
+          contents = {
+            commit = {
+              gpgSign = true;
+            };
+            core = {
+              sshCommand = "ssh -i ~/.ssh/id_rsa";
+            };
+            tag = {
+              gpgSign = true;
+            };
+            user = {
+              email = "${profile.email}";
+            };
+            signing = {
+              signingKey = "5BD755D7FD4AFCB6";
+            };
+          };
+        }
+      ];
     };
 
     zsh = {

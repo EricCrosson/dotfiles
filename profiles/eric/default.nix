@@ -104,10 +104,6 @@ in {
     ];
 
     file = {
-      # REFACTOR: this only _needs_ to be present on work machines,
-      # though it doesn't interfere with anything on personal machines.
-      ".config/git/personal-config".source = ../../.config/git/personal-config;
-
       # Add catppuccin delta theme configuration
       ".config/git/catppuccin.gitconfig".source = "${catppuccinDelta}/catppuccin.gitconfig";
     };
@@ -196,7 +192,7 @@ in {
     git = {
       enable = true;
       userName = "Eric Crosson";
-      userEmail = "${profile.email}";
+      userEmail = "eric.s.crosson@utexas.edu";
       aliases = {
         a = "add";
         b = "branch";
@@ -248,25 +244,10 @@ in {
         "/scratch/"
       ];
       includes = [
-        {
-          condition = "gitdir:~/workspace/EricCrosson/";
-          path = "~/.config/git/personal-config";
-        }
-        {
-          condition = "gitdir:~/workspace/semantic-release-action/";
-          path = "~/.config/git/personal-config";
-        }
-        {
-          condition = "gitdir:~/workspace/semantic-release-cargo/";
-          path = "~/.config/git/personal-config";
-        }
-        {
-          condition = "gitdir:~/workspace/typescript-tools/";
-          path = "~/.config/git/personal-config";
-        }
-        {
-          path = "~/.config/git/catppuccin.gitconfig";
-        }
+        # Color theme for git diff, but makes it harder to read.
+        # {
+        #   path = "~/.config/git/catppuccin.gitconfig";
+        # }
       ];
       extraConfig = {
         advice = {
@@ -283,12 +264,14 @@ in {
           ui = "auto";
         };
         commit = {
+          gpgSign = false;
           verbose = true;
         };
         core = {
           autocrlf = false;
           editor = "${inputs.helix.packages.${pkgs.system}.default}/bin/hx";
           fsmonitor = true;
+          sshCommand = "ssh -i ~/.ssh/id_rsa_personal";
           untrackedCache = true;
         };
         diff = {
