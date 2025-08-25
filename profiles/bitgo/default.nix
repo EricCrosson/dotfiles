@@ -53,9 +53,6 @@
         source = ../../.jira.d;
       };
 
-      ".config/fabric/patterns/write_useful_git_commit_message/readme.md".source = ../../.config/fabric/patterns/write_useful_git_commit_message/readme.md;
-      ".config/fabric/patterns/write_useful_git_commit_message/system.md".source = ../../.config/fabric/patterns/write_useful_git_commit_message/system.md;
-
       # TODO: turn these into agents
       ".claude/CLAUDE.md" = {
         source = ../../.claude/CLAUDE.md;
