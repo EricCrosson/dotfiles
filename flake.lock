@@ -225,11 +225,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1756085513,
-        "narHash": "sha256-nq59YO4fl/j8ftH1b9x5VL0H/6HhoZR/GrAxIunfFz8=",
+        "lastModified": 1756158704,
+        "narHash": "sha256-HtO5w96nt/Z1+1bDoY6yyh+MUm6VhZVYBjc4Zohg5aQ=",
         "owner": "ericcrosson",
         "repo": "gh-arm",
-        "rev": "d7927f2152ed5566a9b72d096fcb0e3161056251",
+        "rev": "3b685b147a6ec39e7c220aa9cdc72405c35a4c34",
         "type": "github"
       },
       "original": {
