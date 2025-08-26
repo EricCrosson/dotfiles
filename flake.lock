@@ -245,11 +245,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1756087591,
-        "narHash": "sha256-uVrigP0i+EFR8Q+27VhoIV3eQHJQaa01FCofoYcIifw=",
+        "lastModified": 1756159234,
+        "narHash": "sha256-FersjXF+rI9ps/ffRapuDq+W4cx7xrpRnqqGi99i3Jo=",
         "owner": "ericcrosson",
         "repo": "gh-automerge",
-        "rev": "308a1f04b60fc2847dc06316021d45ab697ddd12",
+        "rev": "fb51697043423f16199d09cb764497232943aff5",
         "type": "github"
       },
       "original": {
