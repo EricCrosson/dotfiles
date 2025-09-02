@@ -283,7 +283,7 @@
     };
 
     # Enable Open WebUI service
-    open-webui.enable = true;
+    # open-webui.enable = true;
   };
 
   sops = {
