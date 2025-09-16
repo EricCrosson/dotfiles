@@ -11,7 +11,7 @@
     ltex-ls
     nil
     nodePackages.bash-language-server
-    nodePackages.dockerfile-language-server-nodejs
+    nodePackages.dockerfile-language-server
     nodePackages.typescript-language-server
     nodePackages.vscode-langservers-extracted
     (fenix.complete.withComponents [
