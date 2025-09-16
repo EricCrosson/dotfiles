@@ -221,26 +221,32 @@
     };
 
     git = {
-      includes = [
+      includes = let
+        workConfig = {
+          commit = {
+            gpgSign = true;
+          };
+          core = {
+            sshCommand = "ssh -i ~/.ssh/id_rsa";
+          };
+          tag = {
+            gpgSign = true;
+          };
+          user = {
+            email = "${profile.email}";
+          };
+          signing = {
+            signingKey = "5BD755D7FD4AFCB6";
+          };
+        };
+      in [
         {
           condition = "gitdir:~/workspace/BitGo/";
-          contents = {
-            commit = {
-              gpgSign = true;
-            };
-            core = {
-              sshCommand = "ssh -i ~/.ssh/id_rsa";
-            };
-            tag = {
-              gpgSign = true;
-            };
-            user = {
-              email = "${profile.email}";
-            };
-            signing = {
-              signingKey = "5BD755D7FD4AFCB6";
-            };
-          };
+          contents = workConfig;
+        }
+        {
+          condition = "gitdir:~/.password-store/";
+          contents = workConfig;
         }
       ];
     };
