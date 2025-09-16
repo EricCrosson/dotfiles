@@ -98,7 +98,7 @@ in {
       # for shell
       eza
       fzf
-      python3Full
+      python3
       starship
       wakatime
     ];
