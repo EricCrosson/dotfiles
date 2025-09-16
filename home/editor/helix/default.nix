@@ -5,13 +5,13 @@
   ...
 }: {
   home.packages = with pkgs; [
+    dockerfile-language-server
     gopls
     hadolint
     jsonnet-language-server
     ltex-ls
     nil
     nodePackages.bash-language-server
-    nodePackages.dockerfile-language-server
     nodePackages.typescript-language-server
     nodePackages.vscode-langservers-extracted
     (fenix.complete.withComponents [
