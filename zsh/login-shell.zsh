@@ -57,11 +57,6 @@ zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cput
 # configure my preferred ctrl-w behavior
 export WORDCHARS=''
 
-# Invoke GitHub Copilot for shell completions
-function copilot {
-  GITHUB_TOKEN="" gh copilot suggest -t shell "$@"
-}
-
 #####################################################################
 # fzf config
 #####################################################################
