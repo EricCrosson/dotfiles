@@ -71,12 +71,13 @@
       CLAUDE_CODE_GITHUB_TOKEN = "$(cat ${config.sops.secrets.claude_code_github_token.path} 2>/dev/null || echo '')";
       CLAUDE_CODE_ATLASSIAN_API_TOKEN = "$(cat ${config.sops.secrets.claude_code_atlassian_api_token.path} 2>/dev/null || echo '')";
       GITHUB_TOKEN = "$(cat ${config.sops.secrets.github_token_bitgo.path} 2>/dev/null || echo '')";
+      GITHUB_TOKEN_BITGO_NIX = "$(cat ${config.sops.secrets.github_token_bitgo_nix.path} 2>/dev/null || echo '')";
       GITHUB_TOKEN_PERSONAL = "$(cat  ${config.sops.secrets.github_token_personal.path} 2>/dev/null || echo '')";
       GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = "$(cat ${config.sops.secrets.google_service_account_private_key.path} 2>/dev/null || echo '')";
       JIRA_API_TOKEN = "$(cat ${config.sops.secrets.jira_token_bitgo.path} 2>/dev/null || echo '')";
       JIRA_USERNAME = "ericcrosson@bitgo.com";
       YOUTUBE_API_KEY = "$(cat ${config.sops.secrets.youtube_api_key.path} 2>/dev/null || echo '')";
-      NIX_CONFIG = "access-tokens = github.com=\${GITHUB_TOKEN}";
+      NIX_CONFIG = "access-tokens = github.com=\${GITHUB_TOKEN_BITGO_NIX}";
       ZED_AWS_PROFILE = "dev";
     };
 
@@ -300,6 +301,7 @@
       claude_code_atlassian_api_token = {};
       github_ssh_private_key_personal = {};
       github_token_bitgo = {};
+      github_token_bitgo_nix = {};
       github_token_personal = {};
       google_service_account_private_key = {};
       jira_token_bitgo = {};

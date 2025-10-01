@@ -31,6 +31,11 @@
           owner = profile.username;
           group = profile.username;
         };
+        github_token_bitgo_nix = {
+          mode = "0400";
+          owner = profile.username;
+          group = profile.username;
+        };
         google_service_account_private_key = {
           mode = "0400";
           owner = profile.username;
