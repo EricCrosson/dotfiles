@@ -81,7 +81,7 @@ in {
           model = mkOption {
             type = types.str;
             description = "Full model identifier";
-            example = "bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0";
+            example = "bedrock/us.anthropic.claude-sonnet-4-5-20250929-v1:0";
           };
 
           aws_profile_name = mkOption {

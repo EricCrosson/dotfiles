@@ -44,7 +44,7 @@ with lib; {
 
         name = mkOption {
           type = types.str;
-          default = "bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0";
+          default = "bedrock/us.anthropic.claude-sonnet-4-5-20250929-v1:0";
           description = "Full model name/identifier";
         };
 

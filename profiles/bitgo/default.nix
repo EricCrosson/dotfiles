@@ -193,7 +193,7 @@
           CLAUDE_CODE_USE_BEDROCK = "1";
           DISABLE_TELEMETRY = "1";
         };
-        model = "arn:aws:bedrock:us-west-2:319156457634:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0";
+        model = "arn:aws:bedrock:us-west-2:319156457634:inference-profile/us.anthropic.claude-sonnet-4-5-20250929-v1:0";
         preferredNotifChannel = "terminal_bell";
         theme = "dark";
       };
