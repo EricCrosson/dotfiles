@@ -1,7 +1,7 @@
 {
   pkgs,
   inputs,
-  profile,
+  # profile,
   ...
 }: {
   home.packages = with pkgs; [
@@ -61,7 +61,9 @@
       }
     ];
     settings = {
-      theme = "catppuccin_${pkgs.lib.strings.toLower profile.preferences.theme}";
+      # theme = "catppuccin_${pkgs.lib.strings.toLower profile.preferences.theme}";
+      # Spice it up a notch.
+      theme = "catppuccin_latte";
       keys.normal = {
         C-h = "jump_view_left";
         C-j = "jump_view_down";
