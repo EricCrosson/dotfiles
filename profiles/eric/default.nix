@@ -64,7 +64,6 @@ in {
       broot
       comma
       curl
-      delta
       du-dust
       entr
       fd
@@ -163,6 +162,15 @@ in {
       enable = true;
     };
 
+    delta = {
+      enable = true;
+      enableGitIntegration = true;
+      options = {
+        line-numbers = true;
+        features = "catppuccin-${pkgs.lib.strings.toLower profile.preferences.theme}";
+      };
+    };
+
     direnv = {
       enable = true;
       config = {
@@ -191,51 +199,6 @@ in {
 
     git = {
       enable = true;
-      userName = "Eric Crosson";
-      userEmail = "eric.s.crosson@utexas.edu";
-      aliases = {
-        a = "add";
-        b = "branch";
-        c = "commit";
-        co = "checkout";
-        # https://stackoverflow.com/a/70205254
-        continue = "-c core.editor=true rebase --continue";
-        d = "diff";
-        ds = "diff --cached";
-        f = "fetch";
-        l = "log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'";
-        p = "pull";
-        fsl = "push --force-with-lease";
-        re = "restore";
-        rs = "restore --staged";
-        s = "status";
-        # [c]heck[o]ut [f]uzzy
-        cof = ''
-          !f() { \
-            git branch --no-color --sort=-committerdate --format='%(refname:short)' | fzf --header 'git checkout' | xargs git checkout
-          }; f
-        '';
-        # [c]heck[o]ut [p]ull request
-        cop = ''
-          !f() { \
-            gh pr list --author "@me" | fzf --header 'checkout PR' | awk '{print $(NF-5)}' | xargs git checkout
-          }; f
-        '';
-        su = "submodule update";
-
-        exec = "!exec ";
-
-        # After `git reset --soft HEAD~1`, commit with the same commit message
-        # Source: https://stackoverflow.com/a/25930432
-        recommit = "commit --reuse-message=HEAD@{1}";
-      };
-      delta = {
-        enable = true;
-        options = {
-          line-numbers = true;
-          features = "catppuccin-${pkgs.lib.strings.toLower profile.preferences.theme}";
-        };
-      };
       ignores = [
         ".DS_Store"
         "/.claude/settings.local.json"
@@ -249,9 +212,45 @@ in {
         #   path = "~/.config/git/catppuccin.gitconfig";
         # }
       ];
-      extraConfig = {
+      settings = {
         advice = {
           skippedCherryPicks = false;
+        };
+        aliases = {
+          a = "add";
+          b = "branch";
+          c = "commit";
+          co = "checkout";
+          # https://stackoverflow.com/a/70205254
+          continue = "-c core.editor=true rebase --continue";
+          d = "diff";
+          ds = "diff --cached";
+          f = "fetch";
+          l = "log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'";
+          p = "pull";
+          fsl = "push --force-with-lease";
+          re = "restore";
+          rs = "restore --staged";
+          s = "status";
+          # [c]heck[o]ut [f]uzzy
+          cof = ''
+            !f() { \
+              git branch --no-color --sort=-committerdate --format='%(refname:short)' | fzf --header 'git checkout' | xargs git checkout
+            }; f
+          '';
+          # [c]heck[o]ut [p]ull request
+          cop = ''
+            !f() { \
+              gh pr list --author "@me" | fzf --header 'checkout PR' | awk '{print $(NF-5)}' | xargs git checkout
+            }; f
+          '';
+          su = "submodule update";
+
+          exec = "!exec ";
+
+          # After `git reset --soft HEAD~1`, commit with the same commit message
+          # Source: https://stackoverflow.com/a/25930432
+          recommit = "commit --reuse-message=HEAD@{1}";
         };
         branch = {
           sort = "-committerdate";
@@ -312,6 +311,10 @@ in {
         };
         tag = {
           sort = "version:refname";
+        };
+        user = {
+          name = "Eric Crosson";
+          email = "eric.s.crosson@utexas.edu";
         };
       };
     };
