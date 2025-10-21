@@ -216,7 +216,7 @@ in {
         advice = {
           skippedCherryPicks = false;
         };
-        aliases = {
+        alias = {
           a = "add";
           b = "branch";
           c = "commit";
