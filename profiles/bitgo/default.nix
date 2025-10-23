@@ -29,7 +29,7 @@
       kubectl
       kubectx
       kustomize
-      mkvtoolnix-cli
+      # mkvtoolnix-cli  # temporarily broken
       nodejs # Install npm
       obsidian
       openai-whisper
