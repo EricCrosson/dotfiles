@@ -1,10 +1,5 @@
 zmodload zsh/terminfo
 
-setopt autopushd
-setopt appendhistory
-setopt interactivecomments
-setopt histfindnodups
-
 # SSH Agent configuration using keychain
 # Source the keychain environment file if it exists
 if [[ -f "$HOME/.keychain/$(hostname)-sh" ]]; then
@@ -21,41 +16,30 @@ autoload -Uz edit-command-line && \
   zle -N edit-command-line && \
   bindkey '^X^E' edit-command-line
 
-zstyle ':completion:*' group-name ""
-zstyle ':completion:*:messages' format '%d'
-zstyle ':completion:*:descriptions' format '%d'
-zstyle ':completion:*:options' verbose yes
-zstyle ':completion:*:values' verbose yes
-zstyle ':completion:*:options' prefix-needed yes
-zstyle ':completion:*' use-cache true             # Use cache completion
-zstyle ':completion:*:default' menu select=1
-zstyle ':completion:*' matcher-list \
-    "" \
-    'm:{a-z}={A-Z}' \
-    'l:|=* r:|[.,_-]=* r:|=* m:{a-z}={A-Z}'
-# sudo completions
-zstyle ':completion:*:sudo:*' command-path \
-  /usr/local/sbin \
-  /usr/local/bin \
-  /usr/sbin \
-  /usr/bin \
-  /sbin \
-  /bin
-zstyle ':completion:*' menu select
-zstyle ':completion:*' keep-prefix
-zstyle ':completion:*' completer \
-  _oldlist \
-  _complete \
-  _match \
-  _ignored \
-  _approximate \
-  _list \
-  _history
+# use case-insensitive completions (for example, `cd doc<TAB>` matches `Documents`)
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
-zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cputime,command"
-
-# configure my preferred ctrl-w behavior
-export WORDCHARS=''
+#####################################################################
+# fzf-tab config
+#####################################################################
+# disable sort when completing `git checkout`
+zstyle ':completion:*:git-checkout:*' sort false
+# set descriptions format to enable group support
+zstyle ':completion:*:descriptions' format '[%d]'
+# set list-colors to enable filename colorizing
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+# force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
+zstyle ':completion:*' menu no
+# preview directory's content with eza when completing cd
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+# custom fzf flags
+# NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default
+zstyle ':fzf-tab:*' fzf-flags --color=fg:1,fg+:2 --bind=tab:accept
+# To make fzf-tab follow FZF_DEFAULT_OPTS.
+# NOTE: This may lead to unexpected behavior since some flags break this plugin. See Aloxaf/fzf-tab#455.
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+# switch group using `<` and `>`
+zstyle ':fzf-tab:*' switch-group '<' '>'
 
 #####################################################################
 # fzf config

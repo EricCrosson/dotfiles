@@ -419,11 +419,7 @@ in {
 
     zsh = {
       enable = true;
-      # My global NixOS config does `compinit` already.
-      # Disabling it in my user's `.zshrc` because calling it multiple
-      # times causes startup delay, see
-      # https://github.com/nix-community/home-manager/blob/990b82ecd31f6372bc4c3f39a9171961bc370a22/modules/programs/zsh.nix#L518-L524
-      enableCompletion = false;
+      completionInit = builtins.readFile ../../zsh/compinit.zsh;
 
       history = {
         expireDuplicatesFirst = true;
@@ -437,8 +433,7 @@ in {
 
       plugins = [
         {
-          name = "esc-zsh/smart-cd";
-          file = "smart-cd.zsh";
+          name = "smart-cd";
           src = pkgs.fetchFromGitHub {
             owner = "esc-zsh";
             repo = "smart-cd";
@@ -447,8 +442,7 @@ in {
           };
         }
         {
-          name = "hlissner/zsh-autopair";
-          file = "zsh-autopair.plugin.zsh";
+          name = "zsh-autopair";
           src = pkgs.fetchFromGitHub {
             owner = "hlissner";
             repo = "zsh-autopair";
@@ -457,7 +451,7 @@ in {
           };
         }
         {
-          name = "jreese/zsh-titles";
+          name = "zsh-titles";
           file = "titles.plugin.zsh";
           src = pkgs.fetchFromGitHub {
             owner = "jreese";
@@ -467,8 +461,7 @@ in {
           };
         }
         {
-          name = "lukechilds/zsh-better-npm-completion";
-          file = "zsh-better-npm-completion.plugin.zsh";
+          name = "zsh-better-npm-completion";
           src = pkgs.fetchFromGitHub {
             owner = "lukechilds";
             repo = "zsh-better-npm-completion";
@@ -477,7 +470,7 @@ in {
           };
         }
         {
-          name = "esc-zsh/jq-zsh-plugin";
+          name = "jq-zsh-plugin";
           file = "jq.plugin.zsh";
           src = pkgs.fetchFromGitHub {
             owner = "esc-zsh";
@@ -497,39 +490,7 @@ in {
           };
         }
         {
-          # does incur a runtime slowdown, especially during paste
-          name = "zsh-users/zsh-autosuggestions";
-          file = "zsh-autosuggestions.plugin.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "zsh-users";
-            repo = "zsh-autosuggestions";
-            rev = "c3d4e576c9c86eac62884bd47c01f6faed043fc5";
-            sha256 = "sha256-B+Kz3B7d97CM/3ztpQyVkE6EfMipVF8Y4HJNfSRXHtU=";
-          };
-        }
-        {
-          name = "zsh-users/zsh-completions";
-          file = "zsh-completions.plugin.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "zsh-users";
-            repo = "zsh-completions";
-            rev = "f7c3173886f4f56bf97d622677c6d46ab005831f";
-            sha256 = "sha256-sZCHI4ZFfRjcG1XF/3ABf9+zv7f2Di8Xrh4Dr+qt4Us=";
-          };
-        }
-        {
-          name = "zsh-users/zsh-history-substring-search";
-          file = "zsh-history-substring-search.plugin.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "zsh-users";
-            repo = "zsh-history-substring-search";
-            rev = "8dd05bfcc12b0cd1ee9ea64be725b3d9f713cf64";
-            sha256 = "sha256-houujb1CrRTjhCc+dp3PRHALvres1YylgxXwjjK6VZA=";
-          };
-        }
-        {
-          name = "peterhurford/up.zsh";
-          file = "up.plugin.zsh";
+          name = "up.zsh";
           src = pkgs.fetchFromGitHub {
             owner = "peterhurford";
             repo = "up.zsh";
@@ -538,8 +499,7 @@ in {
           };
         }
         {
-          name = "esc-zsh/mc";
-          file = "mc.plugin.zsh";
+          name = "mc";
           src = pkgs.fetchFromGitHub {
             owner = "esc-zsh";
             repo = "mc";
@@ -548,8 +508,7 @@ in {
           };
         }
         {
-          name = "esc-zsh/rh";
-          file = "rh.plugin.zsh";
+          name = "rh";
           src = pkgs.fetchFromGitHub {
             owner = "esc-zsh";
             repo = "rh";
@@ -557,6 +516,56 @@ in {
             sha256 = "sha256-vWHbPnGPNQT3VytHzy1vS63C0vl26x+5lYIumDC2ei4=";
           };
         }
+        # must be loaded before zsh-autosuggestions
+        {
+          name = "fzf-tab";
+          src = pkgs.fetchFromGitHub {
+            owner = "aloxaf";
+            repo = "fzf-tab";
+            rev = "fac145167f7ec1861233c54de0c8900b09c650fe";
+            sha256 = "sha256-1Ior+/9e+M+Fc1u0uq5HhknlGRS96q7tazhEE6rmx9Y=";
+          };
+        }
+        {
+          # does incur a runtime slowdown, especially during paste
+          name = "zsh-autosuggestions";
+          src = pkgs.fetchFromGitHub {
+            owner = "zsh-users";
+            repo = "zsh-autosuggestions";
+            rev = "c3d4e576c9c86eac62884bd47c01f6faed043fc5";
+            sha256 = "sha256-B+Kz3B7d97CM/3ztpQyVkE6EfMipVF8Y4HJNfSRXHtU=";
+          };
+        }
+        {
+          name = "zsh-completions";
+          src = pkgs.fetchFromGitHub {
+            owner = "zsh-users";
+            repo = "zsh-completions";
+            rev = "f7c3173886f4f56bf97d622677c6d46ab005831f";
+            sha256 = "sha256-sZCHI4ZFfRjcG1XF/3ABf9+zv7f2Di8Xrh4Dr+qt4Us=";
+          };
+        }
+        {
+          name = "zsh-history-substring-search";
+          src = pkgs.fetchFromGitHub {
+            owner = "zsh-users";
+            repo = "zsh-history-substring-search";
+            rev = "8dd05bfcc12b0cd1ee9ea64be725b3d9f713cf64";
+            sha256 = "sha256-houujb1CrRTjhCc+dp3PRHALvres1YylgxXwjjK6VZA=";
+          };
+        }
+      ];
+
+      sessionVariables = {
+        # Configure my preferred ctrl-w behavior
+        WORDCHARS = "";
+      };
+
+      setOptions = [
+        "autopushd"
+        "appendhistory"
+        "interactivecomments"
+        "histfindnodups"
       ];
 
       shellAliases = {
