@@ -24,7 +24,6 @@
         "ffmpeg"
         "imagemagick"
         "md5sha1sum"
-        "pass-otp"
         "xcodegen"
         "ykman"
       ];
