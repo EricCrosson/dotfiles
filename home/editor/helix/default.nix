@@ -23,7 +23,7 @@
     ])
     rust-analyzer-nightly
     shellcheck
-    taplo-lsp # TOML
+    taplo # TOML LSP
 
     # Python
     pyright

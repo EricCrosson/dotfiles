@@ -64,7 +64,7 @@ in {
       broot
       comma
       curl
-      du-dust
+      dust
       entr
       fd
       fx
