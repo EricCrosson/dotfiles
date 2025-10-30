@@ -99,7 +99,7 @@ in {
       fzf
       python3
       starship
-      wakatime
+      wakatime-cli
     ];
 
     file = {
