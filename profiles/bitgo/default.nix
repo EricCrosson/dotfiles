@@ -189,6 +189,7 @@
         };
       };
       settings = {
+        cleanupPeriodDays = 99999;
         env = {
           CLAUDE_CODE_USE_BEDROCK = "1";
           DISABLE_TELEMETRY = "1";
