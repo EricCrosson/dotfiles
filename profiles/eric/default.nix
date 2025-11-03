@@ -490,7 +490,7 @@ in {
           };
         }
         {
-          name = "up.zsh";
+          name = "up";
           src = pkgs.fetchFromGitHub {
             owner = "peterhurford";
             repo = "up.zsh";
