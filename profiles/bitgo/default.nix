@@ -58,12 +58,6 @@
         source = ../../.claude/CLAUDE.md;
       };
 
-      ".npmrc" = {
-        text = ''
-          prefix=${config.home.homeDirectory}/.local/share/npm
-        '';
-      };
-
       ".ssh/id_rsa_personal.pub".source = ../../.ssh/id_rsa_personal.pub;
     };
 
