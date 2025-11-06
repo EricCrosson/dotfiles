@@ -1,8 +1,8 @@
 {
   system,
-  pre-commit-hooks,
+  git-hooks,
 }:
-pre-commit-hooks.lib.${system}.run {
+git-hooks.lib.${system}.run {
   src = ../.;
   hooks = {
     actionlint.enable = true;
@@ -12,7 +12,9 @@ pre-commit-hooks.lib.${system}.run {
     };
     deadnix.enable = true;
     prettier.enable = true;
+    ripsecrets.enable = true;
     statix.enable = true;
     stylua.enable = true;
+    trufflehog.enable = true;
   };
 }

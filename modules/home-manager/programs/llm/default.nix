@@ -15,9 +15,7 @@ with lib; let
   };
 in {
   imports = [
-    ../../options/aws.nix
-    ../../options/claude.nix
-    ../../options/services.nix
+    ../../options
   ];
 
   options.programs.llm = {

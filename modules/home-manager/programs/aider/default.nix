@@ -8,8 +8,7 @@ with lib; let
   cfg = config.programs.aider;
 in {
   imports = [
-    ../../options/aws.nix
-    ../../options/claude.nix
+    ../../options
   ];
 
   options.programs.aider = {

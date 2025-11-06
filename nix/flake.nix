@@ -3,8 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    pre-commit-hooks = {
-      url = "github:cachix/pre-commit-hooks.nix";
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix = {
@@ -17,7 +17,7 @@
     # deadnix: skip
     self,
     nixpkgs,
-    pre-commit-hooks,
+    git-hooks,
     sops-nix,
   }: let
     forEachSystem = nixpkgs.lib.genAttrs [
@@ -28,7 +28,7 @@
   in {
     checks = forEachSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
-      pre-commit-check = pkgs.callPackage ./pre-commit-hooks.nix {inherit pre-commit-hooks;};
+      pre-commit-check = pkgs.callPackage ./git-hooks.nix {inherit git-hooks;};
     in {
       inherit pre-commit-check;
     });
@@ -37,7 +37,7 @@
 
     devShells = forEachSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
-      pre-commit-check = pkgs.callPackage ./pre-commit-hooks.nix {inherit pre-commit-hooks;};
+      pre-commit-check = pkgs.callPackage ./git-hooks.nix {inherit git-hooks;};
     in {
       default = pkgs.mkShell {
         inherit (pre-commit-check) shellHook;

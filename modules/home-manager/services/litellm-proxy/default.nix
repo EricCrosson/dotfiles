@@ -2,6 +2,7 @@
   pkgs,
   lib,
   config,
+  inputs,
   ...
 }:
 with lib; let
@@ -28,9 +29,7 @@ with lib; let
   configToJson = models: builtins.toJSON {model_list = map modelToAttrs models;};
 in {
   imports = [
-    ../../options/aws.nix
-    ../../options/claude.nix
-    ../../options/services.nix
+    ../../options
   ];
 
   options.services.litellm-proxy = {
@@ -44,7 +43,7 @@ in {
 
     aws-saml = mkOption {
       type = types.package;
-      default = pkgs.callPackage ../../../../pkgs/aws-saml {};
+      inherit (inputs.aws-saml-bitgo.packages.${pkgs.system}) default;
       description = "aws-saml package for AWS authentication";
     };
 

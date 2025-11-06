@@ -8,7 +8,7 @@ with lib; let
   cfg = config.services.open-webui;
 in {
   imports = [
-    ../../options/services.nix
+    ../../options
   ];
 
   options.services.open-webui = {

@@ -5,7 +5,7 @@
 }:
 with lib; {
   imports = [
-    ./aws.nix
+    ../aws
   ];
   options.claude-options = {
     bedrock = {

@@ -19,8 +19,20 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    _1password-shell-plugins = {
+      url = "github:1Password/shell-plugins";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     atuin = {
-      url = "github:ellie/atuin/9e42043fbaf65010120d8d3dfe1e8d9a388c00e7";
+      url = "github:ellie/atuin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    aws-console-bitgo = {
+      url = "git+ssh://git@github.com-bitgo/bitgo/aws-console";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    aws-saml-bitgo = {
+      url = "git+ssh://git@github.com-bitgo/bitgo/aws-saml";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     bash-barrier = {
@@ -39,7 +51,11 @@
       url = "github:ipetkov/crane";
     };
     fenix = {
-      url = "github:nix-community/fenix/0c944d7de8c590857228dfd4fd3e890849818346";
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    gh-agent = {
+      url = "git+ssh://git@github.com-bitgo/bitgo/gh-agent";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     gh-arm = {

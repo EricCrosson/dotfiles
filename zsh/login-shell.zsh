@@ -1,11 +1,5 @@
 zmodload zsh/terminfo
 
-# SSH Agent configuration using keychain
-# Source the keychain environment file if it exists
-if [[ -f "$HOME/.keychain/$(hostname)-sh" ]]; then
-  source "$HOME/.keychain/$(hostname)-sh"
-fi
-
 # cycle through last-words with M-,
 autoload copy-earlier-word && \
   zle -N copy-earlier-word && \

@@ -102,6 +102,12 @@ in {
     ];
 
     file = {
+      ".config/git/allowed_signers" = {
+        text = ''
+          eric.s.crosson@utexas.edu ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9idpkqe6Rk8pLXKhqCfL6Bc3jGMHdfDj06C0AU5P3J
+        '';
+      };
+
       # Add catppuccin delta theme configuration
       ".config/git/catppuccin.gitconfig".source = "${catppuccinDelta}/catppuccin.gitconfig";
     };
@@ -183,6 +189,7 @@ in {
     gh = {
       enable = true;
       extensions = [
+        inputs.gh-agent.packages.${pkgs.system}.gh-agent
         inputs.gh-arm.packages.${pkgs.system}.default
         inputs.gh-automerge.packages.${pkgs.system}.default
       ];
@@ -262,7 +269,7 @@ in {
           ui = "auto";
         };
         commit = {
-          gpgSign = false;
+          gpgSign = true;
           verbose = true;
         };
         core = {
@@ -285,6 +292,13 @@ in {
         };
         github = {
           user = "${profile.email}";
+        };
+        gpg = {
+          format = "ssh";
+        };
+        "gpg \"ssh\"" = {
+          program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+          allowedSignersFile = "${profile.homeDirectory}/.config/git/allowed_signers";
         };
         init = {
           defaultBranch = "master";
@@ -314,6 +328,7 @@ in {
         user = {
           name = "Eric Crosson";
           email = "eric.s.crosson@utexas.edu";
+          signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9idpkqe6Rk8pLXKhqCfL6Bc3jGMHdfDj06C0AU5P3J";
         };
       };
     };

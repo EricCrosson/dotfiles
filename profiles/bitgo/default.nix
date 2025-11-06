@@ -6,54 +6,16 @@
   ...
 }: {
   imports = [
+    ./modules
     ../../modules/home-manager
-    ../../modules/home-manager/options/services.nix
+    inputs._1password-shell-plugins.hmModules.default
   ];
 
+  bitgo.ssh.enable = true;
+
   home = {
-    packages = with pkgs; [
-      amazon-ecr-credential-helper
-      awscli2
-      dive
-      (pkgs.symlinkJoin {
-        name = "go-jirarenamed";
-        paths = [pkgs.go-jira];
-        postBuild = ''
-          rm $out/bin/jira
-          ln -s ${pkgs.go-jira}/bin/jira $out/bin/j
-        '';
-      })
-      jira-cli-go
-      k9s
-      kubectl
-      kubectx
-      kustomize
-      llama-cpp
-      mkvtoolnix-cli
-      nodejs # Install npm
-      obsidian
-      openai-whisper
-      poppler-utils # Install pdftotext for aichat
-      yq-go
-
-      inputs.percentage-changed-calculator.packages.${pkgs.system}.default
-
-      (callPackage ../../pkgs/aws-console {})
-      (callPackage ../../pkgs/aws-saml {})
-      (callPackage ../../pkgs/yt-summarize {})
-    ];
-
     file = {
-      ".config/.jira/.config.yml" = {
-        source = ../../.config/.jira/.config.yml;
-      };
-      ".jira.d" = {
-        # I would prefer this to be true but that doesn't appear to be working right now
-        recursive = false;
-        source = ../../.jira.d;
-      };
-
-      # TODO: turn these into agents
+      # TODO: turn these into agents for improved context management.
       ".claude/CLAUDE.md" = {
         source = ../../.claude/CLAUDE.md;
       };
@@ -61,17 +23,31 @@
       ".ssh/id_rsa_personal.pub".source = ../../.ssh/id_rsa_personal.pub;
     };
 
+    packages = with pkgs; [
+      amazon-ecr-credential-helper
+      awscli2
+      k9s
+      kubectl
+      kubectx
+      kustomize
+      nodejs # Install npm
+      openai-whisper
+      poppler-utils # Install pdftotext for aichat
+      yq-go
+
+      inputs.percentage-changed-calculator.packages.${pkgs.system}.default
+
+      inputs.aws-console-bitgo.packages.${pkgs.system}.default
+      inputs.aws-saml-bitgo.packages.${pkgs.system}.default
+
+      # 1Password CLI for secret management
+      _1password-cli
+
+      # Custom 1Password shell plugin for git-disjoint
+      (pkgs.callPackage ../../pkgs/op-plugin-git-disjoint {})
+    ];
+
     sessionVariables = {
-      CLAUDE_CODE_GITHUB_TOKEN = "$(cat ${config.sops.secrets.claude_code_github_token.path} 2>/dev/null || echo '')";
-      CLAUDE_CODE_ATLASSIAN_API_TOKEN = "$(cat ${config.sops.secrets.claude_code_atlassian_api_token.path} 2>/dev/null || echo '')";
-      GITHUB_TOKEN = "$(cat ${config.sops.secrets.github_token_bitgo.path} 2>/dev/null || echo '')";
-      GITHUB_TOKEN_BITGO_NIX = "$(cat ${config.sops.secrets.github_token_bitgo_nix.path} 2>/dev/null || echo '')";
-      GITHUB_TOKEN_PERSONAL = "$(cat  ${config.sops.secrets.github_token_personal.path} 2>/dev/null || echo '')";
-      GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = "$(cat ${config.sops.secrets.google_service_account_private_key.path} 2>/dev/null || echo '')";
-      JIRA_API_TOKEN = "$(cat ${config.sops.secrets.jira_token_bitgo.path} 2>/dev/null || echo '')";
-      JIRA_USERNAME = "ericcrosson@bitgo.com";
-      YOUTUBE_API_KEY = "$(cat ${config.sops.secrets.youtube_api_key.path} 2>/dev/null || echo '')";
-      NIX_CONFIG = "access-tokens = github.com=\${GITHUB_TOKEN_BITGO_NIX}";
       ZED_AWS_PROFILE = "dev";
     };
 
@@ -81,10 +57,24 @@
           run install -m600 "${config.sops.secrets.github_ssh_private_key_personal.path}" "${config.home.homeDirectory}/.ssh/id_rsa_personal"
         fi
       '';
+
+      installOpPlugin = config.lib.dag.entryAfter ["writeBoundary"] ''
+        run mkdir -p ~/.op/plugins/local
+        run chmod 700 ~/.op ~/.op/plugins ~/.op/plugins/local 2>/dev/null || true
+        run cp -f ${pkgs.callPackage ../../pkgs/op-plugin-git-disjoint {}}/bin/op-plugin-git-disjoint \
+          ~/.op/plugins/local/
+      '';
     };
   };
 
   programs = {
+    _1password-shell-plugins = {
+      enable = true;
+      plugins = with pkgs; [
+        gh
+      ];
+    };
+
     aichat = {
       enable = true;
       settings = {
@@ -128,16 +118,32 @@
 
     claude-code = {
       enable = true;
-      package = pkgs.symlinkJoin {
-        name = "claude-code-wrapped";
-        paths = [pkgs.claude-code];
-        buildInputs = [pkgs.makeWrapper];
-        postBuild = ''
-          wrapProgram $out/bin/claude \
-            --set AWS_PROFILE "${config.aws-options.profile.default}" \
-            --set AWS_REGION "${config.aws-options.region.default}"
-        '';
-      };
+      package = let
+        basePackage = pkgs.symlinkJoin {
+          name = "claude-code-wrapped";
+          paths = [pkgs.claude-code];
+          buildInputs = [pkgs.makeWrapper];
+          postBuild = ''
+            wrapProgram $out/bin/claude \
+              --set AWS_PROFILE "${config.aws-options.profile.default}" \
+              --set AWS_REGION "${config.aws-options.region.default}"
+          '';
+          meta.mainProgram = "claude";
+        };
+      in
+        # TODO(opsec): migrate to proper 1Password plugins
+        # Temporary: using direct op read until plugins created
+        pkgs.symlinkJoin {
+          name = "claude-code-with-secrets";
+          paths = [basePackage];
+          buildInputs = [pkgs.makeWrapper pkgs._1password-cli];
+          postBuild = ''
+            wrapProgram $out/bin/claude \
+              --run 'export CLAUDE_CODE_GITHUB_TOKEN=$(op read "op://Nix-Secrets/claude-code-github-token/token" 2>/dev/null || true)' \
+              --run 'export CLAUDE_CODE_ATLASSIAN_API_TOKEN=$(op read "op://Nix-Secrets/claude-code-atlassian-api-token/token" 2>/dev/null || true)'
+          '';
+          meta.mainProgram = "claude";
+        };
       commands = {
         grug = ''
           You are grug. You talk like grug. You code like grug. You do what grug do.
@@ -159,7 +165,7 @@
           ];
           env = {
             JIRA_URL = "https=//bitgoinc.atlassian.net";
-            JIRA_USERNAME = "ericcrosson@bitgo.com";
+            JIRA_USERNAME = "${profile.email}";
             JIRA_API_TOKEN = "\${CLAUDE_CODE_ATLASSIAN_API_TOKEN}";
           };
         };
@@ -170,7 +176,7 @@
           ];
           env = {
             CONFLUENCE_URL = "https=//bitgoinc.atlassian.net/wiki";
-            CONFLUENCE_USERNAME = "ericcrosson@bitgo.com";
+            JIRA_USERNAME = "${profile.email}";
             CONFLUENCE_API_TOKEN = "\${CLAUDE_CODE_ATLASSIAN_API_TOKEN}";
           };
         };
@@ -206,16 +212,6 @@
       };
     };
 
-    llm = {
-      enable = true;
-      models = [
-        {
-          inherit (config.claude-options.models.sonnet) id name;
-          api_base = config.services-options.litellm-proxy.baseUrl;
-        }
-      ];
-    };
-
     git = {
       includes = let
         workConfig = {
@@ -227,6 +223,12 @@
           };
           tag = {
             gpgSign = true;
+          };
+          url = {
+            # Rewrite BitGo URLs to use github.com-bitgo SSH alias
+            # This ensures work repos use the optimized SSH config with ControlMaster
+            "ssh://git@github.com-bitgo/BitGo/".insteadOf = "https://github.com/BitGo/";
+            "git@github.com-bitgo:BitGo/".insteadOf = "git@github.com:BitGo/";
           };
           user = {
             email = "${profile.email}";
@@ -247,6 +249,16 @@
       ];
     };
 
+    llm = {
+      enable = true;
+      models = [
+        {
+          inherit (config.claude-options.models.sonnet) id name;
+          api_base = config.services-options.litellm-proxy.baseUrl;
+        }
+      ];
+    };
+
     zsh = {
       shellAliases = {
         chat = "aichat";
@@ -257,24 +269,9 @@
   };
 
   services = {
-    # Enable auto-merge services for BitGo PRs
-    auto-merge-bitgo-prs = {
-      previouslyReviewedOpenapiSpecs.enable = true;
-      trivialOpenapiSpecVersionBump.enable = true;
-    };
-
-    # Enable keychain for SSH key management
-    keychain = {
-      enable = true;
-      keys = [
-        "${profile.homeDirectory}/.ssh/id_rsa"
-        "${profile.homeDirectory}/.ssh/id_rsa_personal"
-      ];
-    };
-
-    # Enable LiteLLM proxy for AI models
     litellm-proxy = {
       enable = true;
+      aws-saml = inputs.aws-saml-bitgo.packages.${pkgs.system}.default;
       models = [
         {
           name = config.claude-options.models.sonnet.id;
@@ -284,7 +281,6 @@
       ];
     };
 
-    # Enable Open WebUI service
     # open-webui.enable = true;
   };
 
@@ -292,15 +288,7 @@
     defaultSopsFile = ../../secrets/main.yaml;
     gnupg.home = profile.homeDirectory + "/.gnupg";
     secrets = {
-      claude_code_github_token = {};
-      claude_code_atlassian_api_token = {};
       github_ssh_private_key_personal = {};
-      github_token_bitgo = {};
-      github_token_bitgo_nix = {};
-      github_token_personal = {};
-      google_service_account_private_key = {};
-      jira_token_bitgo = {};
-      youtube_api_key = {};
     };
   };
 }

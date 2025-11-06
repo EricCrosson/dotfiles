@@ -3,3 +3,26 @@
 /.pre-commit-config.yaml
 /result
 *.swp
+
+# Safety first
+*.env
+*.env.*
+.env.local
+*secret*.txt
+*secret*.json
+*secret*.yaml
+*secret*.yml
+*credential*.txt
+*credential*.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+.secrets/
+secrets.*/
+**/secret-files/
+*.backup
+*.bak
+*~
+.sops.yaml.local

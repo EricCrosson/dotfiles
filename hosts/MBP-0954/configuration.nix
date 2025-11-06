@@ -44,6 +44,10 @@
       ];
     };
 
+    launchd.daemons.ssh-agent = {
+      serviceConfig.Disabled = true;
+    };
+
     services.colima = {
       enable = true;
       cpus = 8;
@@ -55,13 +59,6 @@
     };
 
     programs = {
-      gnupg = {
-        agent = {
-          enable = true;
-          enableSSHSupport = true;
-        };
-      };
-
       zsh = {
         enable = true;
       };
