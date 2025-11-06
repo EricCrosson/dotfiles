@@ -353,11 +353,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1762211993,
-        "narHash": "sha256-ueW+bADbMgGMYNSZYqK0bTOIvPqPCokDyKPfq2pz9IQ=",
+        "lastModified": 1762352939,
+        "narHash": "sha256-yYFrlLL3UCyWfZOMnoAtUzS3BB8gk2KpEnl0vHQvkfM=",
         "owner": "helix-editor",
         "repo": "helix",
-        "rev": "663c9d42f8ebcaaf6036e9b17d54c7d2eda92065",
+        "rev": "3f4a286c8dc586d3261bfba3cb2ec3fad5c36efe",
         "type": "github"
       },
       "original": {
