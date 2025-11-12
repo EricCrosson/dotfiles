@@ -29,6 +29,7 @@
       kubectl
       kubectx
       kustomize
+      llama-cpp
       mkvtoolnix-cli
       nodejs # Install npm
       obsidian
