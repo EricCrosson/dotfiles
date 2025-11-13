@@ -15,7 +15,6 @@
       amazon-ecr-credential-helper
       awscli2
       dive
-      element-desktop
       (pkgs.symlinkJoin {
         name = "go-jirarenamed";
         paths = [pkgs.go-jira];
