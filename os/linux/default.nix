@@ -15,9 +15,14 @@
         dtrx
         evtest
         maim
+        rm-improved
         vlc
       ]
       ++ system_specific_packages;
+
+    shellAliases = {
+      rip = "rip --graveyard $HOME/.local/share/Trash";
+    };
 
     file = {
       # DISCUSS: can we use a nix-provided path to this file?

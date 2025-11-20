@@ -82,7 +82,6 @@ in {
       mprocs
       pass
       pueue
-      rm-improved
       sd
       spacer
       units
@@ -574,7 +573,6 @@ in {
         h = "hx --vsplit";
         l = "eza -lg --git --time-style=long-iso";
         npx = "npx --no-install";
-        rip = "rip --graveyard $HOME/.local/share/Trash";
         ssh = "ssh -t";
         viddy = "viddy --differences";
       };
