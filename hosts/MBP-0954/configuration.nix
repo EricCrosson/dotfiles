@@ -27,6 +27,7 @@
       brews = [
         "ffmpeg"
         "imagemagick"
+        "jiratui"
         "md5sha1sum"
         "xcodegen"
         "ykman"
