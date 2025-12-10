@@ -14,7 +14,6 @@ git-hooks.lib.${system}.run {
     prettier.enable = true;
     ripsecrets.enable = true;
     statix.enable = true;
-    stylua.enable = true;
     trufflehog.enable = true;
   };
 }
