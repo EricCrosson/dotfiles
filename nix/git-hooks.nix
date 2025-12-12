@@ -1,8 +1,8 @@
 {
-  system,
+  stdenv,
   git-hooks,
 }:
-git-hooks.lib.${system}.run {
+git-hooks.lib.${stdenv.hostPlatform.system}.run {
   src = ../.;
   hooks = {
     actionlint.enable = true;
