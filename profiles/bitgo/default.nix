@@ -19,8 +19,6 @@
       ".claude/CLAUDE.md" = {
         source = ../../.claude/CLAUDE.md;
       };
-
-      ".ssh/id_rsa_personal.pub".source = ../../.ssh/id_rsa_personal.pub;
     };
 
     packages = with pkgs; [
