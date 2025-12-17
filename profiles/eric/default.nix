@@ -70,6 +70,7 @@ in {
       fx
       git
       git-absorb
+      git-credential-oauth
       git-extras
       gnupg
       gron
@@ -192,6 +193,9 @@ in {
         inputs.gh-arm.packages.${pkgs.system}.default
         inputs.gh-automerge.packages.${pkgs.system}.default
       ];
+      gitCredentialHelper = {
+        enable = false;
+      };
       settings = {
         git_protocol = "https";
         prompt = "enabled";
@@ -216,6 +220,21 @@ in {
         # {
         #   path = "~/.config/git/catppuccin.gitconfig";
         # }
+        {
+          contents = {
+            credential = {
+              username = "EricCrosson";
+            };
+            url = {
+              # Use HTTPS for OAuth
+              "https://EricCrosson@github.com/".insteadOf = "https://github.com";
+            };
+            user = {
+              email = "eric.s.crosson@utexas.edu";
+              signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9idpkqe6Rk8pLXKhqCfL6Bc3jGMHdfDj06C0AU5P3J";
+            };
+          };
+        }
       ];
       settings = {
         advice = {
@@ -277,6 +296,13 @@ in {
           fsmonitor = true;
           untrackedCache = true;
         };
+        credential = {
+          useHttpPath = true;
+          helper = [
+            "cache --timeout 21600"
+            "${pkgs.git-credential-oauth}/bin/oauth"
+          ];
+        };
         diff = {
           algorithm = "histogram";
           colorMoved = "plain";
@@ -321,12 +347,11 @@ in {
           enabled = true;
         };
         tag = {
+          gpgSign = true;
           sort = "version:refname";
         };
         user = {
           name = "Eric Crosson";
-          email = "eric.s.crosson@utexas.edu";
-          signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9idpkqe6Rk8pLXKhqCfL6Bc3jGMHdfDj06C0AU5P3J";
         };
       };
     };
