@@ -300,7 +300,7 @@ in {
           useHttpPath = true;
           helper = [
             "cache --timeout 21600"
-            "${pkgs.git-credential-oauth}/bin/oauth"
+            "${pkgs.git-credential-oauth}/bin/git-credential-oauth"
           ];
         };
         diff = {
