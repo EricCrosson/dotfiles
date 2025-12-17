@@ -211,10 +211,9 @@
             username = "ericcrosson-bitgo";
           };
           url = {
-            # Use HTTPS for OAuth
-            "https://ericcrosson-bitgo@github.com/".insteadOf = "https://github.com/";
             # Rewrite BitGo URLs to use github.com-bitgo SSH alias
             # This ensures work repos use the optimized SSH config with ControlMaster
+            "ssh://git@github.com-bitgo/BitGo/".insteadOf = "https://github.com/BitGo/";
             "git@github.com-bitgo:BitGo/".insteadOf = "git@github.com:BitGo/";
           };
           user = {
