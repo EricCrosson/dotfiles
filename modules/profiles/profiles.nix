@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  # deadnix: skip
+  config,
+  ...
+}: {
   config.profiles = {
     bitgo = {
       username = "ericcrosson";
