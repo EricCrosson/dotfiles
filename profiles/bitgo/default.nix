@@ -50,12 +50,6 @@
     };
 
     activation = {
-      copySSHKey = config.lib.dag.entryAfter ["writeBoundary"] ''
-        if [ -f "${config.sops.secrets.github_ssh_private_key_personal.path}" ]; then
-          run install -m600 "${config.sops.secrets.github_ssh_private_key_personal.path}" "${config.home.homeDirectory}/.ssh/id_rsa_personal"
-        fi
-      '';
-
       installOpPlugin = config.lib.dag.entryAfter ["writeBoundary"] ''
         run mkdir -p ~/.op/plugins/local
         run chmod 700 ~/.op ~/.op/plugins ~/.op/plugins/local 2>/dev/null || true

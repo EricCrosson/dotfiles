@@ -77,7 +77,6 @@ in {
       htop
       hyperfine
       jq
-      keychain
       moreutils
       mprocs
       pass
@@ -276,7 +275,6 @@ in {
           autocrlf = false;
           editor = "${inputs.helix.packages.${pkgs.system}.default}/bin/hx";
           fsmonitor = true;
-          sshCommand = "ssh -i ~/.ssh/id_rsa_personal";
           untrackedCache = true;
         };
         diff = {
