@@ -5,7 +5,7 @@ buildGoModule {
 
   src = ./.;
 
-  vendorHash = "sha256-zojR9VfCtOwjF9ipwsnF+43anXcFXPaOCHO1Py26o24=";
+  vendorHash = "sha256-C+HpeOzrqk1aGKAKz38Yl2zaKIiv4kIZQL9Ld6AnUKM=";
 
   meta = {
     description = "1Password shell plugin for git-disjoint";
