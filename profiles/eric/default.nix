@@ -219,17 +219,6 @@ in {
         # {
         #   path = "~/.config/git/catppuccin.gitconfig";
         # }
-        {
-          contents = {
-            credential = {
-              username = "EricCrosson";
-            };
-            user = {
-              email = "eric.s.crosson@utexas.edu";
-              signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9idpkqe6Rk8pLXKhqCfL6Bc3jGMHdfDj06C0AU5P3J";
-            };
-          };
-        }
       ];
       settings = {
         advice = {
@@ -292,7 +281,7 @@ in {
           untrackedCache = true;
         };
         credential = {
-          useHttpPath = true;
+          username = "EricCrosson";
         };
         diff = {
           algorithm = "histogram";
@@ -343,6 +332,8 @@ in {
         };
         user = {
           name = "Eric Crosson";
+          email = "eric.s.crosson@utexas.edu";
+          signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9idpkqe6Rk8pLXKhqCfL6Bc3jGMHdfDj06C0AU5P3J";
         };
       };
     };

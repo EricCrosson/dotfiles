@@ -210,6 +210,10 @@
           credential = {
             username = "ericcrosson-bitgo";
           };
+          gpg = {
+            format = "openpgp";
+            program = "${pkgs.gnupg}/bin/gpg";
+          };
           url = {
             # Rewrite BitGo URLs to use github.com-bitgo SSH alias
             # This ensures work repos use the optimized SSH config with ControlMaster
@@ -218,8 +222,6 @@
           };
           user = {
             email = "${profile.email}";
-          };
-          signing = {
             signingKey = "5BD755D7FD4AFCB6";
           };
         };
