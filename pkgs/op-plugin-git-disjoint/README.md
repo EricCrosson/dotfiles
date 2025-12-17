@@ -9,20 +9,17 @@ This plugin enables git-disjoint to work with 1Password's biometric authenticati
 ### Components
 
 1. **Plugin Binary** (`pkgs/op-plugin-git-disjoint/`)
-
    - Go-based RPC plugin using HashiCorp go-plugin framework
    - Defines credential schema for GitHub Personal Access Token
    - Configures when authentication is required (not for --help/--version)
    - Installed to: `~/.op/plugins/local/op-plugin-git-disjoint`
 
 2. **Unwrapped Binary** (`git-disjoint-unwrapped`)
-
    - Symlink to the actual git-disjoint binary from the flake input
    - This is what the plugin executes after injecting credentials
    - Added in: `profiles/development/default.nix`
 
 3. **Wrapper Script** (`git-disjoint`)
-
    - Shell script that calls `op plugin run -- git-disjoint-unwrapped`
    - Makes both `git-disjoint` and `git disjoint` work through the plugin
    - Added in: `profiles/development/default.nix`
