@@ -118,7 +118,7 @@
           # Add ~/.local/bin for beads
           postBuild = ''
             wrapProgram $out/bin/claude \
-              --prefix PATH : "$HOME/.local/bin" \
+              --prefix PATH : "\$HOME/.local/bin" \
               --set AWS_PROFILE "${config.aws-options.profile.default}" \
               --set AWS_REGION "${config.aws-options.region.default}"
           '';
