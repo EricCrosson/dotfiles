@@ -60,6 +60,7 @@ in {
 
       age-plugin-yubikey
       amber
+      atuin-desktop
       bottom
       broot
       comma
@@ -115,7 +116,6 @@ in {
   programs = {
     atuin = {
       enable = true;
-      package = inputs.atuin.packages.${pkgs.system}.default;
       flags = [
         "--disable-up-arrow"
       ];

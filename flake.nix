@@ -23,10 +23,6 @@
       url = "github:1Password/shell-plugins";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    atuin = {
-      url = "github:ellie/atuin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     aws-console-bitgo = {
       url = "git+ssh://git@github.com-bitgo/bitgo/aws-console";
       inputs.nixpkgs.follows = "nixpkgs";
