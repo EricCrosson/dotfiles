@@ -139,33 +139,15 @@
         '';
       };
       mcpServers = {
+        atlassian = {
+          type = "http";
+          url = "https://mcp.atlassian.com/v1/mcp";
+        };
         github = {
           type = "http";
           url = "https://api.githubcopilot.com/mcp/";
           headers = {
             Authorization = "Bearer \${CLAUDE_CODE_GITHUB_TOKEN}";
-          };
-        };
-        jira = {
-          command = "uvx";
-          args = [
-            "mcp-atlassian"
-          ];
-          env = {
-            JIRA_URL = "https=//bitgoinc.atlassian.net";
-            JIRA_USERNAME = "${profile.email}";
-            JIRA_API_TOKEN = "\${CLAUDE_CODE_ATLASSIAN_API_TOKEN}";
-          };
-        };
-        confluence = {
-          command = "uvx";
-          args = [
-            "mcp-atlassian"
-          ];
-          env = {
-            CONFLUENCE_URL = "https=//bitgoinc.atlassian.net/wiki";
-            JIRA_USERNAME = "${profile.email}";
-            CONFLUENCE_API_TOKEN = "\${CLAUDE_CODE_ATLASSIAN_API_TOKEN}";
           };
         };
         context7 = {
