@@ -41,6 +41,11 @@
       casks = [
         "kitty"
         "postman"
+        "tldev/tap/posturr"
+      ];
+
+      taps = [
+        "tldev/tap"
       ];
     };
 
