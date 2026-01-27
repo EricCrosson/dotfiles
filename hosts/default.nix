@@ -34,6 +34,7 @@
       };
       overlays = [
         inputs.fenix.overlays.default
+        inputs.mcp-servers-nix.overlays.default
         (import ../overlays).combined
       ];
     };

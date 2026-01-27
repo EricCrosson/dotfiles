@@ -161,11 +161,7 @@
           };
         };
         context7 = {
-          command = "npx";
-          args = [
-            "-y"
-            "@upstash/context7-mcp"
-          ];
+          command = "${pkgs.context7-mcp}/bin/context7-mcp";
         };
       };
       settings = {
