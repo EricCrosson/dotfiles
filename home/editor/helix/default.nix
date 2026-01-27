@@ -14,13 +14,6 @@
     nodePackages.bash-language-server
     nodePackages.typescript-language-server
     nodePackages.vscode-langservers-extracted
-    (fenix.complete.withComponents [
-      "cargo"
-      "clippy"
-      "rustc"
-      "rustfmt"
-      "rust-src"
-    ])
     rust-analyzer-nightly
     shellcheck
     taplo # TOML LSP
