@@ -216,7 +216,6 @@
       shellAliases = {
         chat = "aichat";
         cmd = "aichat -e";
-        grug = "claude '/grug'";
       };
     };
   };
