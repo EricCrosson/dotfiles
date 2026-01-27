@@ -1,7 +1,5 @@
 {
   imports = [
-    ./aider
-    ./fabric
     ./llm
   ];
 }

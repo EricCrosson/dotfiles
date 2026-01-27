@@ -94,20 +94,6 @@
       };
     };
 
-    aider = {
-      enable = true;
-      codeTheme = "lightbulb";
-      detectUrls = false;
-      gitignore = false;
-      subtreeOnly = true;
-      watchFiles = true;
-      read = ["CONVENTIONS.md"];
-      extraEnv = {
-        SMART_CD_GIT_STATUS = "false";
-        SMART_CD_LS = "false";
-      };
-    };
-
     claude-code = {
       enable = true;
       package = let
@@ -193,18 +179,7 @@
         preferredNotifChannel = "terminal_bell";
         theme = "dark";
       };
-    };
-
-    fabric = {
-      enable = true;
-      env = {
-        # Configured to proxy through litellm to Amazon Bedrock
-        DEFAULT_VENDOR = "OpenAI";
-        DEFAULT_MODEL = config.claude-options.models.default;
-        DEFAULT_MODEL_CONTEXT_LENGTH = toString config.claude-options.models.sonnet.contextLength;
-        OPENAI_API_KEY = "has-to-be-populated-but-this-is-definitely-not-a-secret";
-        OPENAI_API_BASE_URL = config.services-options.litellm-proxy.baseUrl;
-      };
+      skillsDir = ../../claude/skills;
     };
 
     git = {
