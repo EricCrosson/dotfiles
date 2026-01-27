@@ -32,6 +32,8 @@
     packages = with pkgs; [
       amazon-ecr-credential-helper
       awscli2
+      github-copilot-cli
+      jira-cli-go # Jira CLI for write operations
       k9s
       kubectl
       kubectx
@@ -49,19 +51,23 @@
       # 1Password CLI for secret management
       _1password-cli
 
-      # Custom 1Password shell plugin for git-disjoint
+      # Custom 1Password shell plugins
       (pkgs.callPackage ../../pkgs/op-plugin-git-disjoint {})
+      (pkgs.callPackage ../../pkgs/op-plugin-jira {})
     ];
 
     sessionVariables = {
       ZED_AWS_PROFILE = "dev";
     };
 
+    # DISCUSS: How does this get installed for git-disjoint?
     activation = {
-      installOpPlugin = config.lib.dag.entryAfter ["writeBoundary"] ''
+      installOpPlugins = config.lib.dag.entryAfter ["writeBoundary"] ''
         run mkdir -p ~/.op/plugins/local
         run chmod 700 ~/.op ~/.op/plugins ~/.op/plugins/local 2>/dev/null || true
         run cp -f ${pkgs.callPackage ../../pkgs/op-plugin-git-disjoint {}}/bin/op-plugin-git-disjoint \
+          ~/.op/plugins/local/
+        run cp -f ${pkgs.callPackage ../../pkgs/op-plugin-jira {}}/bin/op-plugin-jira \
           ~/.op/plugins/local/
       '';
     };
@@ -104,39 +110,21 @@
 
     claude-code = {
       enable = true;
-      package = let
-        basePackage = pkgs.symlinkJoin {
-          name = "claude-code-wrapped";
-          paths = [pkgs.claude-code];
-          buildInputs = [pkgs.makeWrapper];
-          # Add ~/.local/bin for beads
-          postBuild = ''
-            wrapProgram $out/bin/claude \
-              --prefix PATH : "\$HOME/.local/bin" \
-              --set AWS_PROFILE "${config.aws-options.profile.default}" \
-              --set AWS_REGION "${config.aws-options.region.default}"
-          '';
-          meta.mainProgram = "claude";
-        };
-      in
-        # TODO(opsec): migrate to proper 1Password plugins
-        # Temporary: using direct op read until plugins created
-        pkgs.symlinkJoin {
-          name = "claude-code-with-secrets";
-          paths = [basePackage];
-          buildInputs = [pkgs.makeWrapper pkgs._1password-cli];
-          postBuild = ''
-            wrapProgram $out/bin/claude \
-              --run 'export CLAUDE_CODE_GITHUB_TOKEN=$(op read "op://Nix-Secrets/claude-code-github-token/token" 2>/dev/null || true)' \
-              --run 'export CLAUDE_CODE_ATLASSIAN_API_TOKEN=$(op read "op://Nix-Secrets/claude-code-atlassian-api-token/token" 2>/dev/null || true)'
-          '';
-          meta.mainProgram = "claude";
-        };
-      commands = {
-        grug = ''
-          You are grug. You talk like grug. You code like grug. You do what grug do.
-          grug help human, but grug warn human when grug know better.
+      # TODO(opsec): migrate to proper 1Password plugins
+      # Temporary: using direct op read until plugins created
+      package = pkgs.symlinkJoin {
+        name = "claude-code-wrapped";
+        paths = [pkgs.claude-code];
+        buildInputs = [pkgs.makeWrapper pkgs._1password-cli];
+        # Add ~/.local/bin for beads
+        postBuild = ''
+          wrapProgram $out/bin/claude \
+            --prefix PATH : "\$HOME/.local/bin" \
+            --set AWS_PROFILE "${config.aws-options.profile.default}" \
+            --set AWS_REGION "${config.aws-options.region.default}" \
+            --run 'export CLAUDE_CODE_GITHUB_TOKEN=$(op read "op://Nix-Secrets/claude-code-github-token/token" 2>/dev/null || true)'
         '';
+        meta.mainProgram = "claude";
       };
       mcpServers = {
         atlassian = {
