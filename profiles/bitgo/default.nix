@@ -15,9 +15,17 @@
 
   home = {
     file = {
-      # TODO: turn these into agents for improved context management.
-      ".claude/CLAUDE.md" = {
-        source = ../../.claude/CLAUDE.md;
+      ".config/.jira/.config.yml" = {
+        text = ''
+          server: https://bitgoinc.atlassian.net
+          login: ${profile.email}
+          installation: cloud
+          project:
+            key: DX
+          board:
+            name: "Default board"
+            type: scrum
+        '';
       };
     };
 
