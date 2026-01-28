@@ -25,6 +25,24 @@
           board:
             name: "Default board"
             type: scrum
+          issue:
+            types:
+              - id: "10101"
+                name: Task
+                handle: Task
+                subtask: false
+              - id: "10100"
+                name: Story
+                handle: Story
+                subtask: false
+              - id: "10103"
+                name: Bug
+                handle: Bug
+                subtask: false
+              - id: "10447"
+                name: Spike
+                handle: Spike
+                subtask: false
         '';
       };
     };
