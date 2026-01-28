@@ -48,12 +48,6 @@
         # TypeScript
         pnpm
         yarn
-
-        # Python
-        uv
-
-        # AI Tools
-        (pkgs.callPackage ../../pkgs/claude-squad {})
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
         pkgs.libiconv
