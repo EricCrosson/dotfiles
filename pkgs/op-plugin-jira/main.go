@@ -78,7 +78,7 @@ func apiToken() schema.CredentialType {
 func jiraCLI() schema.Executable {
 	return schema.Executable{
 		Name:    "Jira CLI",
-		Runs:    []string{"jira"},
+		Runs:    []string{"jira-unwrapped"},
 		DocsURL: sdk.URL("https://github.com/ankitpokhrel/jira-cli"),
 		NeedsAuth: needsauth.IfAll(
 			needsauth.NotForHelpOrVersion(),

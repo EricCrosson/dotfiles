@@ -33,7 +33,16 @@
       amazon-ecr-credential-helper
       awscli2
       github-copilot-cli
-      jira-cli-go # Jira CLI for write operations
+      # jira-unwrapped: Actual binary for the plugin to run
+      (pkgs.runCommand "jira-unwrapped" {} ''
+        mkdir -p $out/bin
+        ln -s ${pkgs.jira-cli-go}/bin/jira $out/bin/jira-unwrapped
+      '')
+      # jira: Wrapper that calls through 1Password plugin
+      (pkgs.writeShellScriptBin "jira" ''
+        exec ${pkgs._1password-cli}/bin/op plugin run -- jira-unwrapped "$@"
+      '')
+      jiratui
       k9s
       kubectl
       kubectx
@@ -127,10 +136,6 @@
         meta.mainProgram = "claude";
       };
       mcpServers = {
-        atlassian = {
-          type = "http";
-          url = "https://mcp.atlassian.com/v1/mcp";
-        };
         github = {
           type = "http";
           url = "https://api.githubcopilot.com/mcp/";
