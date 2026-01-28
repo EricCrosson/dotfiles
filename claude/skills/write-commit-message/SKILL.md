@@ -4,12 +4,13 @@ description: Use when creating git commits - ensures messages follow Conventiona
 ---
 
 <required>
-Add these steps to your Todo list using TodoWrite:
+Add these steps to your task list:
 
 1. Draft commit message with proper structure
 2. Verify message follows format and length constraints
 3. Review for clarity and motivation
-   </required>
+
+ </required>
 
 # Commit Message Format
 
