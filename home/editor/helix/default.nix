@@ -14,7 +14,6 @@
     nodePackages.bash-language-server
     nodePackages.typescript-language-server
     nodePackages.vscode-langservers-extracted
-    rust-analyzer-nightly
     shellcheck
     taplo # TOML LSP
 

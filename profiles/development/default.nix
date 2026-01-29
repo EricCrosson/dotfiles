@@ -34,8 +34,8 @@
           "rustc"
           "rustfmt"
           "rust-src"
+          "rust-analyzer"
         ])
-        rust-analyzer-nightly
         cargo-tarpaulin
         bacon
 
