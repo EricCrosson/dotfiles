@@ -164,6 +164,10 @@
         context7 = {
           command = "${pkgs.context7-mcp}/bin/context7-mcp";
         };
+        chrome-devtools = {
+          command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
+          args = ["-y" "chrome-devtools-mcp@latest"];
+        };
       };
       settings = {
         cleanupPeriodDays = 99999;
