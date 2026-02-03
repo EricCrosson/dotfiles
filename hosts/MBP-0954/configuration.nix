@@ -25,6 +25,7 @@
       };
 
       brews = [
+        "atlassian/acli/acli"
         "ffmpeg"
         "imagemagick"
         "md5sha1sum"
@@ -44,6 +45,7 @@
       ];
 
       taps = [
+        "atlassian/homebrew-acli"
         "tldev/tap"
       ];
     };
