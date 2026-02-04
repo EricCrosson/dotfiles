@@ -28,7 +28,7 @@
         inputs.git-review.packages.${pkgs.system}.default
         inputs.npm-dep-version.packages.${pkgs.system}.default
 
-        (fenix.complete.withComponents [
+        (fenix.stable.withComponents [
           "cargo"
           "clippy"
           "rustc"
