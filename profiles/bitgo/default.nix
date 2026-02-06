@@ -143,10 +143,8 @@
         name = "claude-code-wrapped";
         paths = [pkgs.claude-code];
         buildInputs = [pkgs.makeWrapper pkgs._1password-cli];
-        # Add ~/.local/bin for beads
         postBuild = ''
           wrapProgram $out/bin/claude \
-            --prefix PATH : "\$HOME/.local/bin" \
             --set AWS_PROFILE "${config.aws-options.profile.default}" \
             --set AWS_REGION "${config.aws-options.region.default}" \
             --run 'export CLAUDE_CODE_GITHUB_TOKEN=$(op read "op://Nix-Secrets/claude-code-github-token/token" 2>/dev/null || true)'
