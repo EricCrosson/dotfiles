@@ -172,6 +172,7 @@
       settings = {
         cleanupPeriodDays = 99999;
         env = {
+          CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
           CLAUDE_CODE_USE_BEDROCK = "1";
           DISABLE_TELEMETRY = "1";
           ENABLE_TOOL_SEARCH = "1";
