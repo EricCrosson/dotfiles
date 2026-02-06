@@ -177,6 +177,7 @@
         };
         model = "arn:aws:bedrock:us-west-2:319156457634:inference-profile/us.anthropic.claude-sonnet-4-5-20250929-v1:0";
         skillsDir = ../../claude/skills;
+        teammateMode = "split-panes";
         preferredNotifChannel = "terminal_bell";
         theme = "dark";
       };
