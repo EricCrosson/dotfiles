@@ -145,8 +145,6 @@
         buildInputs = [pkgs.makeWrapper pkgs._1password-cli];
         postBuild = ''
           wrapProgram $out/bin/claude \
-            --set AWS_PROFILE "${config.aws-options.profile.default}" \
-            --set AWS_REGION "${config.aws-options.region.default}" \
             --run 'export CLAUDE_CODE_GITHUB_TOKEN=$(op read "op://Nix-Secrets/claude-code-github-token/token" 2>/dev/null || true)'
         '';
         meta.mainProgram = "claude";
@@ -171,11 +169,10 @@
         cleanupPeriodDays = 99999;
         env = {
           CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
-          CLAUDE_CODE_USE_BEDROCK = "1";
           DISABLE_TELEMETRY = "1";
           ENABLE_TOOL_SEARCH = "1";
         };
-        model = "arn:aws:bedrock:us-west-2:319156457634:inference-profile/us.anthropic.claude-sonnet-4-5-20250929-v1:0";
+        model = "sonnet";
         skillsDir = ../../claude/skills;
         teammateMode = "split-panes";
         preferredNotifChannel = "terminal_bell";
