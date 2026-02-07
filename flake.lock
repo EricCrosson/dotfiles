@@ -89,11 +89,11 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1769849518,
-        "narHash": "sha256-q5PJnrNuQHy6sxuvts7GgewZvpqnTdRHzsiIWmLpxJM=",
+        "lastModified": 1770369226,
+        "narHash": "sha256-gNWt6rv5n++LwphXTvNl19EuQ/e2nzlY2WoIf2sPiA8=",
         "owner": "ericcrosson",
         "repo": "batch-edit-prs",
-        "rev": "62ba266e19f2846149194d9f2059584ddeece516",
+        "rev": "ec231b3fc5735301351dffe6fdd8331dd772db41",
         "type": "github"
       },
       "original": {
