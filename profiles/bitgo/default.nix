@@ -4,7 +4,9 @@
   config,
   inputs,
   ...
-}: {
+}: let
+  opPlugins = pkgs.callPackage ../../pkgs/op-plugins/plugins.nix {inherit inputs;};
+in {
   imports = [
     ./modules
     ../../modules/home-manager
@@ -47,56 +49,47 @@
       };
     };
 
-    packages = with pkgs; [
-      amazon-ecr-credential-helper
-      awscli2
-      github-copilot-cli
-      # jira-unwrapped: Actual binary for the plugin to run
-      (pkgs.runCommand "jira-unwrapped" {} ''
-        mkdir -p $out/bin
-        ln -s ${pkgs.jira-cli-go}/bin/jira $out/bin/jira-unwrapped
-      '')
-      # jira: Wrapper that calls through 1Password plugin
-      (pkgs.writeShellScriptBin "jira" ''
-        exec ${pkgs._1password-cli}/bin/op plugin run -- jira-unwrapped "$@"
-      '')
-      jiratui
-      k9s
-      kubectl
-      kubectx
-      kustomize
-      nodejs # Install npm
-      openai-whisper
-      poppler-utils # Install pdftotext for aichat
-      yq-go
+    packages = with pkgs;
+      [
+        amazon-ecr-credential-helper
+        awscli2
+        github-copilot-cli
+      ]
+      # Claude: plugin + unwrapped from opPlugins (wrapper via HM module)
+      ++ [opPlugins.claude.plugin opPlugins.claude.unwrapped]
+      # Jira/git-disjoint: use opPlugins system (no HM modules)
+      ++ [opPlugins.jira.plugin opPlugins.jira.unwrapped opPlugins.jira.wrapper]
+      ++ [opPlugins.git-disjoint.plugin opPlugins.git-disjoint.unwrapped opPlugins.git-disjoint.wrapper]
+      ++ [
+        jiratui
+        k9s
+        kubectl
+        kubectx
+        kustomize
+        nodejs # Install npm
+        openai-whisper
+        poppler-utils # Install pdftotext for aichat
+        yq-go
 
-      inputs.percentage-changed-calculator.packages.${pkgs.system}.default
+        inputs.percentage-changed-calculator.packages.${pkgs.system}.default
 
-      inputs.aws-console-bitgo.packages.${pkgs.system}.default
-      inputs.aws-saml-bitgo.packages.${pkgs.system}.default
+        inputs.aws-console-bitgo.packages.${pkgs.system}.default
+        inputs.aws-saml-bitgo.packages.${pkgs.system}.default
 
-      # 1Password CLI for secret management
-      _1password-cli
-
-      # Custom 1Password shell plugins
-      (pkgs.callPackage ../../pkgs/op-plugin-git-disjoint {})
-      (pkgs.callPackage ../../pkgs/op-plugin-jira {})
-    ];
+        # 1Password CLI for secret management
+        _1password-cli
+      ];
 
     sessionVariables = {
       ZED_AWS_PROFILE = "dev";
     };
 
-    # DISCUSS: How does this get installed for git-disjoint?
     activation = {
-      installOpPlugins = config.lib.dag.entryAfter ["writeBoundary"] ''
-        run mkdir -p ~/.op/plugins/local
-        run chmod 700 ~/.op ~/.op/plugins ~/.op/plugins/local 2>/dev/null || true
-        run cp -f ${pkgs.callPackage ../../pkgs/op-plugin-git-disjoint {}}/bin/op-plugin-git-disjoint \
-          ~/.op/plugins/local/
-        run cp -f ${pkgs.callPackage ../../pkgs/op-plugin-jira {}}/bin/op-plugin-jira \
-          ~/.op/plugins/local/
-      '';
+      installOpPlugins =
+        config.lib.dag.entryAfter ["writeBoundary"]
+        (opPlugins.mkActivationScript {
+          pluginList = opPlugins.allPlugins.plugins;
+        });
     };
   };
 
@@ -137,18 +130,10 @@
 
     claude-code = {
       enable = true;
-      # TODO(opsec): migrate to proper 1Password plugins
-      # Temporary: using direct op read until plugins created
-      package = pkgs.symlinkJoin {
-        name = "claude-code-wrapped";
-        paths = [pkgs.claude-code];
-        buildInputs = [pkgs.makeWrapper pkgs._1password-cli];
-        postBuild = ''
-          wrapProgram $out/bin/claude \
-            --run 'export CLAUDE_CODE_GITHUB_TOKEN=$(op read "op://Nix-Secrets/claude-code-github-token/token" 2>/dev/null || true)'
-        '';
-        meta.mainProgram = "claude";
-      };
+      # Wrapper inlined: routes through 1Password (passes command name, not path)
+      package = pkgs.writeShellScriptBin "claude" ''
+        exec ${pkgs._1password-cli}/bin/op plugin run -- claude-unwrapped "$@"
+      '';
       mcpServers = {
         github = {
           type = "http";
