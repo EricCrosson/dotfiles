@@ -35,6 +35,7 @@
 
         bc
         vscode
+        yazi
 
         # TypeScript
         pnpm
