@@ -6,6 +6,29 @@
   ...
 }: let
   opPlugins = pkgs.callPackage ../../pkgs/op-plugins/plugins.nix {inherit inputs;};
+
+  mcpServers = {
+    atlassian = {
+      type = "http";
+      url = "https://mcp.atlassian.com/v1/mcp";
+    };
+    github = {
+      type = "http";
+      url = "https://api.githubcopilot.com/mcp/";
+      headers = {
+        Authorization = "Bearer \${CLAUDE_CODE_GITHUB_TOKEN}";
+      };
+    };
+    context7 = {
+      command = "${pkgs.context7-mcp}/bin/context7-mcp";
+    };
+    chrome-devtools = {
+      command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
+      args = ["-y" "chrome-devtools-mcp@latest"];
+    };
+  };
+
+  mcpConfigFile = (pkgs.formats.json {}).generate "claude-mcp-servers.json" mcpServers;
 in {
   imports = [
     ./modules
@@ -90,6 +113,24 @@ in {
         (opPlugins.mkActivationScript {
           pluginList = opPlugins.allPlugins.plugins;
         });
+
+      # Sync MCP servers into ~/.claude.json (user scope) so Conductor picks
+      # them up — its bundled claude binary doesn't use the Nix wrapper that
+      # injects --mcp-config.
+      syncClaudeMcpServers = config.lib.dag.entryAfter ["writeBoundary"] ''
+        if [ -f "$HOME/.claude.json" ]; then
+          cp "$HOME/.claude.json" "$HOME/.claude.json.bak"
+          if ${pkgs.jq}/bin/jq --slurpfile servers ${mcpConfigFile} '.mcpServers = $servers[0]' \
+            "$HOME/.claude.json.bak" > "$HOME/.claude.json.tmp" \
+            && ${pkgs.jq}/bin/jq empty "$HOME/.claude.json.tmp" 2>/dev/null; then
+            mv "$HOME/.claude.json.tmp" "$HOME/.claude.json"
+          else
+            echo "WARNING: failed to sync MCP servers into ~/.claude.json, restoring backup" >&2
+            mv "$HOME/.claude.json.bak" "$HOME/.claude.json"
+            rm -f "$HOME/.claude.json.tmp"
+          fi
+        fi
+      '';
     };
   };
 
@@ -134,26 +175,7 @@ in {
       package = pkgs.writeShellScriptBin "claude" ''
         exec ${pkgs._1password-cli}/bin/op plugin run -- claude-unwrapped "$@"
       '';
-      mcpServers = {
-        atlassian = {
-          type = "http";
-          url = "https://mcp.atlassian.com/v1/mcp";
-        };
-        github = {
-          type = "http";
-          url = "https://api.githubcopilot.com/mcp/";
-          headers = {
-            Authorization = "Bearer \${CLAUDE_CODE_GITHUB_TOKEN}";
-          };
-        };
-        context7 = {
-          command = "${pkgs.context7-mcp}/bin/context7-mcp";
-        };
-        chrome-devtools = {
-          command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
-          args = ["-y" "chrome-devtools-mcp@latest"];
-        };
-      };
+      inherit mcpServers;
       settings = {
         cleanupPeriodDays = 99999;
         env = {
