@@ -135,6 +135,10 @@ in {
         exec ${pkgs._1password-cli}/bin/op plugin run -- claude-unwrapped "$@"
       '';
       mcpServers = {
+        atlassian = {
+          type = "http";
+          url = "https://mcp.atlassian.com/v1/mcp";
+        };
         github = {
           type = "http";
           url = "https://api.githubcopilot.com/mcp/";
