@@ -207,6 +207,8 @@ in {
             # This ensures work repos use the optimized SSH config with ControlMaster
             "ssh://git@github.com-bitgo/BitGo/".insteadOf = "https://github.com/BitGo/";
             "git@github.com-bitgo:BitGo/".insteadOf = "git@github.com:BitGo/";
+            "ssh://git@github.com-bitgo/ericcrosson-bitgo/".insteadOf = "https://github.com/ericcrosson-bitgo/";
+            "git@github.com-bitgo:ericcrosson-bitgo/".insteadOf = "git@github.com:ericcrosson-bitgo/";
           };
           user = {
             email = "${profile.email}";
@@ -216,6 +218,10 @@ in {
       in [
         {
           condition = "gitdir:~/workspace/BitGo/";
+          contents = workConfig;
+        }
+        {
+          condition = "gitdir:~/workspace/ericcrosson-bitgo/";
           contents = workConfig;
         }
         {
