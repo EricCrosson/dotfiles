@@ -183,7 +183,6 @@ in {
           DISABLE_TELEMETRY = "1";
           ENABLE_TOOL_SEARCH = "1";
         };
-        model = "sonnet";
         skillsDir = ../../claude/skills;
         teammateMode = "split-panes";
         preferredNotifChannel = "terminal_bell";
