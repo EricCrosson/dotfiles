@@ -29,6 +29,12 @@
   };
 
   mcpConfigFile = (pkgs.formats.json {}).generate "claude-mcp-servers.json" mcpServers;
+
+  claudeNotificationScript = pkgs.writeShellApplication {
+    name = "claude-notification";
+    runtimeInputs = [pkgs.jq];
+    text = builtins.readFile ../../claude/hooks/notification.sh;
+  };
 in {
   imports = [
     ./modules
@@ -186,7 +192,18 @@ in {
         };
         skillsDir = ../../claude/skills;
         teammateMode = "split-panes";
-        preferredNotifChannel = "terminal_bell";
+        hooks = {
+          Notification = [
+            {
+              hooks = [
+                {
+                  type = "command";
+                  command = "${pkgs.lib.getExe claudeNotificationScript}";
+                }
+              ];
+            }
+          ];
+        };
         theme = "dark";
       };
       skillsDir = ../../claude/skills;
