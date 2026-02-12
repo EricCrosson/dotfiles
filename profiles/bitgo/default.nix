@@ -178,6 +178,7 @@ in {
       inherit mcpServers;
       settings = {
         cleanupPeriodDays = 99999;
+        defaultMode = "plan";
         env = {
           CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
           DISABLE_TELEMETRY = "1";
