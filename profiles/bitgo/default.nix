@@ -37,10 +37,16 @@
     JIRA_API_TOKEN=op://Nix-Secrets/claude-code-atlassian-api-token/token
   '';
 
+  claudeNotificationIcon = ../../claude/assets/claude-icon.png;
+
   claudeNotificationScript = pkgs.writeShellApplication {
     name = "claude-notification";
-    runtimeInputs = [pkgs.jq];
-    text = builtins.readFile ../../claude/hooks/notification.sh;
+    runtimeInputs = [pkgs.jq pkgs.terminal-notifier];
+    text =
+      ''
+        export CLAUDE_NOTIFICATION_ICON=${claudeNotificationIcon}
+      ''
+      + builtins.readFile ../../claude/hooks/notification.sh;
   };
 
   # Unwrapped jira for Claude's PATH (bypasses the op-plugin wrapper)
@@ -194,30 +200,12 @@ in {
 
     claude-code = {
       enable = true;
-      # Single biometric prompt: `op run --env-file` resolves all vault references
-      # at once. We capture the resolved values rather than letting `op run` exec
-      # claude-unwrapped directly, because `op run` wraps stdout for secret
-      # masking which breaks interactive-tty detection in claude-code.
-      package = pkgs.writeShellScriptBin "claude" ''
-        case "''${1:-}" in
-          --help|-h|--version|-v) exec claude-unwrapped "$@" ;;
-        esac
-
-        export _CLAUDE_SESSION=1
-        export PATH="${claudeJira}/bin:$PATH"
-
-        _op_secrets=$(${pkgs._1password-cli}/bin/op run \
-          --no-masking \
-          --env-file="${claudeEnvTemplate}" \
-          -- ${pkgs.bash}/bin/bash -c '
-            printf "export CLAUDE_CODE_GITHUB_TOKEN=%q\n" "$CLAUDE_CODE_GITHUB_TOKEN"
-            printf "export GH_TOKEN=%q\n" "$GH_TOKEN"
-            printf "export JIRA_API_TOKEN=%q\n" "$JIRA_API_TOKEN"
-          ') || exit 1
-        eval "$_op_secrets"
-
-        exec claude-unwrapped "$@"
-      '';
+      package = pkgs.callPackage ../../pkgs/claude-wrapper {} {
+        bedrockProfile = config.claude-options.bedrock.profile;
+        bedrockRegion = config.claude-options.bedrock.region;
+        envTemplate = claudeEnvTemplate;
+        extraPathPackages = [claudeJira];
+      };
       inherit mcpServers;
       settings = {
         cleanupPeriodDays = 99999;

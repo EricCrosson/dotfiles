@@ -29,8 +29,11 @@
     checks = forEachSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
       pre-commit-check = pkgs.callPackage ./git-hooks.nix {inherit git-hooks;};
+      claude-wrapper-test = pkgs.callPackage (self.sourceInfo + "/pkgs/claude-wrapper/test") {
+        wrapperSrc = self.sourceInfo + "/pkgs/claude-wrapper";
+      };
     in {
-      inherit pre-commit-check;
+      inherit pre-commit-check claude-wrapper-test;
     });
 
     formatter = forEachSystem (system: nixpkgs.legacyPackages.${system}.alejandra);

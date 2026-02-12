@@ -11,8 +11,15 @@ if [ -n "$TITLE" ]; then
   NOTIF_TITLE="$REPO: $TITLE"
 fi
 
-osascript - "$NOTIF_TITLE" "$MESSAGE" <<'APPLESCRIPT'
-on run argv
-  display notification (item 2 of argv) with title (item 1 of argv)
-end run
-APPLESCRIPT
+ARGS=(
+  -title "$NOTIF_TITLE"
+  -message "$MESSAGE"
+  -activate net.kovidgoyal.kitty
+  -group "claude-code-${CWD}"
+)
+
+if [ -n "${CLAUDE_NOTIFICATION_ICON:-}" ] && [ -f "$CLAUDE_NOTIFICATION_ICON" ]; then
+  ARGS+=(-appIcon "$CLAUDE_NOTIFICATION_ICON")
+fi
+
+terminal-notifier "${ARGS[@]}"

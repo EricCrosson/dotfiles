@@ -1,0 +1,8 @@
+ARGS=--model opus
+AWS_PROFILE=test-profile
+AWS_REGION=us-west-2
+CLAUDE_CODE_GITHUB_TOKEN=test-github-token
+CLAUDE_CODE_USE_BEDROCK=1
+GH_TOKEN=test-github-token
+JIRA_API_TOKEN=test-jira-token
+_CLAUDE_SESSION=1
