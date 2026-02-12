@@ -30,11 +30,23 @@
 
   mcpConfigFile = (pkgs.formats.json {}).generate "claude-mcp-servers.json" mcpServers;
 
+  # Env template for `op run` — resolves all vault references in a single Touch ID prompt
+  claudeEnvTemplate = pkgs.writeText "claude-env-template" ''
+    CLAUDE_CODE_GITHUB_TOKEN=op://Nix-Secrets/claude-code-github-token/token
+    GH_TOKEN=op://Nix-Secrets/claude-code-github-token/token
+    JIRA_API_TOKEN=op://Nix-Secrets/claude-code-atlassian-api-token/token
+  '';
+
   claudeNotificationScript = pkgs.writeShellApplication {
     name = "claude-notification";
     runtimeInputs = [pkgs.jq];
     text = builtins.readFile ../../claude/hooks/notification.sh;
   };
+
+  # Unwrapped jira for Claude's PATH (bypasses the op-plugin wrapper)
+  claudeJira = pkgs.writeShellScriptBin "jira" ''
+    exec ${pkgs.jira-cli-go}/bin/jira "$@"
+  '';
 in {
   imports = [
     ./modules
@@ -90,6 +102,7 @@ in {
       ++ [opPlugins.jira.plugin opPlugins.jira.unwrapped opPlugins.jira.wrapper]
       ++ [opPlugins.git-disjoint.plugin opPlugins.git-disjoint.unwrapped opPlugins.git-disjoint.wrapper]
       ++ [
+        gh
         jiratui
         k9s
         kubectl
@@ -143,10 +156,14 @@ in {
   programs = {
     _1password-shell-plugins = {
       enable = true;
-      plugins = with pkgs; [
-        gh
-      ];
+      plugins = []; # gh function defined manually below with _CLAUDE_SESSION guard
     };
+
+    bash.initExtra = ''
+      if [ -z "$_CLAUDE_SESSION" ]; then
+        gh() { op plugin run -- gh "$@"; }
+      fi
+    '';
 
     aichat = {
       enable = true;
@@ -177,14 +194,33 @@ in {
 
     claude-code = {
       enable = true;
-      # Wrapper inlined: routes through 1Password (passes command name, not path)
+      # Single biometric prompt: `op run --env-file` resolves all vault references
+      # at once. We capture the resolved values rather than letting `op run` exec
+      # claude-unwrapped directly, because `op run` wraps stdout for secret
+      # masking which breaks interactive-tty detection in claude-code.
       package = pkgs.writeShellScriptBin "claude" ''
-        exec ${pkgs._1password-cli}/bin/op plugin run -- claude-unwrapped "$@"
+        case "''${1:-}" in
+          --help|-h|--version|-v) exec claude-unwrapped "$@" ;;
+        esac
+
+        export _CLAUDE_SESSION=1
+        export PATH="${claudeJira}/bin:$PATH"
+
+        _op_secrets=$(${pkgs._1password-cli}/bin/op run \
+          --no-masking \
+          --env-file="${claudeEnvTemplate}" \
+          -- ${pkgs.bash}/bin/bash -c '
+            printf "export CLAUDE_CODE_GITHUB_TOKEN=%q\n" "$CLAUDE_CODE_GITHUB_TOKEN"
+            printf "export GH_TOKEN=%q\n" "$GH_TOKEN"
+            printf "export JIRA_API_TOKEN=%q\n" "$JIRA_API_TOKEN"
+          ') || exit 1
+        eval "$_op_secrets"
+
+        exec claude-unwrapped "$@"
       '';
       inherit mcpServers;
       settings = {
         cleanupPeriodDays = 99999;
-        defaultMode = "plan";
         env = {
           CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
           DISABLE_TELEMETRY = "1";
@@ -203,6 +239,9 @@ in {
               ];
             }
           ];
+        };
+        permissions = {
+          defaultMode = "plan";
         };
         theme = "dark";
       };
@@ -259,6 +298,11 @@ in {
     };
 
     zsh = {
+      initContent = ''
+        if [ -z "$_CLAUDE_SESSION" ]; then
+          gh() { op plugin run -- gh "$@"; }
+        fi
+      '';
       shellAliases = {
         chat = "aichat";
         cmd = "aichat -e";
