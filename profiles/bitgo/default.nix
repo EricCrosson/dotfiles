@@ -53,6 +53,25 @@
   claudeJira = pkgs.writeShellScriptBin "jira" ''
     exec ${pkgs.jira-cli-go}/bin/jira "$@"
   '';
+
+  # ── CodeRLM experiment ────────────────────────────────────────────────
+  # Flip to false to disable the entire integration (server, hooks, CLI).
+  coderlmEnabled = true;
+
+  coderlmCli = pkgs.callPackage ../../pkgs/coderlm-cli {};
+
+  coderlmSessionInitScript = pkgs.writeShellApplication {
+    name = "coderlm-session-init";
+    runtimeInputs = [pkgs.curl coderlmCli];
+    text = builtins.readFile ../../claude/hooks/coderlm-session-init.sh;
+  };
+
+  coderlmSessionStopScript = pkgs.writeShellApplication {
+    name = "coderlm-session-stop";
+    runtimeInputs = [pkgs.curl coderlmCli];
+    text = builtins.readFile ../../claude/hooks/coderlm-session-stop.sh;
+  };
+  # ── end CodeRLM ───────────────────────────────────────────────────────
 in {
   imports = [
     ./modules
@@ -204,7 +223,7 @@ in {
         bedrockProfile = config.claude-options.bedrock.profile;
         bedrockRegion = config.claude-options.bedrock.region;
         envTemplate = claudeEnvTemplate;
-        extraPathPackages = [claudeJira];
+        extraPathPackages = [claudeJira] ++ pkgs.lib.optionals coderlmEnabled [coderlmCli];
       };
       inherit mcpServers;
       settings = {
@@ -216,18 +235,54 @@ in {
         };
         skillsDir = ../../claude/skills;
         teammateMode = "split-panes";
-        hooks = {
-          Notification = [
-            {
-              hooks = [
-                {
-                  type = "command";
-                  command = "${pkgs.lib.getExe claudeNotificationScript}";
-                }
-              ];
-            }
-          ];
-        };
+        hooks =
+          {
+            Notification = [
+              {
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${pkgs.lib.getExe claudeNotificationScript}";
+                  }
+                ];
+              }
+            ];
+          }
+          // pkgs.lib.optionalAttrs coderlmEnabled {
+            SessionStart = [
+              {
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${pkgs.lib.getExe coderlmSessionInitScript}";
+                    timeout = 10000;
+                  }
+                ];
+              }
+            ];
+            UserPromptSubmit = [
+              {
+                matcher = "(?i)(how does|what calls|who calls|where does|where is|trace|callers?|execution path|error com|investigate|find the func|find where|understand.*code|explore.*code|map out|navigate|cross.?file|what tests|implementation of|defined in|originat)";
+                hooks = [
+                  {
+                    type = "prompt";
+                    prompt = "Use the coderlm skill for all code navigation in supported languages (Rust, Python, TypeScript, JavaScript, Go). Use Read only for config files, markdown, and unsupported languages.";
+                  }
+                ];
+              }
+            ];
+            Stop = [
+              {
+                hooks = [
+                  {
+                    type = "command";
+                    command = "${pkgs.lib.getExe coderlmSessionStopScript}";
+                    timeout = 5000;
+                  }
+                ];
+              }
+            ];
+          };
         permissions = {
           defaultMode = "plan";
         };
@@ -310,6 +365,8 @@ in {
         }
       ];
     };
+
+    coderlm-server.enable = coderlmEnabled;
 
     # open-webui.enable = true;
   };
