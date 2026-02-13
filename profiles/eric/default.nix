@@ -210,6 +210,7 @@ in {
       ignores = [
         ".DS_Store"
         "/.claude/settings.local.json"
+        "/.coderlm/"
         "/.direnv"
         "/.pre-commit-config.yaml"
         "/scratch/"
