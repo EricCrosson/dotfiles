@@ -579,7 +579,7 @@ in {
             ${p.rh}
             ${p.fzf-tab}
             ${p.zsh-autosuggestions}
-            ${p.zsh-completions}
+            ${p.zsh-completions}/src
             ${p.zsh-history-substring-search}
           )
 
@@ -591,38 +591,39 @@ in {
           # Starship takes over within ~20ms via zsh-defer, adding git info
           PROMPT=$'%F{blue}%~%f\n%F{yellow};%f '
 
-          # ── Starship prompt (deferred — takes over after first prompt) ───
-          if [[ $TERM != "dumb" ]]; then
-            zsh-defer -c 'source ${starshipInitZsh} && zle reset-prompt'
-          fi
+          # ── Synchronous autoloads and stubs (zero cost) ──────────────────
+          autoload -Uz mc
+          autoload -Uz rh
+          up() { unfunction up; source ${p.up}/up.plugin.zsh; up "$@"; }
+          br() { unfunction br; source ${brootInitZsh}; br "$@"; }
 
-          # ── Deferred: compinit ─────────────────────────────────────────────
+          # ── Tier 0: Functional interactivity (immediate) ─────────────────
+          # Must complete before first user interaction.
+          # Alt-C (95% workflow) needs direnv; Ctrl-R (5%) needs atuin.
           zsh-defer -a source ${../../zsh/compinit.zsh}
+          zsh-defer -a source ${direnvInitZsh}
+          zsh-defer -a -c 'if [[ $options[zle] = on ]]; then source ${atuinInitZsh}; fi'
         ''
         + builtins.readFile ../../zsh/fzf-cd-widget.zsh
         + ''
-          # ── Deferred: shell config (zstyles, fzf-file-widget, autoloads) ─
-          zsh-defer source ${../../zsh/deferred-shell-config.zsh}
+          # ── Tier 1: Visual + typing polish (after 100ms yield) ───────────
+          # The -t 0.1 yields to ZLE for 100ms — shell is interactive during
+          # this gap (user can press Alt-C or Ctrl-R).
+          if [[ $TERM != "dumb" ]]; then
+            zsh-defer -a +p -t 0.1 -c 'source ${starshipInitZsh}'
+          fi
+          zsh-defer -a source ${p.smart-cd}/smart-cd.plugin.zsh
+          zsh-defer -a source ${p.fzf-tab}/fzf-tab.plugin.zsh
+          zsh-defer -a +m +s source ${p.zsh-autosuggestions}/zsh-autosuggestions.plugin.zsh
+          zsh-defer -a source ${p.zsh-autopair}/zsh-autopair.plugin.zsh
+          zsh-defer -a source ${../../zsh/deferred-shell-config.zsh}
+          zsh-defer -a source ${p.zsh-history-substring-search}/zsh-history-substring-search.plugin.zsh
 
-          # ── Deferred: plugins ──────────────────────────────────────────────
-          # fzf-tab must be loaded before zsh-autosuggestions
-          zsh-defer source ${p.smart-cd}/smart-cd.plugin.zsh
-          zsh-defer source ${p.zsh-autopair}/zsh-autopair.plugin.zsh
-          zsh-defer source ${p.zsh-better-npm-completion}/zsh-better-npm-completion.plugin.zsh
-          zsh-defer source ${p.jq-zsh-plugin}/jq.plugin.zsh
-          zsh-defer source ${p.wakatime-zsh-plugin}/wakatime.plugin.zsh
-          zsh-defer source ${p.up}/up.plugin.zsh
-          zsh-defer source ${p.mc}/mc.plugin.zsh
-          zsh-defer source ${p.rh}/rh.plugin.zsh
-          zsh-defer source ${p.fzf-tab}/fzf-tab.plugin.zsh
-          zsh-defer source ${p.zsh-autosuggestions}/zsh-autosuggestions.plugin.zsh
-          zsh-defer source ${p.zsh-completions}/zsh-completions.plugin.zsh
-          zsh-defer source ${p.zsh-history-substring-search}/zsh-history-substring-search.plugin.zsh
-
-          # ── Deferred: tool integrations ────────────────────────────────────
-          zsh-defer source ${direnvInitZsh}
-          zsh-defer -a -c 'if [[ $options[zle] = on ]]; then source ${atuinInitZsh}; fi'
-          zsh-defer source ${brootInitZsh}
+          # ── Tier 2: Background (after 300ms yield) ───────────────────────
+          # Rarely needed immediately.
+          zsh-defer -a -t 0.3 source ${p.wakatime-zsh-plugin}/wakatime.plugin.zsh
+          zsh-defer -a source ${p.jq-zsh-plugin}/jq.plugin.zsh
+          zsh-defer -a source ${p.zsh-better-npm-completion}/zsh-better-npm-completion.plugin.zsh
         '';
 
       plugins = []; # plugins managed manually in initContent with zsh-defer
