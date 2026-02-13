@@ -24,6 +24,117 @@
     rev = "e9e21cffd98787f1b59e6f6e42db599f9b8ab399";
     sha256 = "sha256-04po0A7bVMsmYdJcKL6oL39RlMLij1lRKvWl5AUXJ7Q=";
   };
+
+  # Pre-generate tool init scripts at nix build time to avoid subprocess
+  # spawning on every shell startup (~143ms saved)
+  starshipInitZsh =
+    pkgs.runCommand "starship-init-zsh" {
+      nativeBuildInputs = [pkgs.starship pkgs.gnused];
+    } ''
+      export STARSHIP_CONFIG=/dev/null
+      starship init zsh > $out
+      # Pre-compute PROMPT2 to avoid a subprocess on every shell startup
+      prompt2=$(starship prompt --continuation)
+      sed -i "s|^PROMPT2=.*|PROMPT2=\"$prompt2\"|" $out
+    '';
+  direnvInitZsh =
+    pkgs.runCommand "direnv-init-zsh" {
+      nativeBuildInputs = [pkgs.direnv];
+    } ''
+      direnv hook zsh > $out
+    '';
+  atuinInitZsh =
+    pkgs.runCommand "atuin-init-zsh" {
+      nativeBuildInputs = [pkgs.atuin];
+    } ''
+      export HOME=$(mktemp -d)
+      export ATUIN_CONFIG_DIR=$HOME/.config/atuin
+      mkdir -p $ATUIN_CONFIG_DIR
+      atuin init zsh --disable-up-arrow > $out
+    '';
+
+  # Plugin sources — extracted so we can manage fpath and sourcing manually
+  # with zsh-defer instead of letting home-manager source them synchronously
+  pluginSrcs = {
+    smart-cd = pkgs.fetchFromGitHub {
+      owner = "esc-zsh";
+      repo = "smart-cd";
+      rev = "57051138141179c293dcaef2da659e42ad4f9eeb";
+      sha256 = "sha256-TgWwvJqQvIjRXpYuSVZ4ZqJCqLF7a5IIqLPzyYNWaTs=";
+    };
+    zsh-autopair = pkgs.fetchFromGitHub {
+      owner = "hlissner";
+      repo = "zsh-autopair";
+      rev = "396c38a7468458ba29011f2ad4112e4fd35f78e6";
+      sha256 = "sha256-PXHxPxFeoYXYMOC29YQKDdMnqTO0toyA7eJTSCV6PGE=";
+    };
+    zsh-titles = pkgs.fetchFromGitHub {
+      owner = "jreese";
+      repo = "zsh-titles";
+      rev = "116324bb384cc10b66eea5875782051e492e27e1";
+      sha256 = "sha256-f22ND+A01/4uPwZf4N5zsJRjVgJTgXu3UVGuSe/Atn0=";
+    };
+    zsh-better-npm-completion = pkgs.fetchFromGitHub {
+      owner = "lukechilds";
+      repo = "zsh-better-npm-completion";
+      rev = "47e5987ca422de43784f9d76311d764f82af2717";
+      sha256 = "sha256-ruQZ3R0Efbe2jnw/WBvTukdtSWoX/kx2mcafnJNoN1k=";
+    };
+    jq-zsh-plugin = pkgs.fetchFromGitHub {
+      owner = "esc-zsh";
+      repo = "jq-zsh-plugin";
+      rev = "205675c7fdc0a2ad3c3fab1b9bcf6d8fd0e4c585";
+      sha256 = "sha256-q/xQZ850kifmd8rCMW+aAEhuA43vB9ZAW22sss9e4SE=";
+    };
+    wakatime-zsh-plugin = pkgs.fetchFromGitHub {
+      owner = "sobolevn";
+      repo = "wakatime-zsh-plugin";
+      rev = "69c6028b0c8f72e2afcfa5135b1af29afb49764a";
+      sha256 = "sha256-pA1VOkzbHQjmcI2skzB/OP5pXn8CFUz5Ok/GLC6KKXQ=";
+    };
+    up = pkgs.fetchFromGitHub {
+      owner = "peterhurford";
+      repo = "up.zsh";
+      rev = "c8cc0d0edd6be2d01f467267e3ed385c386a0acb";
+      sha256 = "sha256-yUWmKi95l7UFcjk/9Cfy/dDXQD3K/m2Q+q72YLZvZak=";
+    };
+    mc = pkgs.fetchFromGitHub {
+      owner = "esc-zsh";
+      repo = "mc";
+      rev = "53f446969e5ddf8f7d0c42cdfe476203f1871414";
+      sha256 = "sha256-Ll4gEV38nmtuLzu00JUDpDxm8Uq6oxDrOebio1zGV7A=";
+    };
+    rh = pkgs.fetchFromGitHub {
+      owner = "esc-zsh";
+      repo = "rh";
+      rev = "2e7ba9f0e71fc7090c22e7cf1872592361296d48";
+      sha256 = "sha256-vWHbPnGPNQT3VytHzy1vS63C0vl26x+5lYIumDC2ei4=";
+    };
+    fzf-tab = pkgs.fetchFromGitHub {
+      owner = "aloxaf";
+      repo = "fzf-tab";
+      rev = "fac145167f7ec1861233c54de0c8900b09c650fe";
+      sha256 = "sha256-1Ior+/9e+M+Fc1u0uq5HhknlGRS96q7tazhEE6rmx9Y=";
+    };
+    zsh-autosuggestions = pkgs.fetchFromGitHub {
+      owner = "zsh-users";
+      repo = "zsh-autosuggestions";
+      rev = "c3d4e576c9c86eac62884bd47c01f6faed043fc5";
+      sha256 = "sha256-B+Kz3B7d97CM/3ztpQyVkE6EfMipVF8Y4HJNfSRXHtU=";
+    };
+    zsh-completions = pkgs.fetchFromGitHub {
+      owner = "zsh-users";
+      repo = "zsh-completions";
+      rev = "f7c3173886f4f56bf97d622677c6d46ab005831f";
+      sha256 = "sha256-sZCHI4ZFfRjcG1XF/3ABf9+zv7f2Di8Xrh4Dr+qt4Us=";
+    };
+    zsh-history-substring-search = pkgs.fetchFromGitHub {
+      owner = "zsh-users";
+      repo = "zsh-history-substring-search";
+      rev = "8dd05bfcc12b0cd1ee9ea64be725b3d9f713cf64";
+      sha256 = "sha256-houujb1CrRTjhCc+dp3PRHALvres1YylgxXwjjK6VZA=";
+    };
+  };
 in {
   imports =
     if stdenv.isDarwin
@@ -116,6 +227,7 @@ in {
   programs = {
     atuin = {
       enable = true;
+      enableZshIntegration = false; # sourced via zsh-defer in initContent
       flags = [
         "--disable-up-arrow"
       ];
@@ -164,6 +276,7 @@ in {
 
     broot = {
       enable = true;
+      enableZshIntegration = false; # sourced via zsh-defer in initContent
     };
 
     delta = {
@@ -177,6 +290,7 @@ in {
 
     direnv = {
       enable = true;
+      enableZshIntegration = false; # sourced via zsh-defer in initContent
       config = {
         global = {
           hide_env_diff = true;
@@ -386,6 +500,7 @@ in {
 
     starship = {
       enable = true;
+      enableZshIntegration = false; # sourced from pre-generated cache in initContent
       settings = {
         format = pkgs.lib.concatStrings [
           "$username"
@@ -439,7 +554,7 @@ in {
 
     zsh = {
       enable = true;
-      completionInit = builtins.readFile ../../zsh/compinit.zsh;
+      completionInit = ""; # deferred via zsh-defer in initContent
 
       history = {
         expireDuplicatesFirst = true;
@@ -449,132 +564,65 @@ in {
         share = false;
       };
 
-      initContent = builtins.readFile ../../zsh/login-shell.zsh;
+      initContent = let
+        p = pluginSrcs;
+        brootInitZsh = "${pkgs.broot}/share/zsh/site-functions/br";
+      in
+        ''
+          # ── fpath setup (must happen before compinit) ──────────────────────
+          fpath+=(
+            ${p.smart-cd}
+            ${p.zsh-autopair}
+            ${p.zsh-titles}
+            ${p.zsh-better-npm-completion}
+            ${p.jq-zsh-plugin}
+            ${p.wakatime-zsh-plugin}
+            ${p.up}
+            ${p.mc}
+            ${p.rh}
+            ${p.fzf-tab}
+            ${p.zsh-autosuggestions}
+            ${p.zsh-completions}
+            ${p.zsh-history-substring-search}
+          )
 
-      plugins = [
-        {
-          name = "smart-cd";
-          src = pkgs.fetchFromGitHub {
-            owner = "esc-zsh";
-            repo = "smart-cd";
-            rev = "57051138141179c293dcaef2da659e42ad4f9eeb";
-            sha256 = "sha256-TgWwvJqQvIjRXpYuSVZ4ZqJCqLF7a5IIqLPzyYNWaTs=";
-          };
-        }
-        {
-          name = "zsh-autopair";
-          src = pkgs.fetchFromGitHub {
-            owner = "hlissner";
-            repo = "zsh-autopair";
-            rev = "396c38a7468458ba29011f2ad4112e4fd35f78e6";
-            sha256 = "sha256-PXHxPxFeoYXYMOC29YQKDdMnqTO0toyA7eJTSCV6PGE=";
-          };
-        }
-        {
-          name = "zsh-titles";
-          file = "titles.plugin.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "jreese";
-            repo = "zsh-titles";
-            rev = "116324bb384cc10b66eea5875782051e492e27e1";
-            sha256 = "sha256-f22ND+A01/4uPwZf4N5zsJRjVgJTgXu3UVGuSe/Atn0=";
-          };
-        }
-        {
-          name = "zsh-better-npm-completion";
-          src = pkgs.fetchFromGitHub {
-            owner = "lukechilds";
-            repo = "zsh-better-npm-completion";
-            rev = "47e5987ca422de43784f9d76311d764f82af2717";
-            sha256 = "sha256-ruQZ3R0Efbe2jnw/WBvTukdtSWoX/kx2mcafnJNoN1k=";
-          };
-        }
-        {
-          name = "jq-zsh-plugin";
-          file = "jq.plugin.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "esc-zsh";
-            repo = "jq-zsh-plugin";
-            rev = "205675c7fdc0a2ad3c3fab1b9bcf6d8fd0e4c585";
-            sha256 = "sha256-q/xQZ850kifmd8rCMW+aAEhuA43vB9ZAW22sss9e4SE=";
-          };
-        }
-        {
-          name = "sobolevn/wakatime-zsh-plugin";
-          file = "wakatime.plugin.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "sobolevn";
-            repo = "wakatime-zsh-plugin";
-            rev = "69c6028b0c8f72e2afcfa5135b1af29afb49764a";
-            sha256 = "sha256-pA1VOkzbHQjmcI2skzB/OP5pXn8CFUz5Ok/GLC6KKXQ=";
-          };
-        }
-        {
-          name = "up";
-          src = pkgs.fetchFromGitHub {
-            owner = "peterhurford";
-            repo = "up.zsh";
-            rev = "c8cc0d0edd6be2d01f467267e3ed385c386a0acb";
-            sha256 = "sha256-yUWmKi95l7UFcjk/9Cfy/dDXQD3K/m2Q+q72YLZvZak=";
-          };
-        }
-        {
-          name = "mc";
-          src = pkgs.fetchFromGitHub {
-            owner = "esc-zsh";
-            repo = "mc";
-            rev = "53f446969e5ddf8f7d0c42cdfe476203f1871414";
-            sha256 = "sha256-Ll4gEV38nmtuLzu00JUDpDxm8Uq6oxDrOebio1zGV7A=";
-          };
-        }
-        {
-          name = "rh";
-          src = pkgs.fetchFromGitHub {
-            owner = "esc-zsh";
-            repo = "rh";
-            rev = "2e7ba9f0e71fc7090c22e7cf1872592361296d48";
-            sha256 = "sha256-vWHbPnGPNQT3VytHzy1vS63C0vl26x+5lYIumDC2ei4=";
-          };
-        }
-        # must be loaded before zsh-autosuggestions
-        {
-          name = "fzf-tab";
-          src = pkgs.fetchFromGitHub {
-            owner = "aloxaf";
-            repo = "fzf-tab";
-            rev = "fac145167f7ec1861233c54de0c8900b09c650fe";
-            sha256 = "sha256-1Ior+/9e+M+Fc1u0uq5HhknlGRS96q7tazhEE6rmx9Y=";
-          };
-        }
-        {
-          # does incur a runtime slowdown, especially during paste
-          name = "zsh-autosuggestions";
-          src = pkgs.fetchFromGitHub {
-            owner = "zsh-users";
-            repo = "zsh-autosuggestions";
-            rev = "c3d4e576c9c86eac62884bd47c01f6faed043fc5";
-            sha256 = "sha256-B+Kz3B7d97CM/3ztpQyVkE6EfMipVF8Y4HJNfSRXHtU=";
-          };
-        }
-        {
-          name = "zsh-completions";
-          src = pkgs.fetchFromGitHub {
-            owner = "zsh-users";
-            repo = "zsh-completions";
-            rev = "f7c3173886f4f56bf97d622677c6d46ab005831f";
-            sha256 = "sha256-sZCHI4ZFfRjcG1XF/3ABf9+zv7f2Di8Xrh4Dr+qt4Us=";
-          };
-        }
-        {
-          name = "zsh-history-substring-search";
-          src = pkgs.fetchFromGitHub {
-            owner = "zsh-users";
-            repo = "zsh-history-substring-search";
-            rev = "8dd05bfcc12b0cd1ee9ea64be725b3d9f713cf64";
-            sha256 = "sha256-houujb1CrRTjhCc+dp3PRHALvres1YylgxXwjjK6VZA=";
-          };
-        }
-      ];
+          # ── zsh-defer (must load before any deferred calls) ────────────────
+          source ${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh
+
+          # ── Starship prompt (synchronous — needed for first prompt) ────────
+          if [[ $TERM != "dumb" ]]; then
+            source ${starshipInitZsh}
+          fi
+
+          # ── Deferred: compinit ─────────────────────────────────────────────
+          zsh-defer -a source ${../../zsh/compinit.zsh}
+        ''
+        + builtins.readFile ../../zsh/login-shell.zsh
+        + ''
+
+          # ── Deferred: plugins ──────────────────────────────────────────────
+          # fzf-tab must be loaded before zsh-autosuggestions
+          zsh-defer source ${p.smart-cd}/smart-cd.plugin.zsh
+          zsh-defer source ${p.zsh-autopair}/zsh-autopair.plugin.zsh
+          zsh-defer source ${p.zsh-titles}/titles.plugin.zsh
+          zsh-defer source ${p.zsh-better-npm-completion}/zsh-better-npm-completion.plugin.zsh
+          zsh-defer source ${p.jq-zsh-plugin}/jq.plugin.zsh
+          zsh-defer source ${p.wakatime-zsh-plugin}/wakatime.plugin.zsh
+          zsh-defer source ${p.up}/up.plugin.zsh
+          zsh-defer source ${p.mc}/mc.plugin.zsh
+          zsh-defer source ${p.rh}/rh.plugin.zsh
+          zsh-defer source ${p.fzf-tab}/fzf-tab.plugin.zsh
+          zsh-defer source ${p.zsh-autosuggestions}/zsh-autosuggestions.plugin.zsh
+          zsh-defer source ${p.zsh-completions}/zsh-completions.plugin.zsh
+          zsh-defer source ${p.zsh-history-substring-search}/zsh-history-substring-search.plugin.zsh
+
+          # ── Deferred: tool integrations ────────────────────────────────────
+          zsh-defer source ${direnvInitZsh}
+          zsh-defer -a -c 'if [[ $options[zle] = on ]]; then source ${atuinInitZsh}; fi'
+          zsh-defer source ${brootInitZsh}
+        '';
+
+      plugins = []; # plugins managed manually in initContent with zsh-defer
 
       sessionVariables = {
         # Configure my preferred ctrl-w behavior

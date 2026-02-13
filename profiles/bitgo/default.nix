@@ -345,6 +345,10 @@ in {
         if [ -z "$_CLAUDE_SESSION" ]; then
           gh() { op plugin run -- gh "$@"; }
         fi
+
+        # Background gpg-agent tty update (doesn't need to block startup)
+        export GPG_TTY=$TTY
+        ${pkgs.gnupg}/bin/gpg-connect-agent --quiet updatestartuptty /bye > /dev/null &!
       '';
       shellAliases = {
         chat = "aichat";

@@ -93,7 +93,9 @@ in {
         enable = true;
         defaultCacheTtl = 1800;
         defaultCacheTtlSsh = 1800;
-        enableSshSupport = true;
+        enableSshSupport = false; # prevents gpgconf subprocess in zshenv (~16ms saved)
+        enableZshIntegration = false; # managed manually via zsh-defer in bitgo profile
+        extraConfig = "enable-ssh-support"; # keep gpg-agent serving SSH keys
         maxCacheTtl = 7200;
         maxCacheTtlSsh = 7200;
         pinentry = {

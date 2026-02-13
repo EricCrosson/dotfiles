@@ -67,6 +67,10 @@
     programs = {
       zsh = {
         enable = true;
+        enableCompletion = false; # home-manager runs compinit in ~/.zshrc
+        enableBashCompletion = false;
+        enableGlobalCompInit = false; # prevent compinit in /etc/zshrc
+        promptInit = ""; # starship handles the prompt
       };
     };
 
