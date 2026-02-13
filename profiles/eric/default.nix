@@ -179,6 +179,8 @@ in {
       dust
       entr
       fd
+      ffmpeg
+
       fx
       git
       git-absorb
@@ -188,6 +190,7 @@ in {
       htmlq
       htop
       hyperfine
+      imagemagick
       jq
       moreutils
       mprocs
@@ -201,6 +204,7 @@ in {
       vim
       watchexec
       wget
+      yubikey-manager
 
       yt-dlp
 
