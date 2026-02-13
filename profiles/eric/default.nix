@@ -593,16 +593,23 @@ in {
           # ── zsh-defer (must load before any deferred calls) ────────────────
           source ${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh
 
-          # ── Starship prompt (synchronous — needed for first prompt) ────────
+          # ── Fast initial prompt (native zsh, no subprocess) ──────────────
+          # Matches starship's format: directory (blue) + newline + character (yellow)
+          # Starship takes over within ~20ms via zsh-defer, adding git info
+          PROMPT=$'%F{blue}%~%f\n%F{yellow};%f '
+
+          # ── Starship prompt (deferred — takes over after first prompt) ───
           if [[ $TERM != "dumb" ]]; then
-            source ${starshipInitZsh}
+            zsh-defer -c 'source ${starshipInitZsh} && zle reset-prompt'
           fi
 
           # ── Deferred: compinit ─────────────────────────────────────────────
           zsh-defer -a source ${../../zsh/compinit.zsh}
         ''
-        + builtins.readFile ../../zsh/login-shell.zsh
+        + builtins.readFile ../../zsh/fzf-cd-widget.zsh
         + ''
+          # ── Deferred: shell config (zstyles, fzf-file-widget, autoloads) ─
+          zsh-defer source ${../../zsh/deferred-shell-config.zsh}
 
           # ── Deferred: plugins ──────────────────────────────────────────────
           # fzf-tab must be loaded before zsh-autosuggestions
@@ -638,6 +645,7 @@ in {
         "appendhistory"
         "interactivecomments"
         "histfindnodups"
+        "promptsubst" # required for starship's PROMPT='$(...)' (deferred via zsh-defer)
       ];
 
       shellAliases = {
