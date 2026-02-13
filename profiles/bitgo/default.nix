@@ -56,7 +56,7 @@
 
   # ── CodeRLM experiment ────────────────────────────────────────────────
   # Flip to false to disable the entire integration (server, hooks, CLI).
-  coderlmEnabled = true;
+  coderlmEnabled = false;
 
   coderlmCli = pkgs.callPackage ../../pkgs/coderlm-cli {};
 
