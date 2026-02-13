@@ -140,11 +140,6 @@
         };
       };
 
-      activationScripts.postActivation.text = ''
-        echo "Upgrading outdated Homebrew formulae..." >&2
-        /opt/homebrew/bin/brew upgrade 2>/dev/null || true
-      '';
-
       primaryUser = "ericcrosson";
 
       # Used for backwards compatibility, please read the changelog before changing:
