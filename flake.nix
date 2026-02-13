@@ -121,7 +121,6 @@
     "https://ericcrosson.cachix.org"
     "https://helix.cachix.org"
     "https://nix-community.cachix.org"
-    "https://pre-commit-hooks.cachix.org"
   ];
 
   nixConfig.trusted-public-keys = [
