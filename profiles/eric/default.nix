@@ -68,12 +68,6 @@
       rev = "396c38a7468458ba29011f2ad4112e4fd35f78e6";
       sha256 = "sha256-PXHxPxFeoYXYMOC29YQKDdMnqTO0toyA7eJTSCV6PGE=";
     };
-    zsh-titles = pkgs.fetchFromGitHub {
-      owner = "jreese";
-      repo = "zsh-titles";
-      rev = "116324bb384cc10b66eea5875782051e492e27e1";
-      sha256 = "sha256-f22ND+A01/4uPwZf4N5zsJRjVgJTgXu3UVGuSe/Atn0=";
-    };
     zsh-better-npm-completion = pkgs.fetchFromGitHub {
       owner = "lukechilds";
       repo = "zsh-better-npm-completion";
@@ -577,7 +571,6 @@ in {
           fpath+=(
             ${p.smart-cd}
             ${p.zsh-autopair}
-            ${p.zsh-titles}
             ${p.zsh-better-npm-completion}
             ${p.jq-zsh-plugin}
             ${p.wakatime-zsh-plugin}
@@ -615,7 +608,6 @@ in {
           # fzf-tab must be loaded before zsh-autosuggestions
           zsh-defer source ${p.smart-cd}/smart-cd.plugin.zsh
           zsh-defer source ${p.zsh-autopair}/zsh-autopair.plugin.zsh
-          zsh-defer source ${p.zsh-titles}/titles.plugin.zsh
           zsh-defer source ${p.zsh-better-npm-completion}/zsh-better-npm-completion.plugin.zsh
           zsh-defer source ${p.jq-zsh-plugin}/jq.plugin.zsh
           zsh-defer source ${p.wakatime-zsh-plugin}/wakatime.plugin.zsh
