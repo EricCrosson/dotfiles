@@ -233,8 +233,6 @@ in {
           DISABLE_TELEMETRY = "1";
           ENABLE_TOOL_SEARCH = "1";
         };
-        skillsDir = ../../claude/skills;
-        teammateMode = "split-panes";
         hooks =
           {
             Notification = [
@@ -283,6 +281,8 @@ in {
               }
             ];
           };
+        skillsDir = ../../claude/skills;
+        teammateMode = "split-panes";
         permissions = {
           defaultMode = "plan";
         };
