@@ -325,6 +325,7 @@ in {
         "/.coderlm/"
         "/.direnv"
         "/.pre-commit-config.yaml"
+        "/CLAUDE.local.md"
         "/scratch/"
       ];
       includes = [
