@@ -121,7 +121,6 @@ MOCK
   run bash wrapper.sh --chat
   assert_success
   assert_snapshot high-utilization
-  assert_output --partial "routing to Bedrock"
 }
 
 @test "boundary 98%: triggers bedrock" {
@@ -140,7 +139,6 @@ MOCK
   run bash wrapper.sh --chat
   assert_success
   assert_snapshot boundary-98
-  assert_output --partial "routing to Bedrock"
 }
 
 @test "no keychain creds: falls through to plan check" {

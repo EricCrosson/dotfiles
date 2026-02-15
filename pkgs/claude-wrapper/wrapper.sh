@@ -25,7 +25,6 @@ if [ -z "${CLAUDE_CODE_USE_BEDROCK:-}" ]; then
 
     if [ -n "${_util:-}" ] && [ "${_util:-0}" -ge 98 ] 2>/dev/null; then
       export CLAUDE_CODE_USE_BEDROCK=1
-      printf '\033[0;33m↗ Plan at %s%% — routing to Bedrock\033[0m\n' "$_util" >&2
     fi
   fi
 fi
