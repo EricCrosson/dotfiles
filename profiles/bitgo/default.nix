@@ -8,12 +8,16 @@
   opPlugins = pkgs.callPackage ../../pkgs/op-plugins/plugins.nix {inherit inputs;};
 
   mcpServers = {
-    context7 = {
-      command = "${pkgs.context7-mcp}/bin/context7-mcp";
-    };
     chrome-devtools = {
       command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
       args = ["-y" "chrome-devtools-mcp@latest"];
+    };
+    context7 = {
+      command = "${pkgs.context7-mcp}/bin/context7-mcp";
+    };
+    matryoshka-rlm = {
+      command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
+      args = ["-y" "matryoshka-rlm"];
     };
   };
 
