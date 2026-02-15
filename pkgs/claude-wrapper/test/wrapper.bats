@@ -53,6 +53,7 @@ MOCK
   _ENV_TEMPLATE="$MOCK_DIR/env_template"
   export _ENV_TEMPLATE
   touch "$_ENV_TEMPLATE"
+  export _BEDROCK_THRESHOLD=80
   export _SECURITY_CMD=security
 }
 
@@ -123,7 +124,7 @@ MOCK
   assert_snapshot high-utilization
 }
 
-@test "boundary 98%: triggers bedrock" {
+@test "boundary 80%: triggers bedrock" {
   cat > "$MOCK_DIR/security" <<'MOCK'
 #!/usr/bin/env bash
 printf '{"claudeAiOauth":{"accessToken":"fake-token-abc"}}'
@@ -132,13 +133,13 @@ MOCK
 
   cat > "$MOCK_DIR/curl" <<'MOCK'
 #!/usr/bin/env bash
-printf '{"five_hour":{"utilization":98}}'
+printf '{"five_hour":{"utilization":80}}'
 MOCK
   chmod +x "$MOCK_DIR/curl"
 
   run bash wrapper.sh --chat
   assert_success
-  assert_snapshot boundary-98
+  assert_snapshot boundary-80
 }
 
 @test "no keychain creds: falls through to plan check" {

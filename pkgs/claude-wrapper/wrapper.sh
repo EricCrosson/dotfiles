@@ -23,7 +23,7 @@ if [ -z "${CLAUDE_CODE_USE_BEDROCK:-}" ]; then
     _util=$(printf '%s' "${_usage:-}" \
       | jq -r '.five_hour.utilization // empty | round' 2>/dev/null) || true
 
-    if [ -n "${_util:-}" ] && [ "${_util:-0}" -ge 98 ] 2>/dev/null; then
+    if [ -n "${_util:-}" ] && [ "${_util:-0}" -ge "$_BEDROCK_THRESHOLD" ] 2>/dev/null; then
       export CLAUDE_CODE_USE_BEDROCK=1
     fi
   fi
