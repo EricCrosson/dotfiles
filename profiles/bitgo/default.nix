@@ -8,17 +8,6 @@
   opPlugins = pkgs.callPackage ../../pkgs/op-plugins/plugins.nix {inherit inputs;};
 
   mcpServers = {
-    atlassian = {
-      type = "http";
-      url = "https://mcp.atlassian.com/v1/mcp";
-    };
-    github = {
-      type = "http";
-      url = "https://api.githubcopilot.com/mcp/";
-      headers = {
-        Authorization = "Bearer \${CLAUDE_CODE_GITHUB_TOKEN}";
-      };
-    };
     context7 = {
       command = "${pkgs.context7-mcp}/bin/context7-mcp";
     };
