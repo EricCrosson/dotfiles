@@ -114,6 +114,12 @@ with lib; let
         default = [];
         description = "List of services this service depends on";
       };
+
+      watchPaths = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        description = "List of file paths to watch for changes (triggers service run)";
+      };
     };
   };
 in {
@@ -184,6 +190,14 @@ in {
                 else null
               } =
                 service.serviceDependencies;
+
+              # Set watch paths if any
+              ${
+                if service.watchPaths != []
+                then "WatchPaths"
+                else null
+              } =
+                service.watchPaths;
             };
           }
       )
