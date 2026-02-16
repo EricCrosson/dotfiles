@@ -14,6 +14,10 @@ in
     cp ${wrapperSrc}/test/wrapper.bats .
     cp -r ${wrapperSrc}/test/snapshots .
     chmod -R u+w .
+
+    # Fix shebangs for Nix sandbox (Linux sandbox lacks /usr/bin/env)
+    sed -i 's|#!/usr/bin/env bash|#!${bash}/bin/bash|g' wrapper.bats
+
     export HOME=$TMPDIR
     bats wrapper.bats
     touch $out
