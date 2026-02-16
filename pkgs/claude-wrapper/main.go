@@ -266,3 +266,4 @@ func getEnvInt(key string, defaultValue int) int {
 	}
 	return result
 }
+// test comment for pre-commit hook

@@ -1,6 +1,8 @@
 {
   stdenv,
   git-hooks,
+  go,
+  writeShellScript,
 }:
 git-hooks.lib.${stdenv.hostPlatform.system}.run {
   src = ../.;
@@ -15,14 +17,18 @@ git-hooks.lib.${stdenv.hostPlatform.system}.run {
     ripsecrets.enable = true;
     statix.enable = true;
     trufflehog.enable = true;
-    nix-flake-check = {
+    claude-wrapper-test = {
       enable = true;
-      name = "nix-flake-check";
-      entry = "nix flake check ./nix";
+      name = "claude-wrapper-test";
+      entry = toString (writeShellScript "claude-wrapper-test" ''
+        export PATH="${go}/bin:$PATH"
+        cd pkgs/claude-wrapper
+        go test
+      '');
       language = "system";
       pass_filenames = false;
-      always_run = true;
-      stages = ["pre-push"];
+      files = "^pkgs/claude-wrapper/.*\\.(go|nix)$";
+      stages = ["pre-commit"];
     };
   };
 }
