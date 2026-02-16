@@ -17,7 +17,7 @@
     };
     matryoshka-rlm = {
       command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
-      args = ["-y" "matryoshka-rlm"];
+      args = ["-y" "-p" "matryoshka-rlm" "rlm-mcp"];
     };
   };
 
