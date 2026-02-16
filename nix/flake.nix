@@ -29,9 +29,16 @@
     checks = forEachSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
       pre-commit-check = pkgs.callPackage ./git-hooks.nix {inherit git-hooks;};
-      claude-wrapper-test = pkgs.callPackage (self.sourceInfo + "/pkgs/claude-wrapper/test") {
-        wrapperSrc = self.sourceInfo + "/pkgs/claude-wrapper";
-      };
+      claude-wrapper-test =
+        pkgs.runCommand "claude-wrapper-test" {
+          nativeBuildInputs = [pkgs.go];
+          src = self.sourceInfo + "/pkgs/claude-wrapper";
+        } ''
+          cd $src
+          export HOME=$TMPDIR
+          go test -v
+          touch $out
+        '';
     in {
       inherit pre-commit-check claude-wrapper-test;
     });
