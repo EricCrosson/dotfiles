@@ -64,6 +64,21 @@
     runtimeInputs = [pkgs.curl coderlmCli];
     text = builtins.readFile ../../claude/hooks/coderlm-session-stop.sh;
   };
+
+  claudeSkillsDir = let
+    conditionalSkills = {
+      coderlm = coderlmEnabled;
+    };
+    allSkillNames = builtins.attrNames (builtins.readDir ../../claude/skills);
+    enabledSkills =
+      builtins.filter
+      (name: conditionalSkills.${name} or true)
+      allSkillNames;
+  in
+    pkgs.lib.fileset.toSource {
+      root = ../../claude/skills;
+      fileset = pkgs.lib.fileset.unions (map (name: ../../claude/skills/${name}) enabledSkills);
+    };
   # ── end CodeRLM ───────────────────────────────────────────────────────
 in {
   imports = [
@@ -274,14 +289,14 @@ in {
               }
             ];
           };
-        skillsDir = ../../claude/skills;
+        skillsDir = claudeSkillsDir;
         teammateMode = "split-panes";
         permissions = {
           defaultMode = "plan";
         };
         theme = "dark";
       };
-      skillsDir = ../../claude/skills;
+      skillsDir = claudeSkillsDir;
     };
 
     git = {
