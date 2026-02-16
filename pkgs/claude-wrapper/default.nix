@@ -10,6 +10,7 @@
   bedrockProfile,
   bedrockRegion,
   bedrockThreshold ? 80,
+  bedrockWeeklyThreshold ? 65,
   envTemplate,
   extraPathPackages ? [],
 }: let
@@ -35,6 +36,7 @@ in
       export AWS_PROFILE=${lib.escapeShellArg bedrockProfile}
       export AWS_REGION=${lib.escapeShellArg bedrockRegion}
       export BEDROCK_THRESHOLD=${toString bedrockThreshold}
+      export BEDROCK_WEEKLY_THRESHOLD=${toString bedrockWeeklyThreshold}
       export ENV_TEMPLATE=${lib.escapeShellArg envTemplate}
       ${lib.concatMapStringsSep "\n      " (pkg: "export PATH=\"${pkg}/bin:$PATH\"") extraPathPackages}
 

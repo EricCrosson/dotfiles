@@ -11,10 +11,11 @@ import (
 
 // Config holds Nix-injected configuration
 type Config struct {
-	AWSProfile       string
-	AWSRegion        string
-	BedrockThreshold int
-	EnvTemplate      string
+	AWSProfile            string
+	AWSRegion             string
+	BedrockThreshold      int
+	WeeklyBedrockThreshold int
+	EnvTemplate           string
 }
 
 // ParsedArgs holds the processed command-line arguments
@@ -37,6 +38,15 @@ type OAuthUsageResponse struct {
 	FiveHour struct {
 		Utilization float64 `json:"utilization"`
 	} `json:"five_hour"`
+	SevenDay struct {
+		Utilization float64 `json:"utilization"`
+	} `json:"seven_day"`
+}
+
+// Utilization holds parsed utilization percentages
+type Utilization struct {
+	FiveHour int
+	SevenDay int
 }
 
 func main() {
@@ -83,10 +93,11 @@ func main() {
 
 func readConfig() Config {
 	return Config{
-		AWSProfile:       os.Getenv("AWS_PROFILE"),
-		AWSRegion:        os.Getenv("AWS_REGION"),
-		BedrockThreshold: getEnvInt("BEDROCK_THRESHOLD", 80),
-		EnvTemplate:      os.Getenv("ENV_TEMPLATE"),
+		AWSProfile:             os.Getenv("AWS_PROFILE"),
+		AWSRegion:              os.Getenv("AWS_REGION"),
+		BedrockThreshold:       getEnvInt("BEDROCK_THRESHOLD", 80),
+		WeeklyBedrockThreshold: getEnvInt("BEDROCK_WEEKLY_THRESHOLD", 65),
+		EnvTemplate:            os.Getenv("ENV_TEMPLATE"),
 	}
 }
 
@@ -134,6 +145,14 @@ func parseArgs(args []string) ParsedArgs {
 	return parsed
 }
 
+func shouldUseBedrock(utilization *Utilization, config Config) bool {
+	if utilization == nil {
+		return false
+	}
+	return utilization.FiveHour >= config.BedrockThreshold ||
+		utilization.SevenDay >= config.WeeklyBedrockThreshold
+}
+
 func shouldAutoDetectBedrock(config Config) bool {
 	// Get OAuth credentials from keychain
 	creds := getKeychainCredentials()
@@ -143,11 +162,7 @@ func shouldAutoDetectBedrock(config Config) bool {
 
 	// Query OAuth usage API
 	utilization := getOAuthUtilization(creds.ClaudeAiOauth.AccessToken)
-	if utilization < 0 {
-		return false
-	}
-
-	return utilization >= config.BedrockThreshold
+	return shouldUseBedrock(utilization, config)
 }
 
 func getKeychainCredentials() *OAuthCredentials {
@@ -175,9 +190,20 @@ func getKeychainCredentials() *OAuthCredentials {
 	return &creds
 }
 
-func getOAuthUtilization(token string) int {
+func parseOAuthUsage(data []byte) *Utilization {
+	var usage OAuthUsageResponse
+	if err := json.Unmarshal(data, &usage); err != nil {
+		return nil
+	}
+	return &Utilization{
+		FiveHour: int(usage.FiveHour.Utilization + 0.5),
+		SevenDay: int(usage.SevenDay.Utilization + 0.5),
+	}
+}
+
+func getOAuthUtilization(token string) *Utilization {
 	if token == "" {
-		return -1
+		return nil
 	}
 
 	// Use curl command (like bash version) so test mocks work
@@ -189,16 +215,10 @@ func getOAuthUtilization(token string) int {
 
 	output, err := cmd.Output()
 	if err != nil {
-		return -1
+		return nil
 	}
 
-	var usage OAuthUsageResponse
-	if err := json.Unmarshal(output, &usage); err != nil {
-		return -1
-	}
-
-	// Round to nearest int (same as bash `jq -r '... | round'`)
-	return int(usage.FiveHour.Utilization + 0.5)
+	return parseOAuthUsage(output)
 }
 
 func resolveSecrets(config Config) {
