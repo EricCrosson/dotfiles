@@ -31,6 +31,14 @@
       url = "git+ssh://git@github.com-bitgo/bitgo/aws-saml";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    atlas = {
+      url = "git+ssh://git@github.com-bitgo/BitGo/atlas";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        crane.follows = "crane";
+        fenix.follows = "fenix";
+      };
+    };
     bash-barrier = {
       url = "github:ericcrosson/bash-barrier";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -52,6 +52,12 @@
       mkdir -p $ATUIN_CONFIG_DIR
       atuin init zsh --disable-up-arrow > $out
     '';
+  atlasInitZsh =
+    pkgs.runCommand "atlas-init-zsh" {
+      nativeBuildInputs = [inputs.atlas.packages.${pkgs.system}.default];
+    } ''
+      atlas init zsh > $out
+    '';
 
   # Plugin sources — extracted so we can manage fpath and sourcing manually
   # with zsh-defer instead of letting home-manager source them synchronously
@@ -620,11 +626,12 @@ in {
           zsh-defer -a source ${../../zsh/deferred-shell-config.zsh}
           zsh-defer -a source ${p.zsh-history-substring-search}/zsh-history-substring-search.plugin.zsh
 
-          # ── Tier 2: Background (after 300ms yield) ───────────────────────
+          # ── Tier 2: Background (after 500ms yield) ────────────────────
           # Rarely needed immediately.
-          zsh-defer -a -t 0.3 source ${p.wakatime-zsh-plugin}/wakatime.plugin.zsh
+          zsh-defer -a -t 0.5 source ${p.wakatime-zsh-plugin}/wakatime.plugin.zsh
           zsh-defer -a source ${p.jq-zsh-plugin}/jq.plugin.zsh
           zsh-defer -a source ${p.zsh-better-npm-completion}/zsh-better-npm-completion.plugin.zsh
+          zsh-defer -a -t 0.5 source ${atlasInitZsh}
         '';
 
       plugins = []; # plugins managed manually in initContent with zsh-defer

@@ -21,6 +21,32 @@
         "type": "github"
       }
     },
+    "atlas": {
+      "inputs": {
+        "crane": [
+          "crane"
+        ],
+        "fenix": [
+          "fenix"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771366375,
+        "narHash": "sha256-70IfzDnPM1/es7KYN3dRDqP1EKyzUA4yzmBNFQFYzP8=",
+        "ref": "refs/heads/master",
+        "rev": "d134797675fa53def4d8cb235b294a917ae9661d",
+        "revCount": 39,
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/BitGo/atlas"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/BitGo/atlas"
+      }
+    },
     "aws-console-bitgo": {
       "inputs": {
         "nixpkgs": [
@@ -595,6 +621,7 @@
     "root": {
       "inputs": {
         "_1password-shell-plugins": "_1password-shell-plugins",
+        "atlas": "atlas",
         "aws-console-bitgo": "aws-console-bitgo",
         "aws-saml-bitgo": "aws-saml-bitgo",
         "bash-barrier": "bash-barrier",
