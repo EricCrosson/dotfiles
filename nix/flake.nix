@@ -36,6 +36,7 @@
         } ''
           cd $src
           export HOME=$TMPDIR
+          export GOTOOLCHAIN=local
           go test -v
           touch $out
         '';
