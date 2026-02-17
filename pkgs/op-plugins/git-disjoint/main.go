@@ -55,12 +55,11 @@ func personalAccessToken() schema.CredentialType {
 				MarkdownDescription: "Token used to authenticate to GitHub for git-disjoint.",
 				Secret:              true,
 				Composition: &schema.ValueComposition{
-					Length: 40,
-					Prefix: "ghp_",
 					Charset: schema.Charset{
 						Uppercase: true,
 						Lowercase: true,
 						Digits:    true,
+						Symbols:   true,
 					},
 				},
 			},
