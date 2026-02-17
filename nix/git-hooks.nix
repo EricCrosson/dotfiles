@@ -22,6 +22,7 @@ git-hooks.lib.${stdenv.hostPlatform.system}.run {
       name = "claude-wrapper-test";
       entry = toString (writeShellScript "claude-wrapper-test" ''
         export PATH="${go}/bin:$PATH"
+        export GOTOOLCHAIN=local
         cd pkgs/claude-wrapper
         go test
       '');
