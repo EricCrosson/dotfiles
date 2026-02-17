@@ -103,11 +103,7 @@ in {
     languages.language = [
       {
         name = "markdown";
-        language-servers = [
-          {
-            name = "ltex-ls";
-          }
-        ];
+        language-servers = [];
       }
       {
         name = "python";
