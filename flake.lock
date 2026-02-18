@@ -34,11 +34,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771387168,
-        "narHash": "sha256-kWD9CVkXhHP8EgAo2vwRhyQ8cFPFCL1wyIM31mouHeg=",
+        "lastModified": 1771396250,
+        "narHash": "sha256-1mTOtETbN338lezJ2/nqlauxfb/hmC4XkjN0Eo5YxnY=",
         "ref": "refs/heads/master",
-        "rev": "dd329aa44ce87f05986d39046a3dfe348aaf8620",
-        "revCount": 59,
+        "rev": "1f777ae09f6fa781f29ee5a90fa48eed61943849",
+        "revCount": 64,
         "type": "git",
         "url": "ssh://git@github.com-bitgo/BitGo/atlas"
       },
@@ -146,6 +146,32 @@
         "owner": "ericcrosson",
         "repo": "bell",
         "type": "github"
+      }
+    },
+    "cortex": {
+      "inputs": {
+        "crane": [
+          "crane"
+        ],
+        "fenix": [
+          "fenix"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771396380,
+        "narHash": "sha256-+lQDMfUIUkFz0QINMOMcJJLZ2MZgARD2Va4Z/MJ1A6Q=",
+        "ref": "refs/heads/master",
+        "rev": "2873749350a588fdcd553956b000456da15dbe5a",
+        "revCount": 69,
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/BitGo/cortex"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/BitGo/cortex"
       }
     },
     "crane": {
@@ -627,6 +653,7 @@
         "bash-barrier": "bash-barrier",
         "batch-edit-prs": "batch-edit-prs",
         "bell": "bell",
+        "cortex": "cortex",
         "crane": "crane",
         "fenix": "fenix",
         "gh-agent": "gh-agent",

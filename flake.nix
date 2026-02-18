@@ -39,6 +39,14 @@
         fenix.follows = "fenix";
       };
     };
+    cortex = {
+      url = "git+ssh://git@github.com-bitgo/BitGo/cortex";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        crane.follows = "crane";
+        fenix.follows = "fenix";
+      };
+    };
     bash-barrier = {
       url = "github:ericcrosson/bash-barrier";
       inputs.nixpkgs.follows = "nixpkgs";
