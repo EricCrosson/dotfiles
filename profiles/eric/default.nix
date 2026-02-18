@@ -611,6 +611,7 @@ in {
           zsh-defer -a source ${../../zsh/compinit.zsh}
           zsh-defer -a source ${direnvInitZsh}
           zsh-defer -a -c 'if [[ $options[zle] = on ]]; then source ${atuinInitZsh}; fi'
+          zsh-defer -a source ${atlasInitZsh}
         ''
         + builtins.readFile ../../zsh/fzf-cd-widget.zsh
         + ''
@@ -632,7 +633,6 @@ in {
           zsh-defer -a -t 0.5 source ${p.wakatime-zsh-plugin}/wakatime.plugin.zsh
           zsh-defer -a source ${p.jq-zsh-plugin}/jq.plugin.zsh
           zsh-defer -a source ${p.zsh-better-npm-completion}/zsh-better-npm-completion.plugin.zsh
-          zsh-defer -a -t 0.5 source ${atlasInitZsh}
         '';
 
       plugins = []; # plugins managed manually in initContent with zsh-defer
