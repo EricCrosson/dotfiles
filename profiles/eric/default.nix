@@ -598,7 +598,7 @@ in {
           # ── Fast initial prompt (native zsh, no subprocess) ──────────────
           # Matches starship's format: directory (blue) + newline + character (yellow)
           # Starship takes over within ~20ms via zsh-defer, adding git info
-          PROMPT=$'%F{blue}%~%f\n%F{yellow};%f '
+          PROMPT=$'\n%F{blue}%~%f\n%F{yellow};%f '
 
           # ── Synchronous autoloads and stubs (zero cost) ──────────────────
           autoload -Uz mc
