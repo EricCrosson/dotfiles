@@ -47,6 +47,18 @@
     exec ${pkgs.jira-cli-go}/bin/jira "$@"
   '';
 
+  # Force aws-saml to open Keycloak login in Safari instead of the default browser.
+  # aws-saml uses pkg/browser which hardcodes `open <url>` on Darwin, ignoring $BROWSER.
+  # We shadow `open` with a shim that routes through Safari.
+  openInSafari = pkgs.writeShellScriptBin "open" ''
+    exec /usr/bin/open -a Safari "$@"
+  '';
+
+  awsSaml = pkgs.writeShellScriptBin "aws-saml" ''
+    export PATH=${openInSafari}/bin:$PATH
+    exec ${inputs.aws-saml-bitgo.packages.${pkgs.system}.default}/bin/aws-saml "$@"
+  '';
+
   # ── CodeRLM experiment ────────────────────────────────────────────────
   # Flip to false to disable the entire integration (server, hooks, CLI).
   coderlmEnabled = false;
@@ -149,7 +161,7 @@ in {
         inputs.percentage-changed-calculator.packages.${pkgs.system}.default
 
         inputs.aws-console-bitgo.packages.${pkgs.system}.default
-        inputs.aws-saml-bitgo.packages.${pkgs.system}.default
+        awsSaml
 
         # 1Password CLI for secret management
         _1password-cli
@@ -368,7 +380,7 @@ in {
   services = {
     litellm-proxy = {
       enable = true;
-      aws-saml = inputs.aws-saml-bitgo.packages.${pkgs.system}.default;
+      aws-saml = awsSaml;
       models = [
         {
           name = config.claude-options.models.sonnet.id;
