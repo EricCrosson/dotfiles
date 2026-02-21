@@ -58,6 +58,15 @@
     } ''
       atlas init zsh > $out
     '';
+  zoxideInitZsh =
+    pkgs.runCommand "zoxide-init-zsh" {
+      nativeBuildInputs = [pkgs.zoxide];
+    } ''
+      zoxide init zsh > $out
+    '';
+  fzfAltCCommand = pkgs.writeShellScript "fzf-alt-c-command" ''
+    { zoxide query -l 2>/dev/null; fd --type d --absolute-path; } | awk -v home="$HOME" '!seen[$0]++ { sub("^" home, "~"); print }'
+  '';
 
   # Plugin sources — extracted so we can manage fpath and sourcing manually
   # with zsh-defer instead of letting home-manager source them synchronously
@@ -148,7 +157,7 @@ in {
 
     sessionVariables = {
       EDITOR = "${inputs.helix.packages.${pkgs.system}.default}/bin/hx";
-      FZF_ALT_C_COMMAND = "fd --type d";
+      FZF_ALT_C_COMMAND = "${fzfAltCCommand}";
       FZF_DEFAULT_COMMAND = "fd --type f";
       FZF_CTRL_T_COMMAND = "fd --type f";
       MANPAGER = "sh -c 'col -bx | bat -l man -p'";
@@ -227,6 +236,17 @@ in {
 
       # Add catppuccin delta theme configuration
       ".config/git/catppuccin.gitconfig".source = "${catppuccinDelta}/catppuccin.gitconfig";
+
+      ".config/fd/ignore" = {
+        text = ''
+          .direnv/
+          .git/
+          build/
+          dist/
+          node_modules/
+          target/
+        '';
+      };
     };
   };
 
@@ -244,6 +264,11 @@ in {
         update_check = false;
         search_mode = "fuzzy";
       };
+    };
+
+    zoxide = {
+      enable = true;
+      enableZshIntegration = false; # sourced via zsh-defer in initContent
     };
 
     bat = {
@@ -609,9 +634,10 @@ in {
 
           # ── Tier 0: Functional interactivity (immediate) ─────────────────
           # Must complete before first user interaction.
-          # Alt-C (95% workflow) needs direnv; Ctrl-R (5%) needs atuin.
+          # Alt-C (95% workflow) needs direnv + zoxide; Ctrl-R (5%) needs atuin.
           zsh-defer -a source ${../../zsh/compinit.zsh}
           zsh-defer -a source ${direnvInitZsh}
+          zsh-defer -a source ${zoxideInitZsh}
           zsh-defer -a -c 'if [[ $options[zle] = on ]]; then source ${atuinInitZsh}; fi'
           zsh-defer -a source ${atlasInitZsh}
         ''
