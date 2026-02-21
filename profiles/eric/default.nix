@@ -354,6 +354,7 @@ in {
           # https://stackoverflow.com/a/70205254
           continue = "-c core.editor=true rebase --continue";
           d = "diff";
+          default-branch = "!git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'";
           ds = "diff --cached";
           f = "fetch";
           l = "log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'";
