@@ -1,3 +1,3 @@
 module github.com/ericcrosson/dotfiles/pkgs/claude-wrapper
 
-go 1.25
+go 1.26.0
