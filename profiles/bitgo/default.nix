@@ -350,16 +350,6 @@ in {
       ];
     };
 
-    llm = {
-      enable = true;
-      models = [
-        {
-          inherit (config.claude-options.models.sonnet) id name;
-          api_base = config.services-options.litellm-proxy.baseUrl;
-        }
-      ];
-    };
-
     zsh = {
       initContent = ''
         if [ -z "$_CLAUDE_SESSION" ]; then
@@ -391,8 +381,6 @@ in {
     };
 
     coderlm-server.enable = coderlmEnabled;
-
-    # open-webui.enable = true;
   };
 
   sops = {
