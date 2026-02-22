@@ -38,12 +38,10 @@
       casks = [
         "kitty"
         "postman"
-        "tldev/tap/posturr"
       ];
 
       taps = [
         "atlassian/homebrew-acli"
-        "tldev/tap"
       ];
     };
 
