@@ -3,7 +3,9 @@
   profile,
   inputs,
   ...
-}: {
+}: let
+  showboat = pkgs.callPackage ../../pkgs/showboat {};
+in {
   home = {
     username = "${profile.username}";
     homeDirectory = "${profile.homeDirectory}";
@@ -36,6 +38,7 @@
         bc
         vscode
         yazi
+        showboat
 
         # TypeScript
         pnpm
