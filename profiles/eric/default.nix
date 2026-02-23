@@ -384,7 +384,7 @@ in {
           f = "fetch";
           l = "log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'";
           p = "pull";
-          fsl = "push --force-with-lease";
+          fwl = "push --force-with-lease";
           re = "restore";
           rs = "restore --staged";
           s = "status";
@@ -394,10 +394,17 @@ in {
               git branch --no-color --sort=-committerdate --format='%(refname:short)' | fzf --header 'git checkout' | xargs git checkout
             }; f
           '';
-          # [c]heck[o]ut [p]ull request
-          cop = ''
+          pr = ''
             !f() { \
-              gh pr list --author "@me" | fzf --header 'checkout PR' | awk '{print $(NF-5)}' | xargs git checkout
+              export GIT_PR_ALL=$(gh pr list | column -ts'	') && \
+              export GIT_PR_MINE=$(gh pr list --author "@me" | column -ts'	') && \
+              echo "$GIT_PR_ALL" | fzf \
+                --prompt 'All PRs> ' \
+                --header 'CTRL-T: toggle all / my PRs' \
+                --bind "ctrl-t:transform:[[ \$FZF_PROMPT =~ All ]] && \
+                  echo \"change-prompt(My PRs> )+reload(printenv GIT_PR_MINE)\" || \
+                  echo \"change-prompt(All PRs> )+reload(printenv GIT_PR_ALL)\"" \
+              | awk '{print $(NF-5)}' | xargs git checkout
             }; f
           '';
           su = "submodule update";
