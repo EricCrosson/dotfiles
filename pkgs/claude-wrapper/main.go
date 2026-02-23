@@ -69,17 +69,10 @@ func main() {
 		args.explicitBedrock = true
 	}
 
-	// If using Bedrock and no model specified, add default
 	if args.explicitBedrock {
 		os.Setenv("CLAUDE_CODE_USE_BEDROCK", "1")
-		if !args.hasModel {
-			// Prepend model to args
-			args.filteredArgs = append(
-				[]string{"--model", "us.anthropic.claude-opus-4-6-v1"},
-				args.filteredArgs...,
-			)
-		}
 	}
+	args = applyModelDefaults(args)
 
 	// Mark as Claude session
 	os.Setenv("_CLAUDE_SESSION", "1")
@@ -143,6 +136,21 @@ func parseArgs(args []string) ParsedArgs {
 	}
 
 	return parsed
+}
+
+// applyModelDefaults prepends a default --model flag when the user has not
+// already specified one. The Bedrock default differs from the Anthropic API
+// default because claude-sonnet-4-6 is not yet enabled in the Bedrock account.
+func applyModelDefaults(args ParsedArgs) ParsedArgs {
+	if args.hasModel {
+		return args
+	}
+	model := "claude-sonnet-4-6"
+	if args.explicitBedrock {
+		model = "us.anthropic.claude-opus-4-6-v1"
+	}
+	args.filteredArgs = append([]string{"--model", model}, args.filteredArgs...)
+	return args
 }
 
 func shouldUseBedrock(utilization *Utilization, config Config) bool {

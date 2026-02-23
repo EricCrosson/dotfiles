@@ -321,6 +321,60 @@ func TestParseOAuthUsage(t *testing.T) {
 	}
 }
 
+func TestApplyModelDefaults(t *testing.T) {
+	tests := []struct {
+		name             string
+		input            ParsedArgs
+		wantFilteredArgs []string
+	}{
+		{
+			name: "Bedrock, no model",
+			input: ParsedArgs{
+				explicitBedrock: true,
+				hasModel:        false,
+				filteredArgs:    []string{"--chat"},
+			},
+			wantFilteredArgs: []string{"--model", "us.anthropic.claude-opus-4-6-v1", "--chat"},
+		},
+		{
+			name: "Bedrock, with model",
+			input: ParsedArgs{
+				explicitBedrock: true,
+				hasModel:        true,
+				filteredArgs:    []string{"--model", "my-model", "--chat"},
+			},
+			wantFilteredArgs: []string{"--model", "my-model", "--chat"},
+		},
+		{
+			name: "Anthropic API, no model",
+			input: ParsedArgs{
+				explicitBedrock: false,
+				hasModel:        false,
+				filteredArgs:    []string{"--chat"},
+			},
+			wantFilteredArgs: []string{"--model", "claude-sonnet-4-6", "--chat"},
+		},
+		{
+			name: "Anthropic API, with model",
+			input: ParsedArgs{
+				explicitBedrock: false,
+				hasModel:        true,
+				filteredArgs:    []string{"--model", "my-model", "--chat"},
+			},
+			wantFilteredArgs: []string{"--model", "my-model", "--chat"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := applyModelDefaults(tt.input)
+			if !reflect.DeepEqual(got.filteredArgs, tt.wantFilteredArgs) {
+				t.Errorf("filteredArgs = %v, want %v", got.filteredArgs, tt.wantFilteredArgs)
+			}
+		})
+	}
+}
+
 func TestShouldUseBedrock(t *testing.T) {
 	config := Config{
 		BedrockThreshold:       80,
