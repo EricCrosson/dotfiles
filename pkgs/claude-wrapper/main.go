@@ -139,13 +139,12 @@ func parseArgs(args []string) ParsedArgs {
 }
 
 // applyModelDefaults prepends a default --model flag when the user has not
-// already specified one. The Bedrock default differs from the Anthropic API
-// default because claude-sonnet-4-6 is not yet enabled in the Bedrock account.
+// already specified one. Bedrock uses a region-prefixed model ID.
 func applyModelDefaults(args ParsedArgs) ParsedArgs {
 	if args.hasModel {
 		return args
 	}
-	model := "claude-sonnet-4-6"
+	model := "claude-opus-4-6"
 	if args.explicitBedrock {
 		model = "us.anthropic.claude-opus-4-6-v1"
 	}

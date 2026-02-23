@@ -352,7 +352,7 @@ func TestApplyModelDefaults(t *testing.T) {
 				hasModel:        false,
 				filteredArgs:    []string{"--chat"},
 			},
-			wantFilteredArgs: []string{"--model", "claude-sonnet-4-6", "--chat"},
+			wantFilteredArgs: []string{"--model", "claude-opus-4-6", "--chat"},
 		},
 		{
 			name: "Anthropic API, with model",
