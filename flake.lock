@@ -161,11 +161,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771396380,
-        "narHash": "sha256-+lQDMfUIUkFz0QINMOMcJJLZ2MZgARD2Va4Z/MJ1A6Q=",
+        "lastModified": 1771398847,
+        "narHash": "sha256-qyH/2HOMLX7OUerJ0WXi11RZXkjhY2lVBLH5d60HR5g=",
         "ref": "refs/heads/master",
-        "rev": "2873749350a588fdcd553956b000456da15dbe5a",
-        "revCount": 69,
+        "rev": "04ebe96ee3828cbc8f5b7ab15b9ef36dac09ea44",
+        "revCount": 75,
         "type": "git",
         "url": "ssh://git@github.com-bitgo/BitGo/cortex"
       },
