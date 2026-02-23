@@ -80,10 +80,7 @@ func claudeCLI() schema.Executable {
 		Name:    "Claude Code",
 		Runs:    []string{"claude-unwrapped"},
 		DocsURL: sdk.URL("https://claude.ai/claude-code"),
-		NeedsAuth: needsauth.IfAll(
-			needsauth.NotForHelpOrVersion(),
-			needsauth.NotWithoutArgs(),
-		),
+		NeedsAuth: needsauth.NotForHelpOrVersion(),
 		Uses: []schema.CredentialUsage{
 			{
 				Name: credname.PersonalAccessToken,

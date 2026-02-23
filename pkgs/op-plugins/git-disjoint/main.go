@@ -80,10 +80,7 @@ func gitDisjointCLI() schema.Executable {
 		Name:    "git-disjoint",
 		Runs:    []string{"git-disjoint-unwrapped"},
 		DocsURL: sdk.URL("https://github.com/ericcrosson/git-disjoint"),
-		NeedsAuth: needsauth.IfAll(
-			needsauth.NotForHelpOrVersion(),
-			needsauth.NotWithoutArgs(),
-		),
+		NeedsAuth: needsauth.NotForHelpOrVersion(),
 		Uses: []schema.CredentialUsage{
 			{
 				Name: credname.PersonalAccessToken,

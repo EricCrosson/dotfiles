@@ -9,7 +9,7 @@
   claudePackages = opPluginLib.buildOpPluginPackages {
     name = "claude";
     src = ./claude;
-    vendorHash = "sha256-T5wY6DshhHITCEnHG7229UsTYYE5NPMUWz6xqJ4G6yc=";
+    vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
     homepage = "https://claude.ai/claude-code";
     description = "1Password shell plugin for Claude Code";
     wrappedPackage = pkgs.claude-code;
@@ -20,7 +20,7 @@
   jiraPackages = opPluginLib.buildOpPluginPackages {
     name = "jira";
     src = ./jira;
-    vendorHash = "sha256-T5wY6DshhHITCEnHG7229UsTYYE5NPMUWz6xqJ4G6yc=";
+    vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
     homepage = "https://github.com/ankitpokhrel/jira-cli";
     description = "1Password shell plugin for Jira CLI";
     wrappedPackage = pkgs.jira-cli-go;
@@ -30,7 +30,7 @@
   gitDisjointPackages = opPluginLib.buildOpPluginPackages {
     name = "git-disjoint";
     src = ./git-disjoint;
-    vendorHash = "sha256-C+HpeOzrqk1aGKAKz38Yl2zaKIiv4kIZQL9Ld6AnUKM=";
+    vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
     homepage = "https://github.com/ericcrosson/git-disjoint";
     description = "1Password shell plugin for git-disjoint";
     wrappedPackage = inputs.git-disjoint.packages.${pkgs.system}.default;
