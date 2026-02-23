@@ -309,6 +309,7 @@ in {
         theme = "dark";
       };
       skillsDir = claudeSkillsDir;
+      agentsDir = ../../claude/agents;
     };
 
     git = {
