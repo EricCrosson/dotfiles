@@ -28,10 +28,6 @@ with lib; let
   # Generate config using builtins.toJSON
   configToJson = models: builtins.toJSON {model_list = map modelToAttrs models;};
 in {
-  imports = [
-    ../../options
-  ];
-
   options.services.litellm-proxy = {
     enable = mkEnableOption "LiteLLM proxy service";
 
@@ -53,8 +49,6 @@ in {
       description = "Whether to keep the service alive";
     };
 
-    # Use fixed defaults, not derived from services-options
-    # to break circular dependency
     host = mkOption {
       type = types.str;
       default = "localhost";
@@ -65,6 +59,20 @@ in {
       type = types.port;
       default = 4000;
       description = "Port for the LiteLLM proxy service";
+    };
+
+    baseUrl = mkOption {
+      type = types.str;
+      default = "http://${cfg.host}:${toString cfg.port}";
+      description = "Base URL for the LiteLLM proxy service";
+      readOnly = true;
+    };
+
+    apiUrl = mkOption {
+      type = types.str;
+      default = "${cfg.baseUrl}/v1";
+      description = "API URL for the LiteLLM proxy service";
+      readOnly = true;
     };
 
     # Structured model definition, similar to llm module
@@ -117,11 +125,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # Set shared options for other modules to use
-    services-options.litellm-proxy = {
-      inherit (cfg) host port;
-    };
-
     # Generate config file from Nix models definition using built-in JSON converter
     home.file = {
       ".config/litellm/config.yaml" = {

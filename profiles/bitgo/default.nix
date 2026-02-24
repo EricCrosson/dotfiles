@@ -222,7 +222,7 @@ in {
           {
             type = "openai-compatible";
             name = "bedrock-claude";
-            api_base = config.services-options.litellm-proxy.apiUrl;
+            api_base = config.services.litellm-proxy.apiUrl;
             api_key = "xxx";
             models = [
               {
