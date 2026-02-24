@@ -217,7 +217,7 @@ in {
       wget
       yubikey-manager
 
-      yt-dlp
+      # yt-dlp # derivation temporarily broken
 
       # for shell
       eza

@@ -148,7 +148,7 @@ in {
       ++ [opPlugins.git-disjoint.plugin opPlugins.git-disjoint.unwrapped opPlugins.git-disjoint.wrapper]
       ++ [
         gh
-        jiratui
+        # jiratui # derivation temporarily broken
         k9s
         kubectl
         kubectx
