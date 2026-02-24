@@ -58,40 +58,6 @@
     export PATH=${openInSafari}/bin:$PATH
     exec ${inputs.aws-saml-bitgo.packages.${pkgs.system}.default}/bin/aws-saml "$@"
   '';
-
-  # ── CodeRLM experiment ────────────────────────────────────────────────
-  # Flip to false to disable the entire integration (server, hooks, CLI).
-  coderlmEnabled = false;
-
-  coderlmCli = pkgs.callPackage ../../pkgs/coderlm-cli {};
-
-  coderlmSessionInitScript = pkgs.writeShellApplication {
-    name = "coderlm-session-init";
-    runtimeInputs = [pkgs.curl coderlmCli];
-    text = builtins.readFile ../../claude/hooks/coderlm-session-init.sh;
-  };
-
-  coderlmSessionStopScript = pkgs.writeShellApplication {
-    name = "coderlm-session-stop";
-    runtimeInputs = [pkgs.curl coderlmCli];
-    text = builtins.readFile ../../claude/hooks/coderlm-session-stop.sh;
-  };
-
-  claudeSkillsDir = let
-    conditionalSkills = {
-      coderlm = coderlmEnabled;
-    };
-    allSkillNames = builtins.attrNames (builtins.readDir ../../claude/skills);
-    enabledSkills =
-      builtins.filter
-      (name: conditionalSkills.${name} or true)
-      allSkillNames;
-  in
-    pkgs.lib.fileset.toSource {
-      root = ../../claude/skills;
-      fileset = pkgs.lib.fileset.unions (map (name: ../../claude/skills/${name}) enabledSkills);
-    };
-  # ── end CodeRLM ───────────────────────────────────────────────────────
 in {
   imports = [
     ./modules
@@ -243,7 +209,7 @@ in {
         bedrockProfile = config.claude-options.bedrock.profile;
         bedrockRegion = config.claude-options.bedrock.region;
         envTemplate = claudeEnvTemplate;
-        extraPathPackages = [claudeJira] ++ pkgs.lib.optionals coderlmEnabled [coderlmCli];
+        extraPathPackages = [claudeJira];
       };
       inherit mcpServers;
       settings = {
@@ -254,62 +220,26 @@ in {
           DISABLE_TELEMETRY = "1";
           ENABLE_TOOL_SEARCH = "1";
         };
-        hooks =
-          {
-            Notification = [
-              {
-                hooks = [
-                  {
-                    type = "command";
-                    command = "${pkgs.lib.getExe claudeNotificationScript}";
-                  }
-                ];
-              }
-            ];
-          }
-          // pkgs.lib.optionalAttrs coderlmEnabled {
-            SessionStart = [
-              {
-                hooks = [
-                  {
-                    type = "command";
-                    command = "${pkgs.lib.getExe coderlmSessionInitScript}";
-                    timeout = 10000;
-                  }
-                ];
-              }
-            ];
-            UserPromptSubmit = [
-              {
-                matcher = "(?i)(how does|what calls|who calls|where does|where is|trace|callers?|execution path|error com|investigate|find the func|find where|understand.*code|explore.*code|map out|navigate|cross.?file|what tests|implementation of|defined in|originat)";
-                hooks = [
-                  {
-                    type = "prompt";
-                    prompt = "Use the coderlm skill for all code navigation in supported languages (Rust, Python, TypeScript, JavaScript, Go). Use Read only for config files, markdown, and unsupported languages.";
-                  }
-                ];
-              }
-            ];
-            Stop = [
-              {
-                hooks = [
-                  {
-                    type = "command";
-                    command = "${pkgs.lib.getExe coderlmSessionStopScript}";
-                    timeout = 5000;
-                  }
-                ];
-              }
-            ];
-          };
-        skillsDir = claudeSkillsDir;
+        hooks = {
+          Notification = [
+            {
+              hooks = [
+                {
+                  type = "command";
+                  command = "${pkgs.lib.getExe claudeNotificationScript}";
+                }
+              ];
+            }
+          ];
+        };
+        skillsDir = ../../claude/skills;
         teammateMode = "split-panes";
         permissions = {
           defaultMode = "plan";
         };
         theme = "dark";
       };
-      skillsDir = claudeSkillsDir;
+      skillsDir = ../../claude/skills;
       agentsDir = ../../claude/agents;
     };
 
@@ -381,8 +311,6 @@ in {
         }
       ];
     };
-
-    coderlm-server.enable = coderlmEnabled;
   };
 
   sops = {
