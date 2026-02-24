@@ -15,39 +15,24 @@ description: Use when implementing any feature or bugfix, before writing impleme
 6. Verify tests still pass.
    </required>
 
-# Red-Green-Refactor In Depth
-
-```dot
-digraph tdd_cycle {
-    rankdir=LR;
-    red [label="RED\nWrite failing test", shape=box, style=filled, fillcolor="#ffcccc"];
-    verify_red [label="Verify fails\ncorrectly", shape=diamond];
-    green [label="GREEN\nMinimal code", shape=box, style=filled, fillcolor="#ccffcc"];
-    verify_green [label="Verify passes\nAll green", shape=diamond];
-    refactor [label="REFACTOR\nClean up", shape=box, style=filled, fillcolor="#ccccff"];
-    next [label="Next", shape=ellipse];
-
-    red -> verify_red;
-    verify_red -> green [label="yes"];
-    verify_red -> red [label="wrong\nfailure"];
-    green -> verify_green;
-    verify_green -> refactor [label="yes"];
-    verify_green -> green [label="no"];
-    refactor -> verify_green [label="stay\ngreen"];
-    verify_green -> next;
-    next -> red;
-}
-```
-
 # Test Writing Guidelines
 
-- Always test real behavior.
-- Do not write tests that are just mocks.
-- Do not write tests that test implementation detail.
-- Do not write tests that just test data structure format.
-- Do not write tests that test types.
-- Focus on writing tests for integration boundaries.
-- Only unit test utilities. Production code must be end to end tested.
+## What to Test: The Beyonce Rule
+
+"If you liked it then you shoulda put a test on it." If a behavior is important
+enough that you rely on it, it must have a test. No exceptions.
+
+## How to Test: Behaviors, Not Methods
+
+Structure tests around **behaviors** (given X, when Y, then Z) -- not around methods.
+One method may exhibit multiple behaviors. One behavior may span multiple methods.
+Name each test after the behavior it verifies.
+
+- Test through the system's **public API**. Internal refactors must not break tests.
+- Assert on **state and output** (return values, side effects), not on interactions
+  (which methods were called, in what order). This is why mock-heavy tests are bad.
+- Do not test types, data structure shapes, or implementation details.
+- Only unit test utilities. Production code must be integration or end-to-end tested.
 
 ## RED - Write Failing Test
 
@@ -71,8 +56,8 @@ test("retries failed operations 3 times", async () => {
 });
 ```
 
-Clear name, tests real behavior, one thing. Note that the tested operation is
-imported -- this is a STRONG sign that this is testing something real.
+Test name describes a behavior. Asserts on output (result) and state (attempts),
+not on interactions. Exercises the real module through its public API.
 
 </good-example>
 
@@ -90,26 +75,20 @@ test("retry works", async () => {
 });
 ```
 
-Vague name, tests mock not code
+Name describes nothing. Asserts on interactions (call count), not on what the
+system produces. Entirely mock-driven -- tests the test, not the code.
 </bad-example>
 
 ## Verify RED - Watch It Fail
 
-**MANDATORY. Never skip.**
+**MANDATORY. Never skip.** Run the test. Confirm:
 
-```bash
-npm test path/to/test.test.ts
-```
+- Test **fails** (not errors)
+- Failure message matches expected missing behavior
+- Fails because feature is missing, not because of typos or test bugs
 
-Confirm:
-
-- Test fails (not errors)
-- Failure message is expected
-- Fails because feature missing (not typos)
-
-**Test passes?** You're testing existing behavior. Fix test.
-
-**Test errors?** Fix error, re-run until it fails correctly.
+**Test passes?** You are testing existing behavior. Fix the test.
+**Test errors?** Fix the error. Re-run until it fails correctly.
 
 ## GREEN - Minimal Code
 
@@ -147,25 +126,16 @@ async function retryOperation<T>(
 Over-engineered
 </bad-example>
 
-Don't add features, refactor other code, or "improve" beyond the test.
-
 ## Verify GREEN - Watch It Pass
 
-**MANDATORY.**
+**MANDATORY.** Run the test suite. Confirm:
 
-```bash
-npm test path/to/test.test.ts
-```
+- New test passes
+- All other tests still pass
+- No errors or warnings in output
 
-Confirm:
-
-- Test passes
-- Other tests still pass
-- Output pristine (no errors, warnings)
-
-**Test fails?** Fix code, not test.
-
-**Other tests fail?** Fix now.
+**Test fails?** Fix the code, not the test.
+**Other tests break?** Fix them now.
 
 ## REFACTOR - Clean Up
 
@@ -176,37 +146,3 @@ After green only:
 - Extract helpers
 
 Keep tests green. Do not add behavior.
-
-## Common Failure Patterns -- DO NOT DO THESE THINGS
-
-| Excuse                                 | Reality                                                                 |
-| -------------------------------------- | ----------------------------------------------------------------------- |
-| "Too simple to test"                   | Simple code breaks. Test takes 30 seconds.                              |
-| "I'll test after"                      | Tests passing immediately prove nothing.                                |
-| "Tests after achieve same goals"       | Tests-after = "what does this do?" Tests-first = "what should this do?" |
-| "Already manually tested"              | Ad-hoc ≠ systematic. No record, can't re-run.                           |
-| "Deleting X hours is wasteful"         | Sunk cost fallacy. Keeping unverified code is technical debt.           |
-| "Keep as reference, write tests first" | You'll adapt it. That's testing after. Delete means delete.             |
-| "Need to explore first"                | Fine. Throw away exploration, start with TDD.                           |
-| "Test hard = design unclear"           | Listen to test. Hard to test = hard to use.                             |
-| "TDD will slow me down"                | TDD faster than debugging. Pragmatic = test-first.                      |
-| "Manual test faster"                   | Manual doesn't prove edge cases. You'll re-test every change.           |
-| "Existing code has no tests"           | You're improving it. Add tests for existing code.                       |
-
-### RED FLAGS - STOP and Start Over
-
-- Code before test
-- Test after implementation
-- Test passes immediately
-- Can't explain why test failed
-- Tests added "later"
-- Rationalizing "just this once"
-- "I already manually tested it"
-- "Tests after achieve the same purpose"
-- "It's about spirit not ritual"
-- "Keep as reference" or "adapt existing code"
-- "Already spent X hours, deleting is wasteful"
-- "TDD is dogmatic, I'm being pragmatic"
-- "This is different because..."
-
-**All of these mean: Delete code. Start over with TDD.**
