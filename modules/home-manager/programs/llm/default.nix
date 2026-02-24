@@ -14,10 +14,6 @@ with lib; let
     inherit (model) api_base;
   };
 in {
-  imports = [
-    ../../options
-  ];
-
   options.programs.llm = {
     enable = mkEnableOption "LLM CLI configuration";
 
