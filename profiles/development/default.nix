@@ -49,6 +49,8 @@ in {
       ];
   };
 
+  services.cargo-sweep.enable = true;
+
   programs = {
     fzf = {
       tmux = {
