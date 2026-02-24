@@ -11,12 +11,6 @@
   linuxImports = [
     ../../os/linux
   ];
-  # Create an inline derivation for the Homebrew-installed Kitty
-  homebrewKitty = pkgs.runCommand "homebrew-kitty" {} ''
-    mkdir -p $out/bin
-    ln -s /opt/homebrew/bin/kitty $out/bin/kitty
-  '';
-
   fzfAltCCommand = pkgs.writeShellScript "fzf-alt-c-command" ''
     { zoxide query -l 2>/dev/null; fd --type d --absolute-path; } | awk -v home="$HOME" '!seen[$0]++ { sub("^" home, "~"); print }'
   '';
@@ -24,6 +18,7 @@ in {
   imports =
     [
       ./modules/git.nix
+      ./modules/kitty.nix
       ./modules/zsh.nix
     ]
     ++ (
@@ -206,28 +201,6 @@ in {
     };
 
     home-manager.enable = true; # Let Home Manager install and manage itself.
-
-    kitty = {
-      enable = true;
-      package =
-        if pkgs.stdenv.isDarwin
-        then homebrewKitty
-        else pkgs.kitty;
-      font = {
-        name = "JetBrains Mono";
-        size = 12;
-      };
-      keybindings = {
-        "ctrl+shift+o" = "toggle_layout stack";
-      };
-      settings = {
-        cursor_blink_interval = 0;
-        cursor_shape = "block";
-        macos_option_as_alt = "yes";
-        scrollback_lines = 50000;
-        shell_integration = "no-cursor";
-      };
-    };
 
     ripgrep = {
       enable = true;
