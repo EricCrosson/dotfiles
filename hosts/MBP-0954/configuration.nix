@@ -95,7 +95,7 @@
       };
 
       # Required to use flakes, which are an experimental module
-      package = pkgs.nixVersions.nix_2_31;
+      package = pkgs.nixVersions.nix_2_33;
 
       settings = {
         trusted-users = [
