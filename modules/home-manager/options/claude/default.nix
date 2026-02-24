@@ -1,12 +1,5 @@
-{
-  config,
-  lib,
-  ...
-}:
+{lib, ...}:
 with lib; {
-  imports = [
-    ../aws
-  ];
   options.claude-options = {
     bedrock = {
       enabled = mkOption {
@@ -17,13 +10,13 @@ with lib; {
 
       profile = mkOption {
         type = types.str;
-        inherit (config.aws-options.profile) default;
+        default = "dev";
         description = "AWS profile to use for Bedrock authentication";
       };
 
       region = mkOption {
         type = types.str;
-        inherit (config.aws-options.region) default;
+        default = "us-west-2";
         description = "AWS region to use for Bedrock";
       };
     };

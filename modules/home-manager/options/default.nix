@@ -1,6 +1,5 @@
 {
   imports = [
-    ./aws
     ./claude
     ./services
   ];
