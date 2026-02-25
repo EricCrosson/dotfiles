@@ -6,7 +6,7 @@ on:
 
 jobs:
   check-nix:
-    name: nix/flake.nix checks
+    name: Nix flake check
     runs-on: ubuntu-latest
 
     steps:
