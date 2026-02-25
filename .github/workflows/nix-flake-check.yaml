@@ -5,8 +5,8 @@ on:
   pull_request:
 
 jobs:
-  check:
-    name: Nix flake check
+  check-nix:
+    name: nix/flake.nix checks
     runs-on: ubuntu-latest
 
     steps:
@@ -25,3 +25,30 @@ jobs:
       - run: |
           : nix flake check
           retry --up-to 2x -- nix flake check ./nix --keep-going --print-build-logs
+
+  check-darwin-config:
+    name: darwin configuration build
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v21
+
+      - name: Install EricCrosson/retry
+        uses: EricCrosson/install-github-release-binary@v2
+        with:
+          targets: EricCrosson/retry@v1
+
+      - run: |
+          : build darwin configuration with stubbed private inputs
+          retry --up-to 2x -- nix build \
+            .#darwinConfigurations.MBP-0954.system \
+            --override-input aws-console-bitgo path:./stubs/private-input-stub \
+            --override-input aws-saml-bitgo path:./stubs/private-input-stub \
+            --override-input atlas path:./stubs/private-input-stub \
+            --override-input cortex path:./stubs/private-input-stub \
+            --override-input gh-agent path:./stubs/private-input-stub \
+            --keep-going --print-build-logs

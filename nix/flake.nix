@@ -40,8 +40,42 @@
           go test -v
           touch $out
         '';
+      op-plugin-claude-test = pkgs.buildGoModule {
+        pname = "op-plugin-claude-test";
+        version = "0.1.0";
+        src = self.sourceInfo + "/pkgs/op-plugins/claude";
+        vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
+      };
+      op-plugin-jira-test = pkgs.buildGoModule {
+        pname = "op-plugin-jira-test";
+        version = "0.1.0";
+        src = self.sourceInfo + "/pkgs/op-plugins/jira";
+        vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
+      };
+      op-plugin-git-disjoint-test = pkgs.buildGoModule {
+        pname = "op-plugin-git-disjoint-test";
+        version = "0.1.0";
+        src = self.sourceInfo + "/pkgs/op-plugins/git-disjoint";
+        vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
+      };
+      launchd-with-logs-test =
+        builtins.seq
+        (import ../tests/launchd-with-logs.nix {inherit pkgs;})
+        (pkgs.runCommand "launchd-with-logs-test" {} "touch $out");
+      litellm-proxy-test =
+        builtins.seq
+        (import ../tests/litellm-proxy.nix {inherit pkgs;})
+        (pkgs.runCommand "litellm-proxy-test" {} "touch $out");
     in {
-      inherit pre-commit-check claude-wrapper-test;
+      inherit
+        pre-commit-check
+        claude-wrapper-test
+        op-plugin-claude-test
+        op-plugin-jira-test
+        op-plugin-git-disjoint-test
+        launchd-with-logs-test
+        litellm-proxy-test
+        ;
     });
 
     formatter = forEachSystem (system: nixpkgs.legacyPackages.${system}.alejandra);
