@@ -17,6 +17,7 @@
 in {
   imports =
     [
+      ./modules/ghostty.nix
       ./modules/git.nix
       ./modules/kitty.nix
       ./modules/zsh.nix
@@ -187,17 +188,6 @@ in {
         };
       };
       nix-direnv.enable = true;
-    };
-
-    # Temporarily marked as broken
-    ghostty = {
-      enable = false;
-      enableZshIntegration = true;
-      installBatSyntax = true;
-      installVimSyntax = true;
-      settings = {
-        theme = "catppuccin-${pkgs.lib.strings.toLower profile.preferences.theme}";
-      };
     };
 
     home-manager.enable = true; # Let Home Manager install and manage itself.
