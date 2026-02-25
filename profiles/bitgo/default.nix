@@ -112,6 +112,7 @@ in {
       # Jira/git-disjoint: use opPlugins system (no HM modules)
       ++ [opPlugins.jira.plugin opPlugins.jira.unwrapped opPlugins.jira.wrapper]
       ++ [opPlugins.git-disjoint.plugin opPlugins.git-disjoint.unwrapped opPlugins.git-disjoint.wrapper]
+      ++ [opPlugins.git-dl.plugin opPlugins.git-dl.unwrapped opPlugins.git-dl.wrapper]
       ++ [
         gh
         # jiratui # derivation temporarily broken

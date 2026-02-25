@@ -36,22 +36,33 @@
     wrappedPackage = inputs.git-disjoint.packages.${pkgs.system}.default;
     wrappedBinaryName = "git-disjoint";
   };
+
+  gitDlPackages = opPluginLib.buildOpPluginPackages {
+    name = "git-dl";
+    src = ./git-dl;
+    vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
+    homepage = "https://github.com/ericcrosson/git-dl";
+    description = "1Password shell plugin for git-dl";
+    wrappedPackage = inputs.git-dl.packages.${pkgs.system}.default;
+    wrappedBinaryName = "git-dl";
+  };
 in {
   # Claude: plugin + unwrapped (no wrapper - HM module handles that)
   claude = {
     inherit (claudePackages) plugin unwrapped;
   };
 
-  # Jira/git-disjoint: full packages
+  # Jira/git-disjoint/git-dl: full packages
   jira = jiraPackages;
   git-disjoint = gitDisjointPackages;
+  git-dl = gitDlPackages;
 
   # All plugins (for activation script)
   allPlugins = {
-    plugins = [claudePackages.plugin jiraPackages.plugin gitDisjointPackages.plugin];
+    plugins = [claudePackages.plugin jiraPackages.plugin gitDisjointPackages.plugin gitDlPackages.plugin];
     # Only for non-HM packages
-    unwrapped = [claudePackages.unwrapped jiraPackages.unwrapped gitDisjointPackages.unwrapped];
-    wrappers = [jiraPackages.wrapper gitDisjointPackages.wrapper];
+    unwrapped = [claudePackages.unwrapped jiraPackages.unwrapped gitDisjointPackages.unwrapped gitDlPackages.unwrapped];
+    wrappers = [jiraPackages.wrapper gitDisjointPackages.wrapper gitDlPackages.wrapper];
   };
 
   # Generate activation script for installing plugins

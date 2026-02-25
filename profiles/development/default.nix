@@ -16,8 +16,6 @@ in {
         inputs.bash-barrier.packages.${pkgs.system}.default
         inputs.batch-edit-prs.packages.${pkgs.system}.default
         inputs.git-diff-regex.packages.${pkgs.system}.default
-        # Note: git-disjoint is now provided by centralized op-plugins system in bitgo profile
-        inputs.git-dl.packages.${pkgs.system}.default
         inputs.git-review.packages.${pkgs.system}.default
         inputs.npm-dep-version.packages.${pkgs.system}.default
 
