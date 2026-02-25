@@ -5,8 +5,10 @@
     # deadnix: skip
     self,
     nixpkgs,
-  }: {
-    packages = nixpkgs.lib.genAttrs ["aarch64-darwin"] (system: let
+  }: let
+    inherit (nixpkgs) lib;
+  in {
+    packages = lib.genAttrs ["aarch64-darwin"] (system: let
       pkgs = nixpkgs.legacyPackages.${system};
       # Stub package for private inputs in CI.
       # Provides bin/atlas because atlas runs at build time (atlas init zsh).
@@ -26,5 +28,20 @@
       default = stub;
       gh-agent = stub;
     });
+
+    # Stub for cortex home-manager module
+    homeManagerModules.default = {lib, ...}: {
+      options.programs.cortex = {
+        enable = lib.mkEnableOption "cortex";
+        url = lib.mkOption {
+          type = lib.types.str;
+          default = "";
+          description = "Cortex server URL";
+        };
+      };
+    };
+
+    # Stub for cortex library
+    lib.cortex-instructions = "";
   };
 }
