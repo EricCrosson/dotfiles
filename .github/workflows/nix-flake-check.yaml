@@ -28,7 +28,7 @@ jobs:
 
   check-darwin-config:
     name: darwin configuration build
-    runs-on: macos-14
+    runs-on: macos-latest
 
     steps:
       - name: Checkout
