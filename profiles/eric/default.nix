@@ -12,7 +12,7 @@
     ../../os/linux
   ];
   fzfAltCCommand = pkgs.writeShellScript "fzf-alt-c-command" ''
-    { zoxide query -l 2>/dev/null; fd --type d --absolute-path; } | awk -v home="$HOME" '!seen[$0]++ { sub("^" home, "~"); print }'
+    { zoxide query -l 2>/dev/null; fd --type d --absolute-path; } | awk -v home="$HOME" '{ sub(/\/$/, "") } !seen[$0]++ { sub("^" home, "~"); print }'
   '';
 in {
   imports =
