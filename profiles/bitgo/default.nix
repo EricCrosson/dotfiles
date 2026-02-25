@@ -5,6 +5,7 @@
   inputs,
   ...
 }: let
+  md2adf = pkgs.callPackage ../../pkgs/md2adf {};
   opPlugins = pkgs.callPackage ../../pkgs/op-plugins/plugins.nix {inherit inputs;};
 
   mcpServers = {
@@ -21,7 +22,7 @@
     };
   };
 
-  mcpConfigFile = (pkgs.formats.json {}).generate "claude-mcp-servers.json" mcpServers;
+  mcpConfigFile = (pkgs.formats.json {}).generate "claude-mcp-servers.json" config.programs.claude-code.mcpServers;
 
   # Env template for `op run` — resolves all vault references in a single Touch ID prompt
   claudeEnvTemplate = pkgs.writeText "claude-env-template" ''
@@ -63,6 +64,7 @@ in {
     ./modules
     ../../modules/home-manager
     inputs._1password-shell-plugins.hmModules.default
+    inputs.cortex.homeManagerModules.default
   ];
 
   bitgo.ssh.enable = true;
@@ -132,6 +134,8 @@ in {
 
         # 1Password CLI for secret management
         _1password-cli
+
+        md2adf
       ];
 
     sessionVariables = {
@@ -204,6 +208,11 @@ in {
       };
     };
 
+    cortex = {
+      enable = true;
+      url = "http://127.0.0.1:3001";
+    };
+
     claude-code = {
       enable = true;
       package = pkgs.callPackage ../../pkgs/claude-wrapper {} {
@@ -241,7 +250,8 @@ in {
         theme = "dark";
       };
       skillsDir = ../../claude/skills;
-      agentsDir = ../../claude/agents;
+      agents.acli = ../../claude/agents/acli.md;
+      memory.text = inputs.cortex.lib.cortex-instructions;
     };
 
     git = {
