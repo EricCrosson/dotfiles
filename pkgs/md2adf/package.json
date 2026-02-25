@@ -1,0 +1,12 @@
+{
+  "name": "md2adf",
+  "version": "1.0.0",
+  "bin": {
+    "md2adf": "./index.js"
+  },
+  "dependencies": {
+    "@atlaskit/editor-markdown-transformer": "5.20.4",
+    "@atlaskit/editor-json-transformer": "8.31.4",
+    "@atlaskit/adf-schema": "40.0.0"
+  }
+}
