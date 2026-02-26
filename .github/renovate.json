@@ -6,6 +6,10 @@
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
+    },
+    {
+      "matchFileNames": ["pkgs/md2adf/**"],
+      "enabled": false
     }
   ],
   "timezone": "America/Chicago",

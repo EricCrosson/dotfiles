@@ -3,7 +3,7 @@ buildNpmPackage {
   pname = "md2adf";
   version = "1.0.0";
   src = ./.;
-  npmDepsHash = "sha256-aKFrMdleM9+1srI0Xky0v5SITUJzEuyXMXAygJ6M/pc=";
+  npmDepsHash = "sha256-X8Y24wW8DJi0fawUQtvYPONymvXJDIiMsrORUKTTsRw=";
   dontNpmBuild = true;
   meta.mainProgram = "md2adf";
 }
