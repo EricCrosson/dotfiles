@@ -7,6 +7,6 @@
   "dependencies": {
     "@atlaskit/editor-markdown-transformer": "5.20.4",
     "@atlaskit/editor-json-transformer": "8.31.5",
-    "@atlaskit/adf-schema": "40.10.0"
+    "@atlaskit/adf-schema": "51.5.22"
   }
 }
