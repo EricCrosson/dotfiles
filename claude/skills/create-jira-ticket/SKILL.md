@@ -8,17 +8,17 @@ disable-model-invocation: true
 Add these steps to your task list:
 
 1. Extract any fields provided inline; ask me only for what's still missing
-2. Spawn the acli agent to execute
+2. Spawn the acli agent to execute — the acli agent handles Markdown→ADF conversion for the description
 3. Return the ticket key and URL
 
 </required>
 
-## Fields fields
+## Fields
 
 - **Project key** — default: DX
 - **Type** — default: Task
 - **Summary** — one line, imperative, specific
-- **Description** — context, acceptance criteria, and any implementation notes in Markdown. Can be left blank, if I asked you to create the ticket but did not provide enough context to populate this.
+- **Description** — context, acceptance criteria, and any implementation notes in Markdown (not Jira wiki markup). Can be left blank, if I asked you to create the ticket but did not provide enough context to populate this.
 
 ## What makes a good summary
 
