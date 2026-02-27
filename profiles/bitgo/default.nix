@@ -11,7 +11,7 @@
   mcpServers = {
     chrome-devtools = {
       command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
-      args = ["-y" "chrome-devtools-mcp@latest"];
+      args = ["-y" "chrome-devtools-mcp@latest" "--isolated"];
     };
     context7 = {
       command = "${pkgs.context7-mcp}/bin/context7-mcp";
