@@ -58,6 +58,12 @@
         src = self.sourceInfo + "/pkgs/op-plugins/git-disjoint";
         vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
       };
+      op-plugin-gh-test = pkgs.buildGoModule {
+        pname = "op-plugin-gh-test";
+        version = "0.1.0";
+        src = self.sourceInfo + "/pkgs/op-plugins/gh";
+        vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
+      };
       launchd-with-logs-test =
         builtins.seq
         (import ../tests/launchd-with-logs.nix {inherit pkgs;})
@@ -73,6 +79,7 @@
         op-plugin-claude-test
         op-plugin-jira-test
         op-plugin-git-disjoint-test
+        op-plugin-gh-test
         launchd-with-logs-test
         litellm-proxy-test
         ;

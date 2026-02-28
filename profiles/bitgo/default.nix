@@ -109,9 +109,10 @@ in {
         awscli2
         github-copilot-cli
       ]
-      # Claude: plugin + unwrapped from opPlugins (wrapper via HM module)
+      # Claude/gh: plugin + unwrapped from opPlugins (wrapper via HM module/shell function)
       ++ [opPlugins.claude.plugin opPlugins.claude.unwrapped]
-      # Jira/git-disjoint: use opPlugins system (no HM modules)
+      ++ [opPlugins.gh.plugin opPlugins.gh.unwrapped]
+      # Jira/git-disjoint/git-dl: use opPlugins system (no HM modules)
       ++ [opPlugins.jira.plugin opPlugins.jira.unwrapped opPlugins.jira.wrapper]
       ++ [opPlugins.git-disjoint.plugin opPlugins.git-disjoint.unwrapped opPlugins.git-disjoint.wrapper]
       ++ [opPlugins.git-dl.plugin opPlugins.git-dl.unwrapped opPlugins.git-dl.wrapper]
@@ -177,7 +178,7 @@ in {
 
     bash.initExtra = ''
       if [ -z "$_CLAUDE_SESSION" ]; then
-        gh() { op plugin run -- gh "$@"; }
+        gh() { op plugin run -- gh-unwrapped "$@"; }
       fi
     '';
 
@@ -296,7 +297,7 @@ in {
     zsh = {
       initContent = ''
         if [ -z "$_CLAUDE_SESSION" ]; then
-          gh() { op plugin run -- gh "$@"; }
+          gh() { op plugin run -- gh-unwrapped "$@"; }
         fi
 
         # Background gpg-agent tty update (doesn't need to block startup)
