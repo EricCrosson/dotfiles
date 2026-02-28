@@ -40,12 +40,6 @@
           go test -v
           touch $out
         '';
-      op-plugin-claude-test = pkgs.buildGoModule {
-        pname = "op-plugin-claude-test";
-        version = "0.1.0";
-        src = self.sourceInfo + "/pkgs/op-plugins/claude";
-        vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
-      };
       op-plugin-jira-test = pkgs.buildGoModule {
         pname = "op-plugin-jira-test";
         version = "0.1.0";
@@ -76,7 +70,6 @@
       inherit
         pre-commit-check
         claude-wrapper-test
-        op-plugin-claude-test
         op-plugin-jira-test
         op-plugin-git-disjoint-test
         op-plugin-gh-test

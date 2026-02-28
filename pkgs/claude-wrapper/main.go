@@ -233,9 +233,7 @@ func resolveSecrets(config Config) {
 	cmd := exec.Command("op", "run", "--no-masking",
 		"--env-file="+config.EnvTemplate,
 		"--", "bash", "-c",
-		`printf "export CLAUDE_CODE_GITHUB_TOKEN=%q\n" "$CLAUDE_CODE_GITHUB_TOKEN"
-printf "export GH_TOKEN=%q\n" "$GH_TOKEN"
-printf "export JIRA_API_TOKEN=%q\n" "$JIRA_API_TOKEN"`)
+		`printf "export JIRA_API_TOKEN=%q\n" "$JIRA_API_TOKEN"`)
 
 	output, err := cmd.Output()
 	if err != nil {
@@ -263,19 +261,19 @@ printf "export JIRA_API_TOKEN=%q\n" "$JIRA_API_TOKEN"`)
 }
 
 func execClaudeUnwrapped(args []string) {
-	binary, err := exec.LookPath("claude-unwrapped")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "claude-unwrapped not found in PATH\n")
+	binary := os.Getenv("_CLAUDE_UNWRAPPED")
+	if binary == "" {
+		fmt.Fprintf(os.Stderr, "_CLAUDE_UNWRAPPED not set\n")
 		os.Exit(1)
 	}
 
 	// Build argv: first element is the program name
-	argv := append([]string{"claude-unwrapped"}, args...)
+	argv := append([]string{"claude"}, args...)
 	env := os.Environ()
 
-	err = syscall.Exec(binary, argv, env)
+	err := syscall.Exec(binary, argv, env)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to exec claude-unwrapped: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Failed to exec %s: %v\n", binary, err)
 		os.Exit(1)
 	}
 }
@@ -293,4 +291,3 @@ func getEnvInt(key string, defaultValue int) int {
 	}
 	return result
 }
-// test comment for pre-commit hook

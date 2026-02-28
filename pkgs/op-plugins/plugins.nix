@@ -5,17 +5,6 @@
 }: let
   opPluginLib = pkgs.callPackage ./lib.nix {};
 
-  # Claude: plugin + unwrapped (wrapper via HM module due to MCP config)
-  claudePackages = opPluginLib.buildOpPluginPackages {
-    name = "claude";
-    src = ./claude;
-    vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
-    homepage = "https://claude.ai/claude-code";
-    description = "1Password shell plugin for Claude Code";
-    wrappedPackage = pkgs.claude-code;
-    wrappedBinaryName = "claude";
-  };
-
   # Jira/git-disjoint: full packages (no HM modules)
   jiraPackages = opPluginLib.buildOpPluginPackages {
     name = "jira";
@@ -58,10 +47,7 @@
     wrappedBinaryName = "gh";
   };
 in {
-  # Claude/gh: plugin + unwrapped (no wrapper - HM module/shell function handles that)
-  claude = {
-    inherit (claudePackages) plugin unwrapped;
-  };
+  # gh: plugin + unwrapped (no wrapper - shell function handles that)
   gh = {
     inherit (ghPackages) plugin unwrapped;
   };
@@ -73,9 +59,9 @@ in {
 
   # All plugins (for activation script)
   allPlugins = {
-    plugins = [claudePackages.plugin jiraPackages.plugin gitDisjointPackages.plugin gitDlPackages.plugin ghPackages.plugin];
+    plugins = [jiraPackages.plugin gitDisjointPackages.plugin gitDlPackages.plugin ghPackages.plugin];
     # Only for non-HM packages
-    unwrapped = [claudePackages.unwrapped jiraPackages.unwrapped gitDisjointPackages.unwrapped gitDlPackages.unwrapped ghPackages.unwrapped];
+    unwrapped = [jiraPackages.unwrapped gitDisjointPackages.unwrapped gitDlPackages.unwrapped ghPackages.unwrapped];
     wrappers = [jiraPackages.wrapper gitDisjointPackages.wrapper gitDlPackages.wrapper];
   };
 

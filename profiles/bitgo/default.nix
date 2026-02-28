@@ -26,8 +26,6 @@
 
   # Env template for `op run` — resolves all vault references in a single Touch ID prompt
   claudeEnvTemplate = pkgs.writeText "claude-env-template" ''
-    CLAUDE_CODE_GITHUB_TOKEN=op://Nix-Secrets/claude-code-github-token/token
-    GH_TOKEN=op://Nix-Secrets/claude-code-github-token/token
     JIRA_API_TOKEN=op://Nix-Secrets/claude-code-atlassian-api-token/token
   '';
 
@@ -109,8 +107,7 @@ in {
         awscli2
         github-copilot-cli
       ]
-      # Claude/gh: plugin + unwrapped from opPlugins (wrapper via HM module/shell function)
-      ++ [opPlugins.claude.plugin opPlugins.claude.unwrapped]
+      # gh: plugin + unwrapped from opPlugins (wrapper via shell function)
       ++ [opPlugins.gh.plugin opPlugins.gh.unwrapped]
       # Jira/git-disjoint/git-dl: use opPlugins system (no HM modules)
       ++ [opPlugins.jira.plugin opPlugins.jira.unwrapped opPlugins.jira.wrapper]
@@ -217,10 +214,11 @@ in {
     claude-code = {
       enable = true;
       package = pkgs.callPackage ../../pkgs/claude-wrapper {} {
+        inherit (pkgs) claude-code;
         bedrockProfile = config.claude-options.bedrock.profile;
         bedrockRegion = config.claude-options.bedrock.region;
         envTemplate = claudeEnvTemplate;
-        extraPathPackages = [claudeJira];
+        runtimeInputs = [claudeJira];
       };
       inherit mcpServers;
       settings = {
