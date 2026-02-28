@@ -107,8 +107,6 @@ in {
         awscli2
         github-copilot-cli
       ]
-      # gh: plugin + unwrapped from opPlugins (wrapper via shell function)
-      ++ [opPlugins.gh.plugin opPlugins.gh.unwrapped]
       # Jira/git-disjoint/git-dl: use opPlugins system (no HM modules)
       ++ [opPlugins.jira.plugin opPlugins.jira.unwrapped opPlugins.jira.wrapper]
       ++ [opPlugins.git-disjoint.plugin opPlugins.git-disjoint.unwrapped opPlugins.git-disjoint.wrapper]
@@ -170,14 +168,8 @@ in {
   programs = {
     _1password-shell-plugins = {
       enable = true;
-      plugins = []; # gh function defined manually below with _CLAUDE_SESSION guard
+      plugins = [];
     };
-
-    bash.initExtra = ''
-      if [ -z "$_CLAUDE_SESSION" ]; then
-        gh() { op plugin run -- gh-unwrapped "$@"; }
-      fi
-    '';
 
     aichat = {
       enable = true;
@@ -294,10 +286,6 @@ in {
 
     zsh = {
       initContent = ''
-        if [ -z "$_CLAUDE_SESSION" ]; then
-          gh() { op plugin run -- gh-unwrapped "$@"; }
-        fi
-
         # Background gpg-agent tty update (doesn't need to block startup)
         export GPG_TTY=$TTY
         ${pkgs.gnupg}/bin/gpg-connect-agent --quiet updatestartuptty /bye > /dev/null &!

@@ -35,23 +35,7 @@
     wrappedPackage = inputs.git-dl.packages.${pkgs.system}.default;
     wrappedBinaryName = "git-dl";
   };
-
-  # GitHub CLI: plugin + unwrapped (shell function handles wrapping)
-  ghPackages = opPluginLib.buildOpPluginPackages {
-    name = "gh";
-    src = ./gh;
-    vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
-    homepage = "https://cli.github.com";
-    description = "1Password shell plugin for GitHub CLI";
-    wrappedPackage = pkgs.gh;
-    wrappedBinaryName = "gh";
-  };
 in {
-  # gh: plugin + unwrapped (no wrapper - shell function handles that)
-  gh = {
-    inherit (ghPackages) plugin unwrapped;
-  };
-
   # Jira/git-disjoint/git-dl: full packages
   jira = jiraPackages;
   git-disjoint = gitDisjointPackages;
@@ -59,9 +43,9 @@ in {
 
   # All plugins (for activation script)
   allPlugins = {
-    plugins = [jiraPackages.plugin gitDisjointPackages.plugin gitDlPackages.plugin ghPackages.plugin];
+    plugins = [jiraPackages.plugin gitDisjointPackages.plugin gitDlPackages.plugin];
     # Only for non-HM packages
-    unwrapped = [jiraPackages.unwrapped gitDisjointPackages.unwrapped gitDlPackages.unwrapped ghPackages.unwrapped];
+    unwrapped = [jiraPackages.unwrapped gitDisjointPackages.unwrapped gitDlPackages.unwrapped];
     wrappers = [jiraPackages.wrapper gitDisjointPackages.wrapper gitDlPackages.wrapper];
   };
 
