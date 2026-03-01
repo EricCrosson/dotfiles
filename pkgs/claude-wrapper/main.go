@@ -20,10 +20,10 @@ type Config struct {
 
 // ParsedArgs holds the processed command-line arguments
 type ParsedArgs struct {
-	explicitBedrock  bool
-	hasModel         bool
-	hasHelpOrVersion bool
-	filteredArgs     []string // Args with --bedrock removed
+	explicitAnthropic bool
+	hasModel          bool
+	hasHelpOrVersion  bool
+	filteredArgs      []string // Args with --anthropic removed
 }
 
 // OAuthCredentials holds the access token from keychain
@@ -59,17 +59,9 @@ func main() {
 		return
 	}
 
-	// Check if Bedrock is already enabled via environment
-	if os.Getenv("CLAUDE_CODE_USE_BEDROCK") != "" {
-		args.explicitBedrock = true
-	}
-
-	// Auto-detection logic: only if not explicitly set
-	if !args.explicitBedrock && shouldAutoDetectBedrock(config) {
-		args.explicitBedrock = true
-	}
-
-	if args.explicitBedrock {
+	// Bedrock is the default. Set CLAUDE_CODE_USE_BEDROCK unless --anthropic
+	// was passed to use the first-party Anthropic API instead.
+	if !args.explicitAnthropic {
 		os.Setenv("CLAUDE_CODE_USE_BEDROCK", "1")
 	}
 	args = applyModelDefaults(args)
@@ -104,8 +96,8 @@ func parseArgs(args []string) ParsedArgs {
 		arg := args[i]
 
 		switch {
-		case arg == "--bedrock":
-			parsed.explicitBedrock = true
+		case arg == "--anthropic":
+			parsed.explicitAnthropic = true
 			// Don't add to filteredArgs (remove it)
 			i++
 
@@ -139,14 +131,14 @@ func parseArgs(args []string) ParsedArgs {
 }
 
 // applyModelDefaults prepends a default --model flag when the user has not
-// already specified one. Bedrock uses a region-prefixed model ID.
+// already specified one. Bedrock (the default) uses a region-prefixed model ID.
 func applyModelDefaults(args ParsedArgs) ParsedArgs {
 	if args.hasModel {
 		return args
 	}
-	model := "claude-opus-4-6"
-	if args.explicitBedrock {
-		model = "us.anthropic.claude-opus-4-6-v1"
+	model := "us.anthropic.claude-opus-4-6-v1"
+	if args.explicitAnthropic {
+		model = "claude-opus-4-6"
 	}
 	args.filteredArgs = append([]string{"--model", model}, args.filteredArgs...)
 	return args

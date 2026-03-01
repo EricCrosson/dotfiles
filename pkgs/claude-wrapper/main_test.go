@@ -8,91 +8,82 @@ import (
 
 func TestParseArgs_PositionIndependent(t *testing.T) {
 	tests := []struct {
-		name    string
-		args    []string
-		want    ParsedArgs
+		name string
+		args []string
+		want ParsedArgs
 	}{
 		{
-			name: "bedrock first",
-			args: []string{"--bedrock", "--chat"},
+			name: "anthropic first",
+			args: []string{"--anthropic", "--chat"},
 			want: ParsedArgs{
-				explicitBedrock: true,
-				hasModel:        false,
-				filteredArgs:    []string{"--chat"},
+				explicitAnthropic: true,
+				hasModel:          false,
+				filteredArgs:      []string{"--chat"},
 			},
 		},
 		{
-			name: "bedrock after other flags",
-			args: []string{"--chat", "--bedrock"},
+			name: "anthropic after other flags",
+			args: []string{"--chat", "--anthropic"},
 			want: ParsedArgs{
-				explicitBedrock: true,
-				hasModel:        false,
-				filteredArgs:    []string{"--chat"},
+				explicitAnthropic: true,
+				hasModel:          false,
+				filteredArgs:      []string{"--chat"},
 			},
 		},
 		{
-			name: "bedrock with explicit model (space-separated)",
-			args: []string{"--model", "sonnet", "--bedrock", "--chat"},
+			name: "anthropic with explicit model (space-separated)",
+			args: []string{"--model", "sonnet", "--anthropic", "--chat"},
 			want: ParsedArgs{
-				explicitBedrock: true,
-				hasModel:        true,
-				filteredArgs:    []string{"--model", "sonnet", "--chat"},
+				explicitAnthropic: true,
+				hasModel:          true,
+				filteredArgs:      []string{"--model", "sonnet", "--chat"},
 			},
 		},
 		{
-			name: "bedrock with explicit model (equals syntax)",
-			args: []string{"--bedrock", "--model=opus"},
+			name: "anthropic with explicit model (equals syntax)",
+			args: []string{"--anthropic", "--model=opus"},
 			want: ParsedArgs{
-				explicitBedrock: true,
-				hasModel:        true,
-				filteredArgs:    []string{"--model=opus"},
+				explicitAnthropic: true,
+				hasModel:          true,
+				filteredArgs:      []string{"--model=opus"},
 			},
 		},
 		{
-			name: "no bedrock",
+			name: "no flags",
 			args: []string{"--chat"},
 			want: ParsedArgs{
-				explicitBedrock: false,
-				hasModel:        false,
-				filteredArgs:    []string{"--chat"},
+				explicitAnthropic: false,
+				hasModel:          false,
+				filteredArgs:      []string{"--chat"},
 			},
 		},
 		{
-			name: "model before bedrock",
-			args: []string{"--model", "opus", "--bedrock", "--chat"},
+			name: "multiple flags with anthropic in middle",
+			args: []string{"--chat", "--anthropic", "--verbose"},
 			want: ParsedArgs{
-				explicitBedrock: true,
-				hasModel:        true,
-				filteredArgs:    []string{"--model", "opus", "--chat"},
-			},
-		},
-		{
-			name: "multiple flags with bedrock in middle",
-			args: []string{"--chat", "--bedrock", "--verbose"},
-			want: ParsedArgs{
-				explicitBedrock: true,
-				hasModel:        false,
-				filteredArgs:    []string{"--chat", "--verbose"},
+				explicitAnthropic: true,
+				hasModel:          false,
+				filteredArgs:      []string{"--chat", "--verbose"},
 			},
 		},
 		{
 			name: "help flag",
 			args: []string{"--help"},
 			want: ParsedArgs{
-				explicitBedrock:  false,
-				hasModel:         false,
-				hasHelpOrVersion: true,
-				filteredArgs:     []string{"--help"},
+				explicitAnthropic: false,
+				hasModel:          false,
+				hasHelpOrVersion:  true,
+				filteredArgs:      []string{"--help"},
 			},
 		},
 		{
-			name: "version flag with bedrock",
-			args: []string{"--bedrock", "--version"},
+			name: "version flag with anthropic",
+			args: []string{"--anthropic", "--version"},
 			want: ParsedArgs{
-				explicitBedrock:  true,
-				hasModel:         false,
-				hasHelpOrVersion: true,
-				filteredArgs:     []string{"--version"},
+				explicitAnthropic: true,
+				hasModel:          false,
+				hasHelpOrVersion:  true,
+				filteredArgs:      []string{"--version"},
 			},
 		},
 	}
@@ -101,8 +92,8 @@ func TestParseArgs_PositionIndependent(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := parseArgs(tt.args)
 
-			if got.explicitBedrock != tt.want.explicitBedrock {
-				t.Errorf("explicitBedrock = %v, want %v", got.explicitBedrock, tt.want.explicitBedrock)
+			if got.explicitAnthropic != tt.want.explicitAnthropic {
+				t.Errorf("explicitAnthropic = %v, want %v", got.explicitAnthropic, tt.want.explicitAnthropic)
 			}
 			if got.hasModel != tt.want.hasModel {
 				t.Errorf("hasModel = %v, want %v", got.hasModel, tt.want.hasModel)
@@ -328,38 +319,38 @@ func TestApplyModelDefaults(t *testing.T) {
 		wantFilteredArgs []string
 	}{
 		{
-			name: "Bedrock, no model",
+			name: "Bedrock (default), no model",
 			input: ParsedArgs{
-				explicitBedrock: true,
-				hasModel:        false,
-				filteredArgs:    []string{"--chat"},
+				explicitAnthropic: false,
+				hasModel:          false,
+				filteredArgs:      []string{"--chat"},
 			},
 			wantFilteredArgs: []string{"--model", "us.anthropic.claude-opus-4-6-v1", "--chat"},
 		},
 		{
-			name: "Bedrock, with model",
+			name: "Bedrock (default), with model",
 			input: ParsedArgs{
-				explicitBedrock: true,
-				hasModel:        true,
-				filteredArgs:    []string{"--model", "my-model", "--chat"},
+				explicitAnthropic: false,
+				hasModel:          true,
+				filteredArgs:      []string{"--model", "my-model", "--chat"},
 			},
 			wantFilteredArgs: []string{"--model", "my-model", "--chat"},
 		},
 		{
 			name: "Anthropic API, no model",
 			input: ParsedArgs{
-				explicitBedrock: false,
-				hasModel:        false,
-				filteredArgs:    []string{"--chat"},
+				explicitAnthropic: true,
+				hasModel:          false,
+				filteredArgs:      []string{"--chat"},
 			},
 			wantFilteredArgs: []string{"--model", "claude-opus-4-6", "--chat"},
 		},
 		{
 			name: "Anthropic API, with model",
 			input: ParsedArgs{
-				explicitBedrock: false,
-				hasModel:        true,
-				filteredArgs:    []string{"--model", "my-model", "--chat"},
+				explicitAnthropic: true,
+				hasModel:          true,
+				filteredArgs:      []string{"--model", "my-model", "--chat"},
 			},
 			wantFilteredArgs: []string{"--model", "my-model", "--chat"},
 		},
