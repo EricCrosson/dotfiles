@@ -129,6 +129,9 @@
           _FXSortFoldersFirst = true;
           _FXSortFoldersFirstOnDesktop = true;
         };
+        spaces = {
+          spans-displays = true;
+        };
         NSGlobalDomain = {
           ApplePressAndHoldEnabled = false;
           AppleShowAllExtensions = true;
