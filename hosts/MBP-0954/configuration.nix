@@ -139,6 +139,7 @@
           NSAutomaticPeriodSubstitutionEnabled = false;
           NSAutomaticQuoteSubstitutionEnabled = false;
           NSAutomaticSpellingCorrectionEnabled = false;
+          NSWindowShouldDragOnGesture = true;
         };
       };
 
