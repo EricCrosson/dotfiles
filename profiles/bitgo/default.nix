@@ -16,6 +16,10 @@
     context7 = {
       command = "${pkgs.context7-mcp}/bin/context7-mcp";
     };
+    figma = {
+      type = "http";
+      url = "https://mcp.figma.com/mcp";
+    };
     matryoshka-rlm = {
       command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
       args = ["-y" "-p" "matryoshka-rlm" "rlm-mcp"];
