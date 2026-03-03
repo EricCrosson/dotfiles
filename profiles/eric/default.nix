@@ -141,6 +141,7 @@ in {
             alt-ctrl-l = "move-node-to-monitor right";
             alt-minus = "resize smart -50";
             alt-equal = "resize smart +50";
+            alt-shift-equal = "balance-sizes";
             alt-1 = "workspace 1";
             alt-2 = "workspace 2";
             alt-3 = "workspace 3";
