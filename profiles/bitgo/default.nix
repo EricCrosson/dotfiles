@@ -45,6 +45,12 @@
       + builtins.readFile ../../claude/hooks/notification.sh;
   };
 
+  claudeFormatOnEditScript = pkgs.writeShellApplication {
+    name = "claude-format-on-edit";
+    runtimeInputs = [pkgs.jq pkgs.alejandra pkgs.nodePackages.prettier];
+    text = builtins.readFile ../../claude/hooks/format-on-edit.sh;
+  };
+
   # Unwrapped jira for Claude's PATH (bypasses the op-plugin wrapper)
   claudeJira = pkgs.writeShellScriptBin "jira" ''
     exec ${pkgs.jira-cli-go}/bin/jira "$@"
@@ -238,6 +244,17 @@ in {
                 {
                   type = "command";
                   command = "${pkgs.lib.getExe claudeNotificationScript}";
+                }
+              ];
+            }
+          ];
+          PostToolUse = [
+            {
+              matcher = "Edit|Write";
+              hooks = [
+                {
+                  type = "command";
+                  command = "${pkgs.lib.getExe claudeFormatOnEditScript}";
                 }
               ];
             }
