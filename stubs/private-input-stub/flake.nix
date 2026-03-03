@@ -29,7 +29,7 @@
       gh-agent = stub;
     });
 
-    # Stub for cortex home-manager module
+    # Stub for cortex and atlas home-manager modules
     homeManagerModules.default = {lib, ...}: {
       options.programs.cortex = {
         enable = lib.mkEnableOption "cortex";
@@ -37,6 +37,14 @@
           type = lib.types.str;
           default = "";
           description = "Cortex server URL";
+        };
+      };
+      options.programs.atlas = {
+        enable = lib.mkEnableOption "atlas";
+        zshIntegration = lib.mkOption {
+          type = lib.types.str;
+          default = "none";
+          description = "Atlas zsh integration mode";
         };
       };
     };
