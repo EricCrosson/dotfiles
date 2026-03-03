@@ -66,6 +66,7 @@ in {
     ./modules
     ../../modules/home-manager
     inputs._1password-shell-plugins.hmModules.default
+    inputs.atlas.homeManagerModules.default
     inputs.cortex.homeManagerModules.default
   ];
 
@@ -200,6 +201,11 @@ in {
           }
         ];
       };
+    };
+
+    atlas = {
+      enable = true;
+      zshIntegration = "deferred";
     };
 
     cortex = {

@@ -1,6 +1,6 @@
 {
   pkgs,
-  inputs,
+  lib,
   ...
 }: let
   # Pre-generate tool init scripts at nix build time to avoid subprocess
@@ -29,12 +29,6 @@
       export ATUIN_CONFIG_DIR=$HOME/.config/atuin
       mkdir -p $ATUIN_CONFIG_DIR
       atuin init zsh --disable-up-arrow > $out
-    '';
-  atlasInitZsh =
-    pkgs.runCommand "atlas-init-zsh" {
-      nativeBuildInputs = [inputs.atlas.packages.${pkgs.system}.default];
-    } ''
-      atlas init zsh > $out
     '';
   zoxideInitZsh =
     pkgs.runCommand "zoxide-init-zsh" {
@@ -136,67 +130,69 @@ in {
       p = pluginSrcs;
       brootInitZsh = "${pkgs.broot}/share/zsh/site-functions/br";
     in
-      ''
-        # ── fpath setup (must happen before compinit) ──────────────────────
-        fpath+=(
-          ${p.smart-cd}
-          ${p.zsh-autopair}
-          ${p.zsh-better-npm-completion}
-          ${p.jq-zsh-plugin}
-          ${p.wakatime-zsh-plugin}
-          ${p.up}
-          ${p.mc}
-          ${p.rh}
-          ${p.fzf-tab}
-          ${p.zsh-autosuggestions}
-          ${p.zsh-completions}/src
-          ${p.zsh-history-substring-search}
-        )
+      lib.mkMerge [
+        (lib.mkBefore ''
+          # ── fpath setup (must happen before compinit) ──────────────────────
+          fpath+=(
+            ${p.smart-cd}
+            ${p.zsh-autopair}
+            ${p.zsh-better-npm-completion}
+            ${p.jq-zsh-plugin}
+            ${p.wakatime-zsh-plugin}
+            ${p.up}
+            ${p.mc}
+            ${p.rh}
+            ${p.fzf-tab}
+            ${p.zsh-autosuggestions}
+            ${p.zsh-completions}/src
+            ${p.zsh-history-substring-search}
+          )
 
-        # ── zsh-defer (must load before any deferred calls) ────────────────
-        source ${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh
+          # ── zsh-defer (must load before any deferred calls) ────────────────
+          source ${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh
+        '')
+        (''
+            # ── Fast initial prompt (native zsh, no subprocess) ──────────────
+            # Matches starship's format: directory (blue) + newline + character (yellow)
+            # Starship takes over within ~20ms via zsh-defer, adding git info
+            PROMPT=$'\n%F{blue}%~%f\n%F{yellow};%f '
 
-        # ── Fast initial prompt (native zsh, no subprocess) ──────────────
-        # Matches starship's format: directory (blue) + newline + character (yellow)
-        # Starship takes over within ~20ms via zsh-defer, adding git info
-        PROMPT=$'\n%F{blue}%~%f\n%F{yellow};%f '
+            # ── Synchronous autoloads and stubs (zero cost) ──────────────────
+            autoload -Uz mc
+            autoload -Uz rh
+            up() { unfunction up; source ${p.up}/up.plugin.zsh; up "$@"; }
+            br() { unfunction br; source ${brootInitZsh}; br "$@"; }
 
-        # ── Synchronous autoloads and stubs (zero cost) ──────────────────
-        autoload -Uz mc
-        autoload -Uz rh
-        up() { unfunction up; source ${p.up}/up.plugin.zsh; up "$@"; }
-        br() { unfunction br; source ${brootInitZsh}; br "$@"; }
+            # ── Tier 0: Functional interactivity (immediate) ─────────────────
+            # Must complete before first user interaction.
+            # Alt-C (95% workflow) needs direnv + zoxide; Ctrl-R (5%) needs atuin.
+            zsh-defer -a source ${../../../zsh/compinit.zsh}
+            zsh-defer -a source ${direnvInitZsh}
+            zsh-defer -a source ${zoxideInitZsh}
+            zsh-defer -a -c 'if [[ $options[zle] = on ]]; then source ${atuinInitZsh}; fi'
+          ''
+          + builtins.readFile ../../../zsh/fzf-cd-widget.zsh
+          + ''
+            # ── Tier 1: Visual + typing polish (after 100ms yield) ───────────
+            # The -t 0.1 yields to ZLE for 100ms — shell is interactive during
+            # this gap (user can press Alt-C or Ctrl-R).
+            if [[ $TERM != "dumb" ]]; then
+              zsh-defer -a +p -t 0.1 -c 'source ${starshipInitZsh}'
+            fi
+            zsh-defer -a source ${p.smart-cd}/smart-cd.plugin.zsh
+            zsh-defer -a source ${p.fzf-tab}/fzf-tab.plugin.zsh
+            zsh-defer -a +m +s source ${p.zsh-autosuggestions}/zsh-autosuggestions.plugin.zsh
+            zsh-defer -a source ${p.zsh-autopair}/zsh-autopair.plugin.zsh
+            zsh-defer -a source ${../../../zsh/deferred-shell-config.zsh}
+            zsh-defer -a source ${p.zsh-history-substring-search}/zsh-history-substring-search.plugin.zsh
 
-        # ── Tier 0: Functional interactivity (immediate) ─────────────────
-        # Must complete before first user interaction.
-        # Alt-C (95% workflow) needs direnv + zoxide; Ctrl-R (5%) needs atuin.
-        zsh-defer -a source ${../../../zsh/compinit.zsh}
-        zsh-defer -a source ${direnvInitZsh}
-        zsh-defer -a source ${zoxideInitZsh}
-        zsh-defer -a -c 'if [[ $options[zle] = on ]]; then source ${atuinInitZsh}; fi'
-        zsh-defer -a source ${atlasInitZsh}
-      ''
-      + builtins.readFile ../../../zsh/fzf-cd-widget.zsh
-      + ''
-        # ── Tier 1: Visual + typing polish (after 100ms yield) ───────────
-        # The -t 0.1 yields to ZLE for 100ms — shell is interactive during
-        # this gap (user can press Alt-C or Ctrl-R).
-        if [[ $TERM != "dumb" ]]; then
-          zsh-defer -a +p -t 0.1 -c 'source ${starshipInitZsh}'
-        fi
-        zsh-defer -a source ${p.smart-cd}/smart-cd.plugin.zsh
-        zsh-defer -a source ${p.fzf-tab}/fzf-tab.plugin.zsh
-        zsh-defer -a +m +s source ${p.zsh-autosuggestions}/zsh-autosuggestions.plugin.zsh
-        zsh-defer -a source ${p.zsh-autopair}/zsh-autopair.plugin.zsh
-        zsh-defer -a source ${../../../zsh/deferred-shell-config.zsh}
-        zsh-defer -a source ${p.zsh-history-substring-search}/zsh-history-substring-search.plugin.zsh
-
-        # ── Tier 2: Background (after 500ms yield) ────────────────────
-        # Rarely needed immediately.
-        zsh-defer -a -t 0.5 source ${p.wakatime-zsh-plugin}/wakatime.plugin.zsh
-        zsh-defer -a source ${p.jq-zsh-plugin}/jq.plugin.zsh
-        zsh-defer -a source ${p.zsh-better-npm-completion}/zsh-better-npm-completion.plugin.zsh
-      '';
+            # ── Tier 2: Background (after 500ms yield) ────────────────────
+            # Rarely needed immediately.
+            zsh-defer -a -t 0.5 source ${p.wakatime-zsh-plugin}/wakatime.plugin.zsh
+            zsh-defer -a source ${p.jq-zsh-plugin}/jq.plugin.zsh
+            zsh-defer -a source ${p.zsh-better-npm-completion}/zsh-better-npm-completion.plugin.zsh
+          '')
+      ];
 
     plugins = []; # plugins managed manually in initContent with zsh-defer
 

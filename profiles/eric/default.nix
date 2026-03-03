@@ -53,7 +53,6 @@ in {
     };
 
     packages = with pkgs; [
-      inputs.atlas.packages.${pkgs.system}.default
       inputs.cortex.packages.${pkgs.system}.default
       inputs.bell.packages.${pkgs.system}.default
       inputs.retry.packages.${pkgs.system}.default
@@ -163,7 +162,7 @@ in {
             alt-shift-semicolon = "mode service";
             alt-slash = "layout tiles horizontal vertical";
             alt-comma = "layout accordion horizontal vertical";
-            alt-enter = ''
+            alt-shift-enter = ''
               exec-and-forget osascript \
                 -e 'tell application "kitty" to activate' \
                 -e 'tell application "System Events" to keystroke "n" using {command down}'
