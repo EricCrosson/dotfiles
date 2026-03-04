@@ -160,8 +160,8 @@ in {
             alt-shift-8 = "move-node-to-workspace 8";
             alt-shift-9 = "move-node-to-workspace 9";
             alt-shift-semicolon = "mode service";
-            alt-slash = "layout tiles horizontal vertical";
-            alt-comma = "layout accordion horizontal vertical";
+            alt-slash = "layout accordion horizontal vertical";
+            alt-comma = "layout tiles horizontal vertical";
             alt-shift-enter = ''
               exec-and-forget osascript \
                 -e 'tell application "kitty" to activate' \
