@@ -57,6 +57,7 @@ in {
       ignores = [
         ".DS_Store"
         "/.claude/settings.local.json"
+        "/.claude/worktrees"
         "/.direnv"
         "/.pre-commit-config.yaml"
         "/CLAUDE.local.md"
