@@ -1,21 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
-	"os/exec"
 	"strings"
 	"syscall"
 )
-
-// Config holds Nix-injected configuration
-type Config struct {
-	AWSProfile            string
-	AWSRegion             string
-	BedrockThreshold      int
-	WeeklyBedrockThreshold int
-}
 
 // ParsedArgs holds the processed command-line arguments
 type ParsedArgs struct {
@@ -23,29 +13,6 @@ type ParsedArgs struct {
 	hasModel          bool
 	hasHelpOrVersion  bool
 	filteredArgs      []string // Args with --anthropic removed
-}
-
-// OAuthCredentials holds the access token from keychain
-type OAuthCredentials struct {
-	ClaudeAiOauth struct {
-		AccessToken string `json:"accessToken"`
-	} `json:"claudeAiOauth"`
-}
-
-// OAuthUsageResponse holds the API response for usage
-type OAuthUsageResponse struct {
-	FiveHour struct {
-		Utilization float64 `json:"utilization"`
-	} `json:"five_hour"`
-	SevenDay struct {
-		Utilization float64 `json:"utilization"`
-	} `json:"seven_day"`
-}
-
-// Utilization holds parsed utilization percentages
-type Utilization struct {
-	FiveHour int
-	SevenDay int
 }
 
 func main() {
@@ -69,15 +36,6 @@ func main() {
 
 	// Exec claude-unwrapped
 	execClaudeUnwrapped(args.filteredArgs)
-}
-
-func readConfig() Config {
-	return Config{
-		AWSProfile:             os.Getenv("AWS_PROFILE"),
-		AWSRegion:              os.Getenv("AWS_REGION"),
-		BedrockThreshold:       getEnvInt("BEDROCK_THRESHOLD", 80),
-		WeeklyBedrockThreshold: getEnvInt("BEDROCK_WEEKLY_THRESHOLD", 65),
-	}
 }
 
 func parseArgs(args []string) ParsedArgs {
@@ -138,82 +96,6 @@ func applyModelDefaults(args ParsedArgs) ParsedArgs {
 	return args
 }
 
-func shouldUseBedrock(utilization *Utilization, config Config) bool {
-	if utilization == nil {
-		return false
-	}
-	return utilization.FiveHour >= config.BedrockThreshold ||
-		utilization.SevenDay >= config.WeeklyBedrockThreshold
-}
-
-func shouldAutoDetectBedrock(config Config) bool {
-	// Get OAuth credentials from keychain
-	creds := getKeychainCredentials()
-	if creds == nil {
-		return false
-	}
-
-	// Query OAuth usage API
-	utilization := getOAuthUtilization(creds.ClaudeAiOauth.AccessToken)
-	return shouldUseBedrock(utilization, config)
-}
-
-func getKeychainCredentials() *OAuthCredentials {
-	// Run: security find-generic-password -s "Claude Code-credentials" -a "$USER" -w
-	securityCmd := os.Getenv("_SECURITY_CMD")
-	if securityCmd == "" {
-		securityCmd = "/usr/bin/security"
-	}
-
-	cmd := exec.Command(securityCmd, "find-generic-password",
-		"-s", "Claude Code-credentials",
-		"-a", os.Getenv("USER"),
-		"-w")
-
-	output, err := cmd.Output()
-	if err != nil {
-		return nil
-	}
-
-	var creds OAuthCredentials
-	if err := json.Unmarshal(output, &creds); err != nil {
-		return nil
-	}
-
-	return &creds
-}
-
-func parseOAuthUsage(data []byte) *Utilization {
-	var usage OAuthUsageResponse
-	if err := json.Unmarshal(data, &usage); err != nil {
-		return nil
-	}
-	return &Utilization{
-		FiveHour: int(usage.FiveHour.Utilization + 0.5),
-		SevenDay: int(usage.SevenDay.Utilization + 0.5),
-	}
-}
-
-func getOAuthUtilization(token string) *Utilization {
-	if token == "" {
-		return nil
-	}
-
-	// Use curl command (like bash version) so test mocks work
-	cmd := exec.Command("curl", "-s", "--max-time", "2",
-		"-H", "Authorization: Bearer "+token,
-		"-H", "anthropic-beta: oauth-2025-04-20",
-		"-H", "User-Agent: claude-code",
-		"https://api.anthropic.com/api/oauth/usage")
-
-	output, err := cmd.Output()
-	if err != nil {
-		return nil
-	}
-
-	return parseOAuthUsage(output)
-}
-
 func execClaudeUnwrapped(args []string) {
 	binary := os.Getenv("_CLAUDE_UNWRAPPED")
 	if binary == "" {
@@ -230,18 +112,4 @@ func execClaudeUnwrapped(args []string) {
 		fmt.Fprintf(os.Stderr, "Failed to exec %s: %v\n", binary, err)
 		os.Exit(1)
 	}
-}
-
-// Helper function to get int from environment with default
-func getEnvInt(key string, defaultValue int) int {
-	val := os.Getenv(key)
-	if val == "" {
-		return defaultValue
-	}
-	var result int
-	_, err := fmt.Sscanf(val, "%d", &result)
-	if err != nil {
-		return defaultValue
-	}
-	return result
 }
