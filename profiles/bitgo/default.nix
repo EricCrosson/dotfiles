@@ -309,6 +309,11 @@ in {
           contents = workConfig;
         }
       ];
+      settings = {
+        url = {
+          "ssh://git@github.com-bitgo/BitGo/".insteadOf = "ssh://git@github.com/BitGo/";
+        };
+      };
     };
 
     zsh = {
