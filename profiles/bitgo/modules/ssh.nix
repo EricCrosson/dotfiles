@@ -74,7 +74,7 @@ in {
             # Enable ControlMaster for work since this is a work machine
             # and work operations are frequent. YubiKey touch is expected.
             inherit (cfg.github) controlMaster controlPersist serverAliveInterval;
-            controlPath = "${cfg.socketDir}/%C-bitgo";
+            controlPath = "${cfg.socketDir}/%C-%i-bitgo";
           };
           "github.com" = {
             hostname = "github.com";
