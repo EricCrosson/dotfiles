@@ -15,7 +15,6 @@ type Config struct {
 	AWSRegion             string
 	BedrockThreshold      int
 	WeeklyBedrockThreshold int
-	EnvTemplate           string
 }
 
 // ParsedArgs holds the processed command-line arguments
@@ -50,7 +49,6 @@ type Utilization struct {
 }
 
 func main() {
-	config := readConfig()
 	args := parseArgs(os.Args[1:])
 
 	// Fast path: help/version - pass through immediately
@@ -69,9 +67,6 @@ func main() {
 	// Mark as Claude session
 	os.Setenv("_CLAUDE_SESSION", "1")
 
-	// Resolve 1Password secrets
-	resolveSecrets(config)
-
 	// Exec claude-unwrapped
 	execClaudeUnwrapped(args.filteredArgs)
 }
@@ -82,7 +77,6 @@ func readConfig() Config {
 		AWSRegion:              os.Getenv("AWS_REGION"),
 		BedrockThreshold:       getEnvInt("BEDROCK_THRESHOLD", 80),
 		WeeklyBedrockThreshold: getEnvInt("BEDROCK_WEEKLY_THRESHOLD", 65),
-		EnvTemplate:            os.Getenv("ENV_TEMPLATE"),
 	}
 }
 
@@ -218,38 +212,6 @@ func getOAuthUtilization(token string) *Utilization {
 	}
 
 	return parseOAuthUsage(output)
-}
-
-func resolveSecrets(config Config) {
-	// Run: op run --no-masking --env-file="$ENV_TEMPLATE" -- bash -c 'printf ...'
-	cmd := exec.Command("op", "run", "--no-masking",
-		"--env-file="+config.EnvTemplate,
-		"--", "bash", "-c",
-		`printf "export JIRA_API_TOKEN=%q\n" "$JIRA_API_TOKEN"`)
-
-	output, err := cmd.Output()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to resolve 1Password secrets: %v\n", err)
-		os.Exit(1)
-	}
-
-	// Parse and set environment variables
-	lines := strings.Split(string(output), "\n")
-	for _, line := range lines {
-		if strings.HasPrefix(line, "export ") {
-			line = strings.TrimPrefix(line, "export ")
-			parts := strings.SplitN(line, "=", 2)
-			if len(parts) == 2 {
-				// Remove surrounding quotes from value
-				value := parts[1]
-				value = strings.TrimPrefix(value, "'")
-				value = strings.TrimSuffix(value, "'")
-				value = strings.TrimPrefix(value, "\"")
-				value = strings.TrimSuffix(value, "\"")
-				os.Setenv(parts[0], value)
-			}
-		}
-	}
 }
 
 func execClaudeUnwrapped(args []string) {

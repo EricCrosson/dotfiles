@@ -4,15 +4,12 @@
   writeShellApplication,
   jq,
   curl,
-  _1password-cli,
-  bash,
 }: {
   claude-code,
   bedrockProfile,
   bedrockRegion,
   bedrockThreshold ? 80,
   bedrockWeeklyThreshold ? 65,
-  envTemplate,
   runtimeInputs ? [],
 }: let
   # Build the Go wrapper binary
@@ -31,7 +28,7 @@ in
   writeShellApplication {
     name = "claude";
     excludeShellChecks = ["SC2016"];
-    runtimeInputs = [claude-wrapper-go jq curl _1password-cli bash] ++ runtimeInputs;
+    runtimeInputs = [claude-wrapper-go jq curl] ++ runtimeInputs;
     text = ''
       # Nix-injected configuration
       export _CLAUDE_UNWRAPPED=${claude-code}/bin/claude
@@ -39,7 +36,6 @@ in
       export AWS_REGION=${lib.escapeShellArg bedrockRegion}
       export BEDROCK_THRESHOLD=${toString bedrockThreshold}
       export BEDROCK_WEEKLY_THRESHOLD=${toString bedrockWeeklyThreshold}
-      export ENV_TEMPLATE=${lib.escapeShellArg envTemplate}
 
       # Execute the Go wrapper
       exec claude-wrapper "$@"

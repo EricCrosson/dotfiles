@@ -28,11 +28,6 @@
 
   mcpConfigFile = (pkgs.formats.json {}).generate "claude-mcp-servers.json" config.programs.claude-code.mcpServers;
 
-  # Env template for `op run` — resolves all vault references in a single Touch ID prompt
-  claudeEnvTemplate = pkgs.writeText "claude-env-template" ''
-    JIRA_API_TOKEN=op://Nix-Secrets/claude-code-atlassian-api-token/token
-  '';
-
   claudeNotificationIcon = ../../claude/assets/claude-icon.png;
 
   claudeNotificationScript = pkgs.writeShellApplication {
@@ -50,11 +45,6 @@
     runtimeInputs = [pkgs.jq pkgs.alejandra pkgs.nodePackages.prettier];
     text = builtins.readFile ../../claude/hooks/format-on-edit.sh;
   };
-
-  # Unwrapped jira for Claude's PATH (bypasses the op-plugin wrapper)
-  claudeJira = pkgs.writeShellScriptBin "jira" ''
-    exec ${pkgs.jira-cli-go}/bin/jira "$@"
-  '';
 
   # Force aws-saml to open Keycloak login in Safari instead of the default browser.
   # aws-saml uses pkg/browser which hardcodes `open <url>` on Darwin, ignoring $BROWSER.
@@ -225,8 +215,6 @@ in {
         inherit (pkgs) claude-code;
         bedrockProfile = config.claude-options.bedrock.profile;
         bedrockRegion = config.claude-options.bedrock.region;
-        envTemplate = claudeEnvTemplate;
-        runtimeInputs = [claudeJira];
       };
       inherit mcpServers;
       settings = {

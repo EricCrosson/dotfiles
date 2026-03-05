@@ -116,14 +116,11 @@ func TestReadConfig(t *testing.T) {
 	origRegion := os.Getenv("AWS_REGION")
 	origThreshold := os.Getenv("BEDROCK_THRESHOLD")
 	origWeeklyThreshold := os.Getenv("BEDROCK_WEEKLY_THRESHOLD")
-	origTemplate := os.Getenv("ENV_TEMPLATE")
-
 	// Set test values
 	os.Setenv("AWS_PROFILE", "test-profile")
 	os.Setenv("AWS_REGION", "us-west-2")
 	os.Setenv("BEDROCK_THRESHOLD", "85")
 	os.Setenv("BEDROCK_WEEKLY_THRESHOLD", "70")
-	os.Setenv("ENV_TEMPLATE", "/path/to/template")
 
 	// Restore original values after test
 	defer func() {
@@ -147,11 +144,6 @@ func TestReadConfig(t *testing.T) {
 		} else {
 			os.Unsetenv("BEDROCK_WEEKLY_THRESHOLD")
 		}
-		if origTemplate != "" {
-			os.Setenv("ENV_TEMPLATE", origTemplate)
-		} else {
-			os.Unsetenv("ENV_TEMPLATE")
-		}
 	}()
 
 	config := readConfig()
@@ -167,9 +159,6 @@ func TestReadConfig(t *testing.T) {
 	}
 	if config.WeeklyBedrockThreshold != 70 {
 		t.Errorf("WeeklyBedrockThreshold = %v, want 70", config.WeeklyBedrockThreshold)
-	}
-	if config.EnvTemplate != "/path/to/template" {
-		t.Errorf("EnvTemplate = %v, want /path/to/template", config.EnvTemplate)
 	}
 }
 
