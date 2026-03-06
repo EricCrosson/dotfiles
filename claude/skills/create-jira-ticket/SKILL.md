@@ -19,6 +19,14 @@ Add these steps to your task list:
 - **Type** — default: Task
 - **Summary** — one line, imperative, specific
 - **Description** — context, acceptance criteria, and any implementation notes in Markdown (not Jira wiki markup). Can be left blank, if I asked you to create the ticket but did not provide enough context to populate this.
+- **Assignee** — default: `@me`
+- **Priority** — default: Medium
+
+<system-reminder>
+Include assignee and priority in the `--from-json` creation payload. Do not
+create the ticket first and then set these fields separately — downstream
+Jira automation depends on atomic creation.
+</system-reminder>
 
 ## What makes a good summary
 

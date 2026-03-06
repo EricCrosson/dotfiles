@@ -253,6 +253,7 @@ in {
         theme = "dark";
       };
       skillsDir = ../../claude/skills;
+      rulesDir = ../../claude/rules;
       agents.acli = ../../claude/agents/acli.md;
       memory.text = inputs.cortex.lib.cortex-instructions;
     };
