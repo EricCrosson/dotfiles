@@ -211,7 +211,9 @@ in {
         inherit (pkgs) claude-code;
         bedrockProfile = config.claude-options.bedrock.profile;
         bedrockRegion = config.claude-options.bedrock.region;
-        bedrockModelFile = config.sops.secrets.bedrock_model_arn.path;
+        bedrockOpusFile = config.sops.secrets.bedrock_opus_arn.path;
+        bedrockSonnetFile = config.sops.secrets.bedrock_sonnet_arn.path;
+        bedrockHaikuFile = config.sops.secrets.bedrock_haiku_arn.path;
       };
       inherit mcpServers;
       settings = {
@@ -337,7 +339,9 @@ in {
         path = "${config.home.homeDirectory}/.aws/config";
         mode = "0600";
       };
-      bedrock_model_arn = {};
+      bedrock_opus_arn = {};
+      bedrock_sonnet_arn = {};
+      bedrock_haiku_arn = {};
     };
   };
 }

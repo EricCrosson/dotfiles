@@ -2,6 +2,7 @@ package main
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -104,6 +105,103 @@ func TestParseArgs_PositionIndependent(t *testing.T) {
 			// Compare filteredArgs
 			if !reflect.DeepEqual(got.filteredArgs, tt.want.filteredArgs) {
 				t.Errorf("filteredArgs = %v, want %v", got.filteredArgs, tt.want.filteredArgs)
+			}
+		})
+	}
+}
+
+func TestBuildSettings(t *testing.T) {
+	tests := []struct {
+		name   string
+		envVal string
+		want   []string
+	}{
+		{
+			name:   "three models",
+			envVal: "opus,sonnet,haiku",
+			want:   []string{"--settings", `{"availableModels":["opus","sonnet","haiku"]}`},
+		},
+		{
+			name:   "empty string",
+			envVal: "",
+			want:   nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			getenv := func(key string) string {
+				if key == "_CLAUDE_AVAILABLE_MODELS" {
+					return tt.envVal
+				}
+				return ""
+			}
+			got := buildSettings(getenv)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("buildSettings() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSettingsInjection_Integration(t *testing.T) {
+	tests := []struct {
+		name              string
+		args              []string
+		availableModels   string
+		wantSettingsInArgs bool
+	}{
+		{
+			name:              "bedrock with available models",
+			args:              []string{"--chat"},
+			availableModels:   "opus,sonnet,haiku",
+			wantSettingsInArgs: true,
+		},
+		{
+			name:              "bedrock without available models",
+			args:              []string{"--chat"},
+			availableModels:   "",
+			wantSettingsInArgs: false,
+		},
+		{
+			name:              "anthropic ignores available models",
+			args:              []string{"--anthropic", "--chat"},
+			availableModels:   "opus,sonnet,haiku",
+			wantSettingsInArgs: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			parsed := parseArgs(tt.args)
+
+			// Simulate the main() logic for settings injection
+			var finalArgs []string
+			if parsed.explicitAnthropic {
+				finalArgs = parsed.filteredArgs
+			} else {
+				getenv := func(key string) string {
+					if key == "_CLAUDE_AVAILABLE_MODELS" {
+						return tt.availableModels
+					}
+					return ""
+				}
+				finalArgs = parsed.filteredArgs
+				if extra := buildSettings(getenv); extra != nil {
+					finalArgs = append(finalArgs, extra...)
+				}
+			}
+
+			hasSettings := false
+			for _, arg := range finalArgs {
+				if strings.Contains(arg, "availableModels") {
+					hasSettings = true
+					break
+				}
+			}
+
+			if hasSettings != tt.wantSettingsInArgs {
+				t.Errorf("settings in args = %v, want %v (args: %v)", hasSettings, tt.wantSettingsInArgs, finalArgs)
 			}
 		})
 	}

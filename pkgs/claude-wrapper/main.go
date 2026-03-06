@@ -31,6 +31,9 @@ func main() {
 		os.Setenv("ANTHROPIC_MODEL", "claude-opus-4-6")
 	} else {
 		os.Setenv("CLAUDE_CODE_USE_BEDROCK", "1")
+		if extra := buildSettings(os.Getenv); extra != nil {
+			args.filteredArgs = append(args.filteredArgs, extra...)
+		}
 	}
 
 	// Mark as Claude session
@@ -82,6 +85,22 @@ func parseArgs(args []string) ParsedArgs {
 	}
 
 	return parsed
+}
+
+// buildSettings returns --settings args if _CLAUDE_AVAILABLE_MODELS is set,
+// nil otherwise.
+func buildSettings(getenv func(string) string) []string {
+	models := getenv("_CLAUDE_AVAILABLE_MODELS")
+	if models == "" {
+		return nil
+	}
+	parts := strings.Split(models, ",")
+	quoted := make([]string, len(parts))
+	for i, p := range parts {
+		quoted[i] = `"` + p + `"`
+	}
+	json := `{"availableModels":[` + strings.Join(quoted, ",") + `]}`
+	return []string{"--settings", json}
 }
 
 func execClaudeUnwrapped(args []string) {
