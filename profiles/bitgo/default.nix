@@ -70,36 +70,6 @@ in {
 
   home = {
     file = {
-      ".config/.jira/.config.yml" = {
-        text = ''
-          server: https://bitgoinc.atlassian.net
-          login: ${profile.email}
-          installation: cloud
-          project:
-            key: DX
-          board:
-            name: "Default board"
-            type: scrum
-          issue:
-            types:
-              - id: "10101"
-                name: Task
-                handle: Task
-                subtask: false
-              - id: "10100"
-                name: Story
-                handle: Story
-                subtask: false
-              - id: "10103"
-                name: Bug
-                handle: Bug
-                subtask: false
-              - id: "10447"
-                name: Spike
-                handle: Spike
-                subtask: false
-        '';
-      };
     };
 
     packages = with pkgs;
@@ -108,13 +78,11 @@ in {
         awscli2
         github-copilot-cli
       ]
-      # Jira/git-disjoint/git-dl: use opPlugins system (no HM modules)
-      ++ [opPlugins.jira.plugin opPlugins.jira.unwrapped opPlugins.jira.wrapper]
+      # git-disjoint/git-dl: use opPlugins system (no HM modules)
       ++ [opPlugins.git-disjoint.plugin opPlugins.git-disjoint.unwrapped opPlugins.git-disjoint.wrapper]
       ++ [opPlugins.git-dl.plugin opPlugins.git-dl.unwrapped opPlugins.git-dl.wrapper]
       ++ [
         gh
-        # jiratui # derivation temporarily broken
         k9s
         kubectl
         kubectx

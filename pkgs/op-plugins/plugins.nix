@@ -5,17 +5,7 @@
 }: let
   opPluginLib = pkgs.callPackage ./lib.nix {};
 
-  # Jira/git-disjoint: full packages (no HM modules)
-  jiraPackages = opPluginLib.buildOpPluginPackages {
-    name = "jira";
-    src = ./jira;
-    vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
-    homepage = "https://github.com/ankitpokhrel/jira-cli";
-    description = "1Password shell plugin for Jira CLI";
-    wrappedPackage = pkgs.jira-cli-go;
-    wrappedBinaryName = "jira";
-  };
-
+  # git-disjoint/git-dl: full packages (no HM modules)
   gitDisjointPackages = opPluginLib.buildOpPluginPackages {
     name = "git-disjoint";
     src = ./git-disjoint;
@@ -36,17 +26,16 @@
     wrappedBinaryName = "git-dl";
   };
 in {
-  # Jira/git-disjoint/git-dl: full packages
-  jira = jiraPackages;
+  # git-disjoint/git-dl: full packages
   git-disjoint = gitDisjointPackages;
   git-dl = gitDlPackages;
 
   # All plugins (for activation script)
   allPlugins = {
-    plugins = [jiraPackages.plugin gitDisjointPackages.plugin gitDlPackages.plugin];
+    plugins = [gitDisjointPackages.plugin gitDlPackages.plugin];
     # Only for non-HM packages
-    unwrapped = [jiraPackages.unwrapped gitDisjointPackages.unwrapped gitDlPackages.unwrapped];
-    wrappers = [jiraPackages.wrapper gitDisjointPackages.wrapper gitDlPackages.wrapper];
+    unwrapped = [gitDisjointPackages.unwrapped gitDlPackages.unwrapped];
+    wrappers = [gitDisjointPackages.wrapper gitDlPackages.wrapper];
   };
 
   # Generate activation script for installing plugins
