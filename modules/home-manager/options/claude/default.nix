@@ -10,7 +10,7 @@ with lib; {
 
       profile = mkOption {
         type = types.str;
-        default = "dev";
+        default = "bitgo-ai";
         description = "AWS profile to use for Bedrock authentication";
       };
 

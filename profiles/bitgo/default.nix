@@ -135,10 +135,6 @@ in {
         md2adf
       ];
 
-    sessionVariables = {
-      ZED_AWS_PROFILE = "dev";
-    };
-
     activation = {
       installOpPlugins =
         config.lib.dag.entryAfter ["writeBoundary"]
@@ -215,6 +211,7 @@ in {
         inherit (pkgs) claude-code;
         bedrockProfile = config.claude-options.bedrock.profile;
         bedrockRegion = config.claude-options.bedrock.region;
+        bedrockModelFile = config.sops.secrets.bedrock_model_arn.path;
       };
       inherit mcpServers;
       settings = {
@@ -336,6 +333,11 @@ in {
     gnupg.home = profile.homeDirectory + "/.gnupg";
     secrets = {
       github_ssh_private_key_personal = {};
+      aws_config = {
+        path = "${config.home.homeDirectory}/.aws/config";
+        mode = "0600";
+      };
+      bedrock_model_arn = {};
     };
   };
 }

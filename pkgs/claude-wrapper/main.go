@@ -24,12 +24,14 @@ func main() {
 		return
 	}
 
-	// Bedrock is the default. Set CLAUDE_CODE_USE_BEDROCK unless --anthropic
-	// was passed to use the first-party Anthropic API instead.
-	if !args.explicitAnthropic {
+	// Bedrock is the default. ANTHROPIC_MODEL is already set by the Nix
+	// wrapper (from a sops-decrypted file). When --anthropic is passed,
+	// override ANTHROPIC_MODEL to the first-party model name instead.
+	if args.explicitAnthropic {
+		os.Setenv("ANTHROPIC_MODEL", "claude-opus-4-6")
+	} else {
 		os.Setenv("CLAUDE_CODE_USE_BEDROCK", "1")
 	}
-	args = applyModelDefaults(args)
 
 	// Mark as Claude session
 	os.Setenv("_CLAUDE_SESSION", "1")
@@ -80,20 +82,6 @@ func parseArgs(args []string) ParsedArgs {
 	}
 
 	return parsed
-}
-
-// applyModelDefaults prepends a default --model flag when the user has not
-// already specified one. Bedrock (the default) uses a region-prefixed model ID.
-func applyModelDefaults(args ParsedArgs) ParsedArgs {
-	if args.hasModel {
-		return args
-	}
-	model := "us.anthropic.claude-opus-4-6-v1"
-	if args.explicitAnthropic {
-		model = "claude-opus-4-6"
-	}
-	args.filteredArgs = append([]string{"--model", model}, args.filteredArgs...)
-	return args
 }
 
 func execClaudeUnwrapped(args []string) {
