@@ -34,11 +34,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772647961,
-        "narHash": "sha256-z4hkmDR2g5XlAKRgM7gO+zBSLOY0OapmswdMkgFAbfs=",
+        "lastModified": 1772798608,
+        "narHash": "sha256-hsIgUjQufZ93pXmC4eQbj9OfWhnUGDaooPvdUau+49E=",
         "ref": "refs/heads/master",
-        "rev": "322bb3586ca1d6c35fada7666595deecc9960250",
-        "revCount": 100,
+        "rev": "67bf9b6ef003f3fed4bccaff51c775e384b0a017",
+        "revCount": 102,
         "type": "git",
         "url": "ssh://git@github.com-bitgo/BitGo/atlas"
       },
@@ -161,11 +161,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772678037,
-        "narHash": "sha256-xOg+EIUrNxW/YLA/pyBZZsOuQKgI2sEX6K5F1w4Qpqs=",
+        "lastModified": 1772800540,
+        "narHash": "sha256-R9RMw38QE67kEyX1l8s7CJrapwk9gthDfJxcSXtwI6o=",
         "ref": "refs/heads/master",
-        "rev": "cd6591db3fc438a0b1272cf92433bb8d77784af6",
-        "revCount": 197,
+        "rev": "905c1955ca2fcbcfffe10bcf31fd1b40648cc941",
+        "revCount": 205,
         "type": "git",
         "url": "ssh://git@github.com-bitgo/BitGo/cortex"
       },
