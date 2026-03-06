@@ -1,7 +1,6 @@
 ---
 name: create-jira-ticket
 description: Use when creating a Jira ticket from a feature, bug, or task description — gathers required fields then delegates to the acli agent
-disable-model-invocation: true
 ---
 
 <required>
