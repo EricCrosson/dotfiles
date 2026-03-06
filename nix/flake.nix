@@ -40,12 +40,6 @@
           go test -v
           touch $out
         '';
-      op-plugin-jira-test = pkgs.buildGoModule {
-        pname = "op-plugin-jira-test";
-        version = "0.1.0";
-        src = self.sourceInfo + "/pkgs/op-plugins/jira";
-        vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
-      };
       op-plugin-git-disjoint-test = pkgs.buildGoModule {
         pname = "op-plugin-git-disjoint-test";
         version = "0.1.0";
@@ -64,7 +58,6 @@
       inherit
         pre-commit-check
         claude-wrapper-test
-        op-plugin-jira-test
         op-plugin-git-disjoint-test
         launchd-with-logs-test
         litellm-proxy-test
