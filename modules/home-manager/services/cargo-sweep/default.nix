@@ -23,14 +23,14 @@ in {
     };
 
     maxAge = mkOption {
-      type = types.int;
-      default = 7;
-      description = "Delete build artifacts older than this many days";
+      type = types.number;
+      default = 1.5;
+      description = "Delete build artifacts older than this many days (fractional values supported, e.g. 1.5 = 36 hours)";
     };
 
     interval = mkOption {
       type = types.int;
-      default = 604800; # weekly
+      default = 86400; # daily
       description = "Run interval in seconds";
     };
   };
