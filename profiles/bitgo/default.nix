@@ -124,8 +124,6 @@ in {
         poppler-utils # Install pdftotext for aichat
         yq-go
 
-        inputs.percentage-changed-calculator.packages.${pkgs.system}.default
-
         inputs.aws-console-bitgo.packages.${pkgs.system}.default
         awsSaml
 

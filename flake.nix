@@ -84,13 +84,19 @@
     };
     git-disjoint = {
       url = "github:ericcrosson/git-disjoint";
-      inputs.crane.follows = "crane";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        crane.follows = "crane";
+        fenix.follows = "fenix";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
     git-dl = {
       url = "github:ericcrosson/git-dl";
-      inputs.crane.follows = "crane";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        crane.follows = "crane";
+        fenix.follows = "fenix";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
     git-review = {
       url = "github:ericcrosson/git-review";
@@ -116,15 +122,13 @@
       url = "github:ericcrosson/npm-dep-version";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    percentage-changed-calculator = {
-      url = "github:ericcrosson/percentage-changed-calculator";
-      inputs.crane.follows = "crane";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     retry = {
       url = "github:ericcrosson/retry";
-      inputs.crane.follows = "crane";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        crane.follows = "crane";
+        fenix.follows = "fenix";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
     sops-nix = {
       url = "github:mic92/sops-nix";
