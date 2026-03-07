@@ -2,12 +2,6 @@
 with lib; {
   options.claude-options = {
     bedrock = {
-      enabled = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Whether to use AWS Bedrock for Claude";
-      };
-
       profile = mkOption {
         type = types.str;
         default = "bitgo-ai";
