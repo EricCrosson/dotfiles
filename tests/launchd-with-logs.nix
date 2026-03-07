@@ -1,5 +1,7 @@
 {pkgs}: let
   inherit (pkgs) lib;
+  helpers = import ./helpers.nix {inherit lib;};
+  inherit (helpers) assertEq assertHasAttr assertNotHasAttr;
 
   # Extend lib with a mock of home-manager's dag functions
   extendedLib =
@@ -49,22 +51,6 @@
       specialArgs = {lib = extendedLib;};
     })
     .config;
-
-  # Test helpers
-  assertEq = name: actual: expected:
-    if actual == expected
-    then true
-    else builtins.throw "Test '${name}' failed: expected ${builtins.toJSON expected}, got ${builtins.toJSON actual}";
-
-  assertHasAttr = name: attrset: attr:
-    if builtins.hasAttr attr attrset
-    then true
-    else builtins.throw "Test '${name}' failed: attribute '${attr}' not found in ${builtins.toJSON attrset}";
-
-  assertNotHasAttr = name: attrset: attr:
-    if !builtins.hasAttr attr attrset
-    then true
-    else builtins.throw "Test '${name}' failed: attribute '${attr}' should not exist";
 
   # === Test cases ===
 

@@ -54,15 +54,40 @@
         builtins.seq
         (import ../tests/litellm-proxy.nix {inherit pkgs;})
         (pkgs.runCommand "litellm-proxy-test" {} "touch $out");
-    in {
-      inherit
-        pre-commit-check
-        claude-wrapper-test
-        op-plugin-git-disjoint-test
-        launchd-with-logs-test
-        litellm-proxy-test
-        ;
-    });
+      claude-wrapper-script-test =
+        builtins.seq
+        (import ../tests/claude-wrapper-script.nix {inherit pkgs;})
+        (pkgs.runCommand "claude-wrapper-script-test" {} "touch $out");
+      cargo-sweep-test =
+        builtins.seq
+        (import ../tests/cargo-sweep.nix {inherit pkgs;})
+        (pkgs.runCommand "cargo-sweep-test" {} "touch $out");
+    in
+      {
+        inherit
+          pre-commit-check
+          claude-wrapper-test
+          op-plugin-git-disjoint-test
+          launchd-with-logs-test
+          litellm-proxy-test
+          claude-wrapper-script-test
+          cargo-sweep-test
+          ;
+      }
+      // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
+        claude-notification-test =
+          builtins.seq
+          (import ../tests/claude-notification.nix {inherit pkgs;})
+          (pkgs.runCommand "claude-notification-test" {} "touch $out");
+        claude-format-on-edit-test =
+          builtins.seq
+          (import ../tests/claude-format-on-edit.nix {inherit pkgs;})
+          (pkgs.runCommand "claude-format-on-edit-test" {} "touch $out");
+        helix-theme-sync-test =
+          builtins.seq
+          (import ../tests/helix-theme-sync.nix {inherit pkgs;})
+          (pkgs.runCommand "helix-theme-sync-test" {} "touch $out");
+      });
 
     formatter = forEachSystem (system: nixpkgs.legacyPackages.${system}.alejandra);
 
