@@ -160,8 +160,7 @@ in {
             alt-shift-8 = "move-node-to-workspace 8";
             alt-shift-9 = "move-node-to-workspace 9";
             alt-shift-semicolon = "mode service";
-            alt-comma = "layout tiles horizontal";
-            alt-period = "layout tiles vertical";
+            alt-comma = "layout tiles horizontal vertical";
             alt-slash = "layout accordion horizontal";
             alt-shift-enter = ''
               exec-and-forget osascript \
