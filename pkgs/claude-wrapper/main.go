@@ -31,6 +31,9 @@ func main() {
 		os.Setenv("ANTHROPIC_MODEL", "claude-opus-4-6")
 	} else {
 		os.Setenv("CLAUDE_CODE_USE_BEDROCK", "1")
+		if !args.hasModel {
+			args.filteredArgs = append(args.filteredArgs, "--model", "opus")
+		}
 		if extra := buildSettings(os.Getenv); extra != nil {
 			args.filteredArgs = append(args.filteredArgs, extra...)
 		}
