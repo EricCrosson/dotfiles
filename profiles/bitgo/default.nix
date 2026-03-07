@@ -301,7 +301,6 @@ in {
     defaultSopsFile = ../../secrets/main.yaml;
     gnupg.home = profile.homeDirectory + "/.gnupg";
     secrets = {
-      github_ssh_private_key_personal = {};
       aws_config = {
         path = "${config.home.homeDirectory}/.aws/config";
         mode = "0600";
