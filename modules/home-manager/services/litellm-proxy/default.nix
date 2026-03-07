@@ -8,12 +8,20 @@
 with lib; let
   cfg = config.services.litellm-proxy;
 
+  # Whether any model uses a runtime file for its model identifier
+  hasModelFiles = any (m: m.modelFile != null) cfg.models;
+
   # Convert model data to attributes for JSON conversion
   modelToAttrs = model: {
     model_name = model.name;
     litellm_params =
       {
-        inherit (model) model;
+        # Use a placeholder when modelFile is set; the wrapper replaces it at runtime.
+        # Placeholder must not contain / to avoid breaking bash parameter substitution.
+        model =
+          if model.modelFile != null
+          then "@MODEL_FILE_${builtins.hashString "sha256" model.modelFile}@"
+          else model.model;
       }
       // optionalAttrs (model.aws_profile_name != null) {
         inherit (model) aws_profile_name;
@@ -27,6 +35,40 @@ with lib; let
 
   # Generate config using builtins.toJSON
   configToJson = models: builtins.toJSON {model_list = map modelToAttrs models;};
+
+  # Config path used by litellm
+  configPath = "${config.home.homeDirectory}/.config/litellm/config.yaml";
+
+  # Runtime config path where the wrapper writes the resolved config
+  runtimeConfigPath = "${config.home.homeDirectory}/.config/litellm/config.runtime.yaml";
+
+  # Wrapper script that resolves modelFile placeholders at runtime.
+  # Reads the template config, replaces @MODEL_FILE:path@ placeholders
+  # with actual file contents, writes the resolved config, then execs litellm.
+  litellmWrapper = let
+    # Build a sequence of bash parameter substitutions, one per modelFile
+    substitutions = concatMapStrings (model:
+      if model.modelFile != null
+      then let
+        placeholder = "@MODEL_FILE_${builtins.hashString "sha256" model.modelFile}@";
+        fileRef = escapeShellArg model.modelFile;
+      in ''
+        model_arn="bedrock/converse/$(cat ${fileRef})"
+        resolved=''${resolved//${placeholder}/$model_arn}
+      ''
+      else "")
+    cfg.models;
+  in
+    pkgs.writeShellApplication {
+      name = "litellm-proxy-wrapper";
+      runtimeInputs = [pkgs.coreutils cfg.package];
+      text = ''
+        resolved=$(cat ${escapeShellArg configPath})
+        ${substitutions}
+        printf '%s\n' "$resolved" > ${escapeShellArg runtimeConfigPath}
+        exec litellm --config ${escapeShellArg runtimeConfigPath} --host ${escapeShellArg cfg.host} --port ${escapeShellArg (toString cfg.port)}
+      '';
+    };
 in {
   options.services.litellm-proxy = {
     enable = mkEnableOption "LiteLLM proxy service";
@@ -87,8 +129,16 @@ in {
 
           model = mkOption {
             type = types.str;
-            description = "Full model identifier";
+            default = "";
+            description = "Full model identifier. Ignored when modelFile is set.";
             example = "bedrock/us.anthropic.claude-sonnet-4-5-20250929-v1:0";
+          };
+
+          modelFile = mkOption {
+            type = types.nullOr types.str;
+            default = null;
+            description = "Path to a file containing the model identifier (e.g. a sops-decrypted secret). Read at service startup.";
+            example = "/run/secrets/bedrock_sonnet_arn";
           };
 
           aws_profile_name = mkOption {
@@ -132,23 +182,35 @@ in {
       };
     };
 
-    launchd-with-logs.services.litellm-proxy = {
-      command = "${cfg.package}/bin/litellm";
-      args = [
-        "--config"
-        "${config.home.homeDirectory}/.config/litellm/config.yaml"
-        "--host"
-        cfg.host
-        "--port"
-        "${toString cfg.port}"
-      ];
-      environment = {
-        PATH = lib.makeBinPath [cfg.aws-saml];
+    launchd-with-logs.services.litellm-proxy =
+      if hasModelFiles
+      then {
+        command = "${litellmWrapper}/bin/litellm-proxy-wrapper";
+        environment = {
+          PATH = lib.makeBinPath [cfg.aws-saml];
+        };
+        inherit (cfg) keepAlive;
+        logging = {
+          inherit (cfg.logging) stdout stderr;
+        };
+      }
+      else {
+        command = "${cfg.package}/bin/litellm";
+        args = [
+          "--config"
+          configPath
+          "--host"
+          cfg.host
+          "--port"
+          "${toString cfg.port}"
+        ];
+        environment = {
+          PATH = lib.makeBinPath [cfg.aws-saml];
+        };
+        inherit (cfg) keepAlive;
+        logging = {
+          inherit (cfg.logging) stdout stderr;
+        };
       };
-      inherit (cfg) keepAlive;
-      logging = {
-        inherit (cfg.logging) stdout stderr;
-      };
-    };
   };
 }

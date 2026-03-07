@@ -1,5 +1,7 @@
 {pkgs}: let
   inherit (pkgs) lib;
+  helpers = import ./helpers.nix {inherit lib;};
+  inherit (helpers) assertEq assertHasAttr assertNotHasAttr;
 
   # Helper to evaluate the module with a given config
   eval = testConfig:
@@ -37,22 +39,6 @@
       };
     })
     .config;
-
-  # Test helpers
-  assertEq = name: actual: expected:
-    if actual == expected
-    then true
-    else builtins.throw "Test '${name}' failed: expected ${builtins.toJSON expected}, got ${builtins.toJSON actual}";
-
-  assertHasAttr = name: attrset: attr:
-    if builtins.hasAttr attr attrset
-    then true
-    else builtins.throw "Test '${name}' failed: attribute '${attr}' not found in ${builtins.toJSON attrset}";
-
-  assertNotHasAttr = name: attrset: attr:
-    if !builtins.hasAttr attr attrset
-    then true
-    else builtins.throw "Test '${name}' failed: attribute '${attr}' should not exist";
 
   # === Test cases ===
 
@@ -140,6 +126,48 @@
     assert assertEq "model-name" (builtins.head configJson.model_list).model_name "test-model";
     assert assertEq "model-id" (builtins.head configJson.model_list).litellm_params.model "bedrock/test"; true;
 
+  # Test: Model with modelFile uses placeholder in config
+  test-model-file = let
+    result = eval {
+      services.litellm-proxy = {
+        enable = true;
+        package = pkgs.hello;
+        aws-saml = pkgs.hello;
+        models = [
+          {
+            name = "test-model";
+            modelFile = "/run/secrets/bedrock_arn";
+            aws_profile_name = "bitgo-ai";
+          }
+        ];
+      };
+    };
+    configJson = builtins.fromJSON result.home.file.".config/litellm/config.yaml".text;
+    modelParams = (builtins.head configJson.model_list).litellm_params;
+  in
+    assert assertEq "model-file-placeholder" modelParams.model "@MODEL_FILE_${builtins.hashString "sha256" "/run/secrets/bedrock_arn"}@";
+    assert assertEq "model-file-aws-profile" modelParams.aws_profile_name "bitgo-ai"; true;
+
+  # Test: modelFile causes wrapper to be used instead of direct litellm
+  test-model-file-uses-wrapper = let
+    result = eval {
+      services.litellm-proxy = {
+        enable = true;
+        package = pkgs.hello;
+        aws-saml = pkgs.hello;
+        models = [
+          {
+            name = "test-model";
+            modelFile = "/run/secrets/bedrock_arn";
+          }
+        ];
+      };
+    };
+    service = result.launchd-with-logs.services.litellm-proxy;
+  in
+    assert assertEq "wrapper-no-args" (service.args or []) [];
+    assert assertEq "wrapper-command-contains-wrapper" (lib.hasInfix "litellm-proxy-wrapper" service.command) true; true;
+
   # Test: Multiple models
   test-multiple-models = let
     result = eval {
@@ -172,4 +200,6 @@ in
   assert test-no-aws-profile;
   assert test-extra-config;
   assert test-json-structure;
+  assert test-model-file;
+  assert test-model-file-uses-wrapper;
   assert test-multiple-models; "all tests passed"

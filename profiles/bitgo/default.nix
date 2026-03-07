@@ -137,6 +137,7 @@ in {
     aichat = {
       enable = true;
       settings = {
+        model = "bedrock-claude:${config.claude-options.models.default}";
         stream = true;
         save = true;
         keybindings = "emacs";
@@ -150,8 +151,8 @@ in {
             api_key = "xxx";
             models = [
               {
-                name = "bedrock-claude-sonnet";
-                max_input_tokens = 200000;
+                name = config.claude-options.models.sonnet.id;
+                max_input_tokens = config.claude-options.models.sonnet.contextLength;
                 supports_function_calling = false;
                 supports_vision = false;
               }
@@ -290,7 +291,7 @@ in {
       models = [
         {
           name = config.claude-options.models.sonnet.id;
-          model = config.claude-options.models.sonnet.name;
+          modelFile = config.sops.secrets.bedrock_sonnet_arn.path;
           aws_profile_name = config.claude-options.bedrock.profile;
         }
       ];
