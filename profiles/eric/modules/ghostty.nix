@@ -14,6 +14,7 @@
       cursor-style = "block";
       shell-integration-features = "no-cursor";
       window-inherit-working-directory = false;
+      keybind = "cmd+t=new_tab:inherit-cwd";
     };
   };
 }
