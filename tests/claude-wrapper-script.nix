@@ -22,37 +22,31 @@
   # knows which claude binary to exec
   test-unwrapped-var = assert assertContains "unwrapped-set" script "_CLAUDE_UNWRAPPED="; true;
 
-  # AWS_PROFILE defaults to the configured Bedrock profile
-  test-aws-profile = assert assertContains "aws-profile-default" script "test-profile"; true;
+  # Bedrock profile defaults to the configured value
+  test-bedrock-profile = assert assertContains "bedrock-profile" script "_CLAUDE_BEDROCK_PROFILE";
+  assert assertContains "bedrock-profile-value" script "test-profile"; true;
 
-  # AWS_REGION defaults to the configured Bedrock region
-  test-aws-region = assert assertContains "aws-region-default" script "us-test-1"; true;
+  # Bedrock region defaults to the configured value
+  test-bedrock-region = assert assertContains "bedrock-region" script "_CLAUDE_BEDROCK_REGION";
+  assert assertContains "bedrock-region-value" script "us-test-1"; true;
 
-  # ANTHROPIC_MODEL is set (reads from opus file by default)
-  test-anthropic-model = assert assertContains "anthropic-model" script "ANTHROPIC_MODEL"; true;
+  # Sops file paths are exported for the Go wrapper to read on demand
+  test-bedrock-opus-file = assert assertContains "opus-file-path" script "_CLAUDE_BEDROCK_OPUS_FILE";
+  assert assertContains "opus-file-value" script "/mock/opus-arn"; true;
 
-  # Per-tier model env vars reference the correct sops file paths
-  test-opus-model = assert assertContains "opus-model-var" script "ANTHROPIC_DEFAULT_OPUS_MODEL";
-  assert assertContains "opus-file-ref" script "/mock/opus-arn"; true;
+  test-bedrock-sonnet-file = assert assertContains "sonnet-file-path" script "_CLAUDE_BEDROCK_SONNET_FILE";
+  assert assertContains "sonnet-file-value" script "/mock/sonnet-arn"; true;
 
-  test-sonnet-model = assert assertContains "sonnet-model-var" script "ANTHROPIC_DEFAULT_SONNET_MODEL";
-  assert assertContains "sonnet-file-ref" script "/mock/sonnet-arn"; true;
-
-  test-haiku-model = assert assertContains "haiku-model-var" script "ANTHROPIC_DEFAULT_HAIKU_MODEL";
-  assert assertContains "haiku-file-ref" script "/mock/haiku-arn"; true;
-
-  # _CLAUDE_AVAILABLE_MODELS tells the Go binary which models to advertise
-  test-available-models = assert assertContains "available-models" script "_CLAUDE_AVAILABLE_MODELS='opus,sonnet,haiku'"; true;
+  test-bedrock-haiku-file = assert assertContains "haiku-file-path" script "_CLAUDE_BEDROCK_HAIKU_FILE";
+  assert assertContains "haiku-file-value" script "/mock/haiku-arn"; true;
 
   # The shell wrapper must exec the Go binary, not some other command
   test-exec = assert assertContains "exec-wrapper" script "exec claude-wrapper"; true;
 in
   assert test-unwrapped-var;
-  assert test-aws-profile;
-  assert test-aws-region;
-  assert test-anthropic-model;
-  assert test-opus-model;
-  assert test-sonnet-model;
-  assert test-haiku-model;
-  assert test-available-models;
+  assert test-bedrock-profile;
+  assert test-bedrock-region;
+  assert test-bedrock-opus-file;
+  assert test-bedrock-sonnet-file;
+  assert test-bedrock-haiku-file;
   assert test-exec; "all tests passed"

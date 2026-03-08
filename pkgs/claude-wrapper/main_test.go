@@ -13,77 +13,77 @@ func TestParseArgs_PositionIndependent(t *testing.T) {
 		want ParsedArgs
 	}{
 		{
-			name: "anthropic first",
-			args: []string{"--anthropic", "--chat"},
+			name: "bedrock first",
+			args: []string{"--bedrock", "--chat"},
 			want: ParsedArgs{
-				explicitAnthropic: true,
-				hasModel:          false,
-				filteredArgs:      []string{"--chat"},
+				explicitBedrock: true,
+				hasModel:        false,
+				filteredArgs:    []string{"--chat"},
 			},
 		},
 		{
-			name: "anthropic after other flags",
-			args: []string{"--chat", "--anthropic"},
+			name: "bedrock after other flags",
+			args: []string{"--chat", "--bedrock"},
 			want: ParsedArgs{
-				explicitAnthropic: true,
-				hasModel:          false,
-				filteredArgs:      []string{"--chat"},
+				explicitBedrock: true,
+				hasModel:        false,
+				filteredArgs:    []string{"--chat"},
 			},
 		},
 		{
-			name: "anthropic with explicit model (space-separated)",
-			args: []string{"--model", "sonnet", "--anthropic", "--chat"},
+			name: "bedrock with explicit model (space-separated)",
+			args: []string{"--model", "sonnet", "--bedrock", "--chat"},
 			want: ParsedArgs{
-				explicitAnthropic: true,
-				hasModel:          true,
-				filteredArgs:      []string{"--model", "sonnet", "--chat"},
+				explicitBedrock: true,
+				hasModel:        true,
+				filteredArgs:    []string{"--model", "sonnet", "--chat"},
 			},
 		},
 		{
-			name: "anthropic with explicit model (equals syntax)",
-			args: []string{"--anthropic", "--model=opus"},
+			name: "bedrock with explicit model (equals syntax)",
+			args: []string{"--bedrock", "--model=opus"},
 			want: ParsedArgs{
-				explicitAnthropic: true,
-				hasModel:          true,
-				filteredArgs:      []string{"--model=opus"},
+				explicitBedrock: true,
+				hasModel:        true,
+				filteredArgs:    []string{"--model=opus"},
 			},
 		},
 		{
 			name: "no flags",
 			args: []string{"--chat"},
 			want: ParsedArgs{
-				explicitAnthropic: false,
-				hasModel:          false,
-				filteredArgs:      []string{"--chat"},
+				explicitBedrock: false,
+				hasModel:        false,
+				filteredArgs:    []string{"--chat"},
 			},
 		},
 		{
-			name: "multiple flags with anthropic in middle",
-			args: []string{"--chat", "--anthropic", "--verbose"},
+			name: "multiple flags with bedrock in middle",
+			args: []string{"--chat", "--bedrock", "--verbose"},
 			want: ParsedArgs{
-				explicitAnthropic: true,
-				hasModel:          false,
-				filteredArgs:      []string{"--chat", "--verbose"},
+				explicitBedrock: true,
+				hasModel:        false,
+				filteredArgs:    []string{"--chat", "--verbose"},
 			},
 		},
 		{
 			name: "help flag",
 			args: []string{"--help"},
 			want: ParsedArgs{
-				explicitAnthropic: false,
-				hasModel:          false,
-				hasHelpOrVersion:  true,
-				filteredArgs:      []string{"--help"},
+				explicitBedrock: false,
+				hasModel:        false,
+				hasHelpOrVersion: true,
+				filteredArgs:     []string{"--help"},
 			},
 		},
 		{
-			name: "version flag with anthropic",
-			args: []string{"--anthropic", "--version"},
+			name: "version flag with bedrock",
+			args: []string{"--bedrock", "--version"},
 			want: ParsedArgs{
-				explicitAnthropic: true,
-				hasModel:          false,
-				hasHelpOrVersion:  true,
-				filteredArgs:      []string{"--version"},
+				explicitBedrock: true,
+				hasModel:        false,
+				hasHelpOrVersion: true,
+				filteredArgs:     []string{"--version"},
 			},
 		},
 	}
@@ -92,8 +92,8 @@ func TestParseArgs_PositionIndependent(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := parseArgs(tt.args)
 
-			if got.explicitAnthropic != tt.want.explicitAnthropic {
-				t.Errorf("explicitAnthropic = %v, want %v", got.explicitAnthropic, tt.want.explicitAnthropic)
+			if got.explicitBedrock != tt.want.explicitBedrock {
+				t.Errorf("explicitBedrock = %v, want %v", got.explicitBedrock, tt.want.explicitBedrock)
 			}
 			if got.hasModel != tt.want.hasModel {
 				t.Errorf("hasModel = %v, want %v", got.hasModel, tt.want.hasModel)
@@ -110,100 +110,253 @@ func TestParseArgs_PositionIndependent(t *testing.T) {
 	}
 }
 
-func TestBuildSettings(t *testing.T) {
+func TestConfigureBedrock(t *testing.T) {
+	mockGetenv := func(vals map[string]string) func(string) string {
+		return func(key string) string {
+			return vals[key]
+		}
+	}
+
+	mockReadFile := func(contents map[string]string) func(string) (string, error) {
+		return func(path string) (string, error) {
+			if v, ok := contents[path]; ok {
+				return v, nil
+			}
+			return "", &fileNotFoundError{path: path}
+		}
+	}
+
 	tests := []struct {
-		name   string
-		envVal string
-		want   []string
+		name     string
+		args     ParsedArgs
+		env      map[string]string
+		files    map[string]string
+		wantCfg  BedrockConfig
+		wantErr  string
 	}{
 		{
-			name:   "three models",
-			envVal: "opus,sonnet,haiku",
-			want:   []string{"--settings", `{"availableModels":["opus","sonnet","haiku"]}`},
+			name: "success with default model",
+			args: ParsedArgs{explicitBedrock: true, filteredArgs: []string{"--chat"}},
+			env: map[string]string{
+				"_CLAUDE_BEDROCK_OPUS_FILE":   "/sops/opus",
+				"_CLAUDE_BEDROCK_SONNET_FILE": "/sops/sonnet",
+				"_CLAUDE_BEDROCK_HAIKU_FILE":  "/sops/haiku",
+				"_CLAUDE_BEDROCK_PROFILE":     "bitgo-ai",
+				"_CLAUDE_BEDROCK_REGION":      "us-west-2",
+			},
+			files: map[string]string{
+				"/sops/opus":   "arn:aws:bedrock:opus-arn\n",
+				"/sops/sonnet": "arn:aws:bedrock:sonnet-arn\n",
+				"/sops/haiku":  "arn:aws:bedrock:haiku-arn\n",
+			},
+			wantCfg: BedrockConfig{
+				envVars: map[string]string{
+					"CLAUDE_CODE_USE_BEDROCK":      "1",
+					"AWS_PROFILE":                  "bitgo-ai",
+					"AWS_REGION":                   "us-west-2",
+					"ANTHROPIC_MODEL":              "arn:aws:bedrock:opus-arn",
+					"ANTHROPIC_DEFAULT_OPUS_MODEL":   "arn:aws:bedrock:opus-arn",
+					"ANTHROPIC_DEFAULT_SONNET_MODEL": "arn:aws:bedrock:sonnet-arn",
+					"ANTHROPIC_DEFAULT_HAIKU_MODEL":  "arn:aws:bedrock:haiku-arn",
+				},
+				extraArgs: []string{
+					"--model", "opus",
+					"--settings", `{"availableModels":["opus","sonnet","haiku"]}`,
+				},
+			},
 		},
 		{
-			name:   "empty string",
-			envVal: "",
-			want:   nil,
+			name: "explicit model skips default",
+			args: ParsedArgs{explicitBedrock: true, hasModel: true, filteredArgs: []string{"--model", "haiku", "--chat"}},
+			env: map[string]string{
+				"_CLAUDE_BEDROCK_OPUS_FILE":   "/sops/opus",
+				"_CLAUDE_BEDROCK_SONNET_FILE": "/sops/sonnet",
+				"_CLAUDE_BEDROCK_HAIKU_FILE":  "/sops/haiku",
+				"_CLAUDE_BEDROCK_PROFILE":     "bitgo-ai",
+				"_CLAUDE_BEDROCK_REGION":      "us-west-2",
+			},
+			files: map[string]string{
+				"/sops/opus":   "arn:aws:bedrock:opus-arn\n",
+				"/sops/sonnet": "arn:aws:bedrock:sonnet-arn\n",
+				"/sops/haiku":  "arn:aws:bedrock:haiku-arn\n",
+			},
+			wantCfg: BedrockConfig{
+				envVars: map[string]string{
+					"CLAUDE_CODE_USE_BEDROCK":      "1",
+					"AWS_PROFILE":                  "bitgo-ai",
+					"AWS_REGION":                   "us-west-2",
+					"ANTHROPIC_MODEL":              "arn:aws:bedrock:opus-arn",
+					"ANTHROPIC_DEFAULT_OPUS_MODEL":   "arn:aws:bedrock:opus-arn",
+					"ANTHROPIC_DEFAULT_SONNET_MODEL": "arn:aws:bedrock:sonnet-arn",
+					"ANTHROPIC_DEFAULT_HAIKU_MODEL":  "arn:aws:bedrock:haiku-arn",
+				},
+				extraArgs: []string{
+					"--settings", `{"availableModels":["opus","sonnet","haiku"]}`,
+				},
+			},
+		},
+		{
+			name: "missing opus file path env var",
+			args: ParsedArgs{explicitBedrock: true, filteredArgs: []string{"--chat"}},
+			env: map[string]string{
+				"_CLAUDE_BEDROCK_SONNET_FILE": "/sops/sonnet",
+				"_CLAUDE_BEDROCK_HAIKU_FILE":  "/sops/haiku",
+			},
+			files:   map[string]string{},
+			wantErr: "not configured",
+		},
+		{
+			name: "file not found on disk",
+			args: ParsedArgs{explicitBedrock: true, filteredArgs: []string{"--chat"}},
+			env: map[string]string{
+				"_CLAUDE_BEDROCK_OPUS_FILE":   "/sops/opus",
+				"_CLAUDE_BEDROCK_SONNET_FILE": "/sops/sonnet",
+				"_CLAUDE_BEDROCK_HAIKU_FILE":  "/sops/haiku",
+			},
+			files:   map[string]string{},
+			wantErr: "darwin-rebuild switch",
+		},
+		{
+			name: "empty ARN after trim",
+			args: ParsedArgs{explicitBedrock: true, filteredArgs: []string{"--chat"}},
+			env: map[string]string{
+				"_CLAUDE_BEDROCK_OPUS_FILE":   "/sops/opus",
+				"_CLAUDE_BEDROCK_SONNET_FILE": "/sops/sonnet",
+				"_CLAUDE_BEDROCK_HAIKU_FILE":  "/sops/haiku",
+			},
+			files: map[string]string{
+				"/sops/opus":   "  \n",
+				"/sops/sonnet": "arn:aws:bedrock:sonnet-arn\n",
+				"/sops/haiku":  "arn:aws:bedrock:haiku-arn\n",
+			},
+			wantErr: "empty",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			getenv := func(key string) string {
-				if key == "_CLAUDE_AVAILABLE_MODELS" {
-					return tt.envVal
+			cfg, err := configureBedrock(tt.args, mockGetenv(tt.env), mockReadFile(tt.files))
+
+			if tt.wantErr != "" {
+				if err == nil {
+					t.Fatalf("expected error containing %q, got nil", tt.wantErr)
 				}
-				return ""
+				if !strings.Contains(err.Error(), tt.wantErr) {
+					t.Fatalf("expected error containing %q, got %q", tt.wantErr, err.Error())
+				}
+				return
 			}
-			got := buildSettings(getenv)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("buildSettings() = %v, want %v", got, tt.want)
+
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+
+			if !reflect.DeepEqual(cfg.envVars, tt.wantCfg.envVars) {
+				t.Errorf("envVars = %v, want %v", cfg.envVars, tt.wantCfg.envVars)
+			}
+			if !reflect.DeepEqual(cfg.extraArgs, tt.wantCfg.extraArgs) {
+				t.Errorf("extraArgs = %v, want %v", cfg.extraArgs, tt.wantCfg.extraArgs)
 			}
 		})
 	}
 }
 
-func TestSettingsInjection_Integration(t *testing.T) {
+// fileNotFoundError simulates os.ReadFile behavior for missing files
+type fileNotFoundError struct {
+	path string
+}
+
+func (e *fileNotFoundError) Error() string {
+	return "open " + e.path + ": no such file or directory"
+}
+
+func TestDefaultPath_NoBedrockConfig(t *testing.T) {
+	// The default (Anthropic) path must not produce any Bedrock env vars,
+	// model injection, or settings injection.
+	args := parseArgs([]string{"--chat"})
+
+	if args.explicitBedrock {
+		t.Fatal("default path should not have explicitBedrock set")
+	}
+
+	// Simulate main() logic: no --bedrock means no configureBedrock call,
+	// so no env vars, no extra args
+	if args.hasModel {
+		t.Error("default path should not have hasModel set")
+	}
+
+	// filteredArgs should be exactly the original args
+	want := []string{"--chat"}
+	if !reflect.DeepEqual(args.filteredArgs, want) {
+		t.Errorf("filteredArgs = %v, want %v", args.filteredArgs, want)
+	}
+}
+
+func TestBedrockPath_Integration(t *testing.T) {
 	tests := []struct {
 		name               string
 		args               []string
-		availableModels    string
 		wantSettingsInArgs bool
 		wantModelDefault   bool
 	}{
 		{
-			name:               "bedrock with available models",
+			name:               "anthropic default (no flags) - no injection",
 			args:               []string{"--chat"},
-			availableModels:    "opus,sonnet,haiku",
-			wantSettingsInArgs: true,
-			wantModelDefault:   true,
-		},
-		{
-			name:               "bedrock without available models",
-			args:               []string{"--chat"},
-			availableModels:    "",
-			wantSettingsInArgs: false,
-			wantModelDefault:   true,
-		},
-		{
-			name:               "anthropic ignores available models",
-			args:               []string{"--anthropic", "--chat"},
-			availableModels:    "opus,sonnet,haiku",
 			wantSettingsInArgs: false,
 			wantModelDefault:   false,
+		},
+		{
+			name:               "bedrock with default model",
+			args:               []string{"--bedrock", "--chat"},
+			wantSettingsInArgs: true,
+			wantModelDefault:   true,
 		},
 		{
 			name:               "bedrock with explicit model skips default",
-			args:               []string{"--model", "haiku", "--chat"},
-			availableModels:    "opus,sonnet,haiku",
+			args:               []string{"--bedrock", "--model", "haiku", "--chat"},
 			wantSettingsInArgs: true,
 			wantModelDefault:   false,
 		},
+	}
+
+	env := map[string]string{
+		"_CLAUDE_BEDROCK_OPUS_FILE":   "/sops/opus",
+		"_CLAUDE_BEDROCK_SONNET_FILE": "/sops/sonnet",
+		"_CLAUDE_BEDROCK_HAIKU_FILE":  "/sops/haiku",
+		"_CLAUDE_BEDROCK_PROFILE":     "bitgo-ai",
+		"_CLAUDE_BEDROCK_REGION":      "us-west-2",
+	}
+	files := map[string]string{
+		"/sops/opus":   "arn:opus\n",
+		"/sops/sonnet": "arn:sonnet\n",
+		"/sops/haiku":  "arn:haiku\n",
+	}
+	getenv := func(key string) string { return env[key] }
+	readFile := func(path string) (string, error) {
+		if v, ok := files[path]; ok {
+			return v, nil
+		}
+		return "", &fileNotFoundError{path: path}
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			parsed := parseArgs(tt.args)
 
-			// Simulate the main() logic for settings and model injection
 			var finalArgs []string
-			if parsed.explicitAnthropic {
-				finalArgs = parsed.filteredArgs
+			if parsed.explicitBedrock {
+				cfg, err := configureBedrock(parsed, getenv, readFile)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				finalArgs = append(parsed.filteredArgs, cfg.extraArgs...)
+
+				// Verify CLAUDE_CODE_USE_BEDROCK is set
+				if cfg.envVars["CLAUDE_CODE_USE_BEDROCK"] != "1" {
+					t.Error("CLAUDE_CODE_USE_BEDROCK should be '1' in bedrock mode")
+				}
 			} else {
 				finalArgs = parsed.filteredArgs
-				if !parsed.hasModel {
-					finalArgs = append(finalArgs, "--model", "opus")
-				}
-				getenv := func(key string) string {
-					if key == "_CLAUDE_AVAILABLE_MODELS" {
-						return tt.availableModels
-					}
-					return ""
-				}
-				if extra := buildSettings(getenv); extra != nil {
-					finalArgs = append(finalArgs, extra...)
-				}
 			}
 
 			hasSettings := false
@@ -226,4 +379,3 @@ func TestSettingsInjection_Integration(t *testing.T) {
 		})
 	}
 }
-
