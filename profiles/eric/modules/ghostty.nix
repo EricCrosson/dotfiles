@@ -13,6 +13,7 @@
       cursor-style-blink = false;
       cursor-style = "block";
       shell-integration-features = "no-cursor";
+      window-inherit-working-directory = false;
     };
   };
 }
