@@ -9,7 +9,6 @@ Add these steps to your task list:
 1. Extract any fields provided inline; ask me only for what's still missing
 2. Spawn the acli agent to execute — the acli agent handles Markdown→ADF conversion for the description
 3. Return the ticket key and URL
-
 </required>
 
 ## Fields
@@ -26,15 +25,3 @@ Include assignee and priority in the `--from-json` creation payload. Do not
 create the ticket first and then set these fields separately — downstream
 Jira automation depends on atomic creation.
 </system-reminder>
-
-## What makes a good summary
-
-<bad-example>
-Fix the thing
-Update dashboard
-</bad-example>
-
-<good-example>
-Add rate limiting to the /auth endpoint
-Surface error state when webhook delivery fails
-</good-example>
