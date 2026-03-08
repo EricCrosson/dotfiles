@@ -44,6 +44,8 @@ func main() {
 			os.Setenv(k, v)
 		}
 		args.filteredArgs = append(args.filteredArgs, cfg.extraArgs...)
+	} else {
+		args.filteredArgs = configureAnthropicDefaults(args)
 	}
 
 	// Mark as Claude session
@@ -159,6 +161,15 @@ func configureBedrock(args ParsedArgs, getenv func(string) string, readFile func
 	extraArgs = append(extraArgs, "--settings", `{"availableModels":["opus","sonnet","haiku"]}`)
 
 	return BedrockConfig{envVars: envVars, extraArgs: extraArgs}, nil
+}
+
+// configureAnthropicDefaults returns the final CLI args for the Anthropic path,
+// defaulting to opus when no model is explicitly specified.
+func configureAnthropicDefaults(args ParsedArgs) []string {
+	if args.hasModel {
+		return args.filteredArgs
+	}
+	return append(args.filteredArgs, "--model", "opus")
 }
 
 // readFileString reads a file and returns its contents as a string.

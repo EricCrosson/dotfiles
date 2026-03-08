@@ -270,6 +270,34 @@ func (e *fileNotFoundError) Error() string {
 	return "open " + e.path + ": no such file or directory"
 }
 
+func TestConfigureAnthropicDefaults(t *testing.T) {
+	tests := []struct {
+		name     string
+		args     ParsedArgs
+		wantArgs []string
+	}{
+		{
+			name:     "no model specified - injects opus",
+			args:     ParsedArgs{filteredArgs: []string{"--chat"}},
+			wantArgs: []string{"--chat", "--model", "opus"},
+		},
+		{
+			name:     "explicit model preserved",
+			args:     ParsedArgs{hasModel: true, filteredArgs: []string{"--model", "sonnet", "--chat"}},
+			wantArgs: []string{"--model", "sonnet", "--chat"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := configureAnthropicDefaults(tt.args)
+			if !reflect.DeepEqual(got, tt.wantArgs) {
+				t.Errorf("configureAnthropicDefaults() = %v, want %v", got, tt.wantArgs)
+			}
+		})
+	}
+}
+
 func TestDefaultPath_NoBedrockConfig(t *testing.T) {
 	// The default (Anthropic) path must not produce any Bedrock env vars,
 	// model injection, or settings injection.
@@ -300,8 +328,14 @@ func TestBedrockPath_Integration(t *testing.T) {
 		wantModelDefault   bool
 	}{
 		{
-			name:               "anthropic default (no flags) - no injection",
+			name:               "anthropic default (no flags) - injects opus model",
 			args:               []string{"--chat"},
+			wantSettingsInArgs: false,
+			wantModelDefault:   true,
+		},
+		{
+			name:               "anthropic with explicit model - preserves model",
+			args:               []string{"--model", "sonnet", "--chat"},
 			wantSettingsInArgs: false,
 			wantModelDefault:   false,
 		},
@@ -356,7 +390,7 @@ func TestBedrockPath_Integration(t *testing.T) {
 					t.Error("CLAUDE_CODE_USE_BEDROCK should be '1' in bedrock mode")
 				}
 			} else {
-				finalArgs = parsed.filteredArgs
+				finalArgs = configureAnthropicDefaults(parsed)
 			}
 
 			hasSettings := false
