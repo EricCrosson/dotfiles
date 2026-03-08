@@ -45,7 +45,7 @@ acli jira workitem create --from-json /tmp/jira-create.json
 ## Reference
 
 - Project keys, issue types, and valid transitions are project-specific.
-- Use `@me` for self-assignment
+- Use user Eric Crosson for self assignment
 - Use `--yes` to skip confirmation prompts in batch operations
 
 !`acli jira workitem create --help 2>&1`

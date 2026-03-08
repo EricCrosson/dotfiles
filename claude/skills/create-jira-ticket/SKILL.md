@@ -17,7 +17,7 @@ Add these steps to your task list:
 - **Type** — default: Task
 - **Summary** — one line, imperative, specific
 - **Description** — context, acceptance criteria, and any implementation notes in Markdown (not Jira wiki markup). Can be left blank, if I asked you to create the ticket but did not provide enough context to populate this.
-- **Assignee** — default: `@me`
+- **Assignee** — default: Eric Crosson
 - **Priority** — default: Medium
 
 <system-reminder>

@@ -6,7 +6,7 @@ Run `git config user.email`. Skip this rule unless the result is `ericcrosson@bi
 Before your first commit, ensure a Jira ticket is associated with this task:
 
 1. If I gave you a ticket, use it
-2. Otherwise, use `/create-jira-ticket` — include assignee (`@me`) and
+2. Otherwise, use `/create-jira-ticket` — include assignee (Eric Crosson) and
    priority in the creation payload (do not create-then-set separately)
 3. Transition the ticket: **In Progress** when starting work, **In Review**
    when pushing or creating a PR
