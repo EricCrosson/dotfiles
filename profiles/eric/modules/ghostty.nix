@@ -12,6 +12,7 @@
       theme = "Alabaster";
       cursor-style-blink = false;
       cursor-style = "block";
+      shell-integration-features = "no-cursor";
     };
   };
 }
