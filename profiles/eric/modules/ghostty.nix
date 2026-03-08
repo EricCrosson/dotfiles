@@ -8,8 +8,10 @@
     enableZshIntegration = true;
     installBatSyntax = !pkgs.stdenv.isDarwin;
     installVimSyntax = !pkgs.stdenv.isDarwin;
-    # settings = {
-    #   theme = "catppuccin-${pkgs.lib.strings.toLower profile.preferences.theme}";
-    # };
+    settings = {
+      theme = "Alabaster";
+      cursor-style-blink = false;
+      cursor-style = "block";
+    };
   };
 }
