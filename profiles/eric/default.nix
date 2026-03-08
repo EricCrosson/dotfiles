@@ -167,6 +167,9 @@ in {
                 -e 'tell application "kitty" to activate' \
                 -e 'tell application "System Events" to keystroke "n" using {command down}'
             '';
+            ctrl-alt-backslash = ''
+              exec-and-forget bash -c 'aerospace list-windows --all --json | jq -r '"'"'.[] | select(."window-title"=="") | ."window-id"'"'"' | xargs -n1 aerospace close --window-id'
+            '';
           };
           service.binding = {
             esc = ["reload-config" "mode main"];
