@@ -150,6 +150,7 @@ in {
             alt-7 = "workspace 7";
             alt-8 = "workspace 8";
             alt-9 = "workspace 9";
+            alt-0 = "workspace 0";
             alt-shift-1 = "move-node-to-workspace 1";
             alt-shift-2 = "move-node-to-workspace 2";
             alt-shift-3 = "move-node-to-workspace 3";
@@ -159,6 +160,7 @@ in {
             alt-shift-7 = "move-node-to-workspace 7";
             alt-shift-8 = "move-node-to-workspace 8";
             alt-shift-9 = "move-node-to-workspace 9";
+            alt-shift-0 = "move-node-to-workspace 0";
             alt-shift-semicolon = "mode service";
             alt-comma = "layout tiles horizontal vertical";
             alt-slash = "layout accordion horizontal";
