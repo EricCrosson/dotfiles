@@ -170,7 +170,9 @@ in {
                 -e 'tell application "System Events" to keystroke "n" using {command down}'
             '';
             ctrl-alt-backslash = ''
-              exec-and-forget bash -c 'aerospace list-windows --all --json | jq -r '"'"'.[] | select(."window-title"=="") | ."window-id"'"'"' | xargs -n1 aerospace close --window-id'
+              exec-and-forget ${pkgs.aerospace}/bin/aerospace list-windows --all --json \
+                | ${pkgs.jq}/bin/jq -r '.[] | select(."window-title"=="") | ."window-id"' \
+                | xargs -n1 ${pkgs.aerospace}/bin/aerospace close --window-id
             '';
           };
           service.binding = {
