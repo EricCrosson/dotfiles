@@ -9,7 +9,7 @@
     installBatSyntax = !pkgs.stdenv.isDarwin;
     installVimSyntax = !pkgs.stdenv.isDarwin;
     settings = {
-      theme = "Alabaster";
+      theme = "light:Alabaster,dark:Kitty Default";
       cursor-style-blink = false;
       cursor-style = "block";
       shell-integration-features = "no-cursor";
