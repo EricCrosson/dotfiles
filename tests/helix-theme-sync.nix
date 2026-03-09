@@ -1,68 +1,101 @@
 {pkgs}: let
   inherit (pkgs) lib;
   helpers = import ./helpers.nix {inherit lib;};
-  inherit (helpers) assertContains;
+  inherit (helpers) assertContains assertHasAttr;
 
-  tomlFormat = pkgs.formats.toml {};
+  # Helper to evaluate the module with a given config
+  eval = testConfig:
+    (lib.evalModules {
+      modules = [
+        # The module under test
+        ../modules/home-manager/services/helix-theme-sync/default.nix
 
-  lightConfig =
-    tomlFormat.generate "helix-config-light"
-    {theme = "wolf-alabaster-light-bg";};
+        # Stub option declarations for outputs the module writes to
+        {
+          options = {
+            home = {
+              homeDirectory = lib.mkOption {
+                type = lib.types.str;
+                default = "/home/testuser";
+              };
+              activation = lib.mkOption {
+                type = lib.types.attrsOf lib.types.anything;
+                default = {};
+              };
+            };
+            launchd-with-logs.services = lib.mkOption {
+              type = lib.types.attrsOf lib.types.anything;
+              default = {};
+            };
+          };
+        }
 
-  darkConfig =
-    tomlFormat.generate "helix-config-dark"
-    {theme = "ao";};
+        # Test-specific configuration
+        testConfig
+      ];
+      specialArgs = {
+        inherit pkgs;
+        inputs = {};
+      };
+    })
+    .config;
 
-  helixConfigDir = "/home/testuser/.config/helix";
+  # === Test cases ===
 
-  drv = pkgs.writeShellApplication {
-    name = "helix-theme-sync";
-    runtimeInputs = [pkgs.coreutils];
-    text = ''
-      # Detect macOS appearance
-      if defaults read -g AppleInterfaceStyle &>/dev/null; then
-        target="${darkConfig}"
-      else
-        target="${lightConfig}"
-      fi
+  # Test: Service registers a launchd-with-logs service when enabled
+  test-service-registered = let
+    result = eval {
+      services.helix-theme-sync = {
+        enable = true;
+        settings = {editor = {};};
+        light-theme = "test-light";
+        dark-theme = "test-dark";
+      };
+    };
+  in
+    assert assertHasAttr "service-registered" result.launchd-with-logs.services "helix-theme-sync"; true;
 
-      config_path="${helixConfigDir}/config.toml"
+  # Test: Service command references the sync script
+  test-service-command = let
+    result = eval {
+      services.helix-theme-sync = {
+        enable = true;
+        settings = {editor = {};};
+        light-theme = "test-light";
+        dark-theme = "test-dark";
+      };
+    };
+    service = result.launchd-with-logs.services.helix-theme-sync;
+  in
+    assert assertContains "command-ref" service.command "helix-theme-sync"; true;
 
-      # Check if symlink already points to the correct target
-      current="$(readlink "$config_path" 2>/dev/null || true)"
-      if [ "$current" = "$target" ]; then
-        exit 0
-      fi
+  # Test: Activation hook is created when enabled
+  test-activation-hook = let
+    result = eval {
+      services.helix-theme-sync = {
+        enable = true;
+        settings = {editor = {};};
+        light-theme = "test-light";
+        dark-theme = "test-dark";
+      };
+    };
+  in
+    assert assertHasAttr "activation-hook" result.home.activation "syncHelixTheme"; true;
 
-      # Atomically swap the symlink
-      ln -sf "$target" "$config_path.tmp"
-      mv "$config_path.tmp" "$config_path"
-
-      # Signal all running Helix instances to reload config
-      pkill -USR1 hx || true
-    '';
-  };
-
-  script = builtins.readFile "${drv}/bin/helix-theme-sync";
-
-  # === Contract assertions ===
-
-  # Both theme config store paths must appear in the script (match derivation names)
-  test-dark-config = assert assertContains "dark-config-ref" script "helix-config-dark"; true;
-
-  test-light-config = assert assertContains "light-config-ref" script "helix-config-light"; true;
-
-  # macOS appearance detection must be present
-  test-appearance-detection = assert assertContains "appearance-check" script "AppleInterfaceStyle"; true;
-
-  # Must target the helix config path
-  test-config-target = assert assertContains "config-path" script "config/helix/config.toml"; true;
-
-  # Must signal helix to reload
-  test-reload-signal = assert assertContains "pkill-signal" script "pkill -USR1 hx"; true;
+  # Test: No service or activation when disabled
+  test-disabled = let
+    result = eval {
+      services.helix-theme-sync = {
+        enable = false;
+        light-theme = "test-light";
+        dark-theme = "test-dark";
+      };
+    };
+  in
+    assert !(result.launchd-with-logs.services ? helix-theme-sync);
+    assert !(result.home.activation ? syncHelixTheme); true;
 in
-  assert test-dark-config;
-  assert test-light-config;
-  assert test-appearance-detection;
-  assert test-config-target;
-  assert test-reload-signal; "all tests passed"
+  assert test-service-registered;
+  assert test-service-command;
+  assert test-activation-hook;
+  assert test-disabled; "all tests passed"

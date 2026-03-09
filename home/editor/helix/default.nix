@@ -1,12 +1,8 @@
 {
-  config,
-  lib,
   pkgs,
   inputs,
   ...
 }: let
-  tomlFormat = pkgs.formats.toml {};
-
   helixSettingsBase = {
     keys.normal = {
       C-h = "jump_view_left";
@@ -39,44 +35,6 @@
         other-lines = "error";
       };
     };
-  };
-
-  lightConfig =
-    tomlFormat.generate "helix-config-light"
-    (helixSettingsBase // {theme = "wolf-alabaster-light-bg";});
-
-  darkConfig =
-    tomlFormat.generate "helix-config-dark"
-    (helixSettingsBase // {theme = "ao";});
-
-  helixConfigDir = "${config.home.homeDirectory}/.config/helix";
-
-  syncScript = pkgs.writeShellApplication {
-    name = "helix-theme-sync";
-    runtimeInputs = with pkgs; [coreutils];
-    text = ''
-      # Detect macOS appearance
-      if defaults read -g AppleInterfaceStyle &>/dev/null; then
-        target="${darkConfig}"
-      else
-        target="${lightConfig}"
-      fi
-
-      config_path="${helixConfigDir}/config.toml"
-
-      # Check if symlink already points to the correct target
-      current="$(readlink "$config_path" 2>/dev/null || true)"
-      if [ "$current" = "$target" ]; then
-        exit 0
-      fi
-
-      # Atomically swap the symlink
-      ln -sf "$target" "$config_path.tmp"
-      mv "$config_path.tmp" "$config_path"
-
-      # Signal all running Helix instances to reload config
-      pkill -USR1 hx || true
-    '';
   };
 in {
   home.packages = with pkgs; [
@@ -116,16 +74,10 @@ in {
     ];
   };
 
-  launchd-with-logs.services.helix-theme-sync = {
-    command = "${syncScript}/bin/helix-theme-sync";
-    runAtLoad = true;
-    watchPaths = ["${config.home.homeDirectory}/Library/Preferences/.GlobalPreferences.plist"];
-    logging = {
-      stderr = "${config.home.homeDirectory}/Library/Logs/helix-theme-sync.error.log";
-    };
+  services.helix-theme-sync = {
+    enable = true;
+    settings = helixSettingsBase;
+    light-theme = "wolf-alabaster-light-bg";
+    dark-theme = "ao";
   };
-
-  home.activation.syncHelixTheme = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    run ${syncScript}/bin/helix-theme-sync
-  '';
 }
