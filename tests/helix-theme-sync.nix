@@ -7,7 +7,7 @@
 
   lightConfig =
     tomlFormat.generate "helix-config-light"
-    {theme = "catppuccin_latte";};
+    {theme = "wolf-alabaster-light-bg";};
 
   darkConfig =
     tomlFormat.generate "helix-config-dark"
