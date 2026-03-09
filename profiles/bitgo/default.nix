@@ -26,8 +26,6 @@
     };
   };
 
-  mcpConfigFile = (pkgs.formats.json {}).generate "claude-mcp-servers.json" config.programs.claude-code.mcpServers;
-
   claudeNotificationIcon = ../../claude/assets/claude-icon.png;
 
   claudeNotificationScript = pkgs.writeShellApplication {
@@ -107,24 +105,6 @@ in {
         (opPlugins.mkActivationScript {
           pluginList = opPlugins.allPlugins.plugins;
         });
-
-      # Sync MCP servers into ~/.claude.json (user scope) so Conductor picks
-      # them up — its bundled claude binary doesn't use the Nix wrapper that
-      # injects --mcp-config.
-      syncClaudeMcpServers = config.lib.dag.entryAfter ["writeBoundary"] ''
-        if [ -f "$HOME/.claude.json" ]; then
-          cp "$HOME/.claude.json" "$HOME/.claude.json.bak"
-          if ${pkgs.jq}/bin/jq --slurpfile servers ${mcpConfigFile} '.mcpServers = $servers[0]' \
-            "$HOME/.claude.json.bak" > "$HOME/.claude.json.tmp" \
-            && ${pkgs.jq}/bin/jq empty "$HOME/.claude.json.tmp" 2>/dev/null; then
-            mv "$HOME/.claude.json.tmp" "$HOME/.claude.json"
-          else
-            echo "WARNING: failed to sync MCP servers into ~/.claude.json, restoring backup" >&2
-            mv "$HOME/.claude.json.bak" "$HOME/.claude.json"
-            rm -f "$HOME/.claude.json.tmp"
-          fi
-        fi
-      '';
     };
   };
 
@@ -166,6 +146,8 @@ in {
       enable = true;
       zshIntegration = "deferred";
     };
+
+    conductor.enable = false;
 
     cortex = {
       enable = true;
