@@ -3,29 +3,30 @@
   helpers = import ./helpers.nix {inherit lib;};
   inherit (helpers) assertContains;
 
-  jsonFormat = pkgs.formats.json {};
-
-  lightSettings = jsonFormat.generate "claude-settings-light" {theme = "light";};
-  darkSettings = jsonFormat.generate "claude-settings-dark" {theme = "dark";};
-  settingsPath = "/home/testuser/.claude/settings.local.json";
+  claudeJson = "/home/testuser/.claude.json";
 
   drv = pkgs.writeShellApplication {
     name = "claude-theme-sync";
-    runtimeInputs = [pkgs.coreutils];
+    runtimeInputs = with pkgs; [coreutils jq];
     text = ''
       if defaults read -g AppleInterfaceStyle &>/dev/null; then
-        target="${darkSettings}"
+        desired="dark"
       else
-        target="${lightSettings}"
+        desired="light"
       fi
 
-      current="$(readlink "${settingsPath}" 2>/dev/null || true)"
-      if [ "$current" = "$target" ]; then
+      claude_json="${claudeJson}"
+      if [ ! -f "$claude_json" ]; then
         exit 0
       fi
 
-      ln -sf "$target" "${settingsPath}.tmp"
-      mv "${settingsPath}.tmp" "${settingsPath}"
+      current=$(jq -r '.theme // empty' "$claude_json")
+      if [ "$current" = "$desired" ]; then
+        exit 0
+      fi
+
+      jq --arg theme "$desired" '.theme = $theme' "$claude_json" > "$claude_json.tmp"
+      mv "$claude_json.tmp" "$claude_json"
     '';
   };
 
@@ -33,18 +34,19 @@
 
   # === Contract assertions ===
 
-  # Both theme config store paths must appear in the script (match derivation names)
-  test-dark-config = assert assertContains "dark-config-ref" script "claude-settings-dark"; true;
-
-  test-light-config = assert assertContains "light-config-ref" script "claude-settings-light"; true;
-
   # macOS appearance detection must be present
   test-appearance-detection = assert assertContains "appearance-check" script "AppleInterfaceStyle"; true;
 
-  # Must target the settings.local.json path
-  test-settings-target = assert assertContains "settings-path" script "settings.local.json"; true;
+  # Must target ~/.claude.json
+  test-claude-json = assert assertContains "claude-json-path" script ".claude.json"; true;
+
+  # Must use jq for JSON update
+  test-jq-usage = assert assertContains "jq-usage" script "jq"; true;
+
+  # Must update the theme key
+  test-theme-key = assert assertContains "theme-key" script ".theme"; true;
 in
-  assert test-dark-config;
-  assert test-light-config;
   assert test-appearance-detection;
-  assert test-settings-target; "all tests passed"
+  assert test-claude-json;
+  assert test-jq-usage;
+  assert test-theme-key; "all tests passed"

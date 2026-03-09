@@ -147,6 +147,8 @@ in {
       zshIntegration = "deferred";
     };
 
+    claude.theme-sync.enable = true;
+
     conductor.enable = false;
 
     cortex = {

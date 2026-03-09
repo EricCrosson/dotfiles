@@ -6,29 +6,32 @@
 }:
 with lib; let
   cfg = config.programs.claude;
-  jsonFormat = pkgs.formats.json {};
 
-  lightSettings = jsonFormat.generate "claude-settings-light" {theme = "light";};
-  darkSettings = jsonFormat.generate "claude-settings-dark" {theme = "dark";};
-  settingsPath = "${config.home.homeDirectory}/.claude/settings.local.json";
+  claudeJson = "${config.home.homeDirectory}/.claude.json";
+  staleSymlink = "${config.home.homeDirectory}/.claude/settings.local.json";
 
   syncScript = pkgs.writeShellApplication {
     name = "claude-theme-sync";
-    runtimeInputs = with pkgs; [coreutils];
+    runtimeInputs = with pkgs; [coreutils jq];
     text = ''
       if defaults read -g AppleInterfaceStyle &>/dev/null; then
-        target="${darkSettings}"
+        desired="dark"
       else
-        target="${lightSettings}"
+        desired="light"
       fi
 
-      current="$(readlink "${settingsPath}" 2>/dev/null || true)"
-      if [ "$current" = "$target" ]; then
+      claude_json="${claudeJson}"
+      if [ ! -f "$claude_json" ]; then
         exit 0
       fi
 
-      ln -sf "$target" "${settingsPath}.tmp"
-      mv "${settingsPath}.tmp" "${settingsPath}"
+      current=$(jq -r '.theme // empty' "$claude_json")
+      if [ "$current" = "$desired" ]; then
+        exit 0
+      fi
+
+      jq --arg theme "$desired" '.theme = $theme' "$claude_json" > "$claude_json.tmp"
+      mv "$claude_json.tmp" "$claude_json"
     '';
   };
 in {
@@ -51,6 +54,7 @@ in {
     };
 
     home.activation.syncClaudeTheme = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      run rm -f "${staleSymlink}"
       run ${syncScript}/bin/claude-theme-sync
     '';
   };

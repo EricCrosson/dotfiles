@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -111,26 +110,6 @@ func TestParseArgs_PositionIndependent(t *testing.T) {
 	}
 }
 
-func TestDetectTheme(t *testing.T) {
-	t.Run("dark when command succeeds", func(t *testing.T) {
-		got := detectTheme(func(name string, args ...string) error {
-			return nil
-		})
-		if got != "dark" {
-			t.Errorf("detectTheme() = %q, want %q", got, "dark")
-		}
-	})
-
-	t.Run("light when command fails", func(t *testing.T) {
-		got := detectTheme(func(name string, args ...string) error {
-			return fmt.Errorf("exit status 1")
-		})
-		if got != "light" {
-			t.Errorf("detectTheme() = %q, want %q", got, "light")
-		}
-	})
-}
-
 func TestConfigureBedrock(t *testing.T) {
 	mockGetenv := func(vals map[string]string) func(string) string {
 		return func(key string) string {
@@ -182,7 +161,7 @@ func TestConfigureBedrock(t *testing.T) {
 				},
 				extraArgs: []string{
 					"--model", "opus",
-					"--settings", `{"availableModels":["opus","sonnet","haiku"],"theme":"dark"}`,
+					"--settings", `{"availableModels":["opus","sonnet","haiku"]}`,
 				},
 			},
 		},
@@ -212,7 +191,7 @@ func TestConfigureBedrock(t *testing.T) {
 					"ANTHROPIC_DEFAULT_HAIKU_MODEL":  "arn:aws:bedrock:haiku-arn",
 				},
 				extraArgs: []string{
-					"--settings", `{"availableModels":["opus","sonnet","haiku"],"theme":"dark"}`,
+					"--settings", `{"availableModels":["opus","sonnet","haiku"]}`,
 				},
 			},
 		},
@@ -256,7 +235,7 @@ func TestConfigureBedrock(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cfg, err := configureBedrock(tt.args, "dark", mockGetenv(tt.env), mockReadFile(tt.files))
+			cfg, err := configureBedrock(tt.args, mockGetenv(tt.env), mockReadFile(tt.files))
 
 			if tt.wantErr != "" {
 				if err == nil {
@@ -295,26 +274,23 @@ func TestConfigureAnthropicDefaults(t *testing.T) {
 	tests := []struct {
 		name     string
 		args     ParsedArgs
-		theme    string
 		wantArgs []string
 	}{
 		{
-			name:     "no model specified - injects opus and theme",
+			name:     "no model specified - injects opus default",
 			args:     ParsedArgs{filteredArgs: []string{"--chat"}},
-			theme:    "dark",
-			wantArgs: []string{"--chat", "--model", "opus", "--settings", `{"theme":"dark"}`},
+			wantArgs: []string{"--chat", "--model", "opus"},
 		},
 		{
-			name:     "explicit model preserved with theme",
+			name:     "explicit model preserved",
 			args:     ParsedArgs{hasModel: true, filteredArgs: []string{"--model", "sonnet", "--chat"}},
-			theme:    "light",
-			wantArgs: []string{"--model", "sonnet", "--chat", "--settings", `{"theme":"light"}`},
+			wantArgs: []string{"--model", "sonnet", "--chat"},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := configureAnthropicDefaults(tt.args, tt.theme)
+			got := configureAnthropicDefaults(tt.args)
 			if !reflect.DeepEqual(got, tt.wantArgs) {
 				t.Errorf("configureAnthropicDefaults() = %v, want %v", got, tt.wantArgs)
 			}
@@ -354,13 +330,13 @@ func TestBedrockPath_Integration(t *testing.T) {
 		{
 			name:               "anthropic default (no flags) - injects opus model",
 			args:               []string{"--chat"},
-			wantSettingsInArgs: true,
+			wantSettingsInArgs: false,
 			wantModelDefault:   true,
 		},
 		{
 			name:               "anthropic with explicit model - preserves model",
 			args:               []string{"--model", "sonnet", "--chat"},
-			wantSettingsInArgs: true,
+			wantSettingsInArgs: false,
 			wantModelDefault:   false,
 		},
 		{
@@ -403,7 +379,7 @@ func TestBedrockPath_Integration(t *testing.T) {
 
 			var finalArgs []string
 			if parsed.explicitBedrock {
-				cfg, err := configureBedrock(parsed, "dark", getenv, readFile)
+				cfg, err := configureBedrock(parsed, getenv, readFile)
 				if err != nil {
 					t.Fatalf("unexpected error: %v", err)
 				}
@@ -414,7 +390,7 @@ func TestBedrockPath_Integration(t *testing.T) {
 					t.Error("CLAUDE_CODE_USE_BEDROCK should be '1' in bedrock mode")
 				}
 			} else {
-				finalArgs = configureAnthropicDefaults(parsed, "dark")
+				finalArgs = configureAnthropicDefaults(parsed)
 			}
 
 			hasSettings := false

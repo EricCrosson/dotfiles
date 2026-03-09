@@ -87,6 +87,10 @@
           builtins.seq
           (import ../tests/helix-theme-sync.nix {inherit pkgs;})
           (pkgs.runCommand "helix-theme-sync-test" {} "touch $out");
+        claude-theme-sync-test =
+          builtins.seq
+          (import ../tests/claude-theme-sync.nix {inherit pkgs;})
+          (pkgs.runCommand "claude-theme-sync-test" {} "touch $out");
       });
 
     formatter = forEachSystem (system: nixpkgs.legacyPackages.${system}.alejandra);

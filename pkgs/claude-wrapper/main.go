@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"strings"
 	"syscall"
 )
@@ -24,14 +23,6 @@ type BedrockConfig struct {
 	extraArgs []string
 }
 
-// detectTheme returns "dark" or "light" based on macOS system appearance.
-func detectTheme(runCmd func(name string, args ...string) error) string {
-	if err := runCmd("defaults", "read", "-g", "AppleInterfaceStyle"); err != nil {
-		return "light"
-	}
-	return "dark"
-}
-
 func main() {
 	args := parseArgs(os.Args[1:])
 
@@ -41,14 +32,10 @@ func main() {
 		return
 	}
 
-	theme := detectTheme(func(name string, args ...string) error {
-		return exec.Command(name, args...).Run()
-	})
-
 	// Anthropic is the default. When --bedrock is passed, configure for
 	// AWS Bedrock instead.
 	if args.explicitBedrock {
-		cfg, err := configureBedrock(args, theme, os.Getenv, readFileString)
+		cfg, err := configureBedrock(args, os.Getenv, readFileString)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%v\n", err)
 			os.Exit(1)
@@ -58,7 +45,7 @@ func main() {
 		}
 		args.filteredArgs = append(args.filteredArgs, cfg.extraArgs...)
 	} else {
-		args.filteredArgs = configureAnthropicDefaults(args, theme)
+		args.filteredArgs = configureAnthropicDefaults(args)
 	}
 
 	// Mark as Claude session
@@ -114,7 +101,7 @@ func parseArgs(args []string) ParsedArgs {
 
 // configureBedrock builds the Bedrock configuration from environment and sops
 // files. It is a pure function: all I/O is injected via getenv and readFile.
-func configureBedrock(args ParsedArgs, theme string, getenv func(string) string, readFile func(string) (string, error)) (BedrockConfig, error) {
+func configureBedrock(args ParsedArgs, getenv func(string) string, readFile func(string) (string, error)) (BedrockConfig, error) {
 	opusFile := getenv("_CLAUDE_BEDROCK_OPUS_FILE")
 	sonnetFile := getenv("_CLAUDE_BEDROCK_SONNET_FILE")
 	haikuFile := getenv("_CLAUDE_BEDROCK_HAIKU_FILE")
@@ -171,19 +158,19 @@ func configureBedrock(args ParsedArgs, theme string, getenv func(string) string,
 	if !args.hasModel {
 		extraArgs = append(extraArgs, "--model", "opus")
 	}
-	extraArgs = append(extraArgs, "--settings", fmt.Sprintf(`{"availableModels":["opus","sonnet","haiku"],"theme":"%s"}`, theme))
+	extraArgs = append(extraArgs, "--settings", `{"availableModels":["opus","sonnet","haiku"]}`)
 
 	return BedrockConfig{envVars: envVars, extraArgs: extraArgs}, nil
 }
 
 // configureAnthropicDefaults returns the final CLI args for the Anthropic path,
 // defaulting to opus when no model is explicitly specified.
-func configureAnthropicDefaults(args ParsedArgs, theme string) []string {
+func configureAnthropicDefaults(args ParsedArgs) []string {
 	result := args.filteredArgs
 	if !args.hasModel {
 		result = append(result, "--model", "opus")
 	}
-	return append(result, "--settings", fmt.Sprintf(`{"theme":"%s"}`, theme))
+	return result
 }
 
 // readFileString reads a file and returns its contents as a string.
