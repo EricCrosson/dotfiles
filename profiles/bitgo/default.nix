@@ -201,7 +201,6 @@ in {
         permissions = {
           defaultMode = "plan";
         };
-        theme = "dark";
       };
       skillsDir = ../../claude/skills;
       rulesDir = ../../claude/rules;
