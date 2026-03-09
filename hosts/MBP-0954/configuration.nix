@@ -46,6 +46,21 @@
       ];
     };
 
+    launchd.daemons.limit-maxfiles = {
+      serviceConfig = {
+        Label = "limit.maxfiles";
+        ProgramArguments = [
+          "/bin/launchctl"
+          "limit"
+          "maxfiles"
+          "524288"
+          "10485760"
+        ];
+        RunAtLoad = true;
+        LaunchOnlyOnce = true;
+      };
+    };
+
     launchd.daemons.ssh-agent = {
       serviceConfig.Disabled = true;
     };
