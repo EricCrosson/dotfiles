@@ -13,10 +13,9 @@
       cursor-style-blink = false;
       cursor-style = "block";
       shell-integration-features = "no-cursor";
+      working-directory = "home";
       window-inherit-working-directory = false;
       keybind = [
-        "cmd+t=new_tab:inherit-cwd"
-
         # Unbind default cmd+d (single-press split right) to use as leader
         "super+d=unbind"
 
