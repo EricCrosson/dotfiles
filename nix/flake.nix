@@ -74,6 +74,13 @@
         builtins.seq
         (import ../tests/claude-theme-sync.nix {inherit pkgs;})
         (pkgs.runCommand "claude-theme-sync-test" {} "touch $out");
+      alabaster-tmtheme-test =
+        pkgs.runCommand "alabaster-tmtheme-test" {
+          nativeBuildInputs = [pkgs.libxml2];
+        } ''
+          xmllint --noout ${../pkgs/bat-themes/Alabaster.tmTheme}
+          touch $out
+        '';
     in
       {
         inherit
@@ -87,6 +94,7 @@
           appearance-sync-test
           helix-theme-sync-test
           claude-theme-sync-test
+          alabaster-tmtheme-test
           ;
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {

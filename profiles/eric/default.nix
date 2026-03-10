@@ -14,6 +14,7 @@
   fzfAltCCommand = pkgs.writeShellScript "fzf-alt-c-command" ''
     { zoxide query -l 2>/dev/null; fd --type d --absolute-path; } | awk -v home="$HOME" '{ sub(/\/$/, "") } !seen[$0]++ { sub("^" home, "~"); print }'
   '';
+  alabasterBat = ../../pkgs/bat-themes;
 in {
   imports =
     [
@@ -148,6 +149,10 @@ in {
           sha256 = "sha256-6fWoCH90IGumAMc4buLRWL0N61op+AuMNN9CAR9/OdI=";
         };
       in {
+        "Alabaster" = {
+          src = alabasterBat;
+          file = "Alabaster.tmTheme";
+        };
         "Catppuccin Frappe" = {
           src = catppuccin-bat;
           file = "themes/Catppuccin Frappe.tmTheme";
