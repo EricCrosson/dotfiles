@@ -1,4 +1,25 @@
 {pkgs, ...}: {
+  home.file.".config/ghostty/focus-pane.glsl".text = ''
+    // Shows border on focused pane
+    void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+      vec2 uv = fragCoord / iResolution.xy;
+      vec4 terminal = texture2D(iChannel0, uv);
+      vec3 color = terminal.rgb;
+      if (iFocus > 0) {
+        float borderSize = 2.0;
+        vec2 pixelCoord = fragCoord;
+        bool isBorder = pixelCoord.x < borderSize ||
+          pixelCoord.x > iResolution.x - borderSize ||
+          pixelCoord.y < borderSize ||
+          pixelCoord.y > iResolution.y - borderSize;
+        if (isBorder) {
+          color = vec3(0, 0.35, 0.74) * 1.0;
+        }
+      }
+      fragColor = vec4(color, 1.0);
+    }
+  '';
+
   programs.ghostty = {
     enable = true;
     package =
@@ -13,6 +34,8 @@
       cursor-style-blink = false;
       cursor-style = "block";
       shell-integration-features = "no-cursor";
+      unfocused-split-opacity = 1;
+      custom-shader = "~/.config/ghostty/focus-pane.glsl";
       working-directory = "home";
       window-inherit-working-directory = false;
       keybind = [
