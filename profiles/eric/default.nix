@@ -42,6 +42,7 @@ in {
       MANPAGER = "sh -c 'col -bx | bat -l man -p'";
       MANROFFOPT = "-c";
       SMART_CD_ONLY_IF_FITS_RATIO = 66;
+      LESS = "--mouse";
       ZSH_WAKATIME_BIN = "/etc/profiles/per-user/${profile.username}/bin/wakatime-cli";
     };
 
