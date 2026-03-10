@@ -10,6 +10,7 @@
     rev = "e9e21cffd98787f1b59e6f6e42db599f9b8ab399";
     sha256 = "sha256-04po0A7bVMsmYdJcKL6oL39RlMLij1lRKvWl5AUXJ7Q=";
   };
+  alabasterDelta = ../../pkgs/delta-themes;
 in {
   home.file = {
     ".config/git/allowed_signers" = {
@@ -18,8 +19,8 @@ in {
       '';
     };
 
-    # Add catppuccin delta theme configuration
     ".config/git/catppuccin.gitconfig".source = "${catppuccinDelta}/catppuccin.gitconfig";
+    ".config/git/alabaster.gitconfig".source = "${alabasterDelta}/alabaster.gitconfig";
   };
 
   programs = {
@@ -64,10 +65,9 @@ in {
         "/scratch/"
       ];
       includes = [
-        # Color theme for git diff, but makes it harder to read.
-        # {
-        #   path = "~/.config/git/catppuccin.gitconfig";
-        # }
+        {path = "~/.config/git/catppuccin.gitconfig";}
+        {path = "~/.config/git/alabaster.gitconfig";}
+        {path = "~/.config/git/delta-theme.gitconfig";}
       ];
       settings = {
         advice = {
@@ -194,5 +194,11 @@ in {
         };
       };
     };
+  };
+
+  services.delta-theme-sync = {
+    enable = true;
+    light-feature = "alabaster";
+    dark-feature = "catppuccin-mocha";
   };
 }
