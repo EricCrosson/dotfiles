@@ -48,7 +48,7 @@
               -e 'tell application "kitty" to activate' \
               -e 'tell application "System Events" to keystroke "n" using {command down}'
           '';
-          ctrl-alt-backslash = ''
+          ctrl-shift-backslash = ''
             exec-and-forget ${pkgs.aerospace}/bin/aerospace list-windows --all --json \
               | ${pkgs.jq}/bin/jq -r '.[] | select(."window-title"=="") | ."window-id"' \
               | xargs -n1 ${pkgs.aerospace}/bin/aerospace close --window-id
