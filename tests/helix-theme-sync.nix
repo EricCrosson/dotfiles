@@ -3,34 +3,24 @@
   helpers = import ./helpers.nix {inherit lib;};
   inherit (helpers) assertContains assertHasAttr;
 
-  # Helper to evaluate the module with a given config
   eval = testConfig:
     (lib.evalModules {
       modules = [
-        # The module under test
         ../modules/home-manager/services/helix-theme-sync/default.nix
 
-        # Stub option declarations for outputs the module writes to
         {
           options = {
-            home = {
-              homeDirectory = lib.mkOption {
-                type = lib.types.str;
-                default = "/home/testuser";
-              };
-              activation = lib.mkOption {
-                type = lib.types.attrsOf lib.types.anything;
-                default = {};
-              };
+            home.homeDirectory = lib.mkOption {
+              type = lib.types.str;
+              default = "/home/testuser";
             };
-            launchd-with-logs.services = lib.mkOption {
+            appearance-sync.services = lib.mkOption {
               type = lib.types.attrsOf lib.types.anything;
               default = {};
             };
           };
         }
 
-        # Test-specific configuration
         testConfig
       ];
       specialArgs = {
@@ -40,10 +30,7 @@
     })
     .config;
 
-  # === Test cases ===
-
-  # Test: Service registers a launchd-with-logs service when enabled
-  test-service-registered = let
+  test-appearance-sync-registered = let
     result = eval {
       services.helix-theme-sync = {
         enable = true;
@@ -53,10 +40,9 @@
       };
     };
   in
-    assert assertHasAttr "service-registered" result.launchd-with-logs.services "helix-theme-sync"; true;
+    assert assertHasAttr "registered" result.appearance-sync.services "helix-theme-sync"; true;
 
-  # Test: Service command references the sync script
-  test-service-command = let
+  test-onLight-contains-light-config = let
     result = eval {
       services.helix-theme-sync = {
         enable = true;
@@ -65,12 +51,11 @@
         dark-theme = "test-dark";
       };
     };
-    service = result.launchd-with-logs.services.helix-theme-sync;
+    svc = result.appearance-sync.services.helix-theme-sync;
   in
-    assert assertContains "command-ref" service.command "helix-theme-sync"; true;
+    assert assertContains "light-config-ref" svc.onLight "helix-config-light"; true;
 
-  # Test: Activation hook is created when enabled
-  test-activation-hook = let
+  test-onDark-contains-dark-config = let
     result = eval {
       services.helix-theme-sync = {
         enable = true;
@@ -79,10 +64,23 @@
         dark-theme = "test-dark";
       };
     };
+    svc = result.appearance-sync.services.helix-theme-sync;
   in
-    assert assertHasAttr "activation-hook" result.home.activation "syncHelixTheme"; true;
+    assert assertContains "dark-config-ref" svc.onDark "helix-config-dark"; true;
 
-  # Test: No service or activation when disabled
+  test-onLight-signals-helix = let
+    result = eval {
+      services.helix-theme-sync = {
+        enable = true;
+        settings = {editor = {};};
+        light-theme = "test-light";
+        dark-theme = "test-dark";
+      };
+    };
+    svc = result.appearance-sync.services.helix-theme-sync;
+  in
+    assert assertContains "pkill-signal" svc.onLight "pkill -USR1 hx"; true;
+
   test-disabled = let
     result = eval {
       services.helix-theme-sync = {
@@ -92,10 +90,10 @@
       };
     };
   in
-    assert !(result.launchd-with-logs.services ? helix-theme-sync);
-    assert !(result.home.activation ? syncHelixTheme); true;
+    assert !(result.appearance-sync.services ? helix-theme-sync); true;
 in
-  assert test-service-registered;
-  assert test-service-command;
-  assert test-activation-hook;
+  assert test-appearance-sync-registered;
+  assert test-onLight-contains-light-config;
+  assert test-onDark-contains-dark-config;
+  assert test-onLight-signals-helix;
   assert test-disabled; "all tests passed"

@@ -1,52 +1,90 @@
 {pkgs}: let
   inherit (pkgs) lib;
   helpers = import ./helpers.nix {inherit lib;};
-  inherit (helpers) assertContains;
+  inherit (helpers) assertContains assertHasAttr;
 
-  claudeJson = "/home/testuser/.claude.json";
+  extendedLib =
+    lib
+    // {
+      hm = {
+        dag = {
+          entryAfter = deps: data: {inherit deps data;};
+        };
+      };
+    };
 
-  drv = pkgs.writeShellApplication {
-    name = "claude-theme-sync";
-    runtimeInputs = with pkgs; [coreutils jq];
-    text = ''
-      if defaults read -g AppleInterfaceStyle &>/dev/null; then
-        desired="dark"
-      else
-        desired="light"
-      fi
+  eval = testConfig:
+    (lib.evalModules {
+      modules = [
+        ../modules/home-manager/programs/claude/default.nix
 
-      claude_json="${claudeJson}"
-      if [ ! -f "$claude_json" ]; then
-        exit 0
-      fi
+        {
+          options = {
+            home = {
+              homeDirectory = lib.mkOption {
+                type = lib.types.str;
+                default = "/home/testuser";
+              };
+              activation = lib.mkOption {
+                type = lib.types.attrsOf lib.types.anything;
+                default = {};
+              };
+            };
+            appearance-sync.services = lib.mkOption {
+              type = lib.types.attrsOf lib.types.anything;
+              default = {};
+            };
+          };
+        }
 
-      current=$(jq -r '.theme // empty' "$claude_json")
-      if [ "$current" = "$desired" ]; then
-        exit 0
-      fi
+        testConfig
+      ];
+      specialArgs = {
+        lib = extendedLib;
+        inherit pkgs;
+      };
+    })
+    .config;
 
-      jq --arg theme "$desired" '.theme = $theme' "$claude_json" > "$claude_json.tmp"
-      mv "$claude_json.tmp" "$claude_json"
-    '';
-  };
+  test-appearance-sync-registered = let
+    result = eval {programs.claude.theme-sync.enable = true;};
+  in
+    assert assertHasAttr "registered" result.appearance-sync.services "claude-theme-sync"; true;
 
-  script = builtins.readFile "${drv}/bin/claude-theme-sync";
+  test-onLight-patches-json = let
+    result = eval {programs.claude.theme-sync.enable = true;};
+    svc = result.appearance-sync.services.claude-theme-sync;
+  in
+    assert assertContains "jq-usage" svc.onLight "jq";
+    assert assertContains "theme-value" svc.onLight "light"; true;
 
-  # === Contract assertions ===
+  test-onDark-patches-json = let
+    result = eval {programs.claude.theme-sync.enable = true;};
+    svc = result.appearance-sync.services.claude-theme-sync;
+  in
+    assert assertContains "jq-usage" svc.onDark "jq";
+    assert assertContains "theme-value" svc.onDark "dark"; true;
 
-  # macOS appearance detection must be present
-  test-appearance-detection = assert assertContains "appearance-check" script "AppleInterfaceStyle"; true;
+  test-targets-claude-json = let
+    result = eval {programs.claude.theme-sync.enable = true;};
+    svc = result.appearance-sync.services.claude-theme-sync;
+  in
+    assert assertContains "claude-json" svc.onLight ".claude.json"; true;
 
-  # Must target ~/.claude.json
-  test-claude-json = assert assertContains "claude-json-path" script ".claude.json"; true;
+  test-runtimeInputs-includes-jq = let
+    result = eval {programs.claude.theme-sync.enable = true;};
+    svc = result.appearance-sync.services.claude-theme-sync;
+  in
+    assert lib.any (p: lib.getName p == "jq") svc.runtimeInputs; true;
 
-  # Must use jq for JSON update
-  test-jq-usage = assert assertContains "jq-usage" script "jq"; true;
-
-  # Must update the theme key
-  test-theme-key = assert assertContains "theme-key" script ".theme"; true;
+  test-disabled = let
+    result = eval {programs.claude.theme-sync.enable = false;};
+  in
+    assert !(result.appearance-sync.services ? claude-theme-sync); true;
 in
-  assert test-appearance-detection;
-  assert test-claude-json;
-  assert test-jq-usage;
-  assert test-theme-key; "all tests passed"
+  assert test-appearance-sync-registered;
+  assert test-onLight-patches-json;
+  assert test-onDark-patches-json;
+  assert test-targets-claude-json;
+  assert test-runtimeInputs-includes-jq;
+  assert test-disabled; "all tests passed"

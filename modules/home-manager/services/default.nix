@@ -1,5 +1,6 @@
 {
   imports = [
+    ./appearance-sync
     ./cargo-sweep
     ./fzf-theme-sync
     ./helix-theme-sync

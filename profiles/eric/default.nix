@@ -337,6 +337,8 @@ in {
     };
   };
 
+  services.fzf-theme-sync.enable = true;
+
   xdg.userDirs = {
     createDirectories = true;
     desktop = "${profile.homeDirectory}/tmp";
