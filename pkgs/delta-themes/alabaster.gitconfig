@@ -1,0 +1,25 @@
+[delta "alabaster"]
+    blame-palette = "#F7F7F7 #F0F0F0 #EAEAEA #E4E4E4 #DEDEDE"
+    commit-decoration-style = "#777777" bold box ul
+    light = true
+    file-decoration-style = "#777777"
+    file-style = "#000000"
+    hunk-header-decoration-style = "#777777" box ul
+    hunk-header-file-style = bold
+    hunk-header-line-number-style = bold "#777777"
+    hunk-header-style = file line-number syntax
+    line-numbers-left-style = "#777777"
+    line-numbers-minus-style = bold "#AA3731"
+    line-numbers-plus-style = bold "#448C27"
+    line-numbers-right-style = "#777777"
+    line-numbers-zero-style = "#777777"
+    minus-emph-style = bold syntax "#E4C7C6"
+    minus-style = syntax "#F1E3E2"
+    plus-emph-style = bold syntax "#CBE0C0"
+    plus-style = syntax "#E5EEE0"
+    map-styles = \
+        bold purple => syntax "#DCCEE7", \
+        bold blue => syntax "#D0DBEC", \
+        bold cyan => syntax "#CEE2EB", \
+        bold yellow => syntax "#F2E6CD"
+    syntax-theme = Alabaster

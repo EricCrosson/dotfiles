@@ -74,11 +74,22 @@
         builtins.seq
         (import ../tests/claude-theme-sync.nix {inherit pkgs;})
         (pkgs.runCommand "claude-theme-sync-test" {} "touch $out");
+      delta-theme-sync-test =
+        builtins.seq
+        (import ../tests/delta-theme-sync.nix {inherit pkgs;})
+        (pkgs.runCommand "delta-theme-sync-test" {} "touch $out");
       alabaster-tmtheme-test =
         pkgs.runCommand "alabaster-tmtheme-test" {
           nativeBuildInputs = [pkgs.libxml2];
         } ''
           xmllint --noout ${../pkgs/bat-themes/Alabaster.tmTheme}
+          touch $out
+        '';
+      alabaster-gitconfig-test =
+        pkgs.runCommand "alabaster-gitconfig-test" {
+          nativeBuildInputs = [pkgs.git];
+        } ''
+          git config --file ${../pkgs/delta-themes/alabaster.gitconfig} --list > /dev/null
           touch $out
         '';
     in
@@ -94,7 +105,9 @@
           appearance-sync-test
           helix-theme-sync-test
           claude-theme-sync-test
+          delta-theme-sync-test
           alabaster-tmtheme-test
+          alabaster-gitconfig-test
           ;
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
