@@ -30,7 +30,22 @@
     });
 
     # Stub for cortex and atlas home-manager modules
-    homeManagerModules.default = {lib, ...}: {
+    homeManagerModules.default = {
+      lib,
+      pkgs,
+      ...
+    }: let
+      atlasStub = pkgs.stdenv.mkDerivation {
+        pname = "atlas-stub";
+        version = "0.0.0";
+        dontUnpack = true;
+        installPhase = ''
+          mkdir -p $out/bin
+          echo '#!/bin/sh' > $out/bin/atlas
+          chmod +x $out/bin/atlas
+        '';
+      };
+    in {
       options.programs.cortex = {
         enable = lib.mkEnableOption "cortex";
         url = lib.mkOption {
@@ -41,12 +56,25 @@
       };
       options.programs.atlas = {
         enable = lib.mkEnableOption "atlas";
+        package = lib.mkOption {
+          type = lib.types.package;
+          default = atlasStub;
+        };
+        settings = lib.mkOption {
+          type = lib.types.anything;
+          default = {};
+        };
         zshIntegration = lib.mkOption {
           type = lib.types.str;
           default = "none";
-          description = "Atlas zsh integration mode";
+        };
+        initScript = lib.mkOption {
+          type = lib.types.path;
+          readOnly = true;
+          description = "Pre-rendered zsh init script.";
         };
       };
+      config.programs.atlas.initScript = pkgs.writeText "atlas-init-zsh-stub" "";
     };
 
     # Stub for cortex library

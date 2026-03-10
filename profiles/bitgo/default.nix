@@ -144,7 +144,27 @@ in {
 
     atlas = {
       enable = true;
+      package = let
+        atlas = inputs.atlas.packages.${pkgs.system}.default;
+      in
+        pkgs.writeShellApplication {
+          name = "atlas";
+          runtimeInputs = [atlas];
+          text = ''
+            if [[ -r ${config.sops.secrets.atlas_bedrock_model_id.path} ]]; then
+              export ATLAS_BEDROCK_MODEL_ID
+              ATLAS_BEDROCK_MODEL_ID="$(< ${config.sops.secrets.atlas_bedrock_model_id.path})"
+            fi
+            exec atlas "$@"
+          '';
+        };
       zshIntegration = "deferred";
+      settings = {
+        title = {
+          mode = "bedrock";
+          bedrock.profile = config.claude-options.bedrock.profile;
+        };
+      };
     };
 
     claude.theme-sync.enable = true;
@@ -290,6 +310,7 @@ in {
         path = "${config.home.homeDirectory}/.aws/config";
         mode = "0600";
       };
+      atlas_bedrock_model_id = {};
       bedrock_opus_arn = {};
       bedrock_sonnet_arn = {};
       bedrock_haiku_arn = {};
