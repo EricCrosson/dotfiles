@@ -41,14 +41,6 @@ in {
       FZF_CTRL_T_COMMAND = "fd --type f";
       MANPAGER = "sh -c 'col -bx | bat -l man -p'";
       MANROFFOPT = "-c";
-      # Though home-manager [sets] this environment variable, it isn't
-      # sourced by Xorg and awesome-wm for some reason (possibly [this
-      # one]).
-      #
-      # [sets]: https://github.com/nix-community/home-manager/blob/ee5673246de0254186e469935909e821b8f4ec15/modules/programs/ripgrep.nix#L38
-      # [this one]: https://github.com/nix-community/home-manager/issues/1011
-      # TODO: test if RIPGREP_CONFIG_PATH is set in darwin without this line
-      RIPGREP_CONFIG_PATH = "${profile.homeDirectory}/.config/ripgrep/ripgreprc";
       SMART_CD_ONLY_IF_FITS_RATIO = 66;
       ZSH_WAKATIME_BIN = "/etc/profiles/per-user/${profile.username}/bin/wakatime-cli";
     };
