@@ -86,6 +86,31 @@ func TestParseArgs_PositionIndependent(t *testing.T) {
 				filteredArgs:     []string{"--version"},
 			},
 		},
+		{
+			name: "anthropic flag",
+			args: []string{"--anthropic", "--chat"},
+			want: ParsedArgs{
+				explicitAnthropic: true,
+				filteredArgs:      []string{"--chat"},
+			},
+		},
+		{
+			name: "anthropic after other flags",
+			args: []string{"--chat", "--anthropic"},
+			want: ParsedArgs{
+				explicitAnthropic: true,
+				filteredArgs:      []string{"--chat"},
+			},
+		},
+		{
+			name: "both bedrock and anthropic flags",
+			args: []string{"--bedrock", "--anthropic", "--chat"},
+			want: ParsedArgs{
+				explicitBedrock:   true,
+				explicitAnthropic: true,
+				filteredArgs:      []string{"--chat"},
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -94,6 +119,9 @@ func TestParseArgs_PositionIndependent(t *testing.T) {
 
 			if got.explicitBedrock != tt.want.explicitBedrock {
 				t.Errorf("explicitBedrock = %v, want %v", got.explicitBedrock, tt.want.explicitBedrock)
+			}
+			if got.explicitAnthropic != tt.want.explicitAnthropic {
+				t.Errorf("explicitAnthropic = %v, want %v", got.explicitAnthropic, tt.want.explicitAnthropic)
 			}
 			if got.hasModel != tt.want.hasModel {
 				t.Errorf("hasModel = %v, want %v", got.hasModel, tt.want.hasModel)
@@ -270,6 +298,98 @@ func (e *fileNotFoundError) Error() string {
 	return "open " + e.path + ": no such file or directory"
 }
 
+func TestResolveBackend(t *testing.T) {
+	tests := []struct {
+		name        string
+		args        ParsedArgs
+		envDefault  string
+		wantBackend string
+		wantErr     string
+	}{
+		{
+			name:        "explicit bedrock overrides anthropic default",
+			args:        ParsedArgs{explicitBedrock: true},
+			envDefault:  "anthropic",
+			wantBackend: "bedrock",
+		},
+		{
+			name:        "explicit anthropic overrides bedrock default",
+			args:        ParsedArgs{explicitAnthropic: true},
+			envDefault:  "bedrock",
+			wantBackend: "anthropic",
+		},
+		{
+			name:        "explicit bedrock is no-op when default is bedrock",
+			args:        ParsedArgs{explicitBedrock: true},
+			envDefault:  "bedrock",
+			wantBackend: "bedrock",
+		},
+		{
+			name:        "explicit anthropic is no-op when default is anthropic",
+			args:        ParsedArgs{explicitAnthropic: true},
+			envDefault:  "anthropic",
+			wantBackend: "anthropic",
+		},
+		{
+			name:       "conflicting flags produce error",
+			args:       ParsedArgs{explicitBedrock: true, explicitAnthropic: true},
+			envDefault: "anthropic",
+			wantErr:    "conflicting",
+		},
+		{
+			name:        "no flag uses env default (anthropic)",
+			args:        ParsedArgs{},
+			envDefault:  "anthropic",
+			wantBackend: "anthropic",
+		},
+		{
+			name:        "no flag uses env default (bedrock)",
+			args:        ParsedArgs{},
+			envDefault:  "bedrock",
+			wantBackend: "bedrock",
+		},
+		{
+			name:        "empty env defaults to anthropic",
+			args:        ParsedArgs{},
+			envDefault:  "",
+			wantBackend: "anthropic",
+		},
+		{
+			name:       "invalid env value produces error",
+			args:       ParsedArgs{},
+			envDefault: "gcp-vertex",
+			wantErr:    "invalid",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			getenv := func(key string) string {
+				if key == "_CLAUDE_DEFAULT_BACKEND" {
+					return tt.envDefault
+				}
+				return ""
+			}
+			got, err := resolveBackend(tt.args, getenv)
+			if tt.wantErr != "" {
+				if err == nil {
+					t.Fatalf("expected error containing %q, got nil", tt.wantErr)
+				}
+				if !strings.Contains(err.Error(), tt.wantErr) {
+					t.Fatalf("expected error containing %q, got %q", tt.wantErr, err.Error())
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if got != tt.wantBackend {
+				t.Errorf("resolveBackend() = %q, want %q", got, tt.wantBackend)
+			}
+		})
+	}
+}
+
 func TestConfigureAnthropicDefaults(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -306,8 +426,11 @@ func TestDefaultPath_NoBedrockConfig(t *testing.T) {
 	if args.explicitBedrock {
 		t.Fatal("default path should not have explicitBedrock set")
 	}
+	if args.explicitAnthropic {
+		t.Fatal("default path should not have explicitAnthropic set")
+	}
 
-	// Simulate main() logic: no --bedrock means no configureBedrock call,
+	// Simulate main() logic: no flags means resolveBackend reads env default,
 	// so no env vars, no extra args
 	if args.hasModel {
 		t.Error("default path should not have hasModel set")
@@ -324,48 +447,59 @@ func TestBedrockPath_Integration(t *testing.T) {
 	tests := []struct {
 		name               string
 		args               []string
+		defaultBackend     string
 		wantSettingsInArgs bool
 		wantModelDefault   bool
 	}{
 		{
 			name:               "anthropic default (no flags) - injects opus model",
 			args:               []string{"--chat"},
+			defaultBackend:     "anthropic",
 			wantSettingsInArgs: false,
 			wantModelDefault:   true,
 		},
 		{
 			name:               "anthropic with explicit model - preserves model",
 			args:               []string{"--model", "sonnet", "--chat"},
+			defaultBackend:     "anthropic",
 			wantSettingsInArgs: false,
 			wantModelDefault:   false,
 		},
 		{
-			name:               "bedrock with default model",
+			name:               "bedrock via explicit flag",
 			args:               []string{"--bedrock", "--chat"},
+			defaultBackend:     "anthropic",
 			wantSettingsInArgs: true,
 			wantModelDefault:   true,
 		},
 		{
 			name:               "bedrock with explicit model skips default",
 			args:               []string{"--bedrock", "--model", "haiku", "--chat"},
+			defaultBackend:     "anthropic",
 			wantSettingsInArgs: true,
 			wantModelDefault:   false,
 		},
+		{
+			name:               "bedrock via env default (no flag)",
+			args:               []string{"--chat"},
+			defaultBackend:     "bedrock",
+			wantSettingsInArgs: true,
+			wantModelDefault:   true,
+		},
+		{
+			name:               "anthropic via explicit flag overriding bedrock default",
+			args:               []string{"--anthropic", "--chat"},
+			defaultBackend:     "bedrock",
+			wantSettingsInArgs: false,
+			wantModelDefault:   true,
+		},
 	}
 
-	env := map[string]string{
-		"_CLAUDE_BEDROCK_OPUS_FILE":   "/sops/opus",
-		"_CLAUDE_BEDROCK_SONNET_FILE": "/sops/sonnet",
-		"_CLAUDE_BEDROCK_HAIKU_FILE":  "/sops/haiku",
-		"_CLAUDE_BEDROCK_PROFILE":     "bitgo-ai",
-		"_CLAUDE_BEDROCK_REGION":      "us-west-2",
-	}
 	files := map[string]string{
 		"/sops/opus":   "arn:opus\n",
 		"/sops/sonnet": "arn:sonnet\n",
 		"/sops/haiku":  "arn:haiku\n",
 	}
-	getenv := func(key string) string { return env[key] }
 	readFile := func(path string) (string, error) {
 		if v, ok := files[path]; ok {
 			return v, nil
@@ -375,10 +509,25 @@ func TestBedrockPath_Integration(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			env := map[string]string{
+				"_CLAUDE_BEDROCK_OPUS_FILE":   "/sops/opus",
+				"_CLAUDE_BEDROCK_SONNET_FILE": "/sops/sonnet",
+				"_CLAUDE_BEDROCK_HAIKU_FILE":  "/sops/haiku",
+				"_CLAUDE_BEDROCK_PROFILE":     "bitgo-ai",
+				"_CLAUDE_BEDROCK_REGION":      "us-west-2",
+				"_CLAUDE_DEFAULT_BACKEND":     tt.defaultBackend,
+			}
+			getenv := func(key string) string { return env[key] }
+
 			parsed := parseArgs(tt.args)
 
+			backend, err := resolveBackend(parsed, getenv)
+			if err != nil {
+				t.Fatalf("unexpected resolveBackend error: %v", err)
+			}
+
 			var finalArgs []string
-			if parsed.explicitBedrock {
+			if backend == "bedrock" {
 				cfg, err := configureBedrock(parsed, getenv, readFile)
 				if err != nil {
 					t.Fatalf("unexpected error: %v", err)

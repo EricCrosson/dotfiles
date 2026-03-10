@@ -9,10 +9,11 @@ import (
 
 // ParsedArgs holds the processed command-line arguments
 type ParsedArgs struct {
-	explicitBedrock  bool
-	hasModel         bool
-	hasHelpOrVersion bool
-	filteredArgs     []string // Args with --bedrock removed
+	explicitBedrock   bool
+	explicitAnthropic bool
+	hasModel          bool
+	hasHelpOrVersion  bool
+	filteredArgs      []string // Args with --bedrock/--anthropic removed
 }
 
 // BedrockConfig holds the environment variables and extra CLI args needed
@@ -32,9 +33,13 @@ func main() {
 		return
 	}
 
-	// Anthropic is the default. When --bedrock is passed, configure for
-	// AWS Bedrock instead.
-	if args.explicitBedrock {
+	backend, err := resolveBackend(args, os.Getenv)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
+	}
+
+	if backend == "bedrock" {
 		cfg, err := configureBedrock(args, os.Getenv, readFileString)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%v\n", err)
@@ -70,6 +75,11 @@ func parseArgs(args []string) ParsedArgs {
 			// Don't add to filteredArgs (remove it)
 			i++
 
+		case arg == "--anthropic":
+			parsed.explicitAnthropic = true
+			// Don't add to filteredArgs (remove it)
+			i++
+
 		case arg == "--model":
 			parsed.hasModel = true
 			parsed.filteredArgs = append(parsed.filteredArgs, arg)
@@ -97,6 +107,29 @@ func parseArgs(args []string) ParsedArgs {
 	}
 
 	return parsed
+}
+
+// resolveBackend determines which backend to use based on explicit flags
+// and the configured default. Returns "bedrock" or "anthropic".
+func resolveBackend(args ParsedArgs, getenv func(string) string) (string, error) {
+	if args.explicitBedrock && args.explicitAnthropic {
+		return "", fmt.Errorf("conflicting flags: --bedrock and --anthropic cannot both be specified")
+	}
+	if args.explicitBedrock {
+		return "bedrock", nil
+	}
+	if args.explicitAnthropic {
+		return "anthropic", nil
+	}
+	// No explicit flag: read configured default
+	backend := getenv("_CLAUDE_DEFAULT_BACKEND")
+	if backend == "" {
+		backend = "anthropic"
+	}
+	if backend != "anthropic" && backend != "bedrock" {
+		return "", fmt.Errorf("invalid _CLAUDE_DEFAULT_BACKEND value: %q (expected \"anthropic\" or \"bedrock\")", backend)
+	}
+	return backend, nil
 }
 
 // configureBedrock builds the Bedrock configuration from environment and sops

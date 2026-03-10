@@ -3,8 +3,7 @@
   helpers = import ./helpers.nix {inherit lib;};
   inherit (helpers) assertContains;
 
-  # Build the claude wrapper with mock inputs
-  wrapper = pkgs.callPackage ../pkgs/claude-wrapper {} {
+  mockBedrockArgs = {
     claude-code = pkgs.hello;
     bedrockProfile = "test-profile";
     bedrockRegion = "us-test-1";
@@ -13,14 +12,32 @@
     bedrockHaikuFile = "/mock/haiku-arn";
   };
 
-  # Read the generated shell script via IFD
+  # Build the claude wrapper with explicit bedrock default
+  wrapper = pkgs.callPackage ../pkgs/claude-wrapper {} (mockBedrockArgs
+    // {
+      defaultBackend = "bedrock";
+    });
+
+  # Build a second wrapper omitting defaultBackend to test the ? "anthropic" default
+  wrapperDefault = pkgs.callPackage ../pkgs/claude-wrapper {} mockBedrockArgs;
+
+  # Read the generated shell scripts via IFD
   script = builtins.readFile "${wrapper}/bin/claude";
+  scriptDefault = builtins.readFile "${wrapperDefault}/bin/claude";
 
   # === Contract assertions ===
 
   # The Nix shell wrapper must set _CLAUDE_UNWRAPPED so the Go binary
   # knows which claude binary to exec
   test-unwrapped-var = assert assertContains "unwrapped-set" script "_CLAUDE_UNWRAPPED="; true;
+
+  # Default backend is exported for the Go wrapper
+  test-default-backend = assert assertContains "default-backend" script "_CLAUDE_DEFAULT_BACKEND";
+  assert assertContains "default-backend-value" script "bedrock"; true;
+
+  # Omitting defaultBackend produces anthropic as the default
+  test-default-backend-fallback = assert assertContains "default-backend-fallback" scriptDefault "_CLAUDE_DEFAULT_BACKEND";
+  assert assertContains "default-backend-fallback-value" scriptDefault "anthropic"; true;
 
   # Bedrock profile defaults to the configured value
   test-bedrock-profile = assert assertContains "bedrock-profile" script "_CLAUDE_BEDROCK_PROFILE";
@@ -44,6 +61,8 @@
   test-exec = assert assertContains "exec-wrapper" script "exec claude-wrapper"; true;
 in
   assert test-unwrapped-var;
+  assert test-default-backend;
+  assert test-default-backend-fallback;
   assert test-bedrock-profile;
   assert test-bedrock-region;
   assert test-bedrock-opus-file;

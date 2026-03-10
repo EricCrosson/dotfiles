@@ -4,12 +4,14 @@
   writeShellApplication,
 }: {
   claude-code,
+  defaultBackend ? "anthropic",
   bedrockProfile,
   bedrockRegion,
   bedrockOpusFile, # path to sops-decrypted file containing opus model ARN
   bedrockSonnetFile, # path to sops-decrypted file containing sonnet model ARN
   bedrockHaikuFile, # path to sops-decrypted file containing haiku model ARN
-}: let
+}:
+assert lib.assertOneOf "defaultBackend" defaultBackend ["anthropic" "bedrock"]; let
   # Build the Go wrapper binary
   claude-wrapper-go = buildGoModule {
     pname = "claude-wrapper";
@@ -31,6 +33,7 @@ in
       # Nix-injected configuration; the ''$ escape produces a literal $
       # for shell parameter expansion. Nix interpolation fills in defaults.
       export _CLAUDE_UNWRAPPED=${claude-code}/bin/claude
+      export _CLAUDE_DEFAULT_BACKEND=${lib.escapeShellArg defaultBackend}
 
       # Bedrock config — available for the Go wrapper when --bedrock is passed.
       # Paths are exported; the Go wrapper reads files on demand.
