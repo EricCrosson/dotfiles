@@ -28,7 +28,7 @@ in {
       enableGitIntegration = true;
       options = {
         line-numbers = true;
-        features = "catppuccin-${pkgs.lib.strings.toLower profile.preferences.theme}";
+        features = "catppuccin-mocha";
       };
     };
 

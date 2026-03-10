@@ -137,7 +137,9 @@ in {
     bat = {
       enable = true;
       config = {
-        theme = "Catppuccin ${profile.preferences.theme}";
+        theme = "auto:system";
+        theme-light = "Alabaster";
+        theme-dark = "Catppuccin Mocha";
         style = "plain";
         paging = "never";
       };
