@@ -373,11 +373,11 @@ in {
         };
 
         palette = {
-          string-bg = "#0A1F0A";
-          string-bg-dark = "#0F2A0F";
-          definition-bg = "#0A1525";
-          comment-bg = "#1F1F0A";
-          error-bg = "#1F0A0A";
+          string-bg = "#152C15";
+          string-bg-dark = "#204020";
+          definition-bg = "#1A4068";
+          comment-bg = "#3F3F1F";
+          error-bg = "#3F1F1F";
           selection-primary = "#4A4800";
           selection = "#333100";
         };
