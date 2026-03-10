@@ -3,7 +3,6 @@
     enable = true;
     launchd.enable = true;
     settings = {
-      on-focused-monitor-changed = ["move-mouse monitor-lazy-center"];
       mode = {
         main.binding = {
           alt-h = "focus left";
