@@ -10,7 +10,7 @@
     rev = "e9e21cffd98787f1b59e6f6e42db599f9b8ab399";
     sha256 = "sha256-04po0A7bVMsmYdJcKL6oL39RlMLij1lRKvWl5AUXJ7Q=";
   };
-  alabasterDelta = ../../pkgs/delta-themes;
+  alabasterDelta = ../../../pkgs/delta-themes;
 in {
   home.file = {
     ".config/git/allowed_signers" = {

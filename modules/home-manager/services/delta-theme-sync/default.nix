@@ -6,15 +6,15 @@
 }: let
   cfg = config.services.delta-theme-sync;
 
-  gitconfigFormat = pkgs.formats.gitconfig {};
+  lightConfig = pkgs.writeText "delta-config-light" ''
+    [delta]
+        features = ${cfg.light-feature}
+  '';
 
-  lightConfig =
-    gitconfigFormat.generate "delta-config-light"
-    {delta.features = cfg.light-feature;};
-
-  darkConfig =
-    gitconfigFormat.generate "delta-config-dark"
-    {delta.features = cfg.dark-feature;};
+  darkConfig = pkgs.writeText "delta-config-dark" ''
+    [delta]
+        features = ${cfg.dark-feature}
+  '';
 
   gitConfigDir = "${config.home.homeDirectory}/.config/git";
   deltaThemeFile = "${gitConfigDir}/delta-theme.gitconfig";
