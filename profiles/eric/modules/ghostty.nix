@@ -36,6 +36,8 @@
       shell-integration-features = "no-cursor";
       unfocused-split-opacity = 1;
       custom-shader = "~/.config/ghostty/focus-pane.glsl";
+      mouse-hide-while-typing = true;
+      selection-clear-on-typing = true;
       working-directory = "home";
       window-inherit-working-directory = false;
       keybind = [
