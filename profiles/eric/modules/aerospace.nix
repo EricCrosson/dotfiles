@@ -64,6 +64,16 @@
           alt-shift-l = ["join-with right" "mode main"];
         };
       };
+      on-window-detected = [
+        {
+          "if".app-id = "com.apple.finder";
+          run = "layout floating";
+        }
+        {
+          "if".app-id = "com.apple.ActivityMonitor";
+          run = "layout floating";
+        }
+      ];
       workspace-to-monitor-force-assignment = {
         "1" = "dell u2718q";
         "2" = "dell u2718q";
