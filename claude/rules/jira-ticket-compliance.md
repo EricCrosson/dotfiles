@@ -11,7 +11,7 @@ Before your first commit, ensure a Jira ticket is associated with this task:
 3. Transition the ticket: **In Progress** when starting work, **In Review**
    when pushing or creating a PR
 4. Include a `Ticket: XX-1234` trailer in every commit message
-</required>
+   </required>
 
 <system-reminder>
 If a commit-msg or pre-push hook rejects a commit for a missing ticket

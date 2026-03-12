@@ -9,7 +9,7 @@ Add these steps to your task list:
 1. Extract any fields provided inline; ask me only for what's still missing
 2. Spawn the acli agent to execute — the acli agent handles Markdown→ADF conversion for the description
 3. Return the ticket key and URL
-</required>
+   </required>
 
 ## Fields
 
