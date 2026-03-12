@@ -45,7 +45,7 @@
           alt-slash = "layout accordion horizontal";
           alt-shift-enter = ''
             exec-and-forget osascript \
-              -e 'tell application "kitty" to activate' \
+              -e 'tell application "ghostty" to activate' \
               -e 'tell application "System Events" to keystroke "n" using {command down}'
           '';
           alt-shift-backslash = ''
