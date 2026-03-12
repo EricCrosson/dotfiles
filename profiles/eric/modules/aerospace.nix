@@ -77,6 +77,10 @@
           "if".app-id = "com.goodsnooze.MacWhisper";
           run = "layout floating";
         }
+        {
+          "if".app-id = "com.apple.DiskUtility";
+          run = "layout floating";
+        }
       ];
       workspace-to-monitor-force-assignment = {
         "1" = "dell u2718q";
