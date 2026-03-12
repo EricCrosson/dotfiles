@@ -34,11 +34,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773320079,
-        "narHash": "sha256-leROpvCL78h2NsFxcXMI0P7m/nYwgT3pWYvnkPo/dJ0=",
+        "lastModified": 1773329552,
+        "narHash": "sha256-jX3y/5w8scIBUes3YUsJTrnTLtYA4rc7c7primVx3Bs=",
         "ref": "refs/heads/master",
-        "rev": "f99d86c4bb287cce800ebb34276e714a40ccad8c",
-        "revCount": 147,
+        "rev": "9a1001e01a334b94852a08025ea42a1bf2978a63",
+        "revCount": 149,
         "type": "git",
         "url": "ssh://git@github.com-bitgo/BitGo/atlas"
       },
