@@ -81,6 +81,10 @@
           "if".app-id = "com.apple.DiskUtility";
           run = "layout floating";
         }
+        {
+          "if".app-id = "com.apple.systempreferences";
+          run = "layout floating";
+        }
       ];
       workspace-to-monitor-force-assignment = {
         "1" = "dell u2718q";
