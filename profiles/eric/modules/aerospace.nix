@@ -89,6 +89,10 @@
           "if".app-id = "com.1password.1password";
           run = "layout floating";
         }
+        {
+          "if".app-id = "com.apple.keychainaccess";
+          run = "layout floating";
+        }
       ];
       workspace-to-monitor-force-assignment = {
         "1" = "dell u2718q";
