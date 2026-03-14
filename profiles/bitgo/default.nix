@@ -24,9 +24,9 @@
       type = "http";
       url = "https://mcp.linear.app/mcp";
     };
-    matryoshka-rlm = {
+    context-mode = {
       command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
-      args = ["-y" "-p" "matryoshka-rlm" "rlm-mcp"];
+      args = ["-y" "context-mode"];
     };
   };
 
