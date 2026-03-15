@@ -594,11 +594,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772811854,
-        "narHash": "sha256-xBPRgY7sdnNY0AneIobmJkcgZ9haoCP5O0cdReD2u+E=",
+        "lastModified": 1773535528,
+        "narHash": "sha256-lNDTaS0GVxFMKqeWQS3H/pDEdaprcYOXa5+x9LyGJZQ=",
         "owner": "ericcrosson",
         "repo": "retry",
-        "rev": "620f4fbca9873a4686e810f41f1da5e93d833daf",
+        "rev": "915d4359b1bdfa39dfb284caea9d9b4bcab8f885",
         "type": "github"
       },
       "original": {
