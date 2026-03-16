@@ -75,7 +75,6 @@
     };
     gh-automerge = {
       url = "github:ericcrosson/gh-automerge";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     git-diff-regex = {
       url = "github:ericcrosson/git-diff-regex";
@@ -139,6 +138,7 @@
   nixConfig.extra-substituters = [
     "https://ericcrosson.cachix.org"
     "https://ericcrosson-gh-arm.cachix.org"
+    "https://ericcrosson-gh-automerge.cachix.org"
     "https://git-disjoint.cachix.org"
     "https://helix.cachix.org"
     "https://nix-community.cachix.org"
@@ -147,6 +147,7 @@
   nixConfig.extra-trusted-public-keys = [
     "ericcrosson.cachix.org-1:M0b4GgWNxAXJSxBhwj7O8wBV4LerI6xc7W83DZp47ww="
     "ericcrosson-gh-arm.cachix.org-1:F/7TLvBGov4xjEE3MSRgNNmYRxPDxW8BUeAyy0rbVu="
+    "ericcrosson-gh-automerge.cachix.org-1:GbweXYwKQnDBSkYtrGQQ9qYfsjh2Ar9CYUoa78pvqRM="
     "git-disjoint.cachix.org-1:KldtYCsH4nhDDfgWwx79lZF75P1smpKtjzoENpwDynw="
     "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
