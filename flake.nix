@@ -85,11 +85,6 @@
     };
     git-dl = {
       url = "github:ericcrosson/git-dl";
-      inputs = {
-        crane.follows = "crane";
-        fenix.follows = "fenix";
-        nixpkgs.follows = "nixpkgs";
-      };
     };
     git-review = {
       url = "github:ericcrosson/git-review";
@@ -139,6 +134,7 @@
     "https://ericcrosson.cachix.org"
     "https://ericcrosson-gh-arm.cachix.org"
     "https://ericcrosson-gh-automerge.cachix.org"
+    "https://ericcrosson-git-dl.cachix.org"
     "https://git-disjoint.cachix.org"
     "https://helix.cachix.org"
     "https://nix-community.cachix.org"
@@ -148,6 +144,7 @@
     "ericcrosson.cachix.org-1:M0b4GgWNxAXJSxBhwj7O8wBV4LerI6xc7W83DZp47ww="
     "ericcrosson-gh-arm.cachix.org-1:F/7TLvBGov4xjEE3MSRgNNmYRxPDxW8BUeAyy0rbVu="
     "ericcrosson-gh-automerge.cachix.org-1:GbweXYwKQnDBSkYtrGQQ9qYfsjh2Ar9CYUoa78pvqRM="
+    "ericcrosson-git-dl.cachix.org-1:qhFI0OIKhtlyEQeKRnyfXryIiDkk/p8R77xfjiOfntM="
     "git-disjoint.cachix.org-1:KldtYCsH4nhDDfgWwx79lZF75P1smpKtjzoENpwDynw="
     "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
