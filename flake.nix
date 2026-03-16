@@ -72,7 +72,6 @@
     };
     gh-arm = {
       url = "github:ericcrosson/gh-arm";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     gh-automerge = {
       url = "github:ericcrosson/gh-automerge";
@@ -99,12 +98,14 @@
     };
     helix = {
       url = "github:helix-editor/helix";
+      # QUESTION: does this break caching?
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # QUESTION: Is this providing any value?
     mcp-servers-nix = {
       url = "github:natsukium/mcp-servers-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -137,6 +138,7 @@
 
   nixConfig.extra-substituters = [
     "https://ericcrosson.cachix.org"
+    "https://ericcrosson-gh-arm.cachix.org"
     "https://git-disjoint.cachix.org"
     "https://helix.cachix.org"
     "https://nix-community.cachix.org"
@@ -144,6 +146,7 @@
 
   nixConfig.extra-trusted-public-keys = [
     "ericcrosson.cachix.org-1:M0b4GgWNxAXJSxBhwj7O8wBV4LerI6xc7W83DZp47ww="
+    "ericcrosson-gh-arm.cachix.org-1:F/7TLvBGov4xjEE3MSRgNNmYRxPDxW8BUeAyy0rbVu="
     "git-disjoint.cachix.org-1:KldtYCsH4nhDDfgWwx79lZF75P1smpKtjzoENpwDynw="
     "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
