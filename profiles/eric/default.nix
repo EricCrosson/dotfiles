@@ -18,7 +18,7 @@
 in {
   imports =
     [
-      inputs.nix-index-database.hmModules.nix-index
+      inputs.nix-index-database.homeModules.nix-index
       ./modules/aerospace.nix
       ./modules/ghostty.nix
       ./modules/git.nix
