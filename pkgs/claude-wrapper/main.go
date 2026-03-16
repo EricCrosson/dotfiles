@@ -189,7 +189,7 @@ func configureBedrock(args ParsedArgs, getenv func(string) string, readFile func
 
 	var extraArgs []string
 	if !args.hasModel {
-		extraArgs = append(extraArgs, "--model", "opus")
+		extraArgs = append(extraArgs, "--model", "opusplan")
 	}
 	extraArgs = append(extraArgs, "--settings", `{"availableModels":["opus","sonnet","haiku"]}`)
 
@@ -201,7 +201,7 @@ func configureBedrock(args ParsedArgs, getenv func(string) string, readFile func
 func configureAnthropicDefaults(args ParsedArgs) []string {
 	result := args.filteredArgs
 	if !args.hasModel {
-		result = append(result, "--model", "opus")
+		result = append(result, "--model", "opusplan")
 	}
 	return result
 }
