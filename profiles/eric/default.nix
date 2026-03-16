@@ -18,6 +18,7 @@
 in {
   imports =
     [
+      inputs.nix-index-database.hmModules.nix-index
       ./modules/aerospace.nix
       ./modules/ghostty.nix
       ./modules/git.nix
@@ -56,7 +57,6 @@ in {
       atuin-desktop
       bottom
       broot
-      comma
       curl
       dust
       entr
@@ -190,6 +190,8 @@ in {
     };
 
     home-manager.enable = true; # Let Home Manager install and manage itself.
+
+    nix-index-database.comma.enable = true;
 
     ripgrep = {
       enable = true;
