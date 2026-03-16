@@ -118,11 +118,6 @@
     };
     retry = {
       url = "github:ericcrosson/retry";
-      inputs = {
-        crane.follows = "crane";
-        fenix.follows = "fenix";
-        nixpkgs.follows = "nixpkgs";
-      };
     };
     sops-nix = {
       url = "github:mic92/sops-nix";
@@ -135,6 +130,7 @@
     "https://ericcrosson-gh-arm.cachix.org"
     "https://ericcrosson-gh-automerge.cachix.org"
     "https://ericcrosson-git-dl.cachix.org"
+    "https://ericcrosson-retry.cachix.org"
     "https://git-disjoint.cachix.org"
     "https://helix.cachix.org"
     "https://nix-community.cachix.org"
@@ -145,6 +141,7 @@
     "ericcrosson-gh-arm.cachix.org-1:F/7TLvBGov4xjEE3MSRgNNmYRxPDxW8BUeAyy0rbVu="
     "ericcrosson-gh-automerge.cachix.org-1:GbweXYwKQnDBSkYtrGQQ9qYfsjh2Ar9CYUoa78pvqRM="
     "ericcrosson-git-dl.cachix.org-1:qhFI0OIKhtlyEQeKRnyfXryIiDkk/p8R77xfjiOfntM="
+    "ericcrosson-retry.cachix.org-1:3l9PEQ/c6PDI+P+avNRPS40irPntuh9hldgjXMttWIs="
     "git-disjoint.cachix.org-1:KldtYCsH4nhDDfgWwx79lZF75P1smpKtjzoENpwDynw="
     "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
