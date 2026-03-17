@@ -65,12 +65,6 @@ with lib; {
 
     # Common settings for all Claude tools
     tools = {
-      disableTelemetry = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Whether to disable telemetry for Claude tools";
-      };
-
       disablePromptCaching = mkOption {
         type = types.bool;
         default = false;
