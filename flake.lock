@@ -539,17 +539,15 @@
     },
     "helix": {
       "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
+        "nixpkgs": "nixpkgs_5",
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1773582090,
-        "narHash": "sha256-voxPu3rAMZ5h0hzPFO1r2LHlzdiCJH1Be1Sw1Xo6fQ0=",
+        "lastModified": 1773676465,
+        "narHash": "sha256-RNMGLQCpmSWfbkuswvLVyu5XxOfckKX33pSaCF8Y4sY=",
         "owner": "helix-editor",
         "repo": "helix",
-        "rev": "b3d6e35f5d6d04152478403f654ce08b42ac310c",
+        "rev": "e2932b47f8306c2c4538e8755e246d3ec1de491c",
         "type": "github"
       },
       "original": {
@@ -700,6 +698,22 @@
     },
     "nixpkgs_5": {
       "locked": {
+        "lastModified": 1759381078,
+        "narHash": "sha256-gTrEEp5gEspIcCOx9PD8kMaF1iEmfBcTbO0Jag2QhQs=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "7df7ff7d8e00218376575f0acdcc5d66741351ee",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_6": {
+      "locked": {
         "lastModified": 1773579282,
         "narHash": "sha256-LWvZj9Bvm1EuoO6zbX4yjZebwnZNfeTbmCJGS7RGQ3Y=",
         "owner": "nixos",
@@ -714,7 +728,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_6": {
+    "nixpkgs_7": {
       "locked": {
         "lastModified": 1733252166,
         "narHash": "sha256-JjLgOLfjYzdAeK0GIHvIWhXmmP5BhSqCdEKWOGKzuPA=",
@@ -775,7 +789,7 @@
       "inputs": {
         "crane": "crane_4",
         "fenix": "fenix_4",
-        "nixpkgs": "nixpkgs_6"
+        "nixpkgs": "nixpkgs_7"
       },
       "locked": {
         "lastModified": 1773693645,
@@ -815,7 +829,7 @@
         "mcp-servers-nix": "mcp-servers-nix",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
-        "nixpkgs": "nixpkgs_5",
+        "nixpkgs": "nixpkgs_6",
         "npm-dep-version": "npm-dep-version",
         "retry": "retry",
         "sops-nix": "sops-nix"

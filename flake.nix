@@ -92,8 +92,6 @@
     };
     helix = {
       url = "github:helix-editor/helix";
-      # QUESTION: does this break caching?
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
       url = "github:nix-community/home-manager";
