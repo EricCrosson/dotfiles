@@ -107,27 +107,6 @@
         "type": "github"
       }
     },
-    "batch-edit-prs": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "pre-commit-hooks": "pre-commit-hooks"
-      },
-      "locked": {
-        "lastModified": 1773400023,
-        "narHash": "sha256-EkE0QJRYYqWIRZhL7FkVXcXGwQwf0PJqg8qGXyLOLs0=",
-        "owner": "ericcrosson",
-        "repo": "batch-edit-prs",
-        "rev": "b1d112230250295599bfd1e1a932ec9d442a773f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ericcrosson",
-        "repo": "batch-edit-prs",
-        "type": "github"
-      }
-    },
     "bell": {
       "inputs": {
         "nixpkgs": [
@@ -334,24 +313,6 @@
       "original": {
         "owner": "edolstra",
         "repo": "flake-compat",
-        "type": "github"
-      }
-    },
-    "flake-utils": {
-      "inputs": {
-        "systems": "systems_2"
-      },
-      "locked": {
-        "lastModified": 1694529238,
-        "narHash": "sha256-zsNZZGTGnMOf9YpHKJqMSsa0dXbfmxeoJ7xHlrt+xmY=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "ff7b65b44d01cf9ba6a71320833626af21126384",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
         "type": "github"
       }
     },
@@ -763,28 +724,6 @@
         "type": "github"
       }
     },
-    "pre-commit-hooks": {
-      "inputs": {
-        "flake-utils": "flake-utils",
-        "nixpkgs": [
-          "batch-edit-prs",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1667992213,
-        "narHash": "sha256-8Ens8ozllvlaFMCZBxg6S7oUyynYx2v7yleC5M0jJsE=",
-        "owner": "cachix",
-        "repo": "pre-commit-hooks.nix",
-        "rev": "ebcbfe09d2bd6d15f68de3a0ebb1e4dcb5cd324b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "cachix",
-        "repo": "pre-commit-hooks.nix",
-        "type": "github"
-      }
-    },
     "retry": {
       "inputs": {
         "crane": "crane_4",
@@ -812,7 +751,6 @@
         "aws-console-bitgo": "aws-console-bitgo",
         "aws-saml-bitgo": "aws-saml-bitgo",
         "bash-barrier": "bash-barrier",
-        "batch-edit-prs": "batch-edit-prs",
         "bell": "bell",
         "cortex": "cortex",
         "crane": "crane",
@@ -945,21 +883,6 @@
       }
     },
     "systems": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
-    "systems_2": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",

@@ -14,7 +14,6 @@ in {
     packages = with pkgs;
       [
         inputs.bash-barrier.packages.${pkgs.system}.default
-        inputs.batch-edit-prs.packages.${pkgs.system}.default
         inputs.git-diff-regex.packages.${pkgs.system}.default
         inputs.git-review.packages.${pkgs.system}.default
         inputs.npm-dep-version.packages.${pkgs.system}.default

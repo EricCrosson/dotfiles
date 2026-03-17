@@ -51,10 +51,6 @@
       url = "github:ericcrosson/bash-barrier";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    batch-edit-prs = {
-      url = "github:ericcrosson/batch-edit-prs";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     bell = {
       url = "github:ericcrosson/bell";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -97,7 +93,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # QUESTION: Is this providing any value?
     mcp-servers-nix = {
       url = "github:natsukium/mcp-servers-nix";
       inputs.nixpkgs.follows = "nixpkgs";
