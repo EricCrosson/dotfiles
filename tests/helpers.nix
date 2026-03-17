@@ -19,4 +19,9 @@
     if lib.hasInfix needle haystack
     then true
     else builtins.throw "Test '${name}' failed: expected string to contain ${builtins.toJSON needle}";
+
+  assertNotContains = name: haystack: needle:
+    if !lib.hasInfix needle haystack
+    then true
+    else builtins.throw "Test '${name}' failed: expected string NOT to contain ${builtins.toJSON needle}";
 }

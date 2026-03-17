@@ -1,7 +1,7 @@
 {pkgs}: let
   inherit (pkgs) lib;
   helpers = import ./helpers.nix {inherit lib;};
-  inherit (helpers) assertContains;
+  inherit (helpers) assertContains assertNotContains;
 
   mockBedrockArgs = {
     claude-code = pkgs.hello;
@@ -59,6 +59,22 @@
 
   # The shell wrapper must exec the Go binary, not some other command
   test-exec = assert assertContains "exec-wrapper" script "exec claude-wrapper"; true;
+
+  # === Plugin directory assertions ===
+
+  # Build a wrapper with plugin directories
+  wrapperWithPlugins = pkgs.callPackage ../pkgs/claude-wrapper {} (mockBedrockArgs
+    // {
+      pluginDirs = ["/mock/plugin-a" "/mock/plugin-b"];
+    });
+  scriptWithPlugins = builtins.readFile "${wrapperWithPlugins}/bin/claude";
+
+  # Plugin wrapper contains _CLAUDE_PLUGIN_DIRS with both paths colon-joined
+  test-plugin-dirs = assert assertContains "plugin-dirs-set" scriptWithPlugins "_CLAUDE_PLUGIN_DIRS";
+  assert assertContains "plugin-dirs-paths" scriptWithPlugins "/mock/plugin-a:/mock/plugin-b"; true;
+
+  # Default wrapper (no pluginDirs) does NOT contain _CLAUDE_PLUGIN_DIRS
+  test-no-plugin-dirs-default = assert assertNotContains "no-plugin-dirs-default" scriptDefault "_CLAUDE_PLUGIN_DIRS"; true;
 in
   assert test-unwrapped-var;
   assert test-default-backend;
@@ -68,4 +84,6 @@ in
   assert test-bedrock-opus-file;
   assert test-bedrock-sonnet-file;
   assert test-bedrock-haiku-file;
-  assert test-exec; "all tests passed"
+  assert test-exec;
+  assert test-plugin-dirs;
+  assert test-no-plugin-dirs-default; "all tests passed"

@@ -418,6 +418,60 @@ func TestConfigureAnthropicDefaults(t *testing.T) {
 	}
 }
 
+func TestConfigurePlugins(t *testing.T) {
+	tests := []struct {
+		name string
+		env  string
+		want []string
+	}{
+		{
+			name: "empty env returns nil",
+			env:  "",
+			want: nil,
+		},
+		{
+			name: "single path",
+			env:  "/nix/store/abc-context-mode",
+			want: []string{"--plugin-dir", "/nix/store/abc-context-mode"},
+		},
+		{
+			name: "multiple colon-separated paths",
+			env:  "/path/a:/path/b:/path/c",
+			want: []string{"--plugin-dir", "/path/a", "--plugin-dir", "/path/b", "--plugin-dir", "/path/c"},
+		},
+		{
+			name: "trailing colon ignored",
+			env:  "/path/a:",
+			want: []string{"--plugin-dir", "/path/a"},
+		},
+		{
+			name: "leading colon ignored",
+			env:  ":/path/a",
+			want: []string{"--plugin-dir", "/path/a"},
+		},
+		{
+			name: "empty segments ignored",
+			env:  "/path/a::/path/b",
+			want: []string{"--plugin-dir", "/path/a", "--plugin-dir", "/path/b"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			getenv := func(key string) string {
+				if key == "_CLAUDE_PLUGIN_DIRS" {
+					return tt.env
+				}
+				return ""
+			}
+			got := configurePlugins(getenv)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("configurePlugins() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestDefaultPath_NoBedrockConfig(t *testing.T) {
 	// The default (Anthropic) path must not produce any Bedrock env vars,
 	// model injection, or settings injection.
@@ -558,6 +612,108 @@ func TestBedrockPath_Integration(t *testing.T) {
 			}
 			if hasModelDefault != tt.wantModelDefault {
 				t.Errorf("model default in args = %v, want %v (args: %v)", hasModelDefault, tt.wantModelDefault, finalArgs)
+			}
+		})
+	}
+}
+
+func TestPlugins_Integration(t *testing.T) {
+	tests := []struct {
+		name           string
+		args           []string
+		defaultBackend string
+		pluginDirs     string
+		wantPluginArgs []string
+	}{
+		{
+			name:           "plugins injected alongside bedrock args",
+			args:           []string{"--bedrock", "--chat"},
+			defaultBackend: "anthropic",
+			pluginDirs:     "/nix/store/abc-plugin-a:/nix/store/def-plugin-b",
+			wantPluginArgs: []string{"--plugin-dir", "/nix/store/abc-plugin-a", "--plugin-dir", "/nix/store/def-plugin-b"},
+		},
+		{
+			name:           "plugins injected alongside anthropic args",
+			args:           []string{"--chat"},
+			defaultBackend: "anthropic",
+			pluginDirs:     "/nix/store/abc-plugin-a",
+			wantPluginArgs: []string{"--plugin-dir", "/nix/store/abc-plugin-a"},
+		},
+		{
+			name:           "no plugins when env is empty",
+			args:           []string{"--chat"},
+			defaultBackend: "anthropic",
+			pluginDirs:     "",
+			wantPluginArgs: nil,
+		},
+	}
+
+	files := map[string]string{
+		"/sops/opus":   "arn:opus\n",
+		"/sops/sonnet": "arn:sonnet\n",
+		"/sops/haiku":  "arn:haiku\n",
+	}
+	readFile := func(path string) (string, error) {
+		if v, ok := files[path]; ok {
+			return v, nil
+		}
+		return "", &fileNotFoundError{path: path}
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			env := map[string]string{
+				"_CLAUDE_BEDROCK_OPUS_FILE":   "/sops/opus",
+				"_CLAUDE_BEDROCK_SONNET_FILE": "/sops/sonnet",
+				"_CLAUDE_BEDROCK_HAIKU_FILE":  "/sops/haiku",
+				"_CLAUDE_BEDROCK_PROFILE":     "bitgo-ai",
+				"_CLAUDE_BEDROCK_REGION":      "us-west-2",
+				"_CLAUDE_DEFAULT_BACKEND":     tt.defaultBackend,
+				"_CLAUDE_PLUGIN_DIRS":         tt.pluginDirs,
+			}
+			getenv := func(key string) string { return env[key] }
+
+			parsed := parseArgs(tt.args)
+
+			backend, err := resolveBackend(parsed, getenv)
+			if err != nil {
+				t.Fatalf("unexpected resolveBackend error: %v", err)
+			}
+
+			var finalArgs []string
+			if backend == "bedrock" {
+				cfg, err := configureBedrock(parsed, getenv, readFile)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				finalArgs = append(parsed.filteredArgs, cfg.extraArgs...)
+			} else {
+				finalArgs = configureAnthropicDefaults(parsed)
+			}
+
+			// Inject plugins (mirrors main() wiring)
+			finalArgs = append(finalArgs, configurePlugins(getenv)...)
+
+			// Verify plugin args appear in the final args
+			if tt.wantPluginArgs == nil {
+				for _, arg := range finalArgs {
+					if arg == "--plugin-dir" {
+						t.Errorf("unexpected --plugin-dir in args: %v", finalArgs)
+					}
+				}
+			} else {
+				found := false
+				for i := range finalArgs {
+					if i+len(tt.wantPluginArgs) <= len(finalArgs) {
+						if reflect.DeepEqual(finalArgs[i:i+len(tt.wantPluginArgs)], tt.wantPluginArgs) {
+							found = true
+							break
+						}
+					}
+				}
+				if !found {
+					t.Errorf("expected plugin args %v in final args %v", tt.wantPluginArgs, finalArgs)
+				}
 			}
 		})
 	}

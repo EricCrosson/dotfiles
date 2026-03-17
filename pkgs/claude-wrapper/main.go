@@ -53,6 +53,9 @@ func main() {
 		args.filteredArgs = configureAnthropicDefaults(args)
 	}
 
+	// Plugins are backend-independent; inject --plugin-dir for both paths.
+	args.filteredArgs = append(args.filteredArgs, configurePlugins(os.Getenv)...)
+
 	// Mark as Claude session
 	os.Setenv("_CLAUDE_SESSION", "1")
 
@@ -204,6 +207,22 @@ func configureAnthropicDefaults(args ParsedArgs) []string {
 		result = append(result, "--model", "opusplan")
 	}
 	return result
+}
+
+// configurePlugins reads colon-separated plugin directory paths from the
+// _CLAUDE_PLUGIN_DIRS environment variable and returns --plugin-dir flags.
+func configurePlugins(getenv func(string) string) []string {
+	dirs := getenv("_CLAUDE_PLUGIN_DIRS")
+	if dirs == "" {
+		return nil
+	}
+	var args []string
+	for _, dir := range strings.Split(dirs, ":") {
+		if dir != "" {
+			args = append(args, "--plugin-dir", dir)
+		}
+	}
+	return args
 }
 
 // readFileString reads a file and returns its contents as a string.

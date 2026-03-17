@@ -8,6 +8,15 @@
   md2adf = pkgs.callPackage ../../pkgs/md2adf {};
   opPlugins = pkgs.callPackage ../../pkgs/op-plugins/plugins.nix {inherit inputs;};
 
+  claudePlugins = {
+    context-mode = pkgs.fetchFromGitHub {
+      owner = "mksglu";
+      repo = "context-mode";
+      rev = "040522bc782402079a387201a90352bcc3bd40e1";
+      hash = "sha256-BbD0KTqtEeCqZCCaDk8NA4UwFobATabV6IekFUGTdqI=";
+    };
+  };
+
   mcpServers = {
     chrome-devtools = {
       command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
@@ -23,10 +32,6 @@
     linear = {
       type = "http";
       url = "https://mcp.linear.app/mcp";
-    };
-    context-mode = {
-      command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
-      args = ["-y" "context-mode"];
     };
   };
 
@@ -191,6 +196,7 @@ in {
         bedrockOpusFile = config.bitgo.sops.secretPaths.bedrock_opus_arn;
         bedrockSonnetFile = config.bitgo.sops.secretPaths.bedrock_sonnet_arn;
         bedrockHaikuFile = config.bitgo.sops.secretPaths.bedrock_haiku_arn;
+        pluginDirs = [claudePlugins.context-mode];
       };
       inherit mcpServers;
       settings = {
