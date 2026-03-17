@@ -27,9 +27,12 @@ Step-by-step instructions for activating this config on a factory-reset Mac.
    # ~/.ssh/config (temporary — will be overwritten by activation)
    Host github.com-bitgo
      HostName github.com
-     IdentityFile ~/.ssh/id_ed25519   # path to your BitGo SSH key
+     IdentityAgent ~/.gnupg/S.gpg-agent.ssh  # if GPG keys imported (step 6)
+     # IdentityFile ~/.ssh/id_ed25519        # alternative: bare key file
    ```
-   Make sure the referenced key is authorized on the BitGo GitHub org.
+   The `IdentityAgent` path uses GPG agent SSH support (the real auth path on this
+   machine). If you haven't yet imported GPG keys, use `IdentityFile` instead with
+   a key authorized on the BitGo GitHub org.
 8. Clone this repo:
    ```bash
    git clone git@github.com:EricCrosson/dotfiles.git ~/workspace/EricCrosson/dotfiles
@@ -44,10 +47,11 @@ Step-by-step instructions for activating this config on a factory-reset Mac.
 darwin-rebuild switch --flake .#MBP-0954
 ```
 
-### Option B — stubbed private inputs (skips steps 6–7; no sops secrets / work tools)
+### Option B — stubbed private inputs (skips steps 6–7; no work tools)
 
 Use this when you haven't yet provisioned GPG keys or the BitGo SSH key. It
 replaces the five private flake inputs with empty stubs so evaluation succeeds.
+Sops secrets are automatically disabled when GPG keys are absent.
 
 ```bash
 nix run nix-darwin -- switch --flake .#MBP-0954 \
@@ -63,12 +67,12 @@ re-run Option A.
 
 ## Known bootstrap dependencies
 
-| Dependency                   | Why                                                                                            | Risk if missing                                         |
-| ---------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Homebrew                     | nix-darwin Homebrew module requires `/opt/homebrew/bin/brew`                                   | Activation fails                                        |
-| 1Password.app                | git signing (`profiles/eric/modules/git.nix`) and SSH agent (`profiles/bitgo/modules/ssh.nix`) | Git commits unsigned; SSH agent unavailable             |
-| GPG keys in `~/.gnupg`       | sops-nix decrypts secrets via GPG host key listed in `.sops.yaml`                              | Activation fails when sops secrets are evaluated        |
-| `github.com-bitgo` SSH alias | Five private flake inputs use `git+ssh://git@github.com-bitgo/...`                             | Flake evaluation fails without `--override-input` stubs |
+| Dependency                   | Why                                                                                            | Risk if missing                                                                                   |
+| ---------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Homebrew                     | nix-darwin Homebrew module manages casks and brews                                             | Prints warning and skips; casks/brews not installed                                               |
+| 1Password.app                | git signing (`profiles/eric/modules/git.nix`) and SSH agent (`profiles/bitgo/modules/ssh.nix`) | Git commits unsigned; SSH agent unavailable                                                       |
+| GPG keys in `~/.gnupg`       | sops-nix decrypts secrets via GPG host key listed in `.sops.yaml`                              | Sops secrets skipped; AWS/Bedrock tools non-functional until GPG keys imported and config rebuilt |
+| `github.com-bitgo` SSH alias | Five private flake inputs use `git+ssh://git@github.com-bitgo/...`                             | Flake evaluation fails without `--override-input` stubs                                           |
 
 ## Known hardware-specific config
 

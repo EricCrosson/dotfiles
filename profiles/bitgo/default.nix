@@ -69,6 +69,7 @@ in {
   ];
 
   bitgo.ssh.enable = true;
+  bitgo.sops.enable = true;
 
   home = {
     file = {
@@ -155,9 +156,9 @@ in {
           name = "atlas";
           runtimeInputs = [atlas];
           text = ''
-            if [[ -r ${config.sops.secrets.atlas_bedrock_model_id.path} ]]; then
+            if [[ -r ${config.bitgo.sops.secretPaths.atlas_bedrock_model_id} ]]; then
               export ATLAS_BEDROCK_MODEL_ID
-              ATLAS_BEDROCK_MODEL_ID="$(< ${config.sops.secrets.atlas_bedrock_model_id.path})"
+              ATLAS_BEDROCK_MODEL_ID="$(< ${config.bitgo.sops.secretPaths.atlas_bedrock_model_id})"
             fi
             exec atlas "$@"
           '';
@@ -187,9 +188,9 @@ in {
         defaultBackend = "bedrock";
         bedrockProfile = config.claude-options.bedrock.profile;
         bedrockRegion = config.claude-options.bedrock.region;
-        bedrockOpusFile = config.sops.secrets.bedrock_opus_arn.path;
-        bedrockSonnetFile = config.sops.secrets.bedrock_sonnet_arn.path;
-        bedrockHaikuFile = config.sops.secrets.bedrock_haiku_arn.path;
+        bedrockOpusFile = config.bitgo.sops.secretPaths.bedrock_opus_arn;
+        bedrockSonnetFile = config.bitgo.sops.secretPaths.bedrock_sonnet_arn;
+        bedrockHaikuFile = config.bitgo.sops.secretPaths.bedrock_haiku_arn;
       };
       inherit mcpServers;
       settings = {
@@ -300,25 +301,10 @@ in {
       models = [
         {
           name = config.claude-options.models.sonnet.id;
-          modelFile = config.sops.secrets.bedrock_sonnet_arn.path;
+          modelFile = config.bitgo.sops.secretPaths.bedrock_sonnet_arn;
           aws_profile_name = config.claude-options.bedrock.profile;
         }
       ];
-    };
-  };
-
-  sops = {
-    defaultSopsFile = ../../secrets/main.yaml;
-    gnupg.home = profile.homeDirectory + "/.gnupg";
-    secrets = {
-      aws_config = {
-        path = "${config.home.homeDirectory}/.aws/config";
-        mode = "0600";
-      };
-      atlas_bedrock_model_id = {};
-      bedrock_opus_arn = {};
-      bedrock_sonnet_arn = {};
-      bedrock_haiku_arn = {};
     };
   };
 }
