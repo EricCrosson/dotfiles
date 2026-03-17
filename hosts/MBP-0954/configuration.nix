@@ -37,6 +37,7 @@
       };
 
       casks = [
+        "1password"
         "ghostty"
         "kitty"
         "postman"
