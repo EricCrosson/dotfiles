@@ -211,7 +211,6 @@ in {
 
     shellAliases = {
       g = "git";
-      grip = "grip --pass $GITHUB_TOKEN";
       h = "hx --vsplit";
       l = "eza -lg --git --time-style=long-iso";
       npx = "npx --no-install";
