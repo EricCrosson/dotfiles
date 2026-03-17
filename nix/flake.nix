@@ -92,6 +92,14 @@
           git config --file ${../pkgs/delta-themes/alabaster.gitconfig} --list > /dev/null
           touch $out
         '';
+      context-mode-deps-test =
+        builtins.seq
+        (import ../tests/context-mode-deps.nix {inherit pkgs;})
+        (pkgs.runCommand "context-mode-deps-test" {} "touch $out");
+      chrome-devtools-mcp-test =
+        builtins.seq
+        (import ../tests/chrome-devtools-mcp.nix {inherit pkgs;})
+        (pkgs.runCommand "chrome-devtools-mcp-test" {} "touch $out");
     in
       {
         inherit
@@ -108,6 +116,8 @@
           delta-theme-sync-test
           alabaster-tmtheme-test
           alabaster-gitconfig-test
+          context-mode-deps-test
+          chrome-devtools-mcp-test
           ;
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {

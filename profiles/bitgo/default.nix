@@ -7,20 +7,16 @@
 }: let
   md2adf = pkgs.callPackage ../../pkgs/md2adf {};
   opPlugins = pkgs.callPackage ../../pkgs/op-plugins/plugins.nix {inherit inputs;};
+  chrome-devtools-mcp = pkgs.callPackage ../../pkgs/chrome-devtools-mcp {};
 
   claudePlugins = {
-    context-mode = pkgs.fetchFromGitHub {
-      owner = "mksglu";
-      repo = "context-mode";
-      rev = "040522bc782402079a387201a90352bcc3bd40e1";
-      hash = "sha256-BbD0KTqtEeCqZCCaDk8NA4UwFobATabV6IekFUGTdqI=";
-    };
+    context-mode = pkgs.callPackage ../../pkgs/context-mode-plugin {};
   };
 
   mcpServers = {
     chrome-devtools = {
-      command = "${pkgs.lib.getExe' pkgs.nodejs "npx"}";
-      args = ["-y" "chrome-devtools-mcp@latest" "--isolated"];
+      command = "${chrome-devtools-mcp}/bin/chrome-devtools-mcp";
+      args = ["--isolated"];
     };
     context7 = {
       command = "${pkgs.context7-mcp}/bin/context7-mcp";
