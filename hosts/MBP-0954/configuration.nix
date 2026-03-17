@@ -32,7 +32,6 @@
       ];
 
       caskArgs = {
-        no_quarantine = true;
         require_sha = true;
       };
 
