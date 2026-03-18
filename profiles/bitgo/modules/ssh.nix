@@ -74,8 +74,7 @@ in {
           # works fine, so we skip 1Password to avoid the Touch ID prompt.
           # See: https://github.com/anthropics/claude-code/issues/21108
           "claude-github" = {
-            host = "github.com";
-            match = ''exec "test -n \"$_CLAUDE_SESSION\""'';
+            match = ''host "github.com" exec "test -n \"$_CLAUDE_SESSION\""'';
             identityAgent = "none";
           };
           "github.com-bitgo" = {
