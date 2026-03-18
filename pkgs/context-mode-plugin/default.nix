@@ -42,6 +42,10 @@ in
     chmod -R u+w $out
     ln -s ${deps}/node_modules $out/node_modules
 
+    # Replace the symlink with a real copy so substituteInPlace can modify it.
+    rm $out/server.bundle.mjs
+    cp ${src}/server.bundle.mjs $out/server.bundle.mjs
+
     # Patch server.bundle.mjs to eliminate ~8.6s of synchronous runtime detection.
     # context-mode v1.0.25 probes for 15 runtimes via execSync("command -v <rt>")
     # then runs "<rt> --version" for each found one. On Nix, the available runtimes
