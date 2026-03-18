@@ -2,6 +2,7 @@
   lib,
   buildGoModule,
   writeShellApplication,
+  writeShellScriptBin,
 }: {
   claude-code,
   defaultBackend ? "anthropic",
@@ -13,6 +14,10 @@
   pluginDirs ? [], # list of paths to plugin directories (loaded via --plugin-dir)
 }:
 assert lib.assertOneOf "defaultBackend" defaultBackend ["anthropic" "bedrock"]; let
+  # SSH wrapper that intercepts Claude Code's O24 probe (ssh -T git@github.com)
+  # to prevent 1Password Touch ID prompts on startup. All other SSH calls pass through.
+  ssh-probe-wrapper = import ./ssh-probe-wrapper.nix {inherit writeShellScriptBin;};
+
   # Build the Go wrapper binary
   claude-wrapper-go = buildGoModule {
     pname = "claude-wrapper";
@@ -29,7 +34,7 @@ in
   writeShellApplication {
     name = "claude";
     excludeShellChecks = ["SC2016"];
-    runtimeInputs = [claude-wrapper-go];
+    runtimeInputs = [ssh-probe-wrapper claude-wrapper-go];
     text =
       ''
         # Nix-injected configuration; the ''$ escape produces a literal $

@@ -68,15 +68,6 @@ in {
         enable = true;
         enableDefaultConfig = false;
         matchBlocks = {
-          # When running under Claude, don't use 1Password for github.com.
-          # Claude's SSH check (O24) probes git@github.com to decide SSH vs HTTPS
-          # for marketplace/plugin operations. These are public repos where HTTPS
-          # works fine, so we skip 1Password to avoid the Touch ID prompt.
-          # See: https://github.com/anthropics/claude-code/issues/21108
-          "claude-github" = {
-            match = ''host "github.com" exec "test -n \"$_CLAUDE_SESSION\""'';
-            identityAgent = "none";
-          };
           "github.com-bitgo" = {
             host = "github.com-bitgo";
             hostname = "github.com";
