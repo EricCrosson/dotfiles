@@ -41,4 +41,26 @@ in
     cp -rs ${src} $out
     chmod -R u+w $out
     ln -s ${deps}/node_modules $out/node_modules
+
+    # Patch server.bundle.mjs to eliminate ~8.6s of synchronous runtime detection.
+    # context-mode v1.0.25 probes for 15 runtimes via execSync("command -v <rt>")
+    # then runs "<rt> --version" for each found one. On Nix, the available runtimes
+    # are fixed at build time, so we pre-compute the result.
+    #
+    # da()  — runtime availability map (was: 15 execSync calls)
+    # Et()  — version string display  (was: 7 execSync calls)
+    # lp()  — bun availability check  (was: 1 execSync call)
+    #
+    # These patches target the minified bundle from context-mode v1.0.25.
+    # The test in tests/context-mode-deps.nix verifies the patches applied.
+    substituteInPlace $out/server.bundle.mjs \
+      --replace-fail \
+        'function da(){let t=Ne("bun");return{javascript:t?"bun":"node",typescript:t?"bun":Ne("tsx")?"tsx":Ne("ts-node")?"ts-node":null,python:Ne("python3")?"python3":Ne("python")?"python":null,shell:Vy?TO()??(Ne("sh")?"sh":Ne("powershell")?"powershell":"cmd.exe"):Ne("bash")?"bash":"sh",ruby:Ne("ruby")?"ruby":null,go:Ne("go")?"go":null,rust:Ne("rustc")?"rustc":null,php:Ne("php")?"php":null,perl:Ne("perl")?"perl":null,r:Ne("Rscript")?"Rscript":Ne("r")?"r":null,elixir:Ne("elixir")?"elixir":null}}' \
+        'function da(){return{javascript:"node",typescript:null,python:"python3",shell:"bash",ruby:null,go:null,rust:null,php:null,perl:null,r:null,elixir:null}}' \
+      --replace-fail \
+        'function Et(t){try{return up(`''${t} --version`,{encoding:"utf-8",stdio:["pipe","pipe","pipe"],timeout:5e3}).trim().split(/\r?\n/)[0]}catch{return"unknown"}}' \
+        'function Et(t){return"available"}' \
+      --replace-fail \
+        'function lp(){return Ne("bun")}' \
+        'function lp(){return false}'
   ''
