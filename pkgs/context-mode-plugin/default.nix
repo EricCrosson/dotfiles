@@ -42,8 +42,17 @@ in
     chmod -R u+w $out
     ln -s ${deps}/node_modules $out/node_modules
 
-    # Replace the symlink with a real copy so substituteInPlace can modify it.
-    rm $out/server.bundle.mjs
+    # Replace symlinks with real copies.
+    #
+    # start.mjs uses import.meta.url to compute __dirname, and Node.js resolves
+    # symlinks before setting import.meta.url. If start.mjs is a symlink back to
+    # the source, __dirname resolves to the source directory and
+    # `import("./server.bundle.mjs")` loads the ORIGINAL unpatched bundle —
+    # bypassing all our patches below.
+    #
+    # server.bundle.mjs must be a real file so substituteInPlace can modify it.
+    rm $out/start.mjs $out/server.bundle.mjs
+    cp ${src}/start.mjs $out/start.mjs
     cp ${src}/server.bundle.mjs $out/server.bundle.mjs
 
     # Patch server.bundle.mjs to eliminate ~8.6s of synchronous runtime detection.
