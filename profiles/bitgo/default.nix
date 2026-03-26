@@ -182,7 +182,6 @@ in {
       enable = true;
       package = pkgs.callPackage ../../pkgs/claude-wrapper {} {
         inherit (pkgs) claude-code;
-        defaultBackend = "bedrock";
         bedrockProfile = config.claude-options.bedrock.profile;
         bedrockRegion = config.claude-options.bedrock.region;
         bedrockOpusFile = config.bitgo.sops.secretPaths.bedrock_opus_arn;
