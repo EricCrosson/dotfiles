@@ -12,11 +12,14 @@ with lib; let
 
   patchClaudeTheme = theme: ''
     claude_json="${claudeJson}"
-    if [ ! -f "$claude_json" ]; then
-      exit 0
+    if [ -f "$claude_json" ]; then
+      if jq --arg theme "${theme}" '.theme = $theme' "$claude_json" > "$claude_json.tmp"; then
+        mv "$claude_json.tmp" "$claude_json"
+      else
+        rm -f "$claude_json.tmp"
+        echo "warning: failed to patch Claude theme in $claude_json" >&2
+      fi
     fi
-    jq --arg theme "${theme}" '.theme = $theme' "$claude_json" > "$claude_json.tmp"
-    mv "$claude_json.tmp" "$claude_json"
   '';
 in {
   options.programs.claude = {
