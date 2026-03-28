@@ -1,6 +1,7 @@
 {
   buildNpmPackage,
   fetchFromGitHub,
+  nodejs,
   python3,
   pkg-config,
   runCommand,
@@ -22,6 +23,7 @@
     pname = "context-mode-deps";
     version = "1.0.0";
     src = ./.;
+    inherit nodejs;
     npmDepsHash = "sha256-6K7nxIQQ1nDeygIWxdW6R6ZvF2/h3f12skYB9sep6XA=";
     dontNpmBuild = true;
     # better-sqlite3 needs node-gyp → python3 + pkg-config
@@ -54,6 +56,13 @@ in
     rm $out/start.mjs $out/server.bundle.mjs
     cp ${src}/start.mjs $out/start.mjs
     cp ${src}/server.bundle.mjs $out/server.bundle.mjs
+
+    # Pin the shebang to the exact Node.js used to compile better-sqlite3.
+    # start.mjs uses #!/usr/bin/env node, which resolves whatever node is on
+    # PATH at runtime. If that node differs from the one that compiled the
+    # native addon, Node.js raises a NODE_MODULE_VERSION mismatch at startup.
+    substituteInPlace $out/start.mjs \
+      --replace-fail '#!/usr/bin/env node' '#!${nodejs}/bin/node'
 
     # Patch server.bundle.mjs to eliminate ~8.6s of synchronous runtime detection.
     # context-mode v1.0.25 probes for 15 runtimes via execSync("command -v <rt>")
