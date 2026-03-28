@@ -20,9 +20,18 @@ in
   # causing a NODE_MODULE_VERSION mismatch at startup.
   assert lib.hasPrefix "#!/nix/store/" startContent;
   assert !lib.hasInfix "#!/usr/bin/env node" startContent;
+  # Verify start.mjs no longer imports ensure-deps or calls ensureNativeCompat.
+  # Both try to npm-install/rebuild native deps, which is unnecessary (pre-built by Nix)
+  # and would silently fail against the read-only Nix store at startup.
+  assert !lib.hasInfix "import { ensureDeps }" startContent;
+  assert !lib.hasInfix "ensureNativeCompat(__dirname)" startContent;
   # Verify runtime detection was patched out of server.bundle.mjs.
   # If these fail, the context-mode version was likely bumped and the
   # substituteInPlace patches in pkgs/context-mode-plugin/default.nix
   # need updating to match the new minified code.
-  assert !lib.hasInfix ''Ne("bun")'' bundleContent;
-  assert !lib.hasInfix "up(`\${t} --version`" bundleContent; "all tests passed"
+  # xa() patched (was: runtime availability map with execSync probes)
+  assert !lib.hasInfix "function xa(){let e=ux()" bundleContent;
+  # ux() patched (was: bun availability check)
+  assert !lib.hasInfix "function ux(){if(Ae" bundleContent;
+  # Et() patched (was: execSync "${t} --version")
+  assert !lib.hasInfix "yp(`\${t} --version`" bundleContent; "all tests passed"
