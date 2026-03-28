@@ -93,6 +93,10 @@
           "if".app-id = "com.apple.keychainaccess";
           run = "layout floating";
         }
+        {
+          "if".app-id = "com.yubico.authenticator";
+          run = "layout floating";
+        }
       ];
       workspace-to-monitor-force-assignment = {
         "1" = "dell u2718q";
