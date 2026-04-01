@@ -5,6 +5,7 @@
   contextModePlugin = pkgs.callPackage ../pkgs/context-mode-plugin {};
   bundleContent = builtins.readFile "${contextModePlugin}/server.bundle.mjs";
   startContent = builtins.readFile "${contextModePlugin}/start.mjs";
+  pluginJsonContent = builtins.readFile "${contextModePlugin}/.claude-plugin/plugin.json";
 in
   # Beyoncé Rule: if you liked it then you shoulda put a test on it.
   # Verify all 4 external deps that start.mjs checks for are present.
@@ -20,6 +21,10 @@ in
   # causing a NODE_MODULE_VERSION mismatch at startup.
   assert lib.hasPrefix "#!/nix/store/" startContent;
   assert !lib.hasInfix "#!/usr/bin/env node" startContent;
+  # Verify plugin.json MCP server command is pinned to Nix store node.
+  # Claude Code uses this field (not the shebang) to spawn the plugin process.
+  assert lib.hasInfix "/nix/store/" pluginJsonContent;
+  assert !lib.hasInfix ''"command": "node"'' pluginJsonContent;
   # Verify start.mjs no longer imports ensure-deps or calls ensureNativeCompat.
   # Both try to npm-install/rebuild native deps, which is unnecessary (pre-built by Nix)
   # and would silently fail against the read-only Nix store at startup.

@@ -52,9 +52,17 @@ in
     # bypassing all our patches below.
     #
     # server.bundle.mjs must be a real file so substituteInPlace can modify it.
-    rm $out/start.mjs $out/server.bundle.mjs
+    rm $out/start.mjs $out/server.bundle.mjs $out/.claude-plugin/plugin.json
     cp ${src}/start.mjs $out/start.mjs
     cp ${src}/server.bundle.mjs $out/server.bundle.mjs
+    cp ${src}/.claude-plugin/plugin.json $out/.claude-plugin/plugin.json
+
+    # Pin the MCP server command to the exact Node.js that compiled better-sqlite3.
+    # Claude Code spawns the plugin via "command" in plugin.json, which defaults to
+    # bare "node" (resolved from PATH). If PATH node differs from the build-time
+    # node, Node.js raises a NODE_MODULE_VERSION mismatch at startup.
+    substituteInPlace $out/.claude-plugin/plugin.json \
+      --replace-fail '"command": "node"' '"command": "${nodejs}/bin/node"'
 
     # Pin the shebang to the exact Node.js used to compile better-sqlite3.
     # start.mjs uses #!/usr/bin/env node, which resolves whatever node is on
