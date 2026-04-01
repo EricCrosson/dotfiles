@@ -74,8 +74,8 @@ in {
         awscli2
         github-copilot-cli
       ]
-      # git-disjoint/git-dl: use opPlugins system (no HM modules)
-      ++ [opPlugins.git-disjoint.plugin opPlugins.git-disjoint.unwrapped opPlugins.git-disjoint.wrapper]
+      ++ [inputs.git-disjoint.packages.${pkgs.system}.default]
+      # git-dl: use opPlugins system (no HM modules)
       ++ [opPlugins.git-dl.plugin opPlugins.git-dl.unwrapped opPlugins.git-dl.wrapper]
       ++ [
         gh

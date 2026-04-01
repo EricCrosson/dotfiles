@@ -40,12 +40,6 @@
           go test -v
           touch $out
         '';
-      op-plugin-git-disjoint-test = pkgs.buildGoModule {
-        pname = "op-plugin-git-disjoint-test";
-        version = "0.1.0";
-        src = self.sourceInfo + "/pkgs/op-plugins/git-disjoint";
-        vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
-      };
       launchd-with-logs-test =
         builtins.seq
         (import ../tests/launchd-with-logs.nix {inherit pkgs;})
@@ -105,7 +99,6 @@
         inherit
           pre-commit-check
           claude-wrapper-test
-          op-plugin-git-disjoint-test
           launchd-with-logs-test
           litellm-proxy-test
           claude-wrapper-script-test

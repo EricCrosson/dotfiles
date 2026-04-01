@@ -23,7 +23,7 @@
     };
 
   # Simple unwrapped package - direct reference to a specific package
-  # Used for packages without home-manager modules (jira, git-disjoint)
+  # Used for packages without home-manager modules (jira, git-dl)
   mkUnwrappedPackage = {
     name,
     package,

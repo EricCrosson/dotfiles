@@ -5,17 +5,7 @@
 }: let
   opPluginLib = pkgs.callPackage ./lib.nix {};
 
-  # git-disjoint/git-dl: full packages (no HM modules)
-  gitDisjointPackages = opPluginLib.buildOpPluginPackages {
-    name = "git-disjoint";
-    src = ./git-disjoint;
-    vendorHash = "sha256-wT//dZxfhstx+BrpN0P/VrRUknUruxTjgJEgfarQzoM=";
-    homepage = "https://github.com/ericcrosson/git-disjoint";
-    description = "1Password shell plugin for git-disjoint";
-    wrappedPackage = inputs.git-disjoint.packages.${pkgs.system}.default;
-    wrappedBinaryName = "git-disjoint";
-  };
-
+  # git-dl: full packages (no HM modules)
   gitDlPackages = opPluginLib.buildOpPluginPackages {
     name = "git-dl";
     src = ./git-dl;
@@ -26,16 +16,15 @@
     wrappedBinaryName = "git-dl";
   };
 in {
-  # git-disjoint/git-dl: full packages
-  git-disjoint = gitDisjointPackages;
+  # git-dl: full packages
   git-dl = gitDlPackages;
 
   # All plugins (for activation script)
   allPlugins = {
-    plugins = [gitDisjointPackages.plugin gitDlPackages.plugin];
+    plugins = [gitDlPackages.plugin];
     # Only for non-HM packages
-    unwrapped = [gitDisjointPackages.unwrapped gitDlPackages.unwrapped];
-    wrappers = [gitDisjointPackages.wrapper gitDlPackages.wrapper];
+    unwrapped = [gitDlPackages.unwrapped];
+    wrappers = [gitDlPackages.wrapper];
   };
 
   # Generate activation script for installing plugins
