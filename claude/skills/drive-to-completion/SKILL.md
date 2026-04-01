@@ -4,6 +4,8 @@ description: Use when implementing any task end-to-end without user intervention
 ---
 
 <required>
+*CRITICAL*: you have completed your task when your acceptance criteria are complete, goal is accomplished, and most importantly, you have engaged with your changes in their target environment and have demonstrated that the expected changes have taken effect.
+
 The cardinal rule: NEVER end your turn without calling a tool that advances the work.
 Every response must include at least one tool call until the entire task is done.
 A summary without a following tool call is a dead end that forces the user to prompt you again.
