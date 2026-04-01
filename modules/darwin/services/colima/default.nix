@@ -121,6 +121,7 @@ in {
             [
               "/opt/homebrew/bin/colima"
               "start"
+              "--foreground"
               "--cpu"
               (toString cfg.cpus)
               "--memory"
@@ -135,7 +136,9 @@ in {
             PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin";
           };
           RunAtLoad = true;
-          KeepAlive = false;
+          KeepAlive = {
+            SuccessfulExit = true;
+          };
           StandardOutPath = cfg.logging.stdout;
           StandardErrorPath = cfg.logging.stderr;
         };
