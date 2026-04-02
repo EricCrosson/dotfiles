@@ -20,9 +20,7 @@ Each spawned agent's prompt must include:
 
 - The Linear issue identifier and description
 - Instructions to re-read the issue before starting — others may have updated it
-- Create a plan, not requiring review from me. Use /review-plan skill and accept
-  feedback into the plan, repeating as necessary
-- /drive-to-completion
+- Implement the issue directly using /drive-to-completion (do NOT enter plan mode or use /review-plan)
 - Completion means, in this order: PR merged, change demoed in target
   environment, issue transitioned to Done after it's been proven to work as
   expected
@@ -30,7 +28,6 @@ Each spawned agent's prompt must include:
 <good-example>
 "Work on CTX-105: Add rate limiting middleware.
 Re-read the issue first — context may have changed.
-Create a plan, use /review-plan skill and accept feedback. May be necessary to review plans multiple times. Plans do not need to be approved by me.
-Use /drive-to-completion.
+Implement it now using /drive-to-completion. Do not use /plan or /review-plan.
 Done means: PR merged, change demoed in target environment, CTX-105 set to Done."
 </good-example>
