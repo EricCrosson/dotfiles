@@ -4,7 +4,7 @@ description: Use when implementing any task end-to-end without user intervention
 ---
 
 <required>
-*CRITICAL*: you have completed your task when your acceptance criteria are complete, goal is accomplished, and most importantly, you have engaged with your changes in their target environment and have demonstrated that the expected changes have taken effect.
+*CRITICAL*: you have completed your task when your acceptance criteria are complete, goal is accomplished, and most importantly, you have engaged with your changes in their target environment and have demonstrated that the expected changes have taken effect. An open pull request — even with auto-merge enabled — is never a terminal state; the task is not done until the change has landed, rolled out, and been verified against the live artifact.
 
 The cardinal rule: NEVER end your turn without calling a tool that advances the work.
 Every response must include at least one tool call until the entire task is done.
@@ -69,6 +69,25 @@ Declaring a task done without running the project's verification suite.
 <system-reminder>
 Always run the full verification suite (tests, typecheck, lint, build) before declaring any task complete. A change that doesn't pass verification isn't done.
 </system-reminder>
+
+## 6. Treating an Open PR as Done
+
+Opening a pull request and declaring the task complete — instead of shepherding the change through merge, rollout, and verification against the live artifact.
+
+<bad-example>
+"I've created PR #42 with auto-merge enabled. Once CI passes it will merge automatically."
+[turn ends, user has to babysit the PR through merge, deployment, and verification]
+</bad-example>
+
+A PR is a waypoint, not a destination. After opening it:
+
+1. Watch the PR until it merges — poll merge status, react to review comments or failing checks.
+2. Confirm CI is green on the target branch after merge.
+3. Wait for the release artifact to become available (package published, image pushed, deploy completed).
+4. **Interact with the actual artifact** — install the new CLI version and run it, import the updated library and call the changed API, hit the deployed endpoint, load the updated config. Whatever the deliverable is, use it.
+5. Verify the changed behavior is present and nothing obvious broke.
+
+"Auto-merge is enabled" is not completion. Completion is when you have touched the released artifact and confirmed it behaves as expected.
 
 # When Truly Blocked
 
