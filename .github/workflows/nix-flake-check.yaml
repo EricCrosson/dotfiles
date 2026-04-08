@@ -27,7 +27,7 @@ jobs:
           retry --up-to 2x -- nix flake check ./nix --keep-going --print-build-logs
 
   check-darwin-config:
-    name: darwin configuration build
+    name: Darwin configuration build
     runs-on: macos-latest
 
     steps:
