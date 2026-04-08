@@ -87,9 +87,7 @@
           touch $out
         '';
       context-mode-deps-test =
-        builtins.seq
-        (import ../tests/context-mode-deps.nix {inherit pkgs;})
-        (pkgs.runCommand "context-mode-deps-test" {} "touch $out");
+        import ../tests/context-mode-deps.nix {inherit pkgs;};
       chrome-devtools-mcp-test =
         builtins.seq
         (import ../tests/chrome-devtools-mcp.nix {inherit pkgs;})
