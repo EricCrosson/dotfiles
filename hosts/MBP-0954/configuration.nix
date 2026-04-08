@@ -87,6 +87,10 @@
     };
 
     nix = {
+      linux-builder = {
+        enable = true;
+      };
+
       extraOptions = ''
         experimental-features = nix-command flakes
         extra-trusted-users = ericcrosson
@@ -95,6 +99,8 @@
 
         min-free = ${toString (2 * 1024 * 1024 * 1024)}
         max-free = ${toString (10 * 1024 * 1024 * 1024)}
+
+        builders-use-substitutes = true
       '';
 
       gc = {
