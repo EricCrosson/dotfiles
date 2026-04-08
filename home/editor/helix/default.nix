@@ -44,9 +44,9 @@ in {
     jsonnet-language-server
     ltex-ls
     nil
-    nodePackages.bash-language-server
-    nodePackages.typescript-language-server
-    nodePackages.vscode-langservers-extracted
+    bash-language-server
+    typescript-language-server
+    vscode-langservers-extracted
     shellcheck
     taplo # TOML LSP
 
