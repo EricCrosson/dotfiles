@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+_: {
   programs.aerospace = {
     enable = true;
     launchd.enable = true;
@@ -41,17 +41,12 @@
           alt-shift-9 = "move-node-to-workspace 9";
           alt-shift-0 = "move-node-to-workspace 0";
           alt-shift-semicolon = "mode service";
-          alt-comma = "layout tiles horizontal vertical";
-          alt-slash = "layout accordion horizontal";
+          alt-comma = "layout h_tiles h_accordion";
+          alt-shift-comma = "layout v_tiles h_accordion";
           alt-shift-enter = ''
             exec-and-forget osascript \
               -e 'tell application "ghostty" to activate' \
               -e 'tell application "System Events" to keystroke "n" using {command down}'
-          '';
-          alt-shift-backslash = ''
-            exec-and-forget ${pkgs.aerospace}/bin/aerospace list-windows --all --json \
-              | ${pkgs.jq}/bin/jq -r '.[] | select(."window-title"=="") | ."window-id"' \
-              | xargs -n1 ${pkgs.aerospace}/bin/aerospace close --window-id
           '';
         };
         service.binding = {
