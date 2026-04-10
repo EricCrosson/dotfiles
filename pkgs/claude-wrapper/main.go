@@ -174,8 +174,7 @@ func configureBedrock(args ParsedArgs, getenv func(string) string, readFile func
 	opusARN, sonnetARN, haikuARN := arns[0], arns[1], arns[2]
 
 	envVars := map[string]string{
-		"CLAUDE_CODE_USE_BEDROCK":      "1",
-		"ANTHROPIC_MODEL":              opusARN,
+		"CLAUDE_CODE_USE_BEDROCK":        "1",
 		"ANTHROPIC_DEFAULT_OPUS_MODEL":   opusARN,
 		"ANTHROPIC_DEFAULT_SONNET_MODEL": sonnetARN,
 		"ANTHROPIC_DEFAULT_HAIKU_MODEL":  haikuARN,
@@ -194,7 +193,6 @@ func configureBedrock(args ParsedArgs, getenv func(string) string, readFile func
 	if !args.hasModel {
 		extraArgs = append(extraArgs, "--model", "opusplan[1m]")
 	}
-	extraArgs = append(extraArgs, "--settings", `{"availableModels":["opus","sonnet","haiku"]}`)
 
 	return BedrockConfig{envVars: envVars, extraArgs: extraArgs}, nil
 }

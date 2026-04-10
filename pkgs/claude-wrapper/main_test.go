@@ -179,17 +179,15 @@ func TestConfigureBedrock(t *testing.T) {
 			},
 			wantCfg: BedrockConfig{
 				envVars: map[string]string{
-					"CLAUDE_CODE_USE_BEDROCK":      "1",
-					"AWS_PROFILE":                  "bitgo-ai",
-					"AWS_REGION":                   "us-west-2",
-					"ANTHROPIC_MODEL":              "arn:aws:bedrock:opus-arn",
+					"CLAUDE_CODE_USE_BEDROCK":        "1",
+					"AWS_PROFILE":                    "bitgo-ai",
+					"AWS_REGION":                     "us-west-2",
 					"ANTHROPIC_DEFAULT_OPUS_MODEL":   "arn:aws:bedrock:opus-arn",
 					"ANTHROPIC_DEFAULT_SONNET_MODEL": "arn:aws:bedrock:sonnet-arn",
 					"ANTHROPIC_DEFAULT_HAIKU_MODEL":  "arn:aws:bedrock:haiku-arn",
 				},
 				extraArgs: []string{
 					"--model", "opusplan[1m]",
-					"--settings", `{"availableModels":["opus","sonnet","haiku"]}`,
 				},
 			},
 		},
@@ -210,17 +208,14 @@ func TestConfigureBedrock(t *testing.T) {
 			},
 			wantCfg: BedrockConfig{
 				envVars: map[string]string{
-					"CLAUDE_CODE_USE_BEDROCK":      "1",
-					"AWS_PROFILE":                  "bitgo-ai",
-					"AWS_REGION":                   "us-west-2",
-					"ANTHROPIC_MODEL":              "arn:aws:bedrock:opus-arn",
+					"CLAUDE_CODE_USE_BEDROCK":        "1",
+					"AWS_PROFILE":                    "bitgo-ai",
+					"AWS_REGION":                     "us-west-2",
 					"ANTHROPIC_DEFAULT_OPUS_MODEL":   "arn:aws:bedrock:opus-arn",
 					"ANTHROPIC_DEFAULT_SONNET_MODEL": "arn:aws:bedrock:sonnet-arn",
 					"ANTHROPIC_DEFAULT_HAIKU_MODEL":  "arn:aws:bedrock:haiku-arn",
 				},
-				extraArgs: []string{
-					"--settings", `{"availableModels":["opus","sonnet","haiku"]}`,
-				},
+				extraArgs: nil,
 			},
 		},
 		{
@@ -284,6 +279,18 @@ func TestConfigureBedrock(t *testing.T) {
 			}
 			if !reflect.DeepEqual(cfg.extraArgs, tt.wantCfg.extraArgs) {
 				t.Errorf("extraArgs = %v, want %v", cfg.extraArgs, tt.wantCfg.extraArgs)
+			}
+
+			// ANTHROPIC_MODEL is legacy; model resolution uses ANTHROPIC_DEFAULT_OPUS_MODEL
+			if _, ok := cfg.envVars["ANTHROPIC_MODEL"]; ok {
+				t.Error("ANTHROPIC_MODEL should not be set; model resolution uses ANTHROPIC_DEFAULT_OPUS_MODEL")
+			}
+
+			// --settings is no longer needed; ANTHROPIC_DEFAULT_*_MODEL auto-registers aliases
+			for _, arg := range cfg.extraArgs {
+				if arg == "--settings" {
+					t.Error("--settings should not be in extraArgs; ANTHROPIC_DEFAULT_*_MODEL auto-registers model aliases")
+				}
 			}
 		})
 	}
@@ -499,53 +506,46 @@ func TestDefaultPath_NoBedrockConfig(t *testing.T) {
 
 func TestBedrockPath_Integration(t *testing.T) {
 	tests := []struct {
-		name               string
-		args               []string
-		defaultBackend     string
-		wantSettingsInArgs bool
-		wantModelDefault   bool
+		name             string
+		args             []string
+		defaultBackend   string
+		wantModelDefault bool
 	}{
 		{
-			name:               "anthropic default (no flags) - injects opus model",
-			args:               []string{"--chat"},
-			defaultBackend:     "anthropic",
-			wantSettingsInArgs: false,
-			wantModelDefault:   true,
+			name:             "anthropic default (no flags) - injects opus model",
+			args:             []string{"--chat"},
+			defaultBackend:   "anthropic",
+			wantModelDefault: true,
 		},
 		{
-			name:               "anthropic with explicit model - preserves model",
-			args:               []string{"--model", "sonnet", "--chat"},
-			defaultBackend:     "anthropic",
-			wantSettingsInArgs: false,
-			wantModelDefault:   false,
+			name:             "anthropic with explicit model - preserves model",
+			args:             []string{"--model", "sonnet", "--chat"},
+			defaultBackend:   "anthropic",
+			wantModelDefault: false,
 		},
 		{
-			name:               "bedrock via explicit flag",
-			args:               []string{"--bedrock", "--chat"},
-			defaultBackend:     "anthropic",
-			wantSettingsInArgs: true,
-			wantModelDefault:   true,
+			name:             "bedrock via explicit flag",
+			args:             []string{"--bedrock", "--chat"},
+			defaultBackend:   "anthropic",
+			wantModelDefault: true,
 		},
 		{
-			name:               "bedrock with explicit model skips default",
-			args:               []string{"--bedrock", "--model", "haiku", "--chat"},
-			defaultBackend:     "anthropic",
-			wantSettingsInArgs: true,
-			wantModelDefault:   false,
+			name:             "bedrock with explicit model skips default",
+			args:             []string{"--bedrock", "--model", "haiku", "--chat"},
+			defaultBackend:   "anthropic",
+			wantModelDefault: false,
 		},
 		{
-			name:               "bedrock via env default (no flag)",
-			args:               []string{"--chat"},
-			defaultBackend:     "bedrock",
-			wantSettingsInArgs: true,
-			wantModelDefault:   true,
+			name:             "bedrock via env default (no flag)",
+			args:             []string{"--chat"},
+			defaultBackend:   "bedrock",
+			wantModelDefault: true,
 		},
 		{
-			name:               "anthropic via explicit flag overriding bedrock default",
-			args:               []string{"--anthropic", "--chat"},
-			defaultBackend:     "bedrock",
-			wantSettingsInArgs: false,
-			wantModelDefault:   true,
+			name:             "anthropic via explicit flag overriding bedrock default",
+			args:             []string{"--anthropic", "--chat"},
+			defaultBackend:   "bedrock",
+			wantModelDefault: true,
 		},
 	}
 
@@ -596,20 +596,16 @@ func TestBedrockPath_Integration(t *testing.T) {
 				finalArgs = configureAnthropicDefaults(parsed)
 			}
 
-			hasSettings := false
 			hasModelDefault := false
 			for i, arg := range finalArgs {
 				if arg == "--settings" {
-					hasSettings = true
+					t.Errorf("--settings should not be in args; ANTHROPIC_DEFAULT_*_MODEL auto-registers model aliases (args: %v)", finalArgs)
 				}
 				if arg == "--model" && i+1 < len(finalArgs) && finalArgs[i+1] == "opusplan[1m]" && !parsed.hasModel {
 					hasModelDefault = true
 				}
 			}
 
-			if hasSettings != tt.wantSettingsInArgs {
-				t.Errorf("settings in args = %v, want %v (args: %v)", hasSettings, tt.wantSettingsInArgs, finalArgs)
-			}
 			if hasModelDefault != tt.wantModelDefault {
 				t.Errorf("model default in args = %v, want %v (args: %v)", hasModelDefault, tt.wantModelDefault, finalArgs)
 			}
