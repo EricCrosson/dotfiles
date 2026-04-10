@@ -192,7 +192,7 @@ func configureBedrock(args ParsedArgs, getenv func(string) string, readFile func
 
 	var extraArgs []string
 	if !args.hasModel {
-		extraArgs = append(extraArgs, "--model", "opus")
+		extraArgs = append(extraArgs, "--model", "opusplan[1m]")
 	}
 	extraArgs = append(extraArgs, "--settings", `{"availableModels":["opus","sonnet","haiku"]}`)
 
@@ -200,11 +200,11 @@ func configureBedrock(args ParsedArgs, getenv func(string) string, readFile func
 }
 
 // configureAnthropicDefaults returns the final CLI args for the Anthropic path,
-// defaulting to opus when no model is explicitly specified.
+// defaulting to opusplan[1m] when no model is explicitly specified.
 func configureAnthropicDefaults(args ParsedArgs) []string {
 	result := args.filteredArgs
 	if !args.hasModel {
-		result = append(result, "--model", "opus")
+		result = append(result, "--model", "opusplan[1m]")
 	}
 	return result
 }

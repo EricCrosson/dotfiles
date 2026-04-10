@@ -188,7 +188,7 @@ func TestConfigureBedrock(t *testing.T) {
 					"ANTHROPIC_DEFAULT_HAIKU_MODEL":  "arn:aws:bedrock:haiku-arn",
 				},
 				extraArgs: []string{
-					"--model", "opus",
+					"--model", "opusplan[1m]",
 					"--settings", `{"availableModels":["opus","sonnet","haiku"]}`,
 				},
 			},
@@ -397,9 +397,9 @@ func TestConfigureAnthropicDefaults(t *testing.T) {
 		wantArgs []string
 	}{
 		{
-			name:     "no model specified - injects opus default",
+			name:     "no model specified - injects opusplan[1m] default",
 			args:     ParsedArgs{filteredArgs: []string{"--chat"}},
-			wantArgs: []string{"--chat", "--model", "opus"},
+			wantArgs: []string{"--chat", "--model", "opusplan[1m]"},
 		},
 		{
 			name:     "explicit model preserved",
@@ -602,7 +602,7 @@ func TestBedrockPath_Integration(t *testing.T) {
 				if arg == "--settings" {
 					hasSettings = true
 				}
-				if arg == "--model" && i+1 < len(finalArgs) && finalArgs[i+1] == "opus" && !parsed.hasModel {
+				if arg == "--model" && i+1 < len(finalArgs) && finalArgs[i+1] == "opusplan[1m]" && !parsed.hasModel {
 					hasModelDefault = true
 				}
 			}
