@@ -27,6 +27,7 @@ in {
     delta = {
       enable = true;
       enableGitIntegration = true;
+      enableJujutsuIntegration = true;
       options = {
         line-numbers = true;
         features = "catppuccin-mocha";
@@ -192,6 +193,14 @@ in {
           email = "eric.s.crosson@utexas.edu";
         };
       };
+    };
+
+    jjui = {
+      enable = true;
+    };
+
+    jujutsu = {
+      enable = true;
     };
   };
 
