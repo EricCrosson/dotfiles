@@ -55,6 +55,12 @@ in {
 
     git = {
       enable = true;
+      signing = {
+        key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9idpkqe6Rk8pLXKhqCfL6Bc3jGMHdfDj06C0AU5P3J";
+        format = "ssh";
+        signByDefault = true;
+        signer = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+      };
       ignores = [
         ".DS_Store"
         "/.claude/settings.local.json"
@@ -128,7 +134,6 @@ in {
           ui = "auto";
         };
         commit = {
-          gpgSign = true;
           verbose = true;
         };
         core = {
@@ -154,11 +159,7 @@ in {
         github = {
           user = "${profile.email}";
         };
-        gpg = {
-          format = "ssh";
-        };
         "gpg \"ssh\"" = {
-          program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
           allowedSignersFile = "${profile.homeDirectory}/.config/git/allowed_signers";
         };
         init = {
@@ -184,13 +185,11 @@ in {
           enabled = true;
         };
         tag = {
-          gpgSign = true;
           sort = "version:refname";
         };
         user = {
           name = "Eric Crosson";
           email = "eric.s.crosson@utexas.edu";
-          signingKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9idpkqe6Rk8pLXKhqCfL6Bc3jGMHdfDj06C0AU5P3J";
         };
       };
     };
