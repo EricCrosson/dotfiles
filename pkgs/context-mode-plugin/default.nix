@@ -9,8 +9,8 @@
   src = fetchFromGitHub {
     owner = "mksglu";
     repo = "context-mode";
-    rev = "82e35526de4f3380e7969865030cda7975c5738d"; # v1.0.54
-    hash = "sha256-oluTA3t2dBu/EA8j7mLIA6/HeaCNFLA1p8Sl0/Uaij0=";
+    rev = "08bd59e968f29d2dda70e26e95f850a34295e54a"; # v1.0.75
+    hash = "sha256-qZUZ/K5wq33gReXjPM7jVLA8KQQZ2iU4evboq6YbPLA=";
   };
 
   # Pre-build the 4 external native/JS deps that start.mjs tries to npm-install
@@ -69,39 +69,39 @@ in
     # PATH at runtime. If that node differs from the one that compiled the
     # native addon, Node.js raises a NODE_MODULE_VERSION mismatch at startup.
     #
-    # Also disable the runtime npm-install logic that start.mjs v1.0.54 added:
+    # Disable the runtime npm-install logic in start.mjs v1.0.75:
     #   - ensure-deps.mjs auto-runs npm install better-sqlite3 on import
-    #   - ensureNativeCompat() tries to copy/rebuild the native addon
+    #   - inline loop tries to npm-install turndown/domino/gfm at startup
     # Both are unnecessary (deps are pre-built by Nix) and fail in the
     # read-only Nix store, adding silent latency on every MCP startup.
     substituteInPlace $out/start.mjs \
       --replace-fail '#!/usr/bin/env node' '#!${nodejs}/bin/node' \
       --replace-fail \
-        'import { ensureDeps } from "./hooks/ensure-deps.mjs";' \
+        'import "./hooks/ensure-deps.mjs";' \
         '// ensure-deps: disabled (native deps pre-built by Nix)' \
       --replace-fail \
-        'ensureNativeCompat(__dirname);' \
-        '// ensureNativeCompat: disabled (native deps pre-built by Nix)'
+        'for (const pkg of ["turndown", "turndown-plugin-gfm", "@mixmark-io/domino"])' \
+        'for (const pkg of [/* deps pre-built by Nix */])'
 
     # Patch server.bundle.mjs to eliminate synchronous runtime detection.
-    # context-mode v1.0.54 probes for 15 runtimes via execSync("command -v <rt>")
+    # context-mode v1.0.75 probes for 15 runtimes via execSync("command -v <rt>")
     # then runs "<rt> --version" for each found one. On Nix, the available runtimes
     # are fixed at build time, so we pre-compute the result.
     #
-    # xa()  — runtime availability map (was da() in v1.0.25)
-    # Et()  — version string display
-    # ux()  — bun availability check  (was lp() in v1.0.25)
+    # fa()  — runtime availability map (was xa() in v1.0.54, da() in v1.0.25)
+    # Tt()  — version string display  (was Et() in v1.0.54)
+    # dx()  — bun availability check  (was ux() in v1.0.54, lp() in v1.0.25)
     #
-    # These patches target the minified bundle from context-mode v1.0.54.
+    # These patches target the minified bundle from context-mode v1.0.75.
     # The test in tests/context-mode-deps.nix verifies the patches applied.
     substituteInPlace $out/server.bundle.mjs \
       --replace-fail \
-        'function xa(){let e=ux()?VO():null;return{javascript:e??process.execPath,typescript:e||(Ae("tsx")?"tsx":Ae("ts-node")?"ts-node":null),python:Ae("python3")?"python3":Ae("python")?"python":null,shell:xp?KO()??(Ae("sh")?"sh":Ae("powershell")?"powershell":"cmd.exe"):Ae("bash")?"bash":"sh",ruby:Ae("ruby")?"ruby":null,go:Ae("go")?"go":null,rust:Ae("rustc")?"rustc":null,php:Ae("php")?"php":null,perl:Ae("perl")?"perl":null,r:Ae("Rscript")?"Rscript":Ae("r")?"r":null,elixir:Ae("elixir")?"elixir":null}}' \
-        'function xa(){return{javascript:"node",typescript:null,python:"python3",shell:"bash",ruby:null,go:null,rust:null,php:null,perl:null,r:null,elixir:null}}' \
+        'function fa(){let e=dx()?cC():null;return{javascript:e??process.execPath,typescript:e||(je("tsx")?"tsx":je("ts-node")?"ts-node":null),python:je("python3")?"python3":je("python")?"python":null,shell:pp?uC()??(je("sh")?"sh":je("powershell")?"powershell":"cmd.exe"):je("bash")?"bash":"sh",ruby:je("ruby")?"ruby":null,go:je("go")?"go":null,rust:je("rustc")?"rustc":null,php:je("php")?"php":null,perl:je("perl")?"perl":null,r:je("Rscript")?"Rscript":je("r")?"r":null,elixir:je("elixir")?"elixir":null}}' \
+        'function fa(){return{javascript:"node",typescript:null,python:"python3",shell:"bash",ruby:null,go:null,rust:null,php:null,perl:null,r:null,elixir:null}}' \
       --replace-fail \
-        'function Et(t){try{return yp(`''${t} --version`,{encoding:"utf-8",stdio:["pipe","pipe","pipe"],timeout:5e3}).trim().split(/\r?\n/)[0]}catch{return"unknown"}}' \
-        'function Et(t){return"available"}' \
+        'function Tt(t){try{return dp(`''${t} --version`,{encoding:"utf-8",stdio:["pipe","pipe","pipe"],timeout:5e3}).trim().split(/\r?\n/)[0]}catch{return"unknown"}}' \
+        'function Tt(t){return"available"}' \
       --replace-fail \
-        'function ux(){if(Ae("bun"))return!0;if(!xp){let t=process.env.HOME??process.env.USERPROFILE??"";if(t&&cx(`''${t}/.bun/bin/bun`))return!0}return!1}' \
-        'function ux(){return false}'
+        'function dx(){if(je("bun"))return!0;if(!pp){let t=process.env.HOME??process.env.USERPROFILE??"";if(t&&lx(`''${t}/.bun/bin/bun`))return!0}return!1}' \
+        'function dx(){return false}'
   ''

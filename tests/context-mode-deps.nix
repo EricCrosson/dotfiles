@@ -23,22 +23,22 @@ in
     grep -q '/nix/store/' ${contextModePlugin}/.claude-plugin/plugin.json
     ! grep -q '"command": "node"' ${contextModePlugin}/.claude-plugin/plugin.json
 
-    # Verify start.mjs no longer imports ensure-deps or calls ensureNativeCompat.
+    # Verify start.mjs no longer imports ensure-deps or runs npm-install loops.
     # Both try to npm-install/rebuild native deps, which is unnecessary (pre-built by Nix)
     # and would silently fail against the read-only Nix store at startup.
-    ! grep -q 'import { ensureDeps }' ${contextModePlugin}/start.mjs
-    ! grep -q 'ensureNativeCompat(__dirname)' ${contextModePlugin}/start.mjs
+    ! grep -q 'import "./hooks/ensure-deps.mjs"' ${contextModePlugin}/start.mjs
+    ! grep -q '"turndown"' ${contextModePlugin}/start.mjs
 
     # Verify runtime detection was patched out of server.bundle.mjs.
     # If these fail, the context-mode version was likely bumped and the
     # substituteInPlace patches in pkgs/context-mode-plugin/default.nix
     # need updating to match the new minified code.
-    # xa() patched (was: runtime availability map with execSync probes)
-    ! grep -q 'function xa(){let e=ux()' ${contextModePlugin}/server.bundle.mjs
-    # ux() patched (was: bun availability check)
-    ! grep -q 'function ux(){if(Ae' ${contextModePlugin}/server.bundle.mjs
-    # Et() patched (was: execSync "''${t} --version")
-    ! grep -q 'yp(`''${t} --version`' ${contextModePlugin}/server.bundle.mjs
+    # fa() patched (was: runtime availability map with execSync probes)
+    ! grep -q 'function fa(){let e=dx()' ${contextModePlugin}/server.bundle.mjs
+    # dx() patched (was: bun availability check)
+    ! grep -q 'function dx(){if(je' ${contextModePlugin}/server.bundle.mjs
+    # Tt() patched (was: execSync "''${t} --version")
+    ! grep -q 'dp(`''${t} --version`' ${contextModePlugin}/server.bundle.mjs
 
     touch $out
   ''
