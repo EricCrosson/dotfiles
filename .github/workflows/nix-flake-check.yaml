@@ -17,7 +17,7 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
 
       - name: Install EricCrosson/retry
-        uses: EricCrosson/install-github-release-binary@v2
+        uses: EricCrosson/install-github-release-binary@c5bb56044443694d485fa40eb6d6f7ed600ff3b4
         with:
           targets: EricCrosson/retry@v1
 
@@ -38,7 +38,7 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
 
       - name: Install EricCrosson/retry
-        uses: EricCrosson/install-github-release-binary@v2
+        uses: EricCrosson/install-github-release-binary@c5bb56044443694d485fa40eb6d6f7ed600ff3b4
         with:
           targets: EricCrosson/retry@v1
 
