@@ -1,4 +1,5 @@
 {
+  pkgs,
   stdenv,
   git-hooks,
   go,
@@ -32,4 +33,5 @@ git-hooks.lib.${stdenv.hostPlatform.system}.run {
       stages = ["pre-commit"];
     };
   };
+  package = pkgs.prek;
 }
