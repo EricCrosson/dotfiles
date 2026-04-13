@@ -33,7 +33,6 @@ in
       prettier.enable = true;
       ripsecrets.enable = true;
       statix.enable = true;
-      trufflehog.enable = true;
       zizmor.enable = true;
     };
     package = pkgs.prek;
