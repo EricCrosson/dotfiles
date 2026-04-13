@@ -186,6 +186,10 @@ in {
         pluginDirs = [claudePlugins.context-mode];
       };
       inherit mcpServers;
+      agents.acli = ../../claude/agents/acli.md;
+      context = inputs.cortex.lib.cortex-instructions;
+      skills = ../../claude/skills;
+      rulesDir = ../../claude/rules;
       settings = {
         cleanupPeriodDays = 99999;
         skipDangerousModePermissionPrompt = true;
@@ -217,16 +221,11 @@ in {
             }
           ];
         };
-        skillsDir = ../../claude/skills;
         teammateMode = "split-panes";
         permissions = {
           defaultMode = "plan";
         };
       };
-      skillsDir = ../../claude/skills;
-      rulesDir = ../../claude/rules;
-      agents.acli = ../../claude/agents/acli.md;
-      memory.text = inputs.cortex.lib.cortex-instructions;
     };
 
     git = {
