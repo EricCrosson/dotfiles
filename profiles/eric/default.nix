@@ -109,6 +109,10 @@ in {
           target/
         '';
       };
+
+      ".homebrew/brew.env".text = ''
+        HOMEBREW_NO_UPDATE_REPORT_NEW=1
+      '';
     };
   };
 
