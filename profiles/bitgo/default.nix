@@ -169,6 +169,14 @@ in {
 
     conductor.enable = false;
 
+    codex = {
+      enable = true;
+      skills = ../../claude/skills;
+      settings = {
+        mcp_servers = mcpServers;
+      };
+    };
+
     cortex = {
       enable = true;
       url = "http://127.0.0.1:3001";
