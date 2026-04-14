@@ -4,6 +4,7 @@
   inputs,
   ...
 }: let
+  gh-stack = pkgs.callPackage ../../../pkgs/gh-stack {};
   catppuccinDelta = pkgs.fetchFromGitHub {
     owner = "catppuccin";
     repo = "delta";
@@ -40,6 +41,7 @@ in {
         inputs.gh-agent.packages.${pkgs.system}.gh-agent
         inputs.gh-arm.packages.${pkgs.system}.default
         inputs.gh-automerge.packages.${pkgs.system}.default
+        gh-stack
       ];
       gitCredentialHelper = {
         enable = false;
