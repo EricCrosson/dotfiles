@@ -4,7 +4,7 @@
   "private": true,
   "description": "Shim package to pre-install context-mode's external native dependencies",
   "dependencies": {
-    "better-sqlite3": "^12.6.2",
+    "better-sqlite3": "^12.8.0",
     "turndown": "^7.2.0",
     "turndown-plugin-gfm": "^1.0.2",
     "@mixmark-io/domino": "^2.2.0"
