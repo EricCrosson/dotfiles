@@ -4,6 +4,9 @@ name: Nix flake check
 on:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   check-nix:
     name: Nix flake check
