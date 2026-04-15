@@ -191,7 +191,7 @@ func configureBedrock(args ParsedArgs, getenv func(string) string, readFile func
 
 	var extraArgs []string
 	if !args.hasModel {
-		extraArgs = append(extraArgs, "--model", "opusplan[1m]")
+		extraArgs = append(extraArgs, "--model", "opus")
 	}
 
 	return BedrockConfig{envVars: envVars, extraArgs: extraArgs}, nil

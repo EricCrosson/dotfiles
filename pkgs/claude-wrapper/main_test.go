@@ -187,7 +187,7 @@ func TestConfigureBedrock(t *testing.T) {
 					"ANTHROPIC_DEFAULT_HAIKU_MODEL":  "arn:aws:bedrock:haiku-arn",
 				},
 				extraArgs: []string{
-					"--model", "opusplan[1m]",
+					"--model", "opus",
 				},
 			},
 		},
@@ -601,7 +601,11 @@ func TestBedrockPath_Integration(t *testing.T) {
 				if arg == "--settings" {
 					t.Errorf("--settings should not be in args; ANTHROPIC_DEFAULT_*_MODEL auto-registers model aliases (args: %v)", finalArgs)
 				}
-				if arg == "--model" && i+1 < len(finalArgs) && finalArgs[i+1] == "opusplan[1m]" && !parsed.hasModel {
+				expectedDefaultModel := "opusplan[1m]"
+				if backend == "bedrock" {
+					expectedDefaultModel = "opus"
+				}
+				if arg == "--model" && i+1 < len(finalArgs) && finalArgs[i+1] == expectedDefaultModel && !parsed.hasModel {
 					hasModelDefault = true
 				}
 			}
