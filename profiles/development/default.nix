@@ -33,7 +33,6 @@ in {
         gcc
 
         bc
-        vscode
         yazi
         showboat
 
