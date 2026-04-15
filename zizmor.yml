@@ -1,0 +1,7 @@
+---
+rules:
+  artipacked:
+    ignore:
+      - auto-update-flake-inputs.yaml:40:9
+      - auto-update-flake-inputs.yaml:94:9
+      - update-flake-input.yaml:16:9
