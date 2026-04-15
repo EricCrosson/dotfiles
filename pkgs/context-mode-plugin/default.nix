@@ -23,7 +23,7 @@
     version = "1.0.0";
     src = ./.;
     inherit nodejs;
-    npmDepsHash = "sha256-VwnMkKxp9HDa52aPLV6d9jBlMdj3xXRE9g55hTyrvqY=";
+    npmDepsHash = "sha256-5bmnTn01QnMne7gQowiFUw7qtFqrk3Pk9pQfH2J9NDw=";
     dontNpmBuild = true;
     # better-sqlite3 needs node-gyp → python3 + pkg-config
     nativeBuildInputs = [python3 pkg-config];
