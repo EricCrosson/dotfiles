@@ -6,13 +6,15 @@ on:
   schedule:
     - cron: "0 8 * * *" # runs every day at 08:00 UTC
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   enumerate-flake-inputs:
     name: Update flake inputs
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
 
     outputs:
       matrix: ${{ steps.get-inputs.outputs.matrix }}
@@ -33,6 +35,10 @@ jobs:
   update-flake-inputs:
     needs: enumerate-flake-inputs
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
     strategy:
       fail-fast: false
       max-parallel: 1
@@ -62,9 +68,13 @@ jobs:
           token: ${{ secrets.GH_TOKEN_PR }}
 
   enumerate-dev-shell-inputs:
-    name: Update nix/flake.nix inputs
     needs: update-flake-inputs
+    name: Update nix/flake.nix inputs
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
     # Run only once per week on Monday at 08:00 UTC
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && github.event.schedule == '0 8 * * 1')
 
@@ -87,6 +97,10 @@ jobs:
   update-nix-flake-inputs:
     needs: enumerate-dev-shell-inputs
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
     strategy:
       fail-fast: false
       max-parallel: 1

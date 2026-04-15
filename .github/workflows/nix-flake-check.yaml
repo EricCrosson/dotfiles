@@ -4,13 +4,15 @@ name: Nix flake check
 on:
   pull_request:
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   check-nix:
     name: Nix flake check
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout
@@ -34,6 +36,9 @@ jobs:
   check-darwin-config:
     name: Darwin configuration build
     runs-on: macos-latest
+
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout
