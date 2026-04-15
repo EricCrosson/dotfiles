@@ -26,7 +26,6 @@
       };
 
       brews = [
-        "atlassian/acli/acli"
         "md5sha1sum"
         "xcodegen"
       ];
@@ -40,10 +39,6 @@
         "ghostty"
         "kitty"
         "postman"
-      ];
-
-      taps = [
-        "atlassian/homebrew-acli"
       ];
     };
 

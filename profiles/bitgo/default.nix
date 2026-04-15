@@ -5,7 +5,6 @@
   inputs,
   ...
 }: let
-  md2adf = pkgs.callPackage ../../pkgs/md2adf {};
   opPlugins = pkgs.callPackage ../../pkgs/op-plugins/plugins.nix {inherit inputs;};
   chrome-devtools-mcp = pkgs.callPackage ../../pkgs/chrome-devtools-mcp {};
 
@@ -93,8 +92,6 @@ in {
 
         # 1Password CLI for secret management
         _1password-cli
-
-        md2adf
       ];
 
     activation = {
@@ -194,7 +191,6 @@ in {
         pluginDirs = [claudePlugins.context-mode];
       };
       inherit mcpServers;
-      agents.acli = ../../claude/agents/acli.md;
       context = inputs.cortex.lib.cortex-instructions;
       skills = ../../claude/skills;
       rulesDir = ../../claude/rules;
