@@ -63,7 +63,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     gh-endorse = {
-      url = "git+ssh://git@github.com-bitgo/bitgo/gh-endorse?ref=ericcrosson/ctx-235-featgh-endorse-astral-style-minimal-cli-output-ux";
+      url = "git+ssh://git@github.com-bitgo/bitgo/gh-endorse";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     gh-arm = {

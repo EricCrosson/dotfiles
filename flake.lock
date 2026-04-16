@@ -360,16 +360,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1776306791,
-        "narHash": "sha256-tyAbSYLKUM+tPwdDyO88vPdlGfP1xDzKhZdf0WcdwLg=",
-        "ref": "ericcrosson/ctx-235-featgh-endorse-astral-style-minimal-cli-output-ux",
-        "rev": "f5ecd97721eacc246fdaa520bb284684229a1e4c",
-        "revCount": 11,
+        "lastModified": 1776353581,
+        "narHash": "sha256-DDOx0dgcwbsaRO7TcCDiYqq5IVaP18dh/vQqInK8LTw=",
+        "ref": "refs/heads/master",
+        "rev": "5e3ae8e4366d97d066c1ffa91b60e917fa4e821d",
+        "revCount": 24,
         "type": "git",
         "url": "ssh://git@github.com-bitgo/bitgo/gh-endorse"
       },
       "original": {
-        "ref": "ericcrosson/ctx-235-featgh-endorse-astral-style-minimal-cli-output-ux",
         "type": "git",
         "url": "ssh://git@github.com-bitgo/bitgo/gh-endorse"
       }
@@ -381,11 +380,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1687745220,
-        "narHash": "sha256-aX3XrKPh/zzylZN7YMG5tuYOclSw2d56Ege5ip3o6c4=",
+        "lastModified": 1776354633,
+        "narHash": "sha256-DR8ozFAhlctS77hT0XMTjI0NBLHorZV0mgSruKITSu4=",
         "owner": "ericcrosson",
         "repo": "git-diff-regex",
-        "rev": "c31aa3fc7ae0d29c97002531bbd4864a0b7ddfb6",
+        "rev": "135b3896be1b478a0c73b726099cbd216db22495",
         "type": "github"
       },
       "original": {
