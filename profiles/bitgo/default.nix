@@ -261,6 +261,10 @@ in {
           contents = workConfig;
         }
         {
+          condition = "hasconfig:remote.*.url:*github.com/bitgo/**";
+          contents = workConfig;
+        }
+        {
           condition = "hasconfig:remote.*.url:*github.com*ericcrosson-bitgo/**";
           contents = workConfig;
         }

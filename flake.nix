@@ -63,7 +63,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     gh-endorse = {
-      url = "git+ssh://git@github.com-bitgo/bitgo/gh-endorse";
+      url = "git+ssh://git@github.com-bitgo/bitgo/gh-endorse?ref=ericcrosson/ctx-242-add-repo-flag";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     gh-arm = {

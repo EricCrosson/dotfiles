@@ -360,15 +360,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1776353581,
-        "narHash": "sha256-DDOx0dgcwbsaRO7TcCDiYqq5IVaP18dh/vQqInK8LTw=",
-        "ref": "refs/heads/master",
-        "rev": "5e3ae8e4366d97d066c1ffa91b60e917fa4e821d",
-        "revCount": 24,
+        "lastModified": 1776357251,
+        "narHash": "sha256-70cYIybznoZxJMaXeqtev0/cJ5J3baRwJW0g81QYN4Y=",
+        "ref": "ericcrosson/ctx-242-add-repo-flag",
+        "rev": "d7c3bb27d23cdd5dea839bbc0dcd85983a878a25",
+        "revCount": 20,
         "type": "git",
         "url": "ssh://git@github.com-bitgo/bitgo/gh-endorse"
       },
       "original": {
+        "ref": "ericcrosson/ctx-242-add-repo-flag",
         "type": "git",
         "url": "ssh://git@github.com-bitgo/bitgo/gh-endorse"
       }
