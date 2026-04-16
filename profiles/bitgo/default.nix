@@ -12,6 +12,11 @@
     context-mode = pkgs.callPackage ../../pkgs/context-mode-plugin {};
   };
 
+  standaloneClaude = pkgs.runCommand "standalone-claude" {} ''
+    mkdir -p $out/bin
+    ln -s ${config.home.homeDirectory}/.local/bin/claude $out/bin/claude
+  '';
+
   mcpServers = {
     chrome-devtools = {
       command = "${chrome-devtools-mcp}/bin/chrome-devtools-mcp";
@@ -95,6 +100,13 @@ in {
       ];
 
     activation = {
+      installClaude = config.lib.dag.entryAfter ["writeBoundary"] ''
+        if [ ! -x "${config.home.homeDirectory}/.local/bin/claude" ]; then
+          export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+          ${pkgs.curl}/bin/curl -fsSL https://claude.ai/install.sh | /bin/sh
+        fi
+      '';
+
       installOpPlugins =
         config.lib.dag.entryAfter ["writeBoundary"]
         (opPlugins.mkActivationScript {
@@ -182,7 +194,7 @@ in {
     claude-code = {
       enable = true;
       package = pkgs.callPackage ../../pkgs/claude-wrapper {} {
-        inherit (pkgs) claude-code;
+        claude-code = standaloneClaude;
         bedrockProfile = config.claude-options.bedrock.profile;
         bedrockRegion = config.claude-options.bedrock.region;
         bedrockOpusFile = config.bitgo.sops.secretPaths.bedrock_opus_arn;
