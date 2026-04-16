@@ -62,5 +62,5 @@ jobs:
             --override-input aws-saml-bitgo path:./stubs/private-input-stub \
             --override-input atlas path:./stubs/private-input-stub \
             --override-input cortex path:./stubs/private-input-stub \
-            --override-input gh-agent path:./stubs/private-input-stub \
+            --override-input gh-endorse path:./stubs/private-input-stub \
             --keep-going --print-build-logs

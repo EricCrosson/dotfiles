@@ -59,7 +59,7 @@ nix run nix-darwin -- switch --flake .#MBP-0954 \
   --override-input aws-saml-bitgo    path:./stubs/private-input-stub \
   --override-input atlas             path:./stubs/private-input-stub \
   --override-input cortex            path:./stubs/private-input-stub \
-  --override-input gh-agent          path:./stubs/private-input-stub
+  --override-input gh-endorse        path:./stubs/private-input-stub
 ```
 
 Once GPG keys and the BitGo SSH key are in place, complete steps 5–7 and

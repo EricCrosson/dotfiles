@@ -26,7 +26,7 @@
       };
     in {
       default = stub;
-      gh-agent = stub;
+      gh-endorse = stub;
     });
 
     # Stub for cortex and atlas home-manager modules
