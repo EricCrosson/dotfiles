@@ -26,8 +26,8 @@ Each spawned agent's prompt must include:
   expected
 
 <good-example>
-"Work on CTX-105: Add rate limiting middleware.
+"Work on DX-105: Add rate limiting middleware.
 Re-read the issue first — context may have changed.
 Implement it now using /drive-to-completion. Do not use /plan or /review-plan.
-Done means: PR merged, change demoed in target environment, CTX-105 set to Done."
+Done means: PR merged, change demoed in target environment, DX-105 set to Done."
 </good-example>
