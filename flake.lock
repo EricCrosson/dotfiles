@@ -303,38 +303,17 @@
     "flake-compat": {
       "flake": false,
       "locked": {
-        "lastModified": 1696426674,
-        "narHash": "sha256-kvjfFW7WAETZlt09AgDn1MrtKzP7t90Vf7vypd3OL1U=",
-        "owner": "edolstra",
+        "lastModified": 1767039857,
+        "narHash": "sha256-vNpUSpF5Nuw8xvDLj2KCwwksIbjua2LZCqhV1LNRDns=",
+        "owner": "NixOS",
         "repo": "flake-compat",
-        "rev": "0f9255e01c2351cc7d116c072cb317785dd33b33",
+        "rev": "5edf11c44bc78a0d334f6334cdaf7d60d732daab",
         "type": "github"
       },
       "original": {
-        "owner": "edolstra",
+        "owner": "NixOS",
         "repo": "flake-compat",
         "type": "github"
-      }
-    },
-    "gh-agent": {
-      "inputs": {
-        "git-hooks": "git-hooks",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1763738311,
-        "narHash": "sha256-4Ei1B6Hiqy97+rhGQ+fuhFnZcgZrIaCYPwVXZnHc/rQ=",
-        "ref": "refs/heads/master",
-        "rev": "0cf818bc137e42d3723bd2deeaa15f2f3d755bdb",
-        "revCount": 20,
-        "type": "git",
-        "url": "ssh://git@github.com-bitgo/bitgo/gh-agent"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://git@github.com-bitgo/bitgo/gh-agent"
       }
     },
     "gh-arm": {
@@ -371,6 +350,28 @@
         "owner": "ericcrosson",
         "repo": "gh-automerge",
         "type": "github"
+      }
+    },
+    "gh-endorse": {
+      "inputs": {
+        "git-hooks": "git-hooks",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1776306791,
+        "narHash": "sha256-tyAbSYLKUM+tPwdDyO88vPdlGfP1xDzKhZdf0WcdwLg=",
+        "ref": "ericcrosson/ctx-235-featgh-endorse-astral-style-minimal-cli-output-ux",
+        "rev": "f5ecd97721eacc246fdaa520bb284684229a1e4c",
+        "revCount": 11,
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/bitgo/gh-endorse"
+      },
+      "original": {
+        "ref": "ericcrosson/ctx-235-featgh-endorse-astral-style-minimal-cli-output-ux",
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/bitgo/gh-endorse"
       }
     },
     "git-diff-regex": {
@@ -438,16 +439,16 @@
         "flake-compat": "flake-compat",
         "gitignore": "gitignore",
         "nixpkgs": [
-          "gh-agent",
+          "gh-endorse",
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1742649964,
-        "narHash": "sha256-DwOTp7nvfi8mRfuL1escHDXabVXFGT1VlPD1JHrtrco=",
+        "lastModified": 1775585728,
+        "narHash": "sha256-8Psjt+TWvE4thRKktJsXfR6PA/fWWsZ04DVaY6PUhr4=",
         "owner": "cachix",
         "repo": "git-hooks.nix",
-        "rev": "dcf5072734cb576d2b0c59b2ac44f5050b5eac82",
+        "rev": "580633fa3fe5fc0379905986543fd7495481913d",
         "type": "github"
       },
       "original": {
@@ -479,7 +480,7 @@
     "gitignore": {
       "inputs": {
         "nixpkgs": [
-          "gh-agent",
+          "gh-endorse",
           "git-hooks",
           "nixpkgs"
         ]
@@ -756,9 +757,9 @@
         "cortex": "cortex",
         "crane": "crane",
         "fenix": "fenix",
-        "gh-agent": "gh-agent",
         "gh-arm": "gh-arm",
         "gh-automerge": "gh-automerge",
+        "gh-endorse": "gh-endorse",
         "git-diff-regex": "git-diff-regex",
         "git-disjoint": "git-disjoint",
         "git-dl": "git-dl",

@@ -38,7 +38,7 @@ in {
     gh = {
       enable = true;
       extensions = [
-        inputs.gh-agent.packages.${pkgs.system}.gh-agent
+        inputs.gh-endorse.packages.${pkgs.system}.gh-endorse
         inputs.gh-arm.packages.${pkgs.system}.default
         inputs.gh-automerge.packages.${pkgs.system}.default
         gh-stack

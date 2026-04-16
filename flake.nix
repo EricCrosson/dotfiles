@@ -62,8 +62,8 @@
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    gh-agent = {
-      url = "git+ssh://git@github.com-bitgo/bitgo/gh-agent";
+    gh-endorse = {
+      url = "git+ssh://git@github.com-bitgo/bitgo/gh-endorse?ref=ericcrosson/ctx-235-featgh-endorse-astral-style-minimal-cli-output-ux";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     gh-arm = {
