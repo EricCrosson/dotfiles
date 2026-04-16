@@ -267,7 +267,28 @@ in {
       ];
       settings = {
         url = {
-          "ssh://git@github.com-bitgo/BitGo/".insteadOf = "ssh://git@github.com/BitGo/";
+          # Global rewrites — apply unconditionally at clone time (before any
+          # includeIf evaluates), so `gh repo clone` from temp dirs works.
+          # Covers both HTTPS and SSH forms, and both BitGo/ and bitgo/ cases.
+          "ssh://git@github.com-bitgo/BitGo/" = {
+            insteadOf = [
+              "https://github.com/BitGo/"
+              "https://github.com/bitgo/"
+              "ssh://git@github.com/BitGo/"
+            ];
+          };
+          "git@github.com-bitgo:BitGo/" = {
+            insteadOf = [
+              "git@github.com:BitGo/"
+              "git@github.com:bitgo/"
+            ];
+          };
+          "ssh://git@github.com-bitgo/ericcrosson-bitgo/" = {
+            insteadOf = ["https://github.com/ericcrosson-bitgo/"];
+          };
+          "git@github.com-bitgo:ericcrosson-bitgo/" = {
+            insteadOf = ["git@github.com:ericcrosson-bitgo/"];
+          };
         };
       };
     };
