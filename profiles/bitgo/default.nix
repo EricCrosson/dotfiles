@@ -257,15 +257,11 @@ in {
         };
       in [
         {
-          condition = "gitdir:~/workspace/BitGo/";
+          condition = "hasconfig:remote.*.url:*github.com*BitGo/**";
           contents = workConfig;
         }
         {
-          condition = "gitdir:~/workspace/ericcrosson-bitgo/";
-          contents = workConfig;
-        }
-        {
-          condition = "gitdir:~/.password-store/";
+          condition = "hasconfig:remote.*.url:*github.com*ericcrosson-bitgo/**";
           contents = workConfig;
         }
       ];
