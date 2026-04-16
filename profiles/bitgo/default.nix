@@ -207,6 +207,7 @@ in {
       skills = ../../claude/skills;
       rulesDir = ../../claude/rules;
       settings = {
+        autoUpdates = true;
         cleanupPeriodDays = 99999;
         skipDangerousModePermissionPrompt = true;
         terminalProgressBarEnabled = false;
