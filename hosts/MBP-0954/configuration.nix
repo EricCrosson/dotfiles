@@ -38,7 +38,6 @@
         "1password"
         "ghostty"
         "handy"
-        "kitty"
         "postman"
       ];
     };

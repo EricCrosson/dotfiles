@@ -22,7 +22,6 @@ in {
       ./modules/aerospace.nix
       ./modules/ghostty.nix
       ./modules/git.nix
-      ./modules/kitty.nix
       ./modules/zsh.nix
     ]
     ++ (

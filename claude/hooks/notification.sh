@@ -14,7 +14,7 @@ fi
 ARGS=(
   -title "$NOTIF_TITLE"
   -message "$MESSAGE"
-  -activate net.kovidgoyal.kitty
+  -activate com.mitchellh.ghostty
   -group "claude-code-${CWD}"
 )
 
