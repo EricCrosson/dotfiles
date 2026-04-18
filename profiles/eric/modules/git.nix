@@ -47,7 +47,7 @@ in {
         enable = false;
       };
       settings = {
-        git_protocol = "https";
+        git_protocol = "ssh";
         prompt = "enabled";
         pager = "delta";
         aliases = {

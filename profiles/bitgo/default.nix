@@ -256,14 +256,6 @@ in {
             format = "openpgp";
             program = "${pkgs.gnupg}/bin/gpg";
           };
-          url = {
-            # Rewrite BitGo URLs to use github.com-bitgo SSH alias
-            # This ensures work repos use the optimized SSH config with ControlMaster
-            "ssh://git@github.com-bitgo/BitGo/".insteadOf = "https://github.com/BitGo/";
-            "git@github.com-bitgo:BitGo/".insteadOf = "git@github.com:BitGo/";
-            "ssh://git@github.com-bitgo/ericcrosson-bitgo/".insteadOf = "https://github.com/ericcrosson-bitgo/";
-            "git@github.com-bitgo:ericcrosson-bitgo/".insteadOf = "git@github.com:ericcrosson-bitgo/";
-          };
           user = {
             email = "${profile.email}";
             signingKey = "5BD755D7FD4AFCB6";
@@ -275,11 +267,35 @@ in {
           contents = workConfig;
         }
         {
-          condition = "hasconfig:remote.*.url:*github.com/bitgo/**";
+          condition = "hasconfig:remote.*.url:ssh://*github.com*/BitGo/**";
+          contents = workConfig;
+        }
+        {
+          condition = "hasconfig:remote.*.url:https://*github.com*/BitGo/**";
+          contents = workConfig;
+        }
+        {
+          condition = "hasconfig:remote.*.url:*github.com*bitgo/**";
+          contents = workConfig;
+        }
+        {
+          condition = "hasconfig:remote.*.url:ssh://*github.com*/bitgo/**";
+          contents = workConfig;
+        }
+        {
+          condition = "hasconfig:remote.*.url:https://*github.com*/bitgo/**";
           contents = workConfig;
         }
         {
           condition = "hasconfig:remote.*.url:*github.com*ericcrosson-bitgo/**";
+          contents = workConfig;
+        }
+        {
+          condition = "hasconfig:remote.*.url:ssh://*github.com*/ericcrosson-bitgo/**";
+          contents = workConfig;
+        }
+        {
+          condition = "hasconfig:remote.*.url:https://*github.com*/ericcrosson-bitgo/**";
           contents = workConfig;
         }
       ];
