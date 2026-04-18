@@ -213,6 +213,7 @@ in {
         terminalProgressBarEnabled = false;
         env = {
           CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
+          DISABLE_INSTALLATION_CHECKS = "1";
           ENABLE_TOOL_SEARCH = "1";
         };
         hooks = {
