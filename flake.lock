@@ -321,11 +321,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1773693506,
-        "narHash": "sha256-HvFQHK8RvwgbMFGLZmDPYqaJMu6EBNVSYHI/M6S4EYA=",
+        "lastModified": 1776740679,
+        "narHash": "sha256-YfRvtZnLpTeBhARsqBdxqR4264vJ2ZQzNYjWpP7dzrw=",
         "owner": "ericcrosson",
         "repo": "gh-arm",
-        "rev": "e8fe38b8f254a8881d4810e2ab417f7e01675821",
+        "rev": "a15a586b2d035b735841a7bdf3e5118189affea8",
         "type": "github"
       },
       "original": {
