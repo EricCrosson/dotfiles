@@ -61,6 +61,10 @@ _: {
       };
       on-window-detected = [
         {
+          "if".app-id = "com.chocoford.excalidraw";
+          run = "layout tiling";
+        }
+        {
           "if".app-id = "com.apple.finder";
           run = "layout floating";
         }
