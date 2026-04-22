@@ -421,11 +421,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1773693577,
-        "narHash": "sha256-rcNCHIj3uqiZiBizVd2bpJEjScmeCa6Gu2IOrrqDMzQ=",
+        "lastModified": 1776794289,
+        "narHash": "sha256-bfFOTsli0VEuCCoM1knyDpDMkFRXjHatQ0mOBecixp0=",
         "owner": "ericcrosson",
         "repo": "git-dl",
-        "rev": "0f0012b1d4305ed41825625e23e8756c0159c59c",
+        "rev": "601acef646e253cc56eb6afc2d09dc7a1c994201",
         "type": "github"
       },
       "original": {
