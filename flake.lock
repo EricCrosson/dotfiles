@@ -713,11 +713,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1746372297,
-        "narHash": "sha256-UEEsk2Ey2EHbVxx+Me0thOkpc3fYMtDiZaePgRTFMNw=",
+        "lastModified": 1776794247,
+        "narHash": "sha256-C54w5ZL+s+dtRk5vacS49pkLyM6lojqRM48ri/KaOhA=",
         "owner": "ericcrosson",
         "repo": "npm-dep-version",
-        "rev": "858228103eb8872091e9f0647155c53449eb1513",
+        "rev": "dcc0eed4c037b0e76a7ce7b77b9fd884f2604e15",
         "type": "github"
       },
       "original": {
