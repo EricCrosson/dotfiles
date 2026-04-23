@@ -7,12 +7,31 @@ import (
 	"syscall"
 )
 
+// claudeSubcommands is the set of claude CLI top-level commands that
+// have their own arg parsers and reject session flags like --model.
+// Source of truth: output of `claude --help` under "Commands:".
+// Update when claude adds or renames a subcommand.
+var claudeSubcommands = map[string]bool{
+	"agents":      true,
+	"auth":        true,
+	"auto-mode":   true,
+	"doctor":      true,
+	"install":     true,
+	"mcp":         true,
+	"plugin":      true,
+	"plugins":     true,
+	"setup-token": true,
+	"update":      true,
+	"upgrade":     true,
+}
+
 // ParsedArgs holds the processed command-line arguments
 type ParsedArgs struct {
 	explicitBedrock   bool
 	explicitAnthropic bool
 	hasModel          bool
 	hasHelpOrVersion  bool
+	isSubcommand      bool
 	filteredArgs      []string // Args with --bedrock/--anthropic removed
 }
 
@@ -27,8 +46,11 @@ type BedrockConfig struct {
 func main() {
 	args := parseArgs(os.Args[1:])
 
-	// Fast path: help/version - pass through immediately
-	if args.hasHelpOrVersion {
+	// Fast path: help/version or top-level subcommand - pass through immediately.
+	// Subcommands (mcp, auto-mode, doctor, ...) have their own arg parsers and
+	// reject session flags like --model, so no backend resolution, no model
+	// injection, no --plugin-dir injection, no _CLAUDE_SESSION env var.
+	if args.hasHelpOrVersion || args.isSubcommand {
 		execClaudeUnwrapped(args.filteredArgs)
 		return
 	}
@@ -107,6 +129,12 @@ func parseArgs(args []string) ParsedArgs {
 			parsed.filteredArgs = append(parsed.filteredArgs, arg)
 			i++
 		}
+	}
+
+	// Post-loop placement is deliberate: --bedrock/--anthropic have already
+	// been stripped, so `claude --bedrock mcp list` correctly resolves.
+	if len(parsed.filteredArgs) > 0 && claudeSubcommands[parsed.filteredArgs[0]] {
+		parsed.isSubcommand = true
 	}
 
 	return parsed
