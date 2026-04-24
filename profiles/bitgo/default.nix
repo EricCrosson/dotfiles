@@ -239,7 +239,7 @@ in {
             }
           ];
         };
-        teammateMode = "split-panes";
+        teammateMode = "auto";
         permissions = {
           defaultMode = "plan";
         };
