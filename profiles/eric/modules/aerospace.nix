@@ -96,6 +96,10 @@ _: {
           "if".app-id = "com.yubico.authenticator";
           run = "layout floating";
         }
+        {
+          "if".app-id = "com.tinyspeck.slackmacgap";
+          run = "move-node-to-workspace 8";
+        }
       ];
       workspace-to-monitor-force-assignment = {
         "1" = "dell u2718q";
