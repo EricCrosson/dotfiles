@@ -4,7 +4,7 @@ go 1.25.4
 
 require (
 	github.com/1Password/shell-plugins v0.0.0-20250903004831-49810df8fe11
-	github.com/hashicorp/go-plugin v1.7.0
+	github.com/hashicorp/go-plugin v1.8.0
 )
 
 require (
