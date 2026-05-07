@@ -5,7 +5,6 @@
   inputs,
   ...
 }: let
-  opPlugins = pkgs.callPackage ../../pkgs/op-plugins/plugins.nix {inherit inputs;};
   chrome-devtools-mcp = pkgs.callPackage ../../pkgs/chrome-devtools-mcp {};
 
   claudePlugins = {
@@ -76,11 +75,11 @@ in {
       [
         amazon-ecr-credential-helper
         awscli2
+        cloudflared
         github-copilot-cli
       ]
       ++ [inputs.git-disjoint.packages.${pkgs.system}.default]
-      # git-dl: use opPlugins system (no HM modules)
-      ++ [opPlugins.git-dl.plugin opPlugins.git-dl.unwrapped opPlugins.git-dl.wrapper]
+      ++ [inputs.git-dl.packages.${pkgs.system}.default]
       ++ [
         gh
         k9s
@@ -88,7 +87,6 @@ in {
         kubectx
         kustomize
         nodejs # Install npm
-        openai-whisper
         poppler-utils # Install pdftotext for aichat
         yq-go
 
@@ -106,12 +104,6 @@ in {
           ${pkgs.curl}/bin/curl -fsSL https://claude.ai/install.sh | /bin/sh
         fi
       '';
-
-      installOpPlugins =
-        config.lib.dag.entryAfter ["writeBoundary"]
-        (opPlugins.mkActivationScript {
-          pluginList = opPlugins.allPlugins.plugins;
-        });
     };
   };
 
