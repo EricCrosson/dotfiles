@@ -50,6 +50,7 @@ in {
         git_protocol = "ssh";
         prompt = "enabled";
         pager = "delta";
+        telemetry = "disabled";
         aliases = {
           co = "pr checkout";
         };
