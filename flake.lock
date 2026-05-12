@@ -360,16 +360,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1776357251,
-        "narHash": "sha256-70cYIybznoZxJMaXeqtev0/cJ5J3baRwJW0g81QYN4Y=",
-        "ref": "ericcrosson/ctx-242-add-repo-flag",
-        "rev": "d7c3bb27d23cdd5dea839bbc0dcd85983a878a25",
-        "revCount": 20,
+        "lastModified": 1776777374,
+        "narHash": "sha256-L66bDcsMniLTW35S0WOvExLV2M+w9DZwYQ3CX3JiWq0=",
+        "ref": "ericcrosson/dx-570-soft-skip-clean-status",
+        "rev": "fb019ace22b34a5b7e9e57ec0566661e87cf59f9",
+        "revCount": 68,
         "type": "git",
         "url": "ssh://git@github.com-bitgo/bitgo/gh-endorse"
       },
       "original": {
-        "ref": "ericcrosson/ctx-242-add-repo-flag",
+        "ref": "ericcrosson/dx-570-soft-skip-clean-status",
         "type": "git",
         "url": "ssh://git@github.com-bitgo/bitgo/gh-endorse"
       }
@@ -421,11 +421,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1776794289,
-        "narHash": "sha256-bfFOTsli0VEuCCoM1knyDpDMkFRXjHatQ0mOBecixp0=",
+        "lastModified": 1778603706,
+        "narHash": "sha256-PkckvMMhQDSsvEdbMushf0WY9l6eu/aOGteR8SPtG84=",
         "owner": "ericcrosson",
         "repo": "git-dl",
-        "rev": "601acef646e253cc56eb6afc2d09dc7a1c994201",
+        "rev": "94964143ca3bd3f7b5b2f17f1f60f9c51c86add7",
         "type": "github"
       },
       "original": {

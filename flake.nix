@@ -63,7 +63,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     gh-endorse = {
-      url = "git+ssh://git@github.com-bitgo/bitgo/gh-endorse?ref=ericcrosson/ctx-246-multi-pr-orchestrator";
+      url = "git+ssh://git@github.com-bitgo/bitgo/gh-endorse?ref=ericcrosson/dx-570-soft-skip-clean-status";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     gh-arm = {
