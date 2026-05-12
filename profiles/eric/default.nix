@@ -12,7 +12,7 @@
     ../../os/linux
   ];
   fzfAltCCommand = pkgs.writeShellScript "fzf-alt-c-command" ''
-    { zoxide query -l 2>/dev/null; fd --type d --absolute-path; } | awk -v home="$HOME" '{ sub(/\/$/, "") } !seen[$0]++ { sub("^" home, "~"); print }'
+    { fd --type d --absolute-path; zoxide query -l 2>/dev/null; } | awk -v home="$HOME" '{ sub(/\/$/, "") } !seen[tolower($0)]++ { sub("^" home, "~"); print }'
   '';
   alabasterBat = ../../pkgs/bat-themes;
 in {
