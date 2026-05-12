@@ -228,11 +228,31 @@ func TestParseArgs_Subcommands(t *testing.T) {
 			},
 		},
 		{
-			name: "--model= value does not trigger subcommand detection (equals form)",
+			// --model=opus is a single --flag token; the scanner skips it, then
+			// finds "mcp" as the first positional → detected as subcommand.
+			name: "--model=opus form: mcp following it is detected as subcommand",
 			args: []string{"--model=opus", "mcp"},
 			want: ParsedArgs{
 				hasModel:     true,
+				isSubcommand: true,
 				filteredArgs: []string{"--model=opus", "mcp"},
+			},
+		},
+		{
+			// Home Manager prepends --plugin-dir before our script runs.
+			// The scanner must skip it and find the subcommand.
+			name: "--plugin-dir prepended by outer wrapper does not block detection",
+			args: []string{"--plugin-dir", "/nix/store/abc-plugin", "auto-mode", "defaults"},
+			want: ParsedArgs{
+				isSubcommand: true,
+				filteredArgs: []string{"--plugin-dir", "/nix/store/abc-plugin", "auto-mode", "defaults"},
+			},
+		},
+		{
+			name: "--plugin-dir value is not a subcommand (plugin-dir only, no subcommand)",
+			args: []string{"--plugin-dir", "/nix/store/abc-plugin", "--chat"},
+			want: ParsedArgs{
+				filteredArgs: []string{"--plugin-dir", "/nix/store/abc-plugin", "--chat"},
 			},
 		},
 	}
@@ -257,6 +277,74 @@ func TestParseArgs_Subcommands(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got.filteredArgs, tt.want.filteredArgs) {
 				t.Errorf("filteredArgs = %v, want %v", got.filteredArgs, tt.want.filteredArgs)
+			}
+		})
+	}
+}
+
+func TestFirstPositionalArg(t *testing.T) {
+	tests := []struct {
+		name string
+		args []string
+		want string
+	}{
+		{"empty", []string{}, ""},
+		{"plain subcommand", []string{"mcp", "list"}, "mcp"},
+		{"plugin-dir then subcommand", []string{"--plugin-dir", "/nix/store/abc", "mcp", "list"}, "mcp"},
+		{"model then subcommand", []string{"--model", "opus", "mcp", "list"}, "mcp"},
+		{"model equals form", []string{"--model=opus", "mcp"}, "mcp"},
+		{"only flags", []string{"--verbose", "--debug"}, ""},
+		{"plugin-dir only", []string{"--plugin-dir", "/path", "--chat"}, ""},
+		{"model consumes value not subcommand", []string{"--model", "mcp"}, ""},
+		{"multiple plugin-dirs then subcommand", []string{"--plugin-dir", "/a", "--plugin-dir", "/b", "doctor"}, "doctor"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := firstPositionalArg(tt.args)
+			if got != tt.want {
+				t.Errorf("firstPositionalArg(%v) = %q, want %q", tt.args, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStripPluginDirs(t *testing.T) {
+	tests := []struct {
+		name string
+		args []string
+		want []string
+	}{
+		{
+			name: "no plugin-dir flags",
+			args: []string{"mcp", "list"},
+			want: []string{"mcp", "list"},
+		},
+		{
+			name: "single plugin-dir stripped",
+			args: []string{"--plugin-dir", "/nix/store/abc", "auto-mode", "defaults"},
+			want: []string{"auto-mode", "defaults"},
+		},
+		{
+			name: "multiple plugin-dirs stripped",
+			args: []string{"--plugin-dir", "/a", "--plugin-dir", "/b", "doctor"},
+			want: []string{"doctor"},
+		},
+		{
+			name: "interleaved flags preserved",
+			args: []string{"--verbose", "--plugin-dir", "/a", "mcp"},
+			want: []string{"--verbose", "mcp"},
+		},
+		{
+			name: "empty input",
+			args: []string{},
+			want: []string{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := stripPluginDirs(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("stripPluginDirs(%v) = %v, want %v", tt.args, got, tt.want)
 			}
 		})
 	}
@@ -311,6 +399,14 @@ func TestSubcommandPath_NoInjection(t *testing.T) {
 			},
 			missingARNs: true,
 		},
+		{
+			// The HM module prepends --plugin-dir before our script runs.
+			// The subcommand fast-path must strip it to prevent orphan MCP servers.
+			name:           "HM-prepended --plugin-dir is stripped for subcommand",
+			args:           []string{"--plugin-dir", "/nix/store/abc-hm-plugin", "auto-mode", "defaults"},
+			defaultBackend: "anthropic",
+			readFile:       readFile,
+		},
 	}
 
 	pluginDirs := "/nix/store/abc-plugin"
@@ -332,9 +428,8 @@ func TestSubcommandPath_NoInjection(t *testing.T) {
 				t.Fatalf("parseArgs did not detect %v as subcommand invocation", tt.args)
 			}
 
-			// Emulate main()'s fast-path: when isSubcommand, exec claude-unwrapped
-			// with filteredArgs untouched — no backend resolution, no injection.
-			finalArgs := parsed.filteredArgs
+			// Emulate main()'s subcommand fast-path: strip plugin-dirs, no injection.
+			finalArgs := stripPluginDirs(parsed.filteredArgs)
 
 			// Sanity: if this code path is correct, we never reach configureBedrock.
 			// The presence of tt.missingARNs asserts the operability side-benefit:
@@ -351,7 +446,7 @@ func TestSubcommandPath_NoInjection(t *testing.T) {
 					t.Errorf("subcommand path must not inject --model, got args: %v", finalArgs)
 				}
 				if arg == "--plugin-dir" {
-					t.Errorf("subcommand path must not inject --plugin-dir, got args: %v", finalArgs)
+					t.Errorf("subcommand path must not pass --plugin-dir, got args: %v", finalArgs)
 				}
 			}
 

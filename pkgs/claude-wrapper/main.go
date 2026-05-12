@@ -51,7 +51,13 @@ func main() {
 	// reject session flags like --model, so no backend resolution, no model
 	// injection, no --plugin-dir injection, no _CLAUDE_SESSION env var.
 	if args.hasHelpOrVersion || args.isSubcommand {
-		execClaudeUnwrapped(args.filteredArgs)
+		// Strip --plugin-dir flags for subcommands: plugins start background MCP
+		// servers that become orphan jobs when the subcommand exits quickly.
+		finalArgs := args.filteredArgs
+		if args.isSubcommand {
+			finalArgs = stripPluginDirs(finalArgs)
+		}
+		execClaudeUnwrapped(finalArgs)
 		return
 	}
 
@@ -131,13 +137,52 @@ func parseArgs(args []string) ParsedArgs {
 		}
 	}
 
-	// Post-loop placement is deliberate: --bedrock/--anthropic have already
-	// been stripped, so `claude --bedrock mcp list` correctly resolves.
-	if len(parsed.filteredArgs) > 0 && claudeSubcommands[parsed.filteredArgs[0]] {
+	// Post-loop placement ensures --bedrock/--anthropic have already been
+	// stripped. We scan past flags-with-values (e.g. --plugin-dir injected
+	// by the Home Manager module before our script runs) to find the first
+	// positional argument, then check it against the subcommand allowlist.
+	if firstPositional := firstPositionalArg(parsed.filteredArgs); claudeSubcommands[firstPositional] {
 		parsed.isSubcommand = true
 	}
 
 	return parsed
+}
+
+// firstPositionalArg scans args and returns the first token that is not a
+// flag (--flag or -f) or the value of a known flag that takes an argument.
+// This handles wrappers that prepend flags like --plugin-dir before our script.
+func firstPositionalArg(args []string) string {
+	// Flags that consume the next token as their value.
+	flagsWithValues := map[string]bool{
+		"--plugin-dir": true,
+		"--model":      true,
+	}
+	for i := 0; i < len(args); i++ {
+		arg := args[i]
+		switch {
+		case flagsWithValues[arg]:
+			i++ // skip value
+		case strings.HasPrefix(arg, "-"):
+			// flag in --flag=value or -f form; no extra skip needed
+		default:
+			return arg
+		}
+	}
+	return ""
+}
+
+// stripPluginDirs removes all --plugin-dir <value> pairs from args.
+// Used for subcommand invocations to prevent orphan MCP server processes.
+func stripPluginDirs(args []string) []string {
+	result := make([]string, 0, len(args))
+	for i := 0; i < len(args); i++ {
+		if args[i] == "--plugin-dir" {
+			i++ // skip value
+		} else {
+			result = append(result, args[i])
+		}
+	}
+	return result
 }
 
 // resolveBackend determines which backend to use based on explicit flags
