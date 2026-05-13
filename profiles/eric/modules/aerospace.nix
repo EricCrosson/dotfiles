@@ -97,6 +97,14 @@ _: {
           run = "layout floating";
         }
         {
+          "if".app-id = "org.pqrs.Karabiner-Elements.Preferences";
+          run = "layout floating";
+        }
+        {
+          "if".app-id = "com.apple.VoiceMemos";
+          run = "layout floating";
+        }
+        {
           "if".app-id = "com.tinyspeck.slackmacgap";
           run = "move-node-to-workspace 8";
         }
