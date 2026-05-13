@@ -150,6 +150,11 @@ in {
 
           # ── zsh-defer (must load before any deferred calls) ────────────────
           source ${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh
+
+          # ── smart-cd (must load before first prompt) ────────────────────────
+          # Sourced synchronously so its initial eza listing precedes ZLE's
+          # first prompt render; zsh-defer fires after the cursor is drawn.
+          source ${p.smart-cd}/smart-cd.plugin.zsh
         '')
         (''
             # ── Fast initial prompt (native zsh, no subprocess) ──────────────
@@ -179,7 +184,6 @@ in {
             if [[ $TERM != "dumb" ]]; then
               zsh-defer -a +p -t 0.1 -c 'source ${starshipInitZsh}'
             fi
-            zsh-defer -a source ${p.smart-cd}/smart-cd.plugin.zsh
             zsh-defer -a source ${p.fzf-tab}/fzf-tab.plugin.zsh
             zsh-defer -a +m +s source ${p.zsh-autosuggestions}/zsh-autosuggestions.plugin.zsh
             zsh-defer -a source ${p.zsh-autopair}/zsh-autopair.plugin.zsh
