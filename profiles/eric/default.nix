@@ -11,9 +11,6 @@
   linuxImports = [
     ../../os/linux
   ];
-  fzfAltCCommand = pkgs.writeShellScript "fzf-alt-c-command" ''
-    { fd --type d --absolute-path; zoxide query -l 2>/dev/null; } | awk -v home="$HOME" '{ sub(/\/$/, "") } !seen[tolower($0)]++ { sub("^" home, "~"); print }'
-  '';
   alabasterBat = ../../pkgs/bat-themes;
 in {
   imports =
@@ -37,7 +34,7 @@ in {
 
     sessionVariables = {
       EDITOR = "${inputs.helix.packages.${pkgs.system}.default}/bin/hx";
-      FZF_ALT_C_COMMAND = "${fzfAltCCommand}";
+      FZF_ALT_C_COMMAND = "fd --type d";
       FZF_DEFAULT_COMMAND = "fd --type f";
       FZF_CTRL_T_COMMAND = "fd --type f";
       MANPAGER = "sh -c 'col -bx | bat -l man -p'";
@@ -98,17 +95,6 @@ in {
     ];
 
     file = {
-      ".config/fd/ignore" = {
-        text = ''
-          .direnv/
-          .git/
-          build/
-          dist/
-          node_modules/
-          target/
-        '';
-      };
-
       ".homebrew/brew.env".text = ''
         HOMEBREW_NO_UPDATE_REPORT_NEW=1
       '';
@@ -129,11 +115,6 @@ in {
         update_check = false;
         search_mode = "fuzzy";
       };
-    };
-
-    zoxide = {
-      enable = true;
-      enableZshIntegration = false; # sourced via zsh-defer in initContent
     };
 
     bat = {

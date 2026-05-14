@@ -30,13 +30,6 @@
       mkdir -p $ATUIN_CONFIG_DIR
       atuin init zsh --disable-up-arrow > $out
     '';
-  zoxideInitZsh =
-    pkgs.runCommand "zoxide-init-zsh" {
-      nativeBuildInputs = [pkgs.zoxide];
-    } ''
-      zoxide init zsh > $out
-    '';
-
   # Plugin sources — extracted so we can manage fpath and sourcing manually
   # with zsh-defer instead of letting home-manager source them synchronously
   pluginSrcs = {
@@ -170,10 +163,9 @@ in {
 
             # ── Tier 0: Functional interactivity (immediate) ─────────────────
             # Must complete before first user interaction.
-            # Alt-C (95% workflow) needs direnv + zoxide; Ctrl-R (5%) needs atuin.
+            # Alt-C (95% workflow) needs direnv; Ctrl-R (5%) needs atuin.
             zsh-defer -a source ${../../../zsh/compinit.zsh}
             zsh-defer -a source ${direnvInitZsh}
-            zsh-defer -a source ${zoxideInitZsh}
             zsh-defer -a -c 'if [[ $options[zle] = on ]]; then source ${atuinInitZsh}; fi'
           ''
           + builtins.readFile ../../../zsh/fzf-cd-widget.zsh
