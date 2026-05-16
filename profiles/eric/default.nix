@@ -96,6 +96,7 @@ in {
 
     file = {
       ".homebrew/brew.env".text = ''
+        HOMEBREW_NO_ENV_HINTS=1
         HOMEBREW_NO_UPDATE_REPORT_NEW=1
       '';
     };
