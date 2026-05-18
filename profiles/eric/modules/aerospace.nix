@@ -105,6 +105,10 @@ _: {
           run = "layout floating";
         }
         {
+          "if".app-id = "com.apple.clock";
+          run = "layout floating";
+        }
+        {
           "if".app-id = "com.apple.dt.Xcode";
           run = "layout floating";
         }
