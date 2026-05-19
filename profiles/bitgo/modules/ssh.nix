@@ -67,22 +67,23 @@ in {
       ssh = {
         enable = true;
         enableDefaultConfig = false;
-        matchBlocks = {
+        settings = {
           "github.com-bitgo" = {
-            host = "github.com-bitgo";
-            hostname = "github.com";
+            HostName = "github.com";
             # Enable ControlMaster for work since this is a work machine
             # and work operations are frequent. YubiKey touch is expected.
-            inherit (cfg.github) controlMaster controlPersist serverAliveInterval;
-            controlPath = "${cfg.socketDir}/%C-%i-bitgo";
+            ControlMaster = cfg.github.controlMaster;
+            ControlPersist = cfg.github.controlPersist;
+            ServerAliveInterval = cfg.github.serverAliveInterval;
+            ControlPath = "${cfg.socketDir}/%C-%i-bitgo";
           };
           "github.com" = {
-            hostname = "github.com";
-            identityAgent = "\"${config.home.homeDirectory}/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock\"";
+            HostName = "github.com";
+            IdentityAgent = "\"${config.home.homeDirectory}/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock\"";
             # Disable ControlMaster for personal since personal operations
             # are rare on this work machine
-            controlMaster = "no";
-            inherit (cfg.github) serverAliveInterval;
+            ControlMaster = "no";
+            ServerAliveInterval = cfg.github.serverAliveInterval;
           };
         };
       };
