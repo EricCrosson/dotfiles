@@ -7,10 +7,6 @@
 }: let
   chrome-devtools-mcp = pkgs.callPackage ../../pkgs/chrome-devtools-mcp {};
 
-  claudePlugins = {
-    context-mode = pkgs.callPackage ../../pkgs/context-mode-plugin {};
-  };
-
   standaloneClaude = pkgs.runCommand "standalone-claude" {} ''
     mkdir -p $out/bin
     ln -s ${config.home.homeDirectory}/.local/bin/claude $out/bin/claude
@@ -186,7 +182,6 @@ in {
         bedrockOpusFile = config.bitgo.sops.secretPaths.bedrock_opus_arn;
         bedrockSonnetFile = config.bitgo.sops.secretPaths.bedrock_sonnet_arn;
         bedrockHaikuFile = config.bitgo.sops.secretPaths.bedrock_haiku_arn;
-        pluginDirs = [claudePlugins.context-mode];
       };
       inherit mcpServers;
       context = inputs.cortex.lib.cortex-instructions;
