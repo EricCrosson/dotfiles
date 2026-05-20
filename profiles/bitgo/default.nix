@@ -26,16 +26,10 @@
     };
   };
 
-  claudeNotificationIcon = ../../claude/assets/claude-icon.png;
-
   claudeNotificationScript = pkgs.writeShellApplication {
     name = "claude-notification";
-    runtimeInputs = [pkgs.jq pkgs.terminal-notifier];
-    text =
-      ''
-        export CLAUDE_NOTIFICATION_ICON=${claudeNotificationIcon}
-      ''
-      + builtins.readFile ../../claude/hooks/notification.sh;
+    runtimeInputs = [pkgs.jq];
+    text = builtins.readFile ../../claude/hooks/notification.sh;
   };
 
   claudeFormatOnEditScript = pkgs.writeShellApplication {

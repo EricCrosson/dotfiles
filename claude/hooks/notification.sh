@@ -11,15 +11,13 @@ if [ -n "$TITLE" ]; then
   NOTIF_TITLE="$REPO: $TITLE"
 fi
 
-ARGS=(
-  -title "$NOTIF_TITLE"
-  -message "$MESSAGE"
-  -activate com.mitchellh.ghostty
-  -group "claude-code-${CWD}"
-)
-
-if [ -n "${CLAUDE_NOTIFICATION_ICON:-}" ] && [ -f "$CLAUDE_NOTIFICATION_ICON" ]; then
-  ARGS+=(-appIcon "$CLAUDE_NOTIFICATION_ICON")
-fi
-
-terminal-notifier "${ARGS[@]}"
+# Pass title/message as argv to avoid AppleScript injection; beep plays the
+# system alert sound configured in System Settings > Sound > Alert Sound.
+osascript - "$NOTIF_TITLE" "$MESSAGE" <<'APPLESCRIPT'
+on run argv
+  set notifTitle to item 1 of argv
+  set notifMessage to item 2 of argv
+  beep
+  display notification notifMessage with title notifTitle
+end run
+APPLESCRIPT
