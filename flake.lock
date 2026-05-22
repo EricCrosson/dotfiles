@@ -401,11 +401,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1778562810,
-        "narHash": "sha256-aTqR+rFp06o7guledsWulszfMQDu9kMcSDUDO3EKg7o=",
+        "lastModified": 1779425479,
+        "narHash": "sha256-+/hjp5mucxFKuziQydmgpomNmw6iBYm7N5IzHIAmYrE=",
         "owner": "ericcrosson",
         "repo": "git-disjoint",
-        "rev": "eadd64895095999b7e46f4e41c92811128dfd374",
+        "rev": "1524faea2f8a6a1d5b330e20a181ee4554ccb043",
         "type": "github"
       },
       "original": {
