@@ -169,7 +169,7 @@ in {
     };
 
     cortex = {
-      enable = true;
+      enable = false;
       url = "http://127.0.0.1:3001";
     };
 

@@ -44,7 +44,6 @@ in {
     };
 
     packages = with pkgs; [
-      inputs.cortex.packages.${pkgs.system}.default
       inputs.bell.packages.${pkgs.system}.default
       inputs.retry.packages.${pkgs.system}.default
 
