@@ -61,32 +61,29 @@ in {
     file = {
     };
 
-    packages = with pkgs;
-      [
-        amazon-ecr-credential-helper
-        awscli2
-        cloudflared
-        github-copilot-cli
-      ]
-      ++ [inputs.git-disjoint.packages.${pkgs.system}.default]
-      ++ [inputs.git-dl.packages.${pkgs.system}.default]
-      ++ [
-        antigravity-cli
-        gh
-        k9s
-        kubectl
-        kubectx
-        kustomize
-        nodejs # Install npm
-        poppler-utils # Install pdftotext for aichat
-        yq-go
+    packages = with pkgs; [
+      amazon-ecr-credential-helper
+      antigravity-cli
+      awscli2
+      cloudflared
+      gh
+      github-copilot-cli
+      inputs.git-disjoint.packages.${pkgs.system}.default
+      inputs.git-dl.packages.${pkgs.system}.default
+      k9s
+      kubectl
+      kubectx
+      kustomize
+      nodejs # Install npm
+      poppler-utils # Install pdftotext for aichat
+      yq-go
 
-        inputs.aws-console-bitgo.packages.${pkgs.system}.default
-        awsSaml
+      inputs.aws-console-bitgo.packages.${pkgs.system}.default
+      awsSaml
 
-        # 1Password CLI for secret management
-        _1password-cli
-      ];
+      # 1Password CLI for secret management
+      _1password-cli
+    ];
 
     activation = {
       installClaude = config.lib.dag.entryAfter ["writeBoundary"] ''
