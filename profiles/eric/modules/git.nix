@@ -67,6 +67,7 @@ in {
       };
       ignores = [
         ".DS_Store"
+        "/.antigravitycli"
         "/.claude/settings.local.json"
         "/.claude/worktrees"
         "/.direnv"
