@@ -71,6 +71,7 @@ in {
       ++ [inputs.git-disjoint.packages.${pkgs.system}.default]
       ++ [inputs.git-dl.packages.${pkgs.system}.default]
       ++ [
+        antigravity-cli
         gh
         k9s
         kubectl
