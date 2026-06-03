@@ -182,7 +182,7 @@ in {
         bedrockHaikuFile = config.bitgo.sops.secretPaths.bedrock_haiku_arn;
       };
       inherit mcpServers;
-      context = inputs.cortex.lib.cortex-instructions;
+      # context = inputs.cortex.lib.cortex-instructions;
       skills = ../../claude/skills;
       rulesDir = ../../claude/rules;
       settings = {
