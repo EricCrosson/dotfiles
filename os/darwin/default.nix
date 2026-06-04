@@ -27,7 +27,7 @@
 
     activation = {
       setDefaultApps = config.lib.dag.entryAfter ["writeBoundary"] ''
-        ${pkgs.duti}/bin/duti -s com.colliderli.iina io.iina.mkv all
+        ${pkgs.duti}/bin/duti -s com.colliderli.iina .mkv all
       '';
     };
   };
