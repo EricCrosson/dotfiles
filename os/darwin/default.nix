@@ -27,6 +27,8 @@
 
     activation = {
       setDefaultApps = config.lib.dag.entryAfter ["writeBoundary"] ''
+        /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister \
+          -f "${config.home.homeDirectory}/Applications/Home Manager Apps/IINA.app"
         ${pkgs.duti}/bin/duti -s com.colliderli.iina .mkv all
       '';
     };
