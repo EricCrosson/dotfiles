@@ -22,6 +22,7 @@
       onActivation = {
         autoUpdate = true;
         cleanup = "uninstall";
+        extraFlags = ["--force"];
         upgrade = true;
       };
 
