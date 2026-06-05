@@ -13,7 +13,7 @@ Add these steps to your task list:
 
 ## Fields
 
-- **Team** — default: CTX
+- **Team** — default: AI
 - **Title** — one line, imperative, specific
 - **Description** — context, acceptance criteria, and implementation notes in Markdown. Can be left blank if I asked you to create the issue but did not provide enough context to populate this.
 - **Assignee** — default: Eric Crosson
