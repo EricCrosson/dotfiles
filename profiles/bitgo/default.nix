@@ -188,6 +188,7 @@ in {
       settings = {
         autoUpdates = true;
         cleanupPeriodDays = 99999;
+        showClearContextOnPlanAccept = true;
         skipDangerousModePermissionPrompt = true;
         terminalProgressBarEnabled = false;
         env = {
