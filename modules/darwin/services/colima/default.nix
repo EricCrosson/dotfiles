@@ -112,6 +112,7 @@ in {
         echo "Configuring Docker BuildKit CLI plugin for user ${cfg.username}..."
         mkdir -p "${cfg.homeDirectory}/.docker/cli-plugins"
         sudo -u "${cfg.username}" ln -sfn /opt/homebrew/bin/docker-buildx "${cfg.homeDirectory}/.docker/cli-plugins/docker-buildx"
+        sudo -u "${cfg.username}" ln -sfn /opt/homebrew/bin/docker-compose "${cfg.homeDirectory}/.docker/cli-plugins/docker-compose"
       '';
 
       launchd.user.agents.colima = {
