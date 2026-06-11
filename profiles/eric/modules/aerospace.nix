@@ -105,6 +105,10 @@ _: {
           run = "layout floating";
         }
         {
+          "if".app-id = "com.apple.reminders";
+          run = "layout floating";
+        }
+        {
           "if".app-id = "com.apple.VoiceMemos";
           run = "layout floating";
         }
