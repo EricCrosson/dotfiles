@@ -26,6 +26,10 @@
         upgrade = true;
       };
 
+      taps = [
+        "manaflow-ai/cmux"
+      ];
+
       brews = [
         "md5sha1sum"
         "xcodegen"
@@ -37,6 +41,7 @@
 
       casks = [
         "1password"
+        "cmux"
         "ghostty"
         "handy"
         "postman"
