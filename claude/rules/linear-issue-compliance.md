@@ -23,7 +23,7 @@ reference, create an issue and retry.
 <good-example>
 feat(api): add rate limiting
 
-Ticket: DX-1234
+Ticket: AI-1234
 </good-example>
 
 <bad-example>

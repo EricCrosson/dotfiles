@@ -103,14 +103,14 @@ Explains reasoning and constraints
 
 ```
 
-Closes Ticket: DX-1234
+Closes Ticket: AI-1234
 
 ```
 Auto-closes Jira ticket when merged.
 
 ```
 
-Ticket: DX-1234
+Ticket: AI-1234
 
 ```
 References without closing.
