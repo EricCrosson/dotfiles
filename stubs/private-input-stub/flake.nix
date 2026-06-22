@@ -29,7 +29,7 @@
       gh-endorse = stub;
     });
 
-    # Stub for cortex and atlas home-manager modules
+    # Stub for atlas home-manager modules
     homeManagerModules.default = {
       lib,
       pkgs,
@@ -46,14 +46,6 @@
         '';
       };
     in {
-      options.programs.cortex = {
-        enable = lib.mkEnableOption "cortex";
-        url = lib.mkOption {
-          type = lib.types.str;
-          default = "";
-          description = "Cortex server URL";
-        };
-      };
       options.programs.atlas = {
         enable = lib.mkEnableOption "atlas";
         package = lib.mkOption {
@@ -76,8 +68,5 @@
       };
       config.programs.atlas.initScript = pkgs.writeText "atlas-init-zsh-stub" "";
     };
-
-    # Stub for cortex library
-    lib.cortex-instructions = "";
   };
 }

@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   profile,
   config,
   inputs,
@@ -21,6 +22,13 @@
       command = "${pkgs.context7-mcp}/bin/context7-mcp";
     };
   };
+
+  rulesDir = ../../claude/rules;
+  rulesContext = lib.concatStringsSep "\n\n" (
+    map (name: builtins.readFile (rulesDir + "/${name}"))
+    (builtins.attrNames (lib.filterAttrs (n: _: lib.hasSuffix ".md" n)
+        (builtins.readDir rulesDir)))
+  );
 
   claudeNotificationScript = pkgs.writeShellApplication {
     name = "claude-notification";
@@ -51,7 +59,6 @@ in {
     ../../modules/home-manager
     inputs._1password-shell-plugins.hmModules.default
     inputs.atlas.homeManagerModules.default
-    inputs.cortex.homeManagerModules.default
   ];
 
   bitgo.ssh.enable = true;
@@ -64,7 +71,6 @@ in {
     packages = with pkgs; [
       agent-browser
       amazon-ecr-credential-helper
-      antigravity-cli
       awscli2
       cloudflared
       gh
@@ -160,17 +166,13 @@ in {
 
     conductor.enable = false;
 
-    codex = {
+    antigravity-cli = {
       enable = true;
       skills = ../../claude/skills;
-      settings = {
-        mcp_servers = mcpServers;
+      inherit mcpServers;
+      context = {
+        GEMINI = rulesContext;
       };
-    };
-
-    cortex = {
-      enable = false;
-      url = "http://127.0.0.1:3001";
     };
 
     claude-code = {
@@ -184,9 +186,8 @@ in {
         bedrockHaikuFile = config.bitgo.sops.secretPaths.bedrock_haiku_arn;
       };
       inherit mcpServers;
-      # context = inputs.cortex.lib.cortex-instructions;
       skills = ../../claude/skills;
-      rulesDir = ../../claude/rules;
+      inherit rulesDir;
       settings = {
         autoUpdates = true;
         cleanupPeriodDays = 99999;

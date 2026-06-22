@@ -127,32 +127,6 @@
         "type": "github"
       }
     },
-    "cortex": {
-      "inputs": {
-        "crane": [
-          "crane"
-        ],
-        "fenix": [
-          "fenix"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1772825926,
-        "narHash": "sha256-SomLdNJ3edmC5liMzL3pi/+sFqU8PtrXBOY6lh/GQvc=",
-        "ref": "refs/heads/master",
-        "rev": "f4f52bba2e2a6b7aadce70765ba9327491a61ee3",
-        "revCount": 215,
-        "type": "git",
-        "url": "ssh://git@github.com-bitgo/BitGo/cortex"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://git@github.com-bitgo/BitGo/cortex"
-      }
-    },
     "crane": {
       "locked": {
         "lastModified": 1781825982,
@@ -754,7 +728,6 @@
         "aws-saml-bitgo": "aws-saml-bitgo",
         "bash-barrier": "bash-barrier",
         "bell": "bell",
-        "cortex": "cortex",
         "crane": "crane",
         "fenix": "fenix",
         "gh-arm": "gh-arm",
