@@ -69,6 +69,7 @@ in {
       cloudflared
       gh
       github-copilot-cli
+      google-cloud-sdk
       inputs.git-disjoint.packages.${pkgs.system}.default
       inputs.git-dl.packages.${pkgs.system}.default
       k9s
