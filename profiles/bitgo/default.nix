@@ -62,6 +62,7 @@ in {
     };
 
     packages = with pkgs; [
+      agent-browser
       amazon-ecr-credential-helper
       antigravity-cli
       awscli2
