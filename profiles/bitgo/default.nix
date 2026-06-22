@@ -13,7 +13,7 @@
     ln -s ${config.home.homeDirectory}/.local/bin/claude $out/bin/claude
   '';
 
-  mcpServers = {
+  baseMcpServers = {
     chrome-devtools = {
       command = "${chrome-devtools-mcp}/bin/chrome-devtools-mcp";
       args = ["--isolated"];
@@ -22,6 +22,15 @@
       command = "${pkgs.context7-mcp}/bin/context7-mcp";
     };
   };
+
+  mcpServers =
+    baseMcpServers
+    // {
+      linear = {
+        command = "npx";
+        args = ["-y" "mcp-remote" "https://mcp.linear.app/mcp"];
+      };
+    };
 
   rulesDir = ../../claude/rules;
   rulesContext = lib.concatStringsSep "\n\n" (
@@ -175,6 +184,14 @@ in {
       };
     };
 
+    codex = {
+      enable = true;
+      skills = ../../claude/skills;
+      settings = {
+        mcp_servers = mcpServers;
+      };
+    };
+
     claude-code = {
       enable = true;
       package = pkgs.callPackage ../../pkgs/claude-wrapper {} {
@@ -185,7 +202,7 @@ in {
         bedrockSonnetFile = config.bitgo.sops.secretPaths.bedrock_sonnet_arn;
         bedrockHaikuFile = config.bitgo.sops.secretPaths.bedrock_haiku_arn;
       };
-      inherit mcpServers;
+      mcpServers = baseMcpServers;
       skills = ../../claude/skills;
       inherit rulesDir;
       settings = {
