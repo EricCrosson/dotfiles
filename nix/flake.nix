@@ -28,10 +28,13 @@
   in {
     checks = forEachSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
-      pre-commit-check = pkgs.callPackage ./git-hooks.nix {inherit git-hooks;};
+      pre-commit-check = pkgs.callPackage ./git-hooks.nix {
+        inherit git-hooks;
+        go = pkgs.go_1_26;
+      };
       claude-wrapper-test =
         pkgs.runCommand "claude-wrapper-test" {
-          nativeBuildInputs = [pkgs.go];
+          nativeBuildInputs = [pkgs.go_1_26];
           src = self.sourceInfo + "/pkgs/claude-wrapper";
         } ''
           cd $src
@@ -126,7 +129,10 @@
 
     devShells = forEachSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
-      pre-commit-check = pkgs.callPackage ./git-hooks.nix {inherit git-hooks;};
+      pre-commit-check = pkgs.callPackage ./git-hooks.nix {
+        inherit git-hooks;
+        go = pkgs.go_1_26;
+      };
     in {
       default = pkgs.mkShell {
         inherit (pre-commit-check) shellHook;
