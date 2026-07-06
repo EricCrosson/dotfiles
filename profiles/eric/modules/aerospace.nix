@@ -123,11 +123,11 @@ _: {
         }
         {
           "if".app-id = "com.tinyspeck.slackmacgap";
-          run = "move-node-to-workspace 0";
+          run = "move-node-to-workspace 1";
         }
         {
           "if".app-id = "com.goodsnooze.MacWhisper";
-          run = "move-node-to-workspace 0";
+          run = "move-node-to-workspace 1";
         }
       ];
       workspace-to-monitor-force-assignment = {
