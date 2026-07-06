@@ -27,7 +27,6 @@
       };
 
       taps = [
-        "manaflow-ai/cmux"
       ];
 
       brews = [
@@ -41,7 +40,6 @@
 
       casks = [
         "1password"
-        "cmux"
         "ghostty"
         "handy"
         "postman"
