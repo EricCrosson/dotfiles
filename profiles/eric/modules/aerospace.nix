@@ -122,7 +122,7 @@ _: {
         }
         {
           "if".app-id = "com.tinyspeck.slackmacgap";
-          run = "move-node-to-workspace 8";
+          run = "move-node-to-workspace 0";
         }
       ];
       workspace-to-monitor-force-assignment = {
