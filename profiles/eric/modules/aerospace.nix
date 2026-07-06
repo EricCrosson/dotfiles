@@ -124,6 +124,10 @@ _: {
           "if".app-id = "com.tinyspeck.slackmacgap";
           run = "move-node-to-workspace 0";
         }
+        {
+          "if".app-id = "com.goodsnooze.MacWhisper";
+          run = "move-node-to-workspace 0";
+        }
       ];
       workspace-to-monitor-force-assignment = {
         "1" = "dell u2718q";
