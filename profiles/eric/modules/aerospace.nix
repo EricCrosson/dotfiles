@@ -3,6 +3,7 @@ _: {
     enable = true;
     launchd.enable = true;
     settings = {
+      "config-version" = 2;
       mode = {
         main.binding = {
           alt-h = "focus left";
