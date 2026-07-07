@@ -55,7 +55,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     gh-endorse = {
-      url = "git+ssh://git@github.com-bitgo/bitgo/gh-endorse?ref=ericcrosson/dx-570-soft-skip-clean-status";
+      url = "git+ssh://git@github.com-bitgo/bitgo/gh-endorse";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     gh-arm = {

@@ -334,16 +334,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1776777374,
-        "narHash": "sha256-L66bDcsMniLTW35S0WOvExLV2M+w9DZwYQ3CX3JiWq0=",
-        "ref": "ericcrosson/dx-570-soft-skip-clean-status",
-        "rev": "fb019ace22b34a5b7e9e57ec0566661e87cf59f9",
-        "revCount": 68,
+        "lastModified": 1783347621,
+        "narHash": "sha256-zgpwnPhSlPY4swRMAFYYWRafsus1MBSDxvJ6eR/+RNQ=",
+        "ref": "refs/heads/master",
+        "rev": "e87e3045339cab03ba6ea6fd6bf25880c1fb0519",
+        "revCount": 120,
         "type": "git",
         "url": "ssh://git@github.com-bitgo/bitgo/gh-endorse"
       },
       "original": {
-        "ref": "ericcrosson/dx-570-soft-skip-clean-status",
         "type": "git",
         "url": "ssh://git@github.com-bitgo/bitgo/gh-endorse"
       }
