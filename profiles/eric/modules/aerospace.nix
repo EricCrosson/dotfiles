@@ -94,7 +94,7 @@ _: {
           run = "layout floating";
         }
         {
-          "if".app-id = "com.yubico.authenticator";
+          "if".app-id = "com.yubico.yubioath";
           run = "layout floating";
         }
         {
