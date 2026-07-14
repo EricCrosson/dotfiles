@@ -42,6 +42,7 @@ in {
         inputs.gh-arm.packages.${pkgs.system}.default
         inputs.gh-automerge.packages.${pkgs.system}.default
         gh-stack
+        pkgs.gh-aw
       ];
       gitCredentialHelper = {
         enable = false;
