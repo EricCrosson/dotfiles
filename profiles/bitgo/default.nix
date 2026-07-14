@@ -194,14 +194,16 @@ in {
 
     claude-code = {
       enable = true;
-      package = pkgs.callPackage ../../pkgs/claude-wrapper {} {
-        claude-code = standaloneClaude;
-        bedrockProfile = config.claude-options.bedrock.profile;
-        bedrockRegion = config.claude-options.bedrock.region;
-        bedrockOpusFile = config.bitgo.sops.secretPaths.bedrock_opus_arn;
-        bedrockSonnetFile = config.bitgo.sops.secretPaths.bedrock_sonnet_arn;
-        bedrockHaikuFile = config.bitgo.sops.secretPaths.bedrock_haiku_arn;
-      };
+      package =
+        (pkgs.callPackage ../../pkgs/claude-wrapper {} {
+          claude-code = standaloneClaude;
+          bedrockProfile = config.claude-options.bedrock.profile;
+          bedrockRegion = config.claude-options.bedrock.region;
+          bedrockOpusFile = config.bitgo.sops.secretPaths.bedrock_opus_arn;
+          bedrockSonnetFile = config.bitgo.sops.secretPaths.bedrock_sonnet_arn;
+          bedrockHaikuFile = config.bitgo.sops.secretPaths.bedrock_haiku_arn;
+        })
+        // {version = "2.1.206";};
       mcpServers = baseMcpServers;
       skills = ../../claude/skills;
       inherit rulesDir;
