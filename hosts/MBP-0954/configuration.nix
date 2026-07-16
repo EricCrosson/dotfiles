@@ -27,9 +27,11 @@
       };
 
       taps = [
+        "can1357/tap"
       ];
 
       brews = [
+        "can1357/tap/omp"
         "md5sha1sum"
         "xcodegen"
       ];
