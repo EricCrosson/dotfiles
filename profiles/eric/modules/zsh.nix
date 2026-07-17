@@ -206,6 +206,7 @@ in {
     ];
 
     shellAliases = {
+      agy = "agy --dangerously-skip-permissions";
       g = "git";
       h = "hx --vsplit";
       l = "eza -lg --git --time-style=long-iso";
