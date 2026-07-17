@@ -211,6 +211,7 @@ in {
       h = "hx --vsplit";
       l = "eza -lg --git --time-style=long-iso";
       npx = "npx --no-install";
+      omp = "omp --provider openrouter";
       ssh = "ssh -t";
       viddy = "viddy --differences";
     };
