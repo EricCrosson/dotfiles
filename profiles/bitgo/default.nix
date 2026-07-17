@@ -363,7 +363,7 @@ in {
       shellAliases = {
         chat = "aichat";
         cmd = "aichat -e";
-        omp = lib.mkForce "GOOGLE_CLOUD_PROJECT=ai-enablement-500217 GOOGLE_CLOUD_LOCATION=us omp --provider openrouter";
+        omp = lib.mkForce "OPENROUTER_API_KEY=\\$(cat ${config.bitgo.sops.secretPaths.openrouter_api_key}) GOOGLE_CLOUD_PROJECT=ai-enablement-500217 GOOGLE_CLOUD_LOCATION=us omp --provider openrouter";
       };
     };
   };

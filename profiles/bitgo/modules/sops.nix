@@ -26,6 +26,10 @@ in {
         type = types.str;
         readOnly = true;
       };
+      openrouter_api_key = mkOption {
+        type = types.str;
+        readOnly = true;
+      };
     };
   };
 
@@ -42,6 +46,7 @@ in {
         bedrock_opus_arn = {};
         bedrock_sonnet_arn = {};
         bedrock_haiku_arn = {};
+        openrouter_api_key = {};
       };
     };
 
@@ -52,12 +57,14 @@ in {
         bedrock_opus_arn = config.sops.secrets.bedrock_opus_arn.path;
         bedrock_sonnet_arn = config.sops.secrets.bedrock_sonnet_arn.path;
         bedrock_haiku_arn = config.sops.secrets.bedrock_haiku_arn.path;
+        openrouter_api_key = config.sops.secrets.openrouter_api_key.path;
       }
       else {
         atlas_bedrock_model_id = "/dev/null";
         bedrock_opus_arn = "/dev/null";
         bedrock_sonnet_arn = "/dev/null";
         bedrock_haiku_arn = "/dev/null";
+        openrouter_api_key = "/dev/null";
       };
   };
 }
