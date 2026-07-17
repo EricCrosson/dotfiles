@@ -1,5 +1,5 @@
 ---
-name: Drive to Completion
+name: drive-to-completion
 description: Use when implementing any task end-to-end without user intervention - ensures continuous forward progress by always having a next tool call until the task is fully complete
 ---
 
