@@ -182,6 +182,37 @@ in {
       context = {
         GEMINI = rulesContext;
       };
+      settings = {
+        colorScheme = "light";
+        enableTelemetry = false;
+        gcp = {
+          project = "ai-enablement-500217";
+          location = "us";
+        };
+        model = "Gemini 3.5 Flash (Medium)";
+        runningLightSpeed = "fast";
+        trustedWorkspaces = [
+          "/Users/ericcrosson/workspace/EricCrosson/dotfiles"
+          "/Users/ericcrosson/Downloads/scratch"
+          "/Users/ericcrosson/workspace/BitGo/dev-console"
+          "/Users/ericcrosson/workspace/scratch"
+          "/Users/ericcrosson/workspace/BitGo/api-spec-drift-monitor"
+          "/Users/ericcrosson/Downloads/iCloud Photos"
+          "/Users/ericcrosson/workspace/BitGo/developer-portal"
+          "/Users/ericcrosson/workspace/BitGo/ai-agent"
+          "/Users/ericcrosson/workspace/borskonomicon/borskonomicon.github.io"
+        ];
+      };
+      permissions = {
+        allow = [
+          "mcp(linear/get_issue)"
+          "mcp(linear/list_issues)"
+          "command(git config)"
+          "mcp(linear/list_comments)"
+          "command(which)"
+          "mcp(linear/search_documentation)"
+        ];
+      };
     };
 
     codex = {
