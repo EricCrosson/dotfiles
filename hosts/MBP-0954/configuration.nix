@@ -28,10 +28,12 @@
 
       taps = [
         "can1357/tap"
+        "kunobi-ninja/kunobi"
       ];
 
       brews = [
         "can1357/tap/omp"
+        "kunobi-ninja/kunobi/kache"
         "md5sha1sum"
         "xcodegen"
       ];
