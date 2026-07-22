@@ -60,6 +60,8 @@
   # The shell wrapper must exec the Go binary, not some other command
   test-exec = assert assertContains "exec-wrapper" script "exec claude-wrapper"; true;
 
+  test-no-flicker = assert assertContains "no-flicker" script "CLAUDE_CODE_NO_FLICKER="; true;
+
   # === Plugin directory assertions ===
 
   # Build a wrapper with plugin directories
@@ -85,5 +87,6 @@ in
   assert test-bedrock-sonnet-file;
   assert test-bedrock-haiku-file;
   assert test-exec;
+  assert test-no-flicker;
   assert test-plugin-dirs;
   assert test-no-plugin-dirs-default; "all tests passed"

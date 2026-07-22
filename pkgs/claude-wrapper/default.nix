@@ -41,6 +41,7 @@ in
         # for shell parameter expansion. Nix interpolation fills in defaults.
         export _CLAUDE_UNWRAPPED=${claude-code}/bin/claude
         export _CLAUDE_DEFAULT_BACKEND=${lib.escapeShellArg defaultBackend}
+        export CLAUDE_CODE_NO_FLICKER=''${CLAUDE_CODE_NO_FLICKER:-1}
 
         # Bedrock config — available for the Go wrapper when --bedrock is passed.
         # Paths are exported; the Go wrapper reads files on demand.
