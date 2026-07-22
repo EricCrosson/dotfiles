@@ -75,6 +75,7 @@ in {
 
   home = {
     file = {
+      ".gemini/antigravity-cli/settings.json".force = true;
     };
 
     packages = with pkgs; [
