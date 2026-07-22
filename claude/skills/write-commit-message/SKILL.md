@@ -106,7 +106,7 @@ Explains reasoning and constraints
 Closes Ticket: AI-1234
 
 ```
-Auto-closes Jira ticket when merged.
+Auto-closes Linear issue when merged.
 
 ```
 
