@@ -54,6 +54,10 @@
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    gh-gantt = {
+      url = "git+ssh://git@github.com-bitgo/bitgo/gh-gantt";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     gh-endorse = {
       url = "git+ssh://git@github.com-bitgo/bitgo/gh-endorse";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -27,6 +27,7 @@
     in {
       default = stub;
       gh-endorse = stub;
+      gh-gantt = stub;
     });
 
     # Stub for atlas home-manager modules

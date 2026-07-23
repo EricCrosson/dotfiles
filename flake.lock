@@ -347,6 +347,26 @@
         "url": "ssh://git@github.com-bitgo/bitgo/gh-endorse"
       }
     },
+    "gh-gantt": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784823994,
+        "narHash": "sha256-MhfBRh8tHgBuK2EYjk/x9Ol4BEJMRKXE+uLto1q2M1Y=",
+        "ref": "refs/heads/master",
+        "rev": "4a7315af94de937f8ca4787352505b56b4ed5fc4",
+        "revCount": 575,
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/bitgo/gh-gantt"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/bitgo/gh-gantt"
+      }
+    },
     "git-diff-regex": {
       "inputs": {
         "nixpkgs": [
@@ -732,6 +752,7 @@
         "gh-arm": "gh-arm",
         "gh-automerge": "gh-automerge",
         "gh-endorse": "gh-endorse",
+        "gh-gantt": "gh-gantt",
         "git-diff-regex": "git-diff-regex",
         "git-disjoint": "git-disjoint",
         "git-dl": "git-dl",
