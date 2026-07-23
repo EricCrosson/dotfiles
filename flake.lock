@@ -354,11 +354,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784823994,
-        "narHash": "sha256-MhfBRh8tHgBuK2EYjk/x9Ol4BEJMRKXE+uLto1q2M1Y=",
+        "lastModified": 1784839129,
+        "narHash": "sha256-GV1DARzJjl+k+Hsm8Ch39zmtfUBWibuLMLFdKUIGyFE=",
         "ref": "refs/heads/master",
-        "rev": "4a7315af94de937f8ca4787352505b56b4ed5fc4",
-        "revCount": 575,
+        "rev": "2e127248394c82154f4326c58d6f97fc5425c7b8",
+        "revCount": 590,
         "type": "git",
         "url": "ssh://git@github.com-bitgo/bitgo/gh-gantt"
       },
