@@ -759,8 +759,8 @@ func TestConfigurePlugins(t *testing.T) {
 		},
 		{
 			name: "single path",
-			env:  "/nix/store/abc-context-mode",
-			want: []string{"--plugin-dir", "/nix/store/abc-context-mode"},
+			env:  "/nix/store/abc-some-plugin",
+			want: []string{"--plugin-dir", "/nix/store/abc-some-plugin"},
 		},
 		{
 			name: "multiple colon-separated paths",

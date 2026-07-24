@@ -90,8 +90,6 @@
           git config --file ${../pkgs/delta-themes/alabaster.gitconfig} --list > /dev/null
           touch $out
         '';
-      context-mode-deps-test =
-        import ../tests/context-mode-deps.nix {inherit pkgs;};
       chrome-devtools-mcp-test =
         builtins.seq
         (import ../tests/chrome-devtools-mcp.nix {inherit pkgs;})
@@ -116,7 +114,6 @@
           delta-theme-sync-test
           alabaster-tmtheme-test
           alabaster-gitconfig-test
-          context-mode-deps-test
           chrome-devtools-mcp-test
           mcp-remote-test
           ;
