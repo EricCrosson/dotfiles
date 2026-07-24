@@ -293,6 +293,13 @@ in {
             };
           };
         };
+        mcp =
+          lib.mapAttrs (_: server: {
+            type = "local";
+            command = [server.command] ++ (server.args or []);
+            enabled = true;
+          })
+          mcpServers;
       };
       tui = {
         theme = "system";
