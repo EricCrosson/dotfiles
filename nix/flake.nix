@@ -56,6 +56,10 @@
         builtins.seq
         (import ../tests/cargo-sweep.nix {inherit pkgs;})
         (pkgs.runCommand "cargo-sweep-test" {} "touch $out");
+      cargo-kache-test =
+        builtins.seq
+        (import ../tests/cargo-kache.nix {inherit pkgs;})
+        (pkgs.runCommand "cargo-kache-test" {} "touch $out");
       appearance-sync-test =
         builtins.seq
         (import ../tests/appearance-sync.nix {inherit pkgs;})
@@ -101,6 +105,7 @@
           litellm-proxy-test
           claude-wrapper-script-test
           cargo-sweep-test
+          cargo-kache-test
           appearance-sync-test
           helix-theme-sync-test
           claude-theme-sync-test

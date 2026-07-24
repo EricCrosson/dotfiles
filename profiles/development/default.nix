@@ -43,6 +43,11 @@ in {
       ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
         pkgs.libiconv
       ];
+
+    file.".cargo/config.toml".text = ''
+      [build]
+      rustc-wrapper = "kache"
+    '';
   };
 
   services.cargo-sweep.enable = true;
