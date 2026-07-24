@@ -91,7 +91,6 @@ in {
       k9s
       kubectl
       kubectx
-      opencode
       poppler-utils # Install pdftotext for aichat
       yq-go
 
@@ -269,6 +268,38 @@ in {
         teammateMode = "auto";
         permissions = {
           defaultMode = "plan";
+        };
+      };
+    };
+
+    opencode = {
+      enable = true;
+      package = pkgs.writeShellApplication {
+        name = "opencode";
+        runtimeInputs = [pkgs.opencode];
+        text = ''
+          if [[ -r ${config.bitgo.sops.secretPaths.openrouter_api_key} ]]; then
+            export OPENROUTER_API_KEY
+            OPENROUTER_API_KEY="$(< ${config.bitgo.sops.secretPaths.openrouter_api_key})"
+          fi
+          exec ${pkgs.opencode}/bin/opencode "$@"
+        '';
+      };
+      enableMcpIntegration = true;
+      context = rulesContext;
+      settings = {
+        model = "openrouter/anthropic/claude-3.7-sonnet";
+        small_model = "openrouter/anthropic/claude-3.5-haiku";
+        providers = {
+          openrouter = {
+            apiKey = "$OPENROUTER_API_KEY";
+          };
+        };
+      };
+      tui = {
+        theme = "system";
+        keybinds = {
+          leader = "alt+b";
         };
       };
     };
