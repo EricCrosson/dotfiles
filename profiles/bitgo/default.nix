@@ -285,9 +285,12 @@ in {
       settings = {
         model = "openrouter/anthropic/claude-3.7-sonnet";
         small_model = "openrouter/anthropic/claude-3.5-haiku";
-        providers = {
+        provider = {
           openrouter = {
-            apiKey = "$OPENROUTER_API_KEY";
+            models = {
+              "anthropic/claude-3.7-sonnet" = {};
+              "anthropic/claude-3.5-haiku" = {};
+            };
           };
         };
       };
