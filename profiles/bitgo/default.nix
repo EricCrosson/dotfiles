@@ -93,6 +93,7 @@ in {
       kubectx
       kustomize
       nodejs # Install npm
+      opencode
       poppler-utils # Install pdftotext for aichat
       yq-go
 
