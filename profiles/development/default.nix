@@ -18,27 +18,11 @@ in {
         inputs.git-review.packages.${pkgs.system}.default
         inputs.npm-dep-version.packages.${pkgs.system}.default
 
-        (fenix.stable.withComponents [
-          "cargo"
-          "clippy"
-          "rustc"
-          "rustfmt"
-          "rust-src"
-          "rust-analyzer"
-        ])
-        cargo-tarpaulin
         bacon
-
-        # Allows cargo to build Rust projects that don't have a dev shell
-        gcc
 
         bc
         yazi
         showboat
-
-        # TypeScript
-        pnpm
-        yarn
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
         pkgs.libiconv
