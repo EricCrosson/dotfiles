@@ -190,11 +190,6 @@ in {
         };
         model = "Gemini 3.5 Flash (Medium)";
         runningLightSpeed = "fast";
-        trustedWorkspaces = [
-          "/Users/ericcrosson/workspace/BitGo"
-          "/Users/ericcrosson/workspace/EricCrosson"
-          "/Users/ericcrosson/workspace/ericcrosson-bitgo"
-        ];
       };
       permissions = {
         allow = [
