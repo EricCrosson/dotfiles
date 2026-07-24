@@ -7,6 +7,7 @@
   ...
 }: let
   chrome-devtools-mcp = pkgs.callPackage ../../pkgs/chrome-devtools-mcp {};
+  mcp-remote = pkgs.callPackage ../../pkgs/mcp-remote {};
 
   standaloneClaude = pkgs.runCommand "standalone-claude" {} ''
     mkdir -p $out/bin
@@ -27,8 +28,8 @@
     baseMcpServers
     // {
       linear = {
-        command = "npx";
-        args = ["-y" "mcp-remote" "https://mcp.linear.app/mcp"];
+        command = "${mcp-remote}/bin/mcp-remote";
+        args = ["https://mcp.linear.app/mcp"];
       };
     };
 
