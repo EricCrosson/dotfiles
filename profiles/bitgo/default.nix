@@ -283,11 +283,12 @@ in {
       enableMcpIntegration = true;
       context = rulesContext;
       settings = {
-        model = "openrouter/anthropic/claude-3.7-sonnet";
+        model = "openrouter/openrouter/auto";
         small_model = "openrouter/anthropic/claude-3.5-haiku";
         provider = {
           openrouter = {
             models = {
+              "openrouter/auto" = {};
               "anthropic/claude-3.7-sonnet" = {};
               "anthropic/claude-3.5-haiku" = {};
             };
