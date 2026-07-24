@@ -1,0 +1,9 @@
+{
+  "name": "mcp-remote-wrapper",
+  "version": "0.1.38",
+  "private": true,
+  "description": "Pins mcp-remote for the Linear MCP server; deps tracked by Renovate",
+  "dependencies": {
+    "mcp-remote": "0.1.38"
+  }
+}

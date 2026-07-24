@@ -96,6 +96,10 @@
         builtins.seq
         (import ../tests/chrome-devtools-mcp.nix {inherit pkgs;})
         (pkgs.runCommand "chrome-devtools-mcp-test" {} "touch $out");
+      mcp-remote-test =
+        builtins.seq
+        (import ../tests/mcp-remote.nix {inherit pkgs;})
+        (pkgs.runCommand "mcp-remote-test" {} "touch $out");
     in
       {
         inherit
@@ -114,6 +118,7 @@
           alabaster-gitconfig-test
           context-mode-deps-test
           chrome-devtools-mcp-test
+          mcp-remote-test
           ;
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
