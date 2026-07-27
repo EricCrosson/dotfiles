@@ -19,5 +19,6 @@ in
         uvloop
         botocore
         boto3
+        google-auth
       ]);
   })

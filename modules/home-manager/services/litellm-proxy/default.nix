@@ -179,6 +179,9 @@ in {
     home.file = {
       ".config/litellm/config.yaml" = {
         text = configToJson cfg.models;
+        onChange = ''
+          launchctl stop org.nix-community.home.litellm-proxy || true
+        '';
       };
     };
 

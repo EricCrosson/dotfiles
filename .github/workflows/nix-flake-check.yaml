@@ -60,7 +60,6 @@ jobs:
             .#darwinConfigurations.MBP-0954.system \
             --override-input aws-console-bitgo path:./stubs/private-input-stub \
             --override-input aws-saml-bitgo path:./stubs/private-input-stub \
-            --override-input atlas path:./stubs/private-input-stub \
             --override-input cortex path:./stubs/private-input-stub \
             --override-input gh-endorse path:./stubs/private-input-stub \
             --override-input gh-gantt path:./stubs/private-input-stub \

@@ -50,17 +50,16 @@ darwin-rebuild switch --flake .#MBP-0954
 ### Option B — stubbed private inputs (skips steps 6–7; no work tools)
 
 Use this when you haven't yet provisioned GPG keys or the BitGo SSH key. It
-replaces the six private flake inputs with empty stubs so evaluation succeeds.
+replaces the private flake inputs with empty stubs so evaluation succeeds.
 Sops secrets are automatically disabled when GPG keys are absent.
 
 ```bash
 nix run nix-darwin -- switch --flake .#MBP-0954 \
   --override-input aws-console-bitgo path:./stubs/private-input-stub \
   --override-input aws-saml-bitgo    path:./stubs/private-input-stub \
-  --override-input atlas             path:./stubs/private-input-stub \
   --override-input cortex            path:./stubs/private-input-stub \
   --override-input gh-endorse        path:./stubs/private-input-stub \
-  --override-input gh-gantt          path:./stubs/private-input-stub
+  --override-input gh-gantt          path:./stubs/private-input-stub \
 ```
 
 Once GPG keys and the BitGo SSH key are in place, complete steps 5–7 and

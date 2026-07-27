@@ -61,6 +61,26 @@ with lib; {
           description = "Context length in tokens for Claude Haiku";
         };
       };
+
+      opus = {
+        id = mkOption {
+          type = types.str;
+          default = "bedrock-claude-opus";
+          description = "Model ID for Claude Opus";
+        };
+
+        name = mkOption {
+          type = types.str;
+          default = "bedrock/us.anthropic.claude-3-opus-20240229-v1:0";
+          description = "Full model name/identifier";
+        };
+
+        contextLength = mkOption {
+          type = types.int;
+          default = 200000;
+          description = "Context length in tokens for Claude Opus";
+        };
+      };
     };
 
     # Common settings for all Claude tools

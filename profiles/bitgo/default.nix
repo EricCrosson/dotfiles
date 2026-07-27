@@ -73,7 +73,6 @@ in {
     ./modules
     ../../modules/home-manager
     inputs._1password-shell-plugins.hmModules.default
-    inputs.atlas.homeManagerModules.default
   ];
 
   bitgo.ssh.enable = true;
@@ -152,36 +151,35 @@ in {
                 name = config.claude-options.models.sonnet.id;
                 max_input_tokens = config.claude-options.models.sonnet.contextLength;
                 supports_function_calling = false;
-                supports_vision = false;
+                supports_vision = true;
+              }
+              {
+                name = config.claude-options.models.haiku.id;
+                max_input_tokens = config.claude-options.models.haiku.contextLength;
+                supports_function_calling = false;
+                supports_vision = true;
+              }
+              {
+                name = config.claude-options.models.opus.id;
+                max_input_tokens = config.claude-options.models.opus.contextLength;
+                supports_function_calling = false;
+                supports_vision = true;
+              }
+              {
+                name = "gemini-3.5-flash";
+                max_input_tokens = 2000000;
+                supports_function_calling = true;
+                supports_vision = true;
+              }
+              {
+                name = "gemini-3.5-flash-lite";
+                max_input_tokens = 1000000;
+                supports_function_calling = true;
+                supports_vision = true;
               }
             ];
           }
         ];
-      };
-    };
-
-    atlas = {
-      enable = true;
-      package = let
-        atlas = inputs.atlas.packages.${pkgs.system}.default;
-      in
-        pkgs.writeShellApplication {
-          name = "atlas";
-          runtimeInputs = [atlas];
-          text = ''
-            if [[ -r ${config.bitgo.sops.secretPaths.atlas_bedrock_model_id} ]]; then
-              export ATLAS_BEDROCK_MODEL_ID
-              ATLAS_BEDROCK_MODEL_ID="$(< ${config.bitgo.sops.secretPaths.atlas_bedrock_model_id})"
-            fi
-            exec atlas "$@"
-          '';
-        };
-      zshIntegration = "deferred";
-      settings = {
-        title = {
-          mode = "bedrock";
-          bedrock.profile = config.claude-options.bedrock.profile;
-        };
       };
     };
 
@@ -428,6 +426,36 @@ in {
           name = config.claude-options.models.sonnet.id;
           modelFile = config.bitgo.sops.secretPaths.bedrock_sonnet_arn;
           aws_profile_name = config.claude-options.bedrock.profile;
+        }
+        {
+          name = config.claude-options.models.haiku.id;
+          modelFile = config.bitgo.sops.secretPaths.bedrock_haiku_arn;
+          aws_profile_name = config.claude-options.bedrock.profile;
+        }
+        {
+          name = config.claude-options.models.opus.id;
+          modelFile = config.bitgo.sops.secretPaths.bedrock_opus_arn;
+          aws_profile_name = config.claude-options.bedrock.profile;
+        }
+        {
+          name = "gemini-3.5-flash";
+          model = "vertex_ai/gemini-3.5-flash";
+          extraConfig = ''
+            {
+              "vertex_project": "ai-enablement-500217",
+              "vertex_location": "us"
+            }
+          '';
+        }
+        {
+          name = "gemini-3.5-flash-lite";
+          model = "vertex_ai/gemini-3.5-flash-lite";
+          extraConfig = ''
+            {
+              "vertex_project": "ai-enablement-500217",
+              "vertex_location": "us"
+            }
+          '';
         }
       ];
     };
