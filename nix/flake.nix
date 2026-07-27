@@ -98,6 +98,7 @@
         builtins.seq
         (import ../tests/mcp-remote.nix {inherit pkgs;})
         (pkgs.runCommand "mcp-remote-test" {} "touch $out");
+      codex-config-sync-test = import ../tests/codex-config-sync.nix {inherit pkgs;};
     in
       {
         inherit
@@ -116,6 +117,7 @@
           alabaster-gitconfig-test
           chrome-devtools-mcp-test
           mcp-remote-test
+          codex-config-sync-test
           ;
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {

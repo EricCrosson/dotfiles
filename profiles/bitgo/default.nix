@@ -32,6 +32,11 @@
         args = ["https://mcp.linear.app/mcp"];
       };
     };
+  codexSettings = {
+    mcp_servers = mcpServers;
+  };
+  codexConfig = (pkgs.formats.toml {}).generate "codex-config" codexSettings;
+  codexConfigSync = pkgs.callPackage ../../pkgs/codex-config-sync {};
 
   rulesDir = ../../ai/rules;
   rulesContext = lib.concatStringsSep "\n\n" (
@@ -107,6 +112,15 @@ in {
         if [ ! -x "${config.home.homeDirectory}/.local/bin/claude" ]; then
           export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
           ${pkgs.curl}/bin/curl -fsSL https://claude.ai/install.sh | /bin/sh
+        fi
+      '';
+      syncCodexConfig = config.lib.dag.entryAfter ["linkGeneration"] ''
+        if [[ -v DRY_RUN ]]; then
+          echo "Would synchronize writable Codex configuration"
+        else
+          ${codexConfigSync}/bin/codex-config-sync \
+            ${codexConfig} \
+            "$HOME/.codex/config.toml"
         fi
       '';
     };
@@ -207,9 +221,8 @@ in {
     codex = {
       enable = true;
       skills = ../../ai/skills;
-      settings = {
-        mcp_servers = mcpServers;
-      };
+      # Codex persists project trust in config.toml, so it cannot be a Nix store symlink.
+      settings = null;
     };
 
     claude-code = {
