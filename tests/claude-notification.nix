@@ -6,7 +6,7 @@
   drv = pkgs.writeShellApplication {
     name = "claude-notification";
     runtimeInputs = [pkgs.jq];
-    text = builtins.readFile ../claude/hooks/notification.sh;
+    text = builtins.readFile ../ai/hooks/notification.sh;
   };
 
   script = builtins.readFile "${drv}/bin/claude-notification";

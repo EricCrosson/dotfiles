@@ -6,7 +6,7 @@
   drv = pkgs.writeShellApplication {
     name = "claude-format-on-edit";
     runtimeInputs = [pkgs.jq pkgs.alejandra pkgs.prettier];
-    text = builtins.readFile ../claude/hooks/format-on-edit.sh;
+    text = builtins.readFile ../ai/hooks/format-on-edit.sh;
   };
 
   script = builtins.readFile "${drv}/bin/claude-format-on-edit";

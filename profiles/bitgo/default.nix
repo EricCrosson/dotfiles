@@ -33,7 +33,7 @@
       };
     };
 
-  rulesDir = ../../claude/rules;
+  rulesDir = ../../ai/rules;
   rulesContext = lib.concatStringsSep "\n\n" (
     map (name: builtins.readFile (rulesDir + "/${name}"))
     (builtins.attrNames (lib.filterAttrs (n: _: lib.hasSuffix ".md" n)
@@ -43,13 +43,13 @@
   claudeNotificationScript = pkgs.writeShellApplication {
     name = "claude-notification";
     runtimeInputs = [pkgs.jq];
-    text = builtins.readFile ../../claude/hooks/notification.sh;
+    text = builtins.readFile ../../ai/hooks/notification.sh;
   };
 
   claudeFormatOnEditScript = pkgs.writeShellApplication {
     name = "claude-format-on-edit";
     runtimeInputs = [pkgs.jq pkgs.alejandra pkgs.prettier];
-    text = builtins.readFile ../../claude/hooks/format-on-edit.sh;
+    text = builtins.readFile ../../ai/hooks/format-on-edit.sh;
   };
 
   # Force aws-saml to open Keycloak login in Safari instead of the default browser.
@@ -177,7 +177,7 @@ in {
 
     antigravity-cli = {
       enable = true;
-      skills = ../../claude/skills;
+      skills = ../../ai/skills;
       inherit mcpServers;
       context = {
         GEMINI = rulesContext;
@@ -206,7 +206,7 @@ in {
 
     codex = {
       enable = true;
-      skills = ../../claude/skills;
+      skills = ../../ai/skills;
       settings = {
         mcp_servers = mcpServers;
       };
@@ -225,7 +225,7 @@ in {
         })
         // {version = "2.1.206";};
       mcpServers = baseMcpServers;
-      skills = ../../claude/skills;
+      skills = ../../ai/skills;
       inherit rulesDir;
       settings = {
         autoUpdates = true;
