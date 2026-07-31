@@ -15,6 +15,13 @@
           inherit hostName hostConfig;
         })
       hostBuilder.hosts;
+    nixosConfigurations =
+      builtins.mapAttrs
+      (hostName: hostConfig:
+        hostBuilder.mkNixosHost {
+          inherit hostName hostConfig;
+        })
+      hostBuilder.nixosHosts;
   };
 
   inputs = {
@@ -49,6 +56,10 @@
     };
     crane = {
       url = "github:ipetkov/crane";
+    };
+    disko = {
+      url = "github:nix-community/disko/latest";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     fenix = {
       url = "github:nix-community/fenix";

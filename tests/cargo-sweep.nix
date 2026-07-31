@@ -21,6 +21,10 @@
 
         {
           options = {
+            assertions = lib.mkOption {
+              type = lib.types.listOf lib.types.anything;
+              default = [];
+            };
             launchd-with-logs.services = lib.mkOption {
               type = lib.types.attrsOf lib.types.anything;
               default = {};

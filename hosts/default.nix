@@ -80,6 +80,73 @@
         ++ nixDarwinModules;
     };
 
+  # Creates a NixOS system configuration for a specific host
+  #
+  # Arguments:
+  #   hostName: The name of the host (must match directory name under hosts/)
+  #   hostConfig: The complete host configuration data
+  #
+  # Returns: A NixOS system configuration
+  mkNixosHost = {
+    hostName,
+    hostConfig,
+  }: let
+    inherit (hostConfig) system profileName;
+    homeManagerModules = hostConfig.homeManagerModules or [];
+    nixosModules = hostConfig.nixosModules or [];
+
+    pkgs = import inputs.nixpkgs {
+      inherit system;
+      config = {
+        allowUnfree = true;
+        allowBroken = true; # Needed for open-webui
+      };
+      overlays = [
+        inputs.fenix.overlays.default
+        inputs.mcp-servers-nix.overlays.default
+        (import ../overlays).combined
+      ];
+    };
+  in
+    inputs.nixpkgs.lib.nixosSystem {
+      specialArgs = {
+        inherit hostName inputs system;
+      };
+      modules =
+        [
+          # Import profile modules
+          ../modules/profiles
+          ../modules/profiles/profiles.nix
+
+          # Disk layout
+          inputs.disko.nixosModules.disko
+
+          # Host-specific configuration
+          ./${hostName}
+
+          {nixpkgs.pkgs = pkgs;}
+
+          # Home Manager configuration
+          inputs.home-manager.nixosModules.home-manager
+          ({config, ...}: let
+            profile = config.profiles.${profileName};
+          in {
+            home-manager = {
+              extraSpecialArgs = {
+                inherit pkgs inputs profile;
+              };
+              sharedModules = [
+                inputs.sops-nix.homeManagerModules.sops
+              ];
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.${profile.username}.imports = homeManagerModules;
+            };
+          })
+        ]
+        ++ nixosModules;
+    };
+
   # Available host configurations
   hosts = {
     "MBP-0954" = {
@@ -92,6 +159,22 @@
         ../home/editor/helix
       ];
       nixDarwinModules = [];
+    };
+  };
+
+  # Available NixOS host configurations
+  nixosHosts = {
+    "athens" = {
+      system = "x86_64-linux";
+      profileName = "personal";
+      homeManagerModules = [
+        ../modules/home-manager
+        ../profiles/eric
+        ../profiles/development
+        ../home/editor/helix
+        ({lib, ...}: {services.cargo-sweep.enable = lib.mkForce false;})
+      ];
+      nixosModules = [];
     };
   };
 }

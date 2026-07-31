@@ -7,6 +7,7 @@
   inherit (pkgs) stdenv;
   darwinImports = [
     ../../os/darwin
+    ./modules/aerospace.nix
   ];
   linuxImports = [
     ../../os/linux
@@ -16,7 +17,6 @@ in {
   imports =
     [
       inputs.nix-index-database.homeModules.nix-index
-      ./modules/aerospace.nix
       ./modules/ghostty.nix
       ./modules/git.nix
       ./modules/zsh.nix
@@ -93,7 +93,7 @@ in {
       wakatime-cli
     ];
 
-    file = {
+    file = pkgs.lib.optionalAttrs stdenv.isDarwin {
       ".homebrew/brew.env".text = ''
         HOMEBREW_NO_ENV_HINTS=1
         HOMEBREW_NO_UPDATE_REPORT_NEW=1

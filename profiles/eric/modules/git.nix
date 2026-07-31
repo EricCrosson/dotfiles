@@ -65,7 +65,10 @@ in {
         key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9idpkqe6Rk8pLXKhqCfL6Bc3jGMHdfDj06C0AU5P3J";
         format = "ssh";
         signByDefault = true;
-        signer = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+        signer =
+          if pkgs.stdenv.isDarwin
+          then "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+          else "${pkgs.openssh}/bin/ssh-keygen";
       };
       ignores = [
         ".DS_Store"

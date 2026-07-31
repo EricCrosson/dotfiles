@@ -40,6 +40,12 @@ in {
   #   - https://github.com/rust-lang/cargo/issues/13136
   #   - https://github.com/rust-lang/cargo/issues/10589
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = pkgs.stdenv.hostPlatform.isDarwin;
+        message = "services.cargo-sweep is implemented via launchd and only supports Darwin. Disable it on this host or add a systemd timer implementation.";
+      }
+    ];
     home.packages = [cfg.package];
 
     launchd-with-logs.services.cargo-sweep = {

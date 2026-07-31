@@ -65,3 +65,30 @@ jobs:
             --override-input gh-endorse path:./stubs/private-input-stub \
             --override-input gh-gantt path:./stubs/private-input-stub \
             --keep-going --print-build-logs
+
+  check-nixos-config:
+    name: NixOS configuration build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
+
+      - name: Install EricCrosson/retry
+        uses: EricCrosson/install-github-release-binary@c5bb56044443694d485fa40eb6d6f7ed600ff3b4
+        with:
+          targets: EricCrosson/retry@v1
+
+      - run: |
+          : build nixos configuration
+          retry --up-to 2x -- nix build \
+            .#nixosConfigurations.athens.config.system.build.toplevel \
+            --keep-going --print-build-logs
