@@ -243,6 +243,7 @@ in {
   };
 
   services.fzf-theme-sync.enable = true;
+  appearance-sync.enable = false;
 
   xdg.userDirs = {
     createDirectories = true;

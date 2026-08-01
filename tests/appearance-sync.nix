@@ -47,6 +47,10 @@
           };
         }
 
+        {
+          appearance-sync.enable = lib.mkDefault true;
+        }
+
         testConfig
       ];
       specialArgs = {
@@ -146,6 +150,19 @@
     assert assertContains "light-fragment" script "LIGHT_MARKER";
     assert assertContains "dark-fragment" script "DARK_MARKER"; true;
 
+  # Test: Global enable = false suppresses all services
+  test-globally-disabled = let
+    result = eval {
+      appearance-sync.enable = false;
+      appearance-sync.services.test-svc = {
+        onLight = "echo light";
+        onDark = "echo dark";
+      };
+    };
+  in
+    assert assertEq "no-launchd-services" result.launchd-with-logs.services {};
+    assert assertEq "no-activation-hooks" result.home.activation {}; true;
+
   # Test: Empty services produces no launchd-with-logs entries
   test-empty-services = let
     result = eval {};
@@ -172,5 +189,6 @@ in
   assert test-script-appearance-detection;
   assert test-script-idempotency;
   assert test-script-fragments;
+  assert test-globally-disabled;
   assert test-empty-services;
   assert test-disabled; "all tests passed"

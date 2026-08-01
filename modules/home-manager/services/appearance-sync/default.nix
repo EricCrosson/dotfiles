@@ -36,6 +36,8 @@
       '';
     };
 in {
+  options.appearance-sync.enable = lib.mkEnableOption "Sync application themes with macOS appearance";
+
   options.appearance-sync.services = lib.mkOption {
     type = lib.types.attrsOf (lib.types.submodule {
       options = {
@@ -66,7 +68,7 @@ in {
     description = "Services that sync application config with macOS appearance.";
   };
 
-  config = lib.mkIf pkgs.stdenv.isDarwin {
+  config = lib.mkIf (pkgs.stdenv.isDarwin && cfg.enable) {
     launchd-with-logs.services = lib.mapAttrs (name: svc:
       lib.mkIf svc.enable {
         command = lib.getExe (mkSyncScript name svc);
