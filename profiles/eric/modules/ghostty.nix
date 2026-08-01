@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   home.file.".config/ghostty/focus-pane.glsl".text = ''
     // Shows border on focused pane
     void mainImage(out vec4 fragColor, in vec2 fragCoord) {
@@ -30,7 +34,10 @@
     installBatSyntax = !pkgs.stdenv.isDarwin;
     installVimSyntax = !pkgs.stdenv.isDarwin;
     settings = {
-      theme = "Alabaster";
+      theme =
+        if config.appearance-sync.enable
+        then "light:Alabaster,dark:Kitty Default"
+        else "Alabaster";
       cursor-style-blink = false;
       cursor-style = "block";
       shell-integration-features = "no-cursor";
