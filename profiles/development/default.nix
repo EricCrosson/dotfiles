@@ -34,10 +34,10 @@ in {
     '';
   };
 
-  services.cargo-sweep.enable = true;
-  services.docker-prune = {
-    enable = true;
-    maxAge = 14;
+  services = {
+    cargo-sweep.enable = true;
+    docker-prune.enable = pkgs.stdenv.isDarwin;
+    docker-prune.maxAge = 14;
   };
 
   programs = {
