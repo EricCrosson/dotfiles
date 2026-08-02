@@ -7,6 +7,8 @@
     tmp.cleanOnBoot = true;
   };
 
+  boot.kernelParams = ["nomodeset"];
+
   networking = {
     hostName = "athens";
     networkmanager.enable = true;
