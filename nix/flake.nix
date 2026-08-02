@@ -56,6 +56,10 @@
         builtins.seq
         (import ../tests/cargo-sweep.nix {inherit pkgs;})
         (pkgs.runCommand "cargo-sweep-test" {} "touch $out");
+      docker-prune-test =
+        builtins.seq
+        (import ../tests/docker-prune.nix {inherit pkgs;})
+        (pkgs.runCommand "docker-prune-test" {} "touch $out");
       cargo-kache-test =
         builtins.seq
         (import ../tests/cargo-kache.nix {inherit pkgs;})
@@ -108,6 +112,7 @@
           litellm-proxy-test
           claude-wrapper-script-test
           cargo-sweep-test
+          docker-prune-test
           cargo-kache-test
           appearance-sync-test
           helix-theme-sync-test
