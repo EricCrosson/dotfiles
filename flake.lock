@@ -726,11 +726,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1785057841,
-        "narHash": "sha256-HnrtYft6ULS4byuFoB+eQ7MFSt8e9W8T+V0+3YLzFiQ=",
+        "lastModified": 1785603732,
+        "narHash": "sha256-x5QHdT/AV04U3h4dH3sA0TlWO3TXeZy51U6XRTi5gso=",
         "owner": "ericcrosson",
         "repo": "retry",
-        "rev": "06a520229c398bb20add2a8d4b0310c8f3f530d5",
+        "rev": "138b92c16bbfef624783346983c67cb4918e4469",
         "type": "github"
       },
       "original": {
