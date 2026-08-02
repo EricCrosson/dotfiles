@@ -35,6 +35,10 @@ in {
   };
 
   services.cargo-sweep.enable = true;
+  services.docker-prune = {
+    enable = true;
+    maxAge = 14;
+  };
 
   programs = {
     fzf = {
