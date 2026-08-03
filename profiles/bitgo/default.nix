@@ -412,7 +412,7 @@ in {
       shellAliases = {
         chat = "aichat";
         cmd = "aichat -e";
-        omp = lib.mkForce "OPENROUTER_API_KEY=$(cat ${config.bitgo.sops.secretPaths.openrouter_api_key}) GOOGLE_CLOUD_PROJECT=ai-enablement-500217 GOOGLE_CLOUD_LOCATION=global omp --provider openrouter";
+        omp = lib.mkForce "SMART_CD_LS=false SMART_CD_GIT_STATUS=false OPENROUTER_API_KEY=$(cat ${config.bitgo.sops.secretPaths.openrouter_api_key}) GOOGLE_CLOUD_PROJECT=ai-enablement-500217 GOOGLE_CLOUD_LOCATION=global omp --provider openrouter";
       };
     };
   };
