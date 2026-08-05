@@ -31,7 +31,7 @@ in {
       enableJujutsuIntegration = true;
       options = {
         line-numbers = true;
-        features = "catppuccin-mocha";
+        features = "alabaster";
       };
     };
 
@@ -211,11 +211,5 @@ in {
     jujutsu = {
       enable = true;
     };
-  };
-
-  services.delta-theme-sync = {
-    enable = true;
-    light-feature = "alabaster";
-    dark-feature = "catppuccin-mocha";
   };
 }

@@ -183,10 +183,6 @@ in {
       };
     };
 
-    claude.theme-sync.enable = true;
-
-    conductor.enable = false;
-
     antigravity-cli = {
       enable = true;
       skills = ../../ai/skills;

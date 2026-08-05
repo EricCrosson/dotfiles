@@ -120,7 +120,7 @@ in {
     bat = {
       enable = true;
       config = {
-        theme = "auto:system";
+        theme = "Alabaster";
         theme-light = "Alabaster";
         theme-dark = "Catppuccin Mocha";
         style = "plain";
@@ -242,7 +242,6 @@ in {
     };
   };
 
-  services.fzf-theme-sync.enable = true;
   appearance-sync.enable = false;
 
   xdg.userDirs = {
