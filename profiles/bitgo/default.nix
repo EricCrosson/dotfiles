@@ -33,10 +33,32 @@
       };
     };
   codexSettings = {
+    model_provider = "openrouter";
+    model = "openai/gpt-5.6-luna";
+    model_reasoning_effort = "medium";
     mcp_servers = mcpServers;
+    model_providers.openrouter = {
+      name = "openrouter";
+      base_url = "https://openrouter.ai/api/v1";
+      auth = {
+        command = "sh";
+        args = ["-c" "echo $OPENROUTER_API_KEY"];
+      };
+    };
   };
   codexConfig = (pkgs.formats.toml {}).generate "codex-config" codexSettings;
   codexConfigSync = pkgs.callPackage ../../pkgs/codex-config-sync {};
+  codex = pkgs.writeShellApplication {
+    name = "codex";
+    runtimeInputs = [pkgs.codex];
+    text = ''
+      if [[ -r ${config.bitgo.sops.secretPaths.openrouter_api_key} ]]; then
+        export OPENROUTER_API_KEY
+        OPENROUTER_API_KEY="$(< ${config.bitgo.sops.secretPaths.openrouter_api_key})"
+      fi
+      exec ${pkgs.codex}/bin/codex "$@"
+    '';
+  };
 
   rulesDir = ../../ai/rules;
   rulesContext = lib.concatStringsSep "\n\n" (
@@ -126,6 +148,30 @@ in {
   };
 
   programs = {
+    omp = {
+      enable = true;
+      settings = {
+        advisor = {
+          enabled = true;
+        };
+        modelProviderOrder = [
+          "openrouter"
+        ];
+      };
+      models = {
+        providers = {
+          openrouter = {
+            apiKey = "!cat ${config.bitgo.sops.secretPaths.openrouter_api_key}";
+          };
+        };
+      };
+      env = {
+        GOOGLE_CLOUD_PROJECT = "ai-enablement-500217";
+        GOOGLE_CLOUD_LOCATION = "global";
+        SMART_CD_LS = "false";
+        SMART_CD_GIT_STATUS = "false";
+      };
+    };
     _1password-shell-plugins = {
       enable = true;
       plugins = [];
@@ -214,6 +260,7 @@ in {
 
     codex = {
       enable = true;
+      package = codex;
       skills = ../../ai/skills;
       # Codex persists project trust in config.toml, so it cannot be a Nix store symlink.
       settings = null;
@@ -408,7 +455,6 @@ in {
       shellAliases = {
         chat = "aichat";
         cmd = "aichat -e";
-        omp = lib.mkForce "SMART_CD_LS=false SMART_CD_GIT_STATUS=false OPENROUTER_API_KEY=$(cat ${config.bitgo.sops.secretPaths.openrouter_api_key}) GOOGLE_CLOUD_PROJECT=ai-enablement-500217 GOOGLE_CLOUD_LOCATION=global omp --provider openrouter";
       };
     };
   };

@@ -3,5 +3,6 @@
     ./claude
     ./conductor
     ./llm
+    ./omp
   ];
 }
