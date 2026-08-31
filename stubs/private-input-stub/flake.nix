@@ -8,7 +8,7 @@
   }: let
     inherit (nixpkgs) lib;
   in {
-    packages = lib.genAttrs ["aarch64-darwin"] (system: let
+    packages = lib.genAttrs ["aarch64-darwin" "x86_64-linux"] (system: let
       pkgs = nixpkgs.legacyPackages.${system};
       # Stub package for private inputs in CI.
       # Uses mkDerivation to set pname (required by home-manager gh module).

@@ -85,6 +85,11 @@ in {
             ControlMaster = "no";
             ServerAliveInterval = cfg.github.serverAliveInterval;
           };
+          "athens" = {
+            HostName = "192.168.1.123";
+            User = "eric";
+            ServerAliveInterval = 120;
+          };
         };
       };
     };
