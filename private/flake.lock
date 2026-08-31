@@ -8,6 +8,28 @@
         "systems": "systems"
       },
       "locked": {
+        "lastModified": 1788192290,
+        "narHash": "sha256-X+e/cX8dH/1Z7uUWx4yj7CkHV1n4Tfi57l1AfnQ94ds=",
+        "owner": "1Password",
+        "repo": "shell-plugins",
+        "rev": "bdeb73cf7ec8941e5f68e977b14586258a8b6a71",
+        "type": "github"
+      },
+      "original": {
+        "owner": "1Password",
+        "repo": "shell-plugins",
+        "type": "github"
+      }
+    },
+    "_1password-shell-plugins_2": {
+      "inputs": {
+        "nixpkgs": [
+          "public",
+          "nixpkgs"
+        ],
+        "systems": "systems_2"
+      },
+      "locked": {
         "lastModified": 1756860511,
         "narHash": "sha256-AA8vN5YMXcCznWfaH/2AgtRNpZPG4wvbLTT79u0b+LU=",
         "owner": "1Password",
@@ -21,9 +43,50 @@
         "type": "github"
       }
     },
+    "aws-console-bitgo": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783484127,
+        "narHash": "sha256-OaN/tUmk4k+Zwf6piBJ56lcNSa/OZ3DJHVcXvDijgiA=",
+        "ref": "refs/heads/master",
+        "rev": "510a296e89b6449ef9053de2f6300c32d65eb064",
+        "revCount": 66,
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/bitgo/aws-console"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/bitgo/aws-console"
+      }
+    },
+    "aws-saml-bitgo": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1777790167,
+        "narHash": "sha256-ySqToiKqq/ExQS2YU5OBWJrrEBnWCxRMYxT0s/zd0/8=",
+        "ref": "refs/heads/master",
+        "rev": "9aa74d8d5b4957e0e688b82208adfc0994b3a9d8",
+        "revCount": 69,
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/bitgo/aws-saml"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/bitgo/aws-saml"
+      }
+    },
     "bash-barrier": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "nixpkgs"
         ]
       },
@@ -44,6 +107,7 @@
     "bell": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "nixpkgs"
         ]
       },
@@ -124,6 +188,7 @@
     "disko": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "nixpkgs"
         ]
       },
@@ -145,6 +210,7 @@
     "fenix": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "nixpkgs"
         ],
         "rust-analyzer-src": "rust-analyzer-src"
@@ -166,6 +232,7 @@
     "fenix_2": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "git-disjoint",
           "nixpkgs"
         ],
@@ -188,6 +255,7 @@
     "fenix_3": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "git-dl",
           "nixpkgs"
         ],
@@ -210,6 +278,7 @@
     "fenix_4": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "retry",
           "nixpkgs"
         ],
@@ -265,9 +334,51 @@
         "type": "github"
       }
     },
+    "gh-endorse": {
+      "inputs": {
+        "git-hooks": "git-hooks",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784831077,
+        "narHash": "sha256-X/UahDyFzGAkapZwpDNoqOC1dd8H16N1DWES9JXm3+o=",
+        "ref": "refs/heads/master",
+        "rev": "f0da336530f6135be116a1e88884086cee1bdfb3",
+        "revCount": 138,
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/bitgo/gh-endorse"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/bitgo/gh-endorse"
+      }
+    },
+    "gh-gantt": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785157437,
+        "narHash": "sha256-/SttJUuUKEQCN6NRAUWghQ3z98zB4+YByevvVkMwQS0=",
+        "ref": "refs/heads/master",
+        "rev": "e76e83cfd8c82f27080d54ae1630e8f45a1c7a8d",
+        "revCount": 592,
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/bitgo/gh-gantt"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com-bitgo/bitgo/gh-gantt"
+      }
+    },
     "git-diff-regex": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "nixpkgs"
         ]
       },
@@ -328,6 +439,7 @@
     "git-review": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "nixpkgs"
         ]
       },
@@ -367,6 +479,7 @@
     "home-manager": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "nixpkgs"
         ]
       },
@@ -387,6 +500,7 @@
     "mcp-servers-nix": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "nixpkgs"
         ]
       },
@@ -407,6 +521,7 @@
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "nixpkgs"
         ]
       },
@@ -427,6 +542,7 @@
     "nix-index-database": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "nixpkgs"
         ]
       },
@@ -555,6 +671,7 @@
     "npm-dep-version": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "nixpkgs"
         ]
       },
@@ -571,6 +688,40 @@
         "repo": "npm-dep-version",
         "type": "github"
       }
+    },
+    "public": {
+      "inputs": {
+        "_1password-shell-plugins": "_1password-shell-plugins_2",
+        "bash-barrier": "bash-barrier",
+        "bell": "bell",
+        "crane": "crane",
+        "disko": "disko",
+        "fenix": "fenix",
+        "gh-arm": "gh-arm",
+        "gh-automerge": "gh-automerge",
+        "git-diff-regex": "git-diff-regex",
+        "git-disjoint": "git-disjoint",
+        "git-dl": "git-dl",
+        "git-review": "git-review",
+        "helix": "helix",
+        "home-manager": "home-manager",
+        "mcp-servers-nix": "mcp-servers-nix",
+        "nix-darwin": "nix-darwin",
+        "nix-index-database": "nix-index-database",
+        "nixpkgs": "nixpkgs_6",
+        "npm-dep-version": "npm-dep-version",
+        "retry": "retry",
+        "sops-nix": "sops-nix"
+      },
+      "locked": {
+        "path": "..",
+        "type": "path"
+      },
+      "original": {
+        "path": "..",
+        "type": "path"
+      },
+      "parent": []
     },
     "retry": {
       "inputs": {
@@ -595,26 +746,91 @@
     "root": {
       "inputs": {
         "_1password-shell-plugins": "_1password-shell-plugins",
-        "bash-barrier": "bash-barrier",
-        "bell": "bell",
-        "crane": "crane",
-        "disko": "disko",
-        "fenix": "fenix",
-        "gh-arm": "gh-arm",
-        "gh-automerge": "gh-automerge",
-        "git-diff-regex": "git-diff-regex",
-        "git-disjoint": "git-disjoint",
-        "git-dl": "git-dl",
-        "git-review": "git-review",
-        "helix": "helix",
-        "home-manager": "home-manager",
-        "mcp-servers-nix": "mcp-servers-nix",
-        "nix-darwin": "nix-darwin",
-        "nix-index-database": "nix-index-database",
-        "nixpkgs": "nixpkgs_6",
-        "npm-dep-version": "npm-dep-version",
-        "retry": "retry",
-        "sops-nix": "sops-nix"
+        "aws-console-bitgo": "aws-console-bitgo",
+        "aws-saml-bitgo": "aws-saml-bitgo",
+        "bash-barrier": [
+          "public",
+          "bash-barrier"
+        ],
+        "bell": [
+          "public",
+          "bell"
+        ],
+        "crane": [
+          "public",
+          "crane"
+        ],
+        "disko": [
+          "public",
+          "disko"
+        ],
+        "fenix": [
+          "public",
+          "fenix"
+        ],
+        "gh-arm": [
+          "public",
+          "gh-arm"
+        ],
+        "gh-automerge": [
+          "public",
+          "gh-automerge"
+        ],
+        "gh-endorse": "gh-endorse",
+        "gh-gantt": "gh-gantt",
+        "git-diff-regex": [
+          "public",
+          "git-diff-regex"
+        ],
+        "git-disjoint": [
+          "public",
+          "git-disjoint"
+        ],
+        "git-dl": [
+          "public",
+          "git-dl"
+        ],
+        "git-review": [
+          "public",
+          "git-review"
+        ],
+        "helix": [
+          "public",
+          "helix"
+        ],
+        "home-manager": [
+          "public",
+          "home-manager"
+        ],
+        "mcp-servers-nix": [
+          "public",
+          "mcp-servers-nix"
+        ],
+        "nix-darwin": [
+          "public",
+          "nix-darwin"
+        ],
+        "nix-index-database": [
+          "public",
+          "nix-index-database"
+        ],
+        "nixpkgs": [
+          "public",
+          "nixpkgs"
+        ],
+        "npm-dep-version": [
+          "public",
+          "npm-dep-version"
+        ],
+        "public": "public",
+        "retry": [
+          "public",
+          "retry"
+        ],
+        "sops-nix": [
+          "public",
+          "sops-nix"
+        ]
       }
     },
     "rust-analyzer-src": {
@@ -688,6 +904,7 @@
     "rust-overlay": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "helix",
           "nixpkgs"
         ]
@@ -709,6 +926,7 @@
     "sops-nix": {
       "inputs": {
         "nixpkgs": [
+          "public",
           "nixpkgs"
         ]
       },
@@ -738,6 +956,82 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_2": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "git-hooks": {
+      "inputs": {
+        "flake-compat": "flake-compat",
+        "gitignore": "gitignore",
+        "nixpkgs": [
+          "gh-endorse",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1775585728,
+        "narHash": "sha256-8Psjt+TWvE4thRKktJsXfR6PA/fWWsZ04DVaY6PUhr4=",
+        "owner": "cachix",
+        "repo": "git-hooks.nix",
+        "rev": "580633fa3fe5fc0379905986543fd7495481913d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cachix",
+        "repo": "git-hooks.nix",
+        "type": "github"
+      }
+    },
+    "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767039857,
+        "narHash": "sha256-vNpUSpF5Nuw8xvDLj2KCwwksIbjua2LZCqhV1LNRDns=",
+        "owner": "NixOS",
+        "repo": "flake-compat",
+        "rev": "5edf11c44bc78a0d334f6334cdaf7d60d732daab",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
+    "gitignore": {
+      "inputs": {
+        "nixpkgs": [
+          "gh-endorse",
+          "git-hooks",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1709087332,
+        "narHash": "sha256-HG2cCnktfHsKV0s4XW83gU3F57gaTljL9KNSuG6bnQs=",
+        "owner": "hercules-ci",
+        "repo": "gitignore.nix",
+        "rev": "637db329424fd7e46cf4185293b9cc8c88c95394",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "gitignore.nix",
         "type": "github"
       }
     }

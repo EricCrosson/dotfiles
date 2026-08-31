@@ -99,6 +99,10 @@ in {
 
   bitgo.ssh.enable = true;
   bitgo.sops.enable = true;
+  programs.gh.extensions = [
+    inputs.gh-endorse.packages.${pkgs.system}.gh-endorse
+    inputs.gh-gantt.packages.${pkgs.system}.gh-gantt
+  ];
 
   home = {
     file = {

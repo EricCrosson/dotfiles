@@ -41,29 +41,43 @@ Step-by-step instructions for activating this config on a factory-reset Mac.
 
 ## First activation
 
-### Option A — full (requires steps 5–7 above)
+### Athens NixOS installation — no BitGo credentials required
+
+Athens is defined by the public flake and does not require access to private
+BitGo repositories:
 
 ```bash
-darwin-rebuild switch --flake .#MBP-0954
+nixos-install --flake .#athens
 ```
 
-### Option B — stubbed private inputs (skips steps 6–7; no work tools)
+All Athens configuration builds should run on Athens itself. The public flake
+contains no private SSH inputs.
 
-Use this when you haven't yet provisioned GPG keys or the BitGo SSH key. It
-replaces the private flake inputs with empty stubs so evaluation succeeds.
-Sops secrets are automatically disabled when GPG keys are absent.
+### MBP-0954 Darwin activation
+
+The Darwin configuration lives in `private/flake.nix` because it uses the four
+private BitGo inputs. With the BitGo SSH alias and GPG keys configured:
 
 ```bash
-nix run nix-darwin -- switch --flake .#MBP-0954 \
+darwin-rebuild switch --flake ./private#MBP-0954
+```
+
+### Stubbed Darwin activation
+
+Use this when the BitGo SSH key or GPG keys are not yet available. It replaces
+the four private inputs with empty local stubs; work tools and sops secrets are
+not functional in this mode:
+
+```bash
+nix run nix-darwin -- switch --flake ./private#MBP-0954 \
   --override-input aws-console-bitgo path:./stubs/private-input-stub \
   --override-input aws-saml-bitgo    path:./stubs/private-input-stub \
-  --override-input cortex            path:./stubs/private-input-stub \
   --override-input gh-endorse        path:./stubs/private-input-stub \
-  --override-input gh-gantt          path:./stubs/private-input-stub \
+  --override-input gh-gantt          path:./stubs/private-input-stub
 ```
 
-Once GPG keys and the BitGo SSH key are in place, complete steps 5–7 and
-re-run Option A.
+The four private inputs are `aws-console-bitgo`, `aws-saml-bitgo`, `gh-endorse`,
+and `gh-gantt`.
 
 ## Known bootstrap dependencies
 
@@ -72,10 +86,10 @@ re-run Option A.
 | Homebrew                     | nix-darwin Homebrew module manages casks and brews                                             | Prints warning and skips; casks/brews not installed                                               |
 | 1Password.app                | git signing (`profiles/eric/modules/git.nix`) and SSH agent (`profiles/bitgo/modules/ssh.nix`) | Git commits unsigned; SSH agent unavailable                                                       |
 | GPG keys in `~/.gnupg`       | sops-nix decrypts secrets via GPG host key listed in `.sops.yaml`                              | Sops secrets skipped; AWS/Bedrock tools non-functional until GPG keys imported and config rebuilt |
-| `github.com-bitgo` SSH alias | Six private flake inputs use `git+ssh://git@github.com-bitgo/...`                              | Flake evaluation fails without `--override-input` stubs                                           |
+| `github.com-bitgo` SSH alias | Four private flake inputs use `git+ssh://git@github.com-bitgo/...`                             | Private Darwin flake cannot evaluate; Athens remains unaffected                                   |
 
 ## Known hardware-specific config
 
 - **AeroSpace monitor assignments** (`profiles/eric/modules/aerospace.nix`) reference specific Dell monitor model strings — non-fatal if different monitors are attached.
-- **Hostname** must be `MBP-0954` or specified explicitly with `--flake .#MBP-0954`.
+- **Hostname** must be `MBP-0954` or specified explicitly with `--flake ./private#MBP-0954`.
 - **`/opt/homebrew`** paths are hardcoded — standard for Apple Silicon; amd64 Macs use `/usr/local/homebrew`.

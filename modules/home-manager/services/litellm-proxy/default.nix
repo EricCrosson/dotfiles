@@ -2,7 +2,6 @@
   pkgs,
   lib,
   config,
-  inputs,
   ...
 }:
 with lib; let
@@ -80,8 +79,8 @@ in {
     };
 
     aws-saml = mkOption {
-      type = types.package;
-      inherit (inputs.aws-saml-bitgo.packages.${pkgs.system}) default;
+      type = types.nullOr types.package;
+      default = null;
       description = "aws-saml package for AWS authentication";
     };
 

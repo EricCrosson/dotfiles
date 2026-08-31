@@ -8,13 +8,6 @@
   } @ inputs: let
     hostBuilder = import ./hosts {inherit inputs;};
   in {
-    darwinConfigurations =
-      builtins.mapAttrs
-      (hostName: hostConfig:
-        hostBuilder.mkDarwinHost {
-          inherit hostName hostConfig;
-        })
-      hostBuilder.hosts;
     nixosConfigurations =
       builtins.mapAttrs
       (hostName: hostConfig:
@@ -30,14 +23,7 @@
       url = "github:1Password/shell-plugins";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    aws-console-bitgo = {
-      url = "git+ssh://git@github.com-bitgo/bitgo/aws-console";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    aws-saml-bitgo = {
-      url = "git+ssh://git@github.com-bitgo/bitgo/aws-saml";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+
     bash-barrier = {
       url = "github:ericcrosson/bash-barrier";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -57,14 +43,7 @@
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    gh-gantt = {
-      url = "git+ssh://git@github.com-bitgo/bitgo/gh-gantt";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    gh-endorse = {
-      url = "git+ssh://git@github.com-bitgo/bitgo/gh-endorse";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+
     gh-arm = {
       url = "github:ericcrosson/gh-arm";
     };

@@ -57,10 +57,9 @@ jobs:
       - run: |
           : build darwin configuration with stubbed private inputs
           retry --up-to 2x -- nix build \
-            .#darwinConfigurations.MBP-0954.system \
+            ./private#darwinConfigurations.MBP-0954.system \
             --override-input aws-console-bitgo path:./stubs/private-input-stub \
             --override-input aws-saml-bitgo path:./stubs/private-input-stub \
-            --override-input cortex path:./stubs/private-input-stub \
             --override-input gh-endorse path:./stubs/private-input-stub \
             --override-input gh-gantt path:./stubs/private-input-stub \
             --keep-going --print-build-logs
@@ -74,7 +73,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f544ce83dd
         with:
           persist-credentials: false
 

@@ -38,8 +38,6 @@ in {
     gh = {
       enable = true;
       extensions = [
-        inputs.gh-endorse.packages.${pkgs.system}.gh-endorse
-        inputs.gh-gantt.packages.${pkgs.system}.gh-gantt
         inputs.gh-arm.packages.${pkgs.system}.default
         inputs.gh-automerge.packages.${pkgs.system}.default
         gh-stack
