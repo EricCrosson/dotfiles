@@ -100,6 +100,7 @@
       config = {
         allowUnfree = true;
         allowBroken = true; # Needed for open-webui
+        nvidia.acceptLicense = true;
       };
       overlays = [
         inputs.fenix.overlays.default

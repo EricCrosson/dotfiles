@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   boot = {
     loader = {
       systemd-boot.enable = true;
@@ -7,13 +11,29 @@
     tmp.cleanOnBoot = true;
   };
 
+  hardware.nvidia = {
+    modesetting.enable = true;
+    open = false;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+  };
+
   # GNOME needs the normal graphics stack; nomodeset disables it.
   hardware.graphics.enable = true;
 
   services = {
-    xserver.enable = true;
+    xserver = {
+      enable = true;
+      videoDrivers = ["nvidia"];
+    };
     displayManager.gdm.enable = true;
     desktopManager.gnome.enable = true;
+    openssh = {
+      enable = true;
+      settings = {
+        PasswordAuthentication = false;
+        PermitRootLogin = "prohibit-password";
+      };
+    };
   };
   systemd.defaultUnit = "graphical.target";
 
@@ -47,14 +67,6 @@
     enableBashCompletion = false;
     enableGlobalCompInit = false;
     promptInit = ""; # starship handles the prompt
-  };
-
-  services.openssh = {
-    enable = true;
-    settings = {
-      PasswordAuthentication = false;
-      PermitRootLogin = "prohibit-password";
-    };
   };
 
   users.users.eric = {
