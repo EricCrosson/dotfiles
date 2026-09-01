@@ -23,9 +23,8 @@
   # GNOME needs the normal graphics stack; nomodeset disables it.
   hardware.graphics.enable = true;
   # Match macOS natural scrolling for physical mice.
-  services.libinput.mouse.naturalScrolling = true;
-
   services = {
+    libinput.mouse.naturalScrolling = true;
     xserver = {
       enable = true;
       videoDrivers = ["nvidia"];
@@ -37,6 +36,14 @@
       settings = {
         PasswordAuthentication = false;
         PermitRootLogin = "prohibit-password";
+      };
+    };
+    kmonad = {
+      enable = true;
+      keyboards.kinesis = {
+        device = "/dev/input/by-id/usb-05f3_0007-event-kbd";
+        config = builtins.readFile ../../kmonad/kinesis-advantage-pro.kbd;
+        defcfg.enable = true;
       };
     };
   };
