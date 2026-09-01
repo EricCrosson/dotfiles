@@ -43,11 +43,18 @@ Step-by-step instructions for activating this config on a factory-reset Mac.
 
 ### Athens NixOS installation — no BitGo credentials required
 
-Athens is defined by the public flake and does not require access to private
-BitGo repositories:
+Athens uses the public flake and a disko partition layout. From a NixOS
+installer environment, partition and mount the target disk first:
 
 ```bash
-nixos-install --flake .#athens
+nix run github:nix-community/disko -- --mode disko ./hosts/athens/disko.nix
+```
+
+Then install into the mounted target (`/mnt`). The `--root /mnt` argument is
+required so the bootloader mount check sees the ESP at `/mnt/boot`:
+
+```bash
+nixos-install --root /mnt --flake .#athens
 ```
 
 All Athens configuration builds should run on Athens itself. The public flake
