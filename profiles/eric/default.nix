@@ -32,66 +32,72 @@ in {
     homeDirectory = "${profile.homeDirectory}";
     stateVersion = "22.05";
 
-    sessionVariables = {
-      EDITOR = "${inputs.helix.packages.${pkgs.system}.default}/bin/hx";
-      FZF_ALT_C_COMMAND = "fd --type d";
-      FZF_DEFAULT_COMMAND = "fd --type f";
-      FZF_CTRL_T_COMMAND = "fd --type f";
-      MANPAGER = "sh -c 'col -bx | bat -l man -p'";
-      MANROFFOPT = "-c";
-      SMART_CD_ONLY_IF_FITS_RATIO = 66;
-      ZSH_WAKATIME_BIN = "/etc/profiles/per-user/${profile.username}/bin/wakatime-cli";
-    };
+    sessionVariables =
+      {
+        EDITOR = "${inputs.helix.packages.${pkgs.system}.default}/bin/hx";
+        FZF_ALT_C_COMMAND = "fd --type d";
+        FZF_DEFAULT_COMMAND = "fd --type f";
+        FZF_CTRL_T_COMMAND = "fd --type f";
+        MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+        MANROFFOPT = "-c";
+        SMART_CD_ONLY_IF_FITS_RATIO = 66;
+        ZSH_WAKATIME_BIN = "/etc/profiles/per-user/${profile.username}/bin/wakatime-cli";
+      }
+      // pkgs.lib.optionalAttrs stdenv.isLinux {
+        SSH_AUTH_SOCK = "${profile.homeDirectory}/.1password/agent.sock";
+      };
 
-    packages = with pkgs; [
-      inputs.bell.packages.${pkgs.system}.default
-      inputs.retry.packages.${pkgs.system}.default
+    packages = with pkgs;
+      [
+        inputs.bell.packages.${pkgs.system}.default
+        inputs.retry.packages.${pkgs.system}.default
 
-      age-plugin-yubikey
-      amber
-      atuin-desktop
-      bottom
-      broot
-      curl
-      dust
-      entr
-      fd
-      ffmpeg
+        age-plugin-yubikey
+        amber
+        atuin-desktop
+        bottom
+        broot
+        curl
+        dust
+        entr
+        fd
+        ffmpeg
 
-      fx
-      git
-      git-absorb
-      git-extras
-      gnupg
-      gron
-      htmlq
-      htop
-      hyperfine
-      imagemagick
-      jq
-      moreutils
-      mprocs
-      pass
-      pueue
-      sd
-      spacer
-      units
-      viddy
-      viu
-      vim
-      watchexec
-      wget
-      yubikey-manager
+        fx
+        git
+        git-absorb
+        git-extras
+        gnupg
+        gron
+        htmlq
+        htop
+        hyperfine
+        imagemagick
+        jq
+        moreutils
+        mprocs
+        pass
+        pueue
+        sd
+        spacer
+        units
+        viddy
+        viu
+        vim
+        watchexec
+        wget
+        yubikey-manager
 
-      # yt-dlp # derivation temporarily broken
+        # yt-dlp # derivation temporarily broken
 
-      # for shell
-      eza
-      fzf
-      python3
-      starship
-      wakatime-cli
-    ];
+        # for shell
+        eza
+        fzf
+        python3
+        starship
+        wakatime-cli
+      ]
+      ++ pkgs.lib.optionals stdenv.isLinux [_1password-gui];
 
     file = pkgs.lib.optionalAttrs stdenv.isDarwin {
       ".homebrew/brew.env".text = ''

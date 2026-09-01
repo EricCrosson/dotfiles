@@ -66,7 +66,7 @@ in {
         signer =
           if pkgs.stdenv.isDarwin
           then "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
-          else "${pkgs.openssh}/bin/ssh-keygen";
+          else "${pkgs._1password-gui}/bin/op-ssh-sign";
       };
       ignores = [
         ".DS_Store"
