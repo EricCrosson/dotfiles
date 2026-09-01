@@ -97,6 +97,11 @@
     };
     "org/gnome/settings-daemon/plugins/power"."power-button-action" = "nothing";
   };
+  # Launch 1Password with the GNOME session so its SSH agent is available for Git signing.
+  home-manager.users.eric.xdg.autostart = {
+    enable = true;
+    entries = ["${pkgs._1password-gui}/share/applications/1password.desktop"];
+  };
 
   security.sudo.wheelNeedsPassword = false;
 
