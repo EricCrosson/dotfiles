@@ -19,6 +19,8 @@
 
   # GNOME needs the normal graphics stack; nomodeset disables it.
   hardware.graphics.enable = true;
+  # Match macOS natural scrolling for physical mice.
+  services.libinput.mouse.naturalScrolling = true;
 
   services = {
     xserver = {
@@ -78,6 +80,10 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9idpkqe6Rk8pLXKhqCfL6Bc3jGMHdfDj06C0AU5P3J"
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDU65JVLQ6wB6W0EAhw16uE1gJuyB4XcOv4u2RES6+7cG/iqAy5ViExo7EG6UmKUeTorTn874v8BjdPrZvpkfhSanYliYbycHLEpnHUcj0D3Z6YkWtbe4qHT0CcFlmOELCgSV/3WNchLWXyyxvAMqsyi96011fV2ny3tvjI7w21zIl+eqMTSSW5DRRJyl/29yDmmISfrhFA47ZcYRF9m0/dON2hkmG2haJWAxLDXDwdAVp5xydmGgDg3EzuWE+ricvZ/9JWH3MQzfS7Lmsl7Bt2KuNw1GjWJct9cbxzybS8KKgPgK3SuzbSRD6UJf2xHpyHFJxPnBP/KlxGNl5AGyyotFW7l6xEut5IgEBdKam7UPEkG2Oj320KrNkc2eWnUlOQApHE4QLkYlG59ObitokVCXUFKQxAwK6rcS9VuG3xrLAktYMfvhkFn1gzibpsKObL+Ny0siYv2t8h8tVJLrwdS30JzqHUjxzkdQHlSBg7xRT0RI5zW0m/Rlx3PcWis= ericcrosson@MBP-0954"
     ];
+  };
+  # GNOME on Wayland reads mouse scrolling from dconf rather than Xorg.
+  home-manager.users.eric.dconf.settings = {
+    "org/gnome/desktop/peripherals/mouse"."natural-scroll" = true;
   };
 
   security.sudo.wheelNeedsPassword = false;
