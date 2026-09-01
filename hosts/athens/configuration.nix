@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   pkgs,
   ...
 }: {
@@ -39,6 +40,8 @@
       };
     };
   };
+
+  services.logind.settings.Login.HandlePowerKey = "ignore";
   systemd.defaultUnit = "graphical.target";
 
   networking = {
@@ -87,6 +90,12 @@
   home-manager.users.eric.dconf.settings = {
     "org/gnome/desktop/peripherals/mouse"."natural-scroll" = true;
     "org/gnome/shell"."enabled-extensions" = ["caffeine@patapon.info"];
+    "org/gnome/settings-daemon/plugins/color" = {
+      "night-light-enabled" = true;
+      "night-light-schedule-automatic" = true;
+      "night-light-temperature" = inputs.home-manager.lib.hm.gvariant.mkUint32 1000;
+    };
+    "org/gnome/settings-daemon/plugins/power"."power-button-action" = "nothing";
   };
 
   security.sudo.wheelNeedsPassword = false;
