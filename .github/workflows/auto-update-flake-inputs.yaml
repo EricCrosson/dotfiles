@@ -129,3 +129,29 @@ jobs:
             nix
             ${{ matrix.flake-input }}
           token: ${{ secrets.GH_TOKEN_PR }}
+  update-private-flake-inputs:
+    needs: update-flake-inputs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
+      - name: Update private Darwin flake OMP input
+        uses: DeterminateSystems/update-flake-lock@834c491b2ece4de0bbd00d85214bb5e83b4da5c6
+        with:
+          path-to-flake-dir: private
+          branch: update-private-flake-omp
+          inputs: omp
+          git-author-name: github-actions
+          git-author-email: action@github.com
+          git-committer-name: github-actions
+          git-committer-email: action@github.com
+          pr-assignees: EricCrosson
+          pr-title: Update private Darwin flake OMP input
+          pr-labels: |
+            dependencies
+            nix
+          token: ${{ secrets.GH_TOKEN_PR }}

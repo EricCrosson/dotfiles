@@ -24,6 +24,7 @@
     home-manager.follows = "public/home-manager";
     mcp-servers-nix.follows = "public/mcp-servers-nix";
     nix-index-database.follows = "public/nix-index-database";
+    omp.follows = "public/omp";
     nix-darwin.follows = "public/nix-darwin";
     npm-dep-version.follows = "public/npm-dep-version";
     retry.follows = "public/retry";

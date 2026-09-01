@@ -32,7 +32,6 @@
       ];
 
       brews = [
-        "can1357/tap/omp"
         "kunobi-ninja/kunobi/kache"
         "md5sha1sum"
         "terminal-notifier"

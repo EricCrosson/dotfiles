@@ -153,6 +153,7 @@
       system = "aarch64-darwin";
       profileName = "bitgo";
       homeManagerModules = [
+        ../profiles/omp
         ../profiles/eric
         ../profiles/bitgo
         ../profiles/development
@@ -168,7 +169,7 @@
       system = "x86_64-linux";
       profileName = "personal";
       homeManagerModules = [
-        ../modules/home-manager
+        ../profiles/omp
         ../profiles/eric
         ../profiles/development
         ../home/editor/helix

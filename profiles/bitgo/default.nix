@@ -93,12 +93,10 @@
 in {
   imports = [
     ./modules
-    ../../modules/home-manager
     inputs._1password-shell-plugins.hmModules.default
   ];
 
   bitgo.ssh.enable = true;
-  bitgo.sops.enable = true;
   programs.gh.extensions = [
     inputs.gh-endorse.packages.${pkgs.system}.gh-endorse
     inputs.gh-gantt.packages.${pkgs.system}.gh-gantt
@@ -152,30 +150,6 @@ in {
   };
 
   programs = {
-    omp = {
-      enable = true;
-      settings = {
-        advisor = {
-          enabled = true;
-        };
-        modelProviderOrder = [
-          "openrouter"
-        ];
-      };
-      models = {
-        providers = {
-          openrouter = {
-            apiKey = "!cat ${config.bitgo.sops.secretPaths.openrouter_api_key}";
-          };
-        };
-      };
-      env = {
-        GOOGLE_CLOUD_PROJECT = "ai-enablement-500217";
-        GOOGLE_CLOUD_LOCATION = "global";
-        SMART_CD_LS = "false";
-        SMART_CD_GIT_STATUS = "false";
-      };
-    };
     _1password-shell-plugins = {
       enable = true;
       plugins = [];
