@@ -13,8 +13,10 @@
 
   hardware.nvidia = {
     modesetting.enable = true;
-    open = false;
+    open = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
+    powerManagement.enable = true;
+    powerManagement.kernelSuspendNotifier = true;
   };
 
   # GNOME needs the normal graphics stack; nomodeset disables it.
