@@ -51,7 +51,7 @@
 
   environment = {
     shells = [pkgs.zsh];
-    systemPackages = with pkgs; [git];
+    systemPackages = with pkgs; [git gnomeExtensions.caffeine];
     variables = {
       SHELL = "${pkgs.zsh}/bin/zsh";
       LANG = "en_US.UTF-8";
@@ -84,6 +84,7 @@
   # GNOME on Wayland reads mouse scrolling from dconf rather than Xorg.
   home-manager.users.eric.dconf.settings = {
     "org/gnome/desktop/peripherals/mouse"."natural-scroll" = true;
+    "org/gnome/shell"."enabled-extensions" = ["caffeine@patapon.info"];
   };
 
   security.sudo.wheelNeedsPassword = false;
