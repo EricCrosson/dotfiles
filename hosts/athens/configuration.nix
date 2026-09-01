@@ -7,7 +7,15 @@
     tmp.cleanOnBoot = true;
   };
 
-  boot.kernelParams = ["nomodeset"];
+  # GNOME needs the normal graphics stack; nomodeset disables it.
+  hardware.graphics.enable = true;
+
+  services = {
+    xserver.enable = true;
+    displayManager.gdm.enable = true;
+    desktopManager.gnome.enable = true;
+  };
+  systemd.defaultUnit = "graphical.target";
 
   networking = {
     hostName = "athens";
