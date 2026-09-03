@@ -108,9 +108,18 @@
     "org/gnome/settings-daemon/plugins/power"."power-button-action" = "nothing";
   };
   # Launch 1Password with the GNOME session so its SSH agent is available for Git signing.
+  # `--silent` keeps the app in the tray on login instead of opening the main window.
   home-manager.users.eric.xdg.autostart = {
     enable = true;
-    entries = ["${pkgs._1password-gui}/share/applications/1password.desktop"];
+    entries = let
+      autostartEntry = pkgs.runCommandLocal "1password-autostart" {} ''
+        mkdir -p $out/share/applications
+        cp ${pkgs._1password-gui}/share/applications/1password.desktop \
+          $out/share/applications/1password.desktop
+        substituteInPlace $out/share/applications/1password.desktop \
+          --replace-fail 'Exec=1password %U' 'Exec=1password --silent'
+      '';
+    in ["${autostartEntry}/share/applications/1password.desktop"];
   };
 
   security.sudo.wheelNeedsPassword = false;
