@@ -4,6 +4,6 @@
   "private": true,
   "description": "Pins mcp-remote for the Linear MCP server; deps tracked by Renovate",
   "dependencies": {
-    "mcp-remote": "0.2.5"
+    "mcp-remote": "0.8.3"
   }
 }
