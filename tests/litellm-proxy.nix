@@ -194,6 +194,47 @@
     assert assertEq "first-model-name" (builtins.elemAt configJson.model_list 0).model_name "model-a";
     assert assertEq "second-model-name" (builtins.elemAt configJson.model_list 1).model_name "model-b";
     assert assertHasAttr "second-model-aws" (builtins.elemAt configJson.model_list 1).litellm_params "aws_profile_name"; true;
+
+  # Test: masterKeyFile alone selects the wrapper and does not require aws-saml
+  test-master-key-only = let
+    result = eval {
+      services.litellm-proxy = {
+        enable = true;
+        package = pkgs.hello;
+        masterKeyFile = "/run/secrets/litellm_master_key";
+        models = [];
+      };
+    };
+    service = result.launchd-with-logs.services.litellm-proxy;
+    configJson = builtins.fromJSON result.home.file.".config/litellm/config.yaml".text;
+  in
+    assert assertEq "master-key-only-uses-wrapper" (lib.hasInfix "litellm-proxy-wrapper" service.command) true;
+    assert assertEq "master-key-only-no-args" (service.args or []) [];
+    assert assertEq "master-key-only-empty-path" service.environment.PATH (lib.makeBinPath []);
+    assert assertEq "master-key-only-empty-model-list" (builtins.length configJson.model_list) 0; true;
+
+  # Test: masterKeyFile together with modelFile keeps both wrapper behaviors
+  test-master-key-with-model-file = let
+    result = eval {
+      services.litellm-proxy = {
+        enable = true;
+        package = pkgs.hello;
+        aws-saml = pkgs.hello;
+        masterKeyFile = "/run/secrets/litellm_master_key";
+        models = [
+          {
+            name = "test-model";
+            modelFile = "/run/secrets/bedrock_arn";
+          }
+        ];
+      };
+    };
+    service = result.launchd-with-logs.services.litellm-proxy;
+    configText = result.home.file.".config/litellm/config.yaml".text;
+  in
+    assert assertEq "master-key-with-model-file-uses-wrapper" (lib.hasInfix "litellm-proxy-wrapper" service.command) true;
+    assert assertEq "master-key-with-model-file-placeholder" (lib.hasInfix "@MODEL_FILE_" configText) true;
+    assert assertEq "master-key-with-model-file-path" service.environment.PATH (lib.makeBinPath [pkgs.hello]); true;
 in
   # Force evaluation of all tests
   assert test-aws-profile;
@@ -202,4 +243,6 @@ in
   assert test-json-structure;
   assert test-model-file;
   assert test-model-file-uses-wrapper;
+  assert test-master-key-only;
+  assert test-master-key-with-model-file;
   assert test-multiple-models; "all tests passed"

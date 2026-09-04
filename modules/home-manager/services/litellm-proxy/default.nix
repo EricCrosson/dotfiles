@@ -43,8 +43,20 @@ with lib; let
 
   # Wrapper script that resolves modelFile placeholders at runtime.
   # Reads the template config, replaces @MODEL_FILE:path@ placeholders
-  # with actual file contents, writes the resolved config, then execs litellm.
+  # with actual file contents, optionally exports LITTELLM_MASTER_KEY
+  # from masterKeyFile (never via launchd EnvironmentVariables, which
+  # are world-readable), writes the resolved config, then execs litellm.
   litellmWrapper = let
+    # Export the master key at runtime; empty when unset.
+    # Declare and assign separately: combined `export VAR="$(cmd)"` trips
+    # shellcheck SC2155 and fails writeShellApplication's checkPhase.
+    keyExport =
+      if cfg.masterKeyFile != null
+      then ''
+        LITTELLM_MASTER_KEY="$(cat ${escapeShellArg cfg.masterKeyFile})"
+        export LITTELLM_MASTER_KEY
+      ''
+      else "";
     # Build a sequence of bash parameter substitutions, one per modelFile
     substitutions = concatMapStrings (model:
       if model.modelFile != null
@@ -64,6 +76,7 @@ with lib; let
       text = ''
         resolved=$(cat ${escapeShellArg configPath})
         ${substitutions}
+        ${keyExport}
         printf '%s\n' "$resolved" > ${escapeShellArg runtimeConfigPath}
         exec litellm --config ${escapeShellArg runtimeConfigPath} --host ${escapeShellArg cfg.host} --port ${escapeShellArg (toString cfg.port)}
       '';
@@ -82,6 +95,13 @@ in {
       type = types.nullOr types.package;
       default = null;
       description = "aws-saml package for AWS authentication";
+    };
+
+    masterKeyFile = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Path to a file containing the LiteLLM master key (e.g. a sops-decrypted secret). Read at service startup; enables Bearer auth on all endpoints.";
+      example = "/run/secrets/litellm_master_key";
     };
 
     keepAlive = mkOption {
@@ -185,11 +205,11 @@ in {
     };
 
     launchd-with-logs.services.litellm-proxy =
-      if hasModelFiles
+      if hasModelFiles || cfg.masterKeyFile != null
       then {
         command = "${litellmWrapper}/bin/litellm-proxy-wrapper";
         environment = {
-          PATH = lib.makeBinPath [cfg.aws-saml];
+          PATH = lib.makeBinPath (lib.optional (cfg.aws-saml != null) cfg.aws-saml);
         };
         inherit (cfg) keepAlive;
         logging = {
@@ -207,7 +227,7 @@ in {
           "${toString cfg.port}"
         ];
         environment = {
-          PATH = lib.makeBinPath [cfg.aws-saml];
+          PATH = lib.makeBinPath (lib.optional (cfg.aws-saml != null) cfg.aws-saml);
         };
         inherit (cfg) keepAlive;
         logging = {

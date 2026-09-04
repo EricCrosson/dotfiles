@@ -168,8 +168,7 @@ in {
           {
             type = "openai-compatible";
             name = "bedrock-claude";
-            api_base = config.services.litellm-proxy.apiUrl;
-            api_key = "xxx";
+            api_base = "http://127.0.0.1:4000/v1";
             models = [
               {
                 name = config.claude-options.models.sonnet.id;
@@ -198,6 +197,12 @@ in {
               {
                 name = "gemini-3.5-flash-lite";
                 max_input_tokens = 1000000;
+                supports_function_calling = true;
+                supports_vision = true;
+              }
+              {
+                name = "gemini-3.8-flash";
+                max_input_tokens = 2000000;
                 supports_function_calling = true;
                 supports_vision = true;
               }
@@ -429,6 +434,9 @@ in {
         # Background gpg-agent tty update (doesn't need to block startup)
         export GPG_TTY=$TTY
         ${pkgs.gnupg}/bin/gpg-connect-agent --quiet updatestartuptty /bye > /dev/null &!
+
+        # aichat authenticates to the local litellm proxy via its master key.
+        export BEDROCK_CLAUDE_API_KEY="$(cat ${config.bitgo.sops.secretPaths.litellm_master_key})"
       '';
       shellAliases = {
         chat = "aichat";
@@ -440,6 +448,8 @@ in {
   services = {
     litellm-proxy = {
       enable = true;
+      host = "0.0.0.0";
+      masterKeyFile = config.bitgo.sops.secretPaths.litellm_master_key;
       aws-saml = awsSaml;
       models = [
         {
@@ -470,6 +480,16 @@ in {
         {
           name = "gemini-3.5-flash-lite";
           model = "vertex_ai/gemini-3.5-flash-lite";
+          extraConfig = ''
+            {
+              "vertex_project": "ai-enablement-500217",
+              "vertex_location": "us"
+            }
+          '';
+        }
+        {
+          name = "gemini-3.8-flash";
+          model = "vertex_ai/gemini-3.8-flash";
           extraConfig = ''
             {
               "vertex_project": "ai-enablement-500217",

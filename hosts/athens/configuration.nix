@@ -55,6 +55,9 @@
     hostName = "athens";
     networkmanager.enable = true;
     firewall.allowedTCPPorts = [22];
+    hosts = {
+      "192.168.1.148" = ["mbp-proxy"];
+    };
   };
 
   time.timeZone = "America/Chicago";

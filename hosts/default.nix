@@ -175,6 +175,13 @@
         ../profiles/development
         ../home/editor/helix
         ({lib, ...}: {services.cargo-sweep.enable = lib.mkForce false;})
+        ({lib, ...}: {
+          programs.omp.models.providers.litellm.baseUrl = lib.mkForce "http://mbp-proxy:4000/v1";
+          programs.omp.settings.modelRoles = {
+            plan = "litellm/gemini-3.8-flash:auto";
+            slow = "litellm/gemini-3.8-flash:auto";
+          };
+        })
       ];
       nixosModules = [];
     };

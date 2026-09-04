@@ -30,6 +30,10 @@ in {
         type = types.str;
         readOnly = true;
       };
+      litellm_master_key = mkOption {
+        type = types.str;
+        readOnly = true;
+      };
     };
   };
 
@@ -47,6 +51,9 @@ in {
         bedrock_haiku_arn = {};
         openrouter_api_key = {};
         linear_api_key = {};
+        litellm_master_key = {
+          mode = "0600";
+        };
       };
     };
 
@@ -58,6 +65,7 @@ in {
         bedrock_haiku_arn = config.sops.secrets.bedrock_haiku_arn.path;
         openrouter_api_key = config.sops.secrets.openrouter_api_key.path;
         linear_api_key = config.sops.secrets.linear_api_key.path;
+        litellm_master_key = config.sops.secrets.litellm_master_key.path;
       }
       else {
         bedrock_opus_arn = "/dev/null";
@@ -65,6 +73,7 @@ in {
         bedrock_haiku_arn = "/dev/null";
         openrouter_api_key = "/dev/null";
         linear_api_key = "/dev/null";
+        litellm_master_key = "/dev/null";
       };
   };
 }
