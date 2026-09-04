@@ -8,6 +8,12 @@
 }: let
   chrome-devtools-mcp = pkgs.callPackage ../../pkgs/chrome-devtools-mcp {};
   mcp-remote = pkgs.callPackage ../../pkgs/mcp-remote {};
+  mlflow-mcp = pkgs.callPackage ../../pkgs/mlflow-mcp {
+    # mlflow's bundled MCP server (mlflow mcp run) needs mlflow >= 3.4;
+    # the main nixpkgs pin may lag, so draw python from a dedicated input.
+    inherit (inputs.nixpkgs-mlflow.legacyPackages.${pkgs.system}) python3;
+  };
+  slackMcpUrl = "https://mcp.slack.com/mcp";
   baseMcpServers = {
     chrome-devtools = {
       command = "${chrome-devtools-mcp}/bin/chrome-devtools-mcp";
@@ -24,6 +30,26 @@
       linear = {
         command = "${mcp-remote}/bin/mcp-remote";
         args = ["https://mcp.linear.app/mcp"];
+      };
+      slack = {
+        command = "${mcp-remote}/bin/mcp-remote";
+        # The Slack app's registered redirect is http://localhost:3118/callback
+        # (Slack's documented path), so the callback port and path must match
+        # exactly. Slack's MCP server does not support dynamic client
+        # registration, so the pre-registered public PKCE client_id is passed
+        # statically. Keep it that way: these args land in world-readable
+        # nix-store artifacts, so a client_secret must never be added here.
+        args = [
+          slackMcpUrl
+          "3118"
+          "--callback-path"
+          "/callback"
+          "--static-oauth-client-info"
+          ''{"client_id":"1601185624273.8899143856786"}''
+        ];
+      };
+      mlflow = {
+        command = "${mlflow-mcp}/bin/mlflow-mcp";
       };
     };
   codexSettings = {
@@ -264,6 +290,14 @@ in {
           leader = "alt+b";
         };
       };
+    };
+
+    omp = {
+      # Single source of truth: the same mcpServers attrset feeds agy, codex,
+      # opencode, and omp's ~/.omp/agent/mcp.json (via omp-mcp-sync). omp
+      # also discovers these servers through its opencode/gemini imports, but
+      # same-named entries dedupe to this native (priority-100) file.
+      inherit mcpServers;
     };
 
     git = {

@@ -23,6 +23,12 @@
       url = "github:1Password/shell-plugins";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # mlflow's bundled MCP server (mlflow mcp run) needs mlflow >= 3.4;
+    # the main nixpkgs pin may lag, so the mlflow MCP package draws its
+    # python env from this separately-bumped snapshot.
+    nixpkgs-mlflow = {
+      url = "github:nixos/nixpkgs/nixos-unstable";
+    };
 
     bash-barrier = {
       url = "github:ericcrosson/bash-barrier";
