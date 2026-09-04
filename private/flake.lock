@@ -770,6 +770,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-mlflow": {
+      "locked": {
+        "lastModified": 1788404924,
+        "narHash": "sha256-lhEhY8X5EgkQ/eg6IFz4cc8jRuSYSvnxx1al7d1dvZ0=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "0968519e14f7aa7d3e9b389682bd74d2b51c8ce8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1773691222,
@@ -1053,6 +1069,7 @@
           "public",
           "nixpkgs"
         ],
+        "nixpkgs-mlflow": "nixpkgs-mlflow",
         "npm-dep-version": [
           "public",
           "npm-dep-version"

@@ -7,8 +7,14 @@
 with lib; let
   cfg = config.programs.omp;
   yamlFormat = pkgs.formats.yaml {};
+  jsonFormat = pkgs.formats.json {};
   baseConfig = yamlFormat.generate "omp-base-config.yml" cfg.settings;
+  mcpBaseConfig = jsonFormat.generate "omp-mcp-base.json" {
+    "$schema" = "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/config/mcp-schema.json";
+    inherit (cfg) mcpServers;
+  };
   ompConfigSync = pkgs.callPackage ../../../../pkgs/omp-config-sync {};
+  ompMcpSync = pkgs.callPackage ../../../../pkgs/omp-mcp-sync {};
 in {
   options.programs.omp = {
     enable = mkEnableOption "Oh My Pi (omp) configuration";
@@ -55,6 +61,16 @@ in {
         }
       '';
     };
+
+    mcpServers = mkOption {
+      inherit (jsonFormat) type;
+      default = {};
+      description = ''
+        MCP servers written to ~/.omp/agent/mcp.json. Authoritative on every
+        activation: servers absent from this option are removed from the file;
+        only omp's runtime state (disabledServers/enabledServers) is preserved.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
@@ -66,6 +82,20 @@ in {
           ${ompConfigSync}/bin/omp-config-sync \
             ${baseConfig} \
             "$HOME/.omp/agent/config.yml"
+        fi
+      '';
+
+      # Merge-syncs the generated base into ~/.omp/agent/mcp.json (base is
+      # authoritative; omp's disabledServers/enabledServers write-backs are
+      # preserved). Hosts that enable programs.omp without setting
+      # mcpServers sync an empty server set.
+      activation.syncOmpMcpConfig = config.lib.dag.entryAfter ["linkGeneration"] ''
+        if [[ -v DRY_RUN ]]; then
+          echo "Would synchronize writable Oh My Pi MCP configuration"
+        else
+          ${ompMcpSync}/bin/omp-mcp-sync \
+            ${mcpBaseConfig} \
+            "$HOME/.omp/agent/mcp.json"
         fi
       '';
 

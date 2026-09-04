@@ -24,6 +24,9 @@
     home-manager.follows = "public/home-manager";
     mcp-servers-nix.follows = "public/mcp-servers-nix";
     nix-index-database.follows = "public/nix-index-database";
+    # Mirrors public/nixpkgs-mlflow (used by pkgs/mlflow-mcp); keep the two
+    # locks on the same rev when bumping.
+    nixpkgs-mlflow.url = "github:nixos/nixpkgs/nixos-unstable";
     omp.follows = "public/omp";
     nix-darwin.follows = "public/nix-darwin";
     npm-dep-version.follows = "public/npm-dep-version";

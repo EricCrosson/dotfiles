@@ -3,6 +3,9 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # mlflow's bundled MCP server (mlflow mcp run) needs mlflow >= 3.4;
+    # see pkgs/mlflow-mcp in the repository root.
+    nixpkgs-mlflow.url = "github:nixos/nixpkgs/nixos-unstable";
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -19,6 +22,7 @@
     nixpkgs,
     git-hooks,
     sops-nix,
+    nixpkgs-mlflow,
   }: let
     forEachSystem = nixpkgs.lib.genAttrs [
       "x86_64-linux"
@@ -85,6 +89,11 @@
         (pkgs.runCommand "mcp-remote-test" {} "touch $out");
       codex-config-sync-test = import ../tests/codex-config-sync.nix {inherit pkgs;};
       omp-config-sync-test = import ../tests/omp-config-sync.nix {inherit pkgs;};
+      omp-mcp-sync-test = import ../tests/omp-mcp-sync.nix {inherit pkgs;};
+      mlflow-mcp-test = import ../tests/mlflow-mcp.nix {
+        inherit pkgs;
+        mlflowPython3 = nixpkgs-mlflow.legacyPackages.${system}.python3;
+      };
     in {
       inherit
         pre-commit-check
@@ -102,6 +111,8 @@
         mcp-remote-test
         codex-config-sync-test
         omp-config-sync-test
+        mlflow-mcp-test
+        omp-mcp-sync-test
         ;
     });
 
