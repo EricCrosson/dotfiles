@@ -6,7 +6,7 @@
 }:
 # Pre-built from npm registry — the published tarball already contains
 # build/src with compiled JS and has zero runtime dependencies.
-# This eliminates the ~1s npx registry check on every Claude Code startup.
+# This eliminates the ~1s npx registry check on every startup.
 let
   tarball = fetchurl {
     url = "https://registry.npmjs.org/chrome-devtools-mcp/-/chrome-devtools-mcp-0.20.1.tgz";

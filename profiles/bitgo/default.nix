@@ -8,12 +8,6 @@
 }: let
   chrome-devtools-mcp = pkgs.callPackage ../../pkgs/chrome-devtools-mcp {};
   mcp-remote = pkgs.callPackage ../../pkgs/mcp-remote {};
-
-  standaloneClaude = pkgs.runCommand "standalone-claude" {} ''
-    mkdir -p $out/bin
-    ln -s ${config.home.homeDirectory}/.local/bin/claude $out/bin/claude
-  '';
-
   baseMcpServers = {
     chrome-devtools = {
       command = "${chrome-devtools-mcp}/bin/chrome-devtools-mcp";
@@ -66,19 +60,6 @@
     (builtins.attrNames (lib.filterAttrs (n: _: lib.hasSuffix ".md" n)
         (builtins.readDir rulesDir)))
   );
-
-  claudeNotificationScript = pkgs.writeShellApplication {
-    name = "claude-notification";
-    runtimeInputs = [pkgs.jq];
-    text = builtins.readFile ../../ai/hooks/notification.sh;
-  };
-
-  claudeFormatOnEditScript = pkgs.writeShellApplication {
-    name = "claude-format-on-edit";
-    runtimeInputs = [pkgs.jq pkgs.alejandra pkgs.prettier];
-    text = builtins.readFile ../../ai/hooks/format-on-edit.sh;
-  };
-
   # Force aws-saml to open Keycloak login in Safari instead of the default browser.
   # aws-saml uses pkg/browser which hardcodes `open <url>` on Darwin, ignoring $BROWSER.
   # We shadow `open` with a shim that routes through Safari.
@@ -131,12 +112,6 @@ in {
     ];
 
     activation = {
-      installClaude = config.lib.dag.entryAfter ["writeBoundary"] ''
-        if [ ! -x "${config.home.homeDirectory}/.local/bin/claude" ]; then
-          export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
-          ${pkgs.curl}/bin/curl -fsSL https://claude.ai/install.sh | /bin/sh
-        fi
-      '';
       syncCodexConfig = config.lib.dag.entryAfter ["linkGeneration"] ''
         if [[ -v DRY_RUN ]]; then
           echo "Would synchronize writable Codex configuration"
@@ -248,63 +223,6 @@ in {
       # Codex persists project trust in config.toml, so it cannot be a Nix store symlink.
       settings = null;
     };
-
-    claude-code = {
-      enable = true;
-      package =
-        (pkgs.callPackage ../../pkgs/claude-wrapper {} {
-          claude-code = standaloneClaude;
-          bedrockProfile = config.claude-options.bedrock.profile;
-          bedrockRegion = config.claude-options.bedrock.region;
-          bedrockOpusFile = config.bitgo.sops.secretPaths.bedrock_opus_arn;
-          bedrockSonnetFile = config.bitgo.sops.secretPaths.bedrock_sonnet_arn;
-          bedrockHaikuFile = config.bitgo.sops.secretPaths.bedrock_haiku_arn;
-        })
-        // {version = "2.1.206";};
-      mcpServers = baseMcpServers;
-      skills = ../../ai/skills;
-      inherit rulesDir;
-      settings = {
-        autoUpdates = true;
-        cleanupPeriodDays = 99999;
-        showClearContextOnPlanAccept = true;
-        skipDangerousModePermissionPrompt = true;
-        terminalProgressBarEnabled = false;
-        env = {
-          CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
-          DISABLE_INSTALLATION_CHECKS = "1";
-          ENABLE_TOOL_SEARCH = "1";
-        };
-        hooks = {
-          Notification = [
-            {
-              hooks = [
-                {
-                  type = "command";
-                  command = "${pkgs.lib.getExe claudeNotificationScript}";
-                }
-              ];
-            }
-          ];
-          PostToolUse = [
-            {
-              matcher = "Edit|Write";
-              hooks = [
-                {
-                  type = "command";
-                  command = "${pkgs.lib.getExe claudeFormatOnEditScript}";
-                }
-              ];
-            }
-          ];
-        };
-        teammateMode = "auto";
-        permissions = {
-          defaultMode = "plan";
-        };
-      };
-    };
-
     opencode = {
       enable = true;
       package = pkgs.writeShellApplication {

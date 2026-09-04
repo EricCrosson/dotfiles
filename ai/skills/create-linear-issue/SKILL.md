@@ -7,7 +7,7 @@ description: Use when creating a Linear issue from a feature, bug, or task descr
 Add these steps to your task list:
 
 1. Extract any fields provided inline; ask me only for what's still missing
-2. Call `mcp__claude_ai_Linear__save_issue` with all fields in a single call
+2. Call `mcp__linear_save_issue` with all fields in a single call
 3. Return the issue identifier and URL
    </required>
 

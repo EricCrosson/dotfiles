@@ -5,7 +5,7 @@
 }:
 # Pin mcp-remote so the Linear MCP server runs a hermetic, integrity-checked
 # binary instead of `npx mcp-remote` (which needs a Node toolchain on PATH and
-# does a registry check on every Claude Code startup).
+# does a registry check on every startup).
 #
 # importNpmLock derives a fixed-output derivation per dependency from the
 # `integrity` fields in package-lock.json — there is NO npmDepsHash to keep in

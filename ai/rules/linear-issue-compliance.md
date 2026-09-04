@@ -9,7 +9,7 @@ Before your first commit, ensure a Linear issue is associated with this task:
 2. Otherwise, use `/create-linear-issue` — include assignee (Eric Crosson) and
    priority in the creation call (do not create-then-update separately)
 3. Transition the issue: **In Progress** when starting work, **In Review**
-   when pushing or creating a PR (use `mcp__claude_ai_Linear__save_issue`
+   when pushing or creating a PR (use `mcp__linear_save_issue`
    with the issue `id` and desired `state`)
 4. Include a `Ticket: XX-1234` trailer in every commit message (where XX-1234
    is the Linear issue identifier)

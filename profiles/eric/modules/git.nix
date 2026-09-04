@@ -71,11 +71,8 @@ in {
       ignores = [
         ".DS_Store"
         "/.antigravitycli"
-        "/.claude/settings.local.json"
-        "/.claude/worktrees"
         "/.direnv"
         "/.pre-commit-config.yaml"
-        "/CLAUDE.local.md"
         "/scratch/"
       ];
       includes = [

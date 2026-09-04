@@ -29,17 +29,6 @@
     checks = forEachSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
       pre-commit-check = pkgs.callPackage ./git-hooks.nix {inherit git-hooks;};
-      claude-wrapper-test =
-        pkgs.runCommand "claude-wrapper-test" {
-          nativeBuildInputs = [pkgs.go];
-          src = self.sourceInfo + "/pkgs/claude-wrapper";
-        } ''
-          cd $src
-          export HOME=$TMPDIR
-          export GOTOOLCHAIN=local
-          go test -v
-          touch $out
-        '';
       launchd-with-logs-test =
         builtins.seq
         (import ../tests/launchd-with-logs.nix {inherit pkgs;})
@@ -48,10 +37,6 @@
         builtins.seq
         (import ../tests/litellm-proxy.nix {inherit pkgs;})
         (pkgs.runCommand "litellm-proxy-test" {} "touch $out");
-      claude-wrapper-script-test =
-        builtins.seq
-        (import ../tests/claude-wrapper-script.nix {inherit pkgs;})
-        (pkgs.runCommand "claude-wrapper-script-test" {} "touch $out");
       cargo-sweep-test =
         builtins.seq
         (import ../tests/cargo-sweep.nix {inherit pkgs;})
@@ -72,10 +57,6 @@
         builtins.seq
         (import ../tests/helix-theme-sync.nix {inherit pkgs;})
         (pkgs.runCommand "helix-theme-sync-test" {} "touch $out");
-      claude-theme-sync-test =
-        builtins.seq
-        (import ../tests/claude-theme-sync.nix {inherit pkgs;})
-        (pkgs.runCommand "claude-theme-sync-test" {} "touch $out");
       delta-theme-sync-test =
         builtins.seq
         (import ../tests/delta-theme-sync.nix {inherit pkgs;})
@@ -104,39 +85,25 @@
         (pkgs.runCommand "mcp-remote-test" {} "touch $out");
       codex-config-sync-test = import ../tests/codex-config-sync.nix {inherit pkgs;};
       omp-config-sync-test = import ../tests/omp-config-sync.nix {inherit pkgs;};
-    in
-      {
-        inherit
-          pre-commit-check
-          claude-wrapper-test
-          launchd-with-logs-test
-          litellm-proxy-test
-          claude-wrapper-script-test
-          cargo-sweep-test
-          docker-prune-test
-          cargo-kache-test
-          appearance-sync-test
-          helix-theme-sync-test
-          claude-theme-sync-test
-          delta-theme-sync-test
-          alabaster-tmtheme-test
-          alabaster-gitconfig-test
-          chrome-devtools-mcp-test
-          mcp-remote-test
-          codex-config-sync-test
-          omp-config-sync-test
-          ;
-      }
-      // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
-        claude-notification-test =
-          builtins.seq
-          (import ../tests/claude-notification.nix {inherit pkgs;})
-          (pkgs.runCommand "claude-notification-test" {} "touch $out");
-        claude-format-on-edit-test =
-          builtins.seq
-          (import ../tests/claude-format-on-edit.nix {inherit pkgs;})
-          (pkgs.runCommand "claude-format-on-edit-test" {} "touch $out");
-      });
+    in {
+      inherit
+        pre-commit-check
+        launchd-with-logs-test
+        litellm-proxy-test
+        cargo-sweep-test
+        docker-prune-test
+        cargo-kache-test
+        appearance-sync-test
+        helix-theme-sync-test
+        delta-theme-sync-test
+        alabaster-tmtheme-test
+        alabaster-gitconfig-test
+        chrome-devtools-mcp-test
+        mcp-remote-test
+        codex-config-sync-test
+        omp-config-sync-test
+        ;
+    });
 
     formatter = forEachSystem (system: nixpkgs.legacyPackages.${system}.alejandra);
 

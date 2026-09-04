@@ -82,28 +82,5 @@ with lib; {
         };
       };
     };
-
-    # Common settings for all Claude tools
-    tools = {
-      disablePromptCaching = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Whether to disable prompt caching in Claude tools";
-      };
-
-      smartCd = {
-        gitStatus = mkOption {
-          type = types.bool;
-          default = false;
-          description = "Whether to show git status in smart cd";
-        };
-
-        ls = mkOption {
-          type = types.bool;
-          default = false;
-          description = "Whether to run ls after cd in smart cd";
-        };
-      };
-    };
   };
 }
