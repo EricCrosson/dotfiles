@@ -1,6 +1,6 @@
 {
   "nodes": {
-    "_1password-shell-plugins": {
+    "op-shell-plugins": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
@@ -21,7 +21,7 @@
         "type": "github"
       }
     },
-    "_1password-shell-plugins_2": {
+    "op-shell-plugins_2": {
       "inputs": {
         "nixpkgs": [
           "public",
@@ -850,11 +850,11 @@
     },
     "nixpkgs_6": {
       "locked": {
-        "lastModified": 1782959384,
-        "narHash": "sha256-xnJJk+ct+D2+wdRxj1wk36w5zV9RVESwRqcklPdt3fM=",
+        "lastModified": 1788752844,
+        "narHash": "sha256-VaWGJ6+cIYN2erfSecbRV+4ljI185Ty2wUrXyvQbgOw=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "65179426c83bb3f6bc14898b42ea1c6f01d374b0",
+        "rev": "dc5d91f840324650bac8c379428c7037a416959a",
         "type": "github"
       },
       "original": {
@@ -941,7 +941,7 @@
     },
     "public": {
       "inputs": {
-        "_1password-shell-plugins": "_1password-shell-plugins_2",
+        "op-shell-plugins": "op-shell-plugins_2",
         "bash-barrier": "bash-barrier",
         "bell": "bell",
         "crane": "crane",
@@ -996,7 +996,7 @@
     },
     "root": {
       "inputs": {
-        "_1password-shell-plugins": "_1password-shell-plugins",
+        "op-shell-plugins": "op-shell-plugins",
         "aws-console-bitgo": "aws-console-bitgo",
         "aws-saml-bitgo": "aws-saml-bitgo",
         "bash-barrier": [

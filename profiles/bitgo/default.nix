@@ -100,7 +100,7 @@
 in {
   imports = [
     ./modules
-    inputs._1password-shell-plugins.hmModules.default
+    inputs.op-shell-plugins.hmModules.default
   ];
 
   bitgo.ssh.enable = true;
