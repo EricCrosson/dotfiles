@@ -20,7 +20,7 @@ jobs:
       matrix: ${{ steps.get-inputs.outputs.matrix }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
 
@@ -46,7 +46,7 @@ jobs:
         flake-input: ${{ fromJson(needs.enumerate-flake-inputs.outputs.matrix) }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@v7
       - uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
 
       - name: Update ${{ matrix.flake-input }} flake input
@@ -82,7 +82,7 @@ jobs:
       matrix: ${{ steps.get-inputs.outputs.matrix }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
 
@@ -108,7 +108,7 @@ jobs:
         flake-input: ${{ fromJson(needs.enumerate-dev-shell-inputs.outputs.matrix) }}
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@v7
       - uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
 
       - name: Update ${{ matrix.flake-input }} in nix/flake.nix
@@ -135,7 +135,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
