@@ -55,6 +55,7 @@
     };
     gh-automerge = {
       url = "github:ericcrosson/gh-automerge";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     git-diff-regex = {
       url = "github:ericcrosson/git-diff-regex";
@@ -62,9 +63,11 @@
     };
     git-disjoint = {
       url = "github:ericcrosson/git-disjoint";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     git-dl = {
       url = "github:ericcrosson/git-dl";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     git-review = {
       url = "github:ericcrosson/git-review";
@@ -72,6 +75,7 @@
     };
     helix = {
       url = "github:helix-editor/helix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -87,6 +91,7 @@
     };
     omp = {
       url = "github:can1357/oh-my-pi";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-darwin = {
       url = "github:lnl7/nix-darwin";
@@ -98,6 +103,7 @@
     };
     retry = {
       url = "github:ericcrosson/retry";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     sops-nix = {
       url = "github:mic92/sops-nix";
