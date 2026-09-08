@@ -48,6 +48,12 @@
           ''{"client_id":"1601185624273.8899143856786"}''
         ];
       };
+      mixpanel = {
+        # Mixpanel's hosted MCP server uses OAuth for authentication; the
+        # regional endpoints are listed at https://docs.mixpanel.com/docs/mcp.
+        command = "${mcp-remote}/bin/mcp-remote";
+        args = ["https://mcp.mixpanel.com/mcp"];
+      };
       mlflow = {
         command = "${mlflow-mcp}/bin/mlflow-mcp";
       };
