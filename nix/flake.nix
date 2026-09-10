@@ -90,6 +90,18 @@
       codex-config-sync-test = import ../tests/codex-config-sync.nix {inherit pkgs;};
       omp-config-sync-test = import ../tests/omp-config-sync.nix {inherit pkgs;};
       omp-mcp-sync-test = import ../tests/omp-mcp-sync.nix {inherit pkgs;};
+      ai-manifest-test =
+        builtins.seq
+        (import ../tests/ai-manifest.nix {inherit pkgs;})
+        (pkgs.runCommand "ai-manifest-test" {} "touch $out");
+      ai-harness-parity-test =
+        builtins.seq
+        (import ../tests/ai-harness-parity.nix {inherit pkgs;})
+        (pkgs.runCommand "ai-harness-parity-test" {} "touch $out");
+      omp-module-test =
+        builtins.seq
+        (import ../tests/omp-module.nix {inherit pkgs;})
+        (pkgs.runCommand "omp-module-test" {} "touch $out");
       mlflow-mcp-test = import ../tests/mlflow-mcp.nix {
         inherit pkgs;
         mlflowPython3 = nixpkgs-mlflow.legacyPackages.${system}.python3;
@@ -113,6 +125,9 @@
         omp-config-sync-test
         mlflow-mcp-test
         omp-mcp-sync-test
+        ai-manifest-test
+        ai-harness-parity-test
+        omp-module-test
         ;
     });
 

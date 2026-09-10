@@ -6,6 +6,8 @@
   inputs,
   ...
 }: let
+  aiRenderers = import ../../modules/home-manager/programs/ai/renderers.nix {inherit lib;};
+  aiManifest = config.programs.ai.manifest;
   chrome-devtools-mcp = pkgs.callPackage ../../pkgs/chrome-devtools-mcp {};
   mcp-remote = pkgs.callPackage ../../pkgs/mcp-remote {};
   mlflow-mcp = pkgs.callPackage ../../pkgs/mlflow-mcp {
@@ -14,53 +16,11 @@
     inherit (inputs.nixpkgs-mlflow.legacyPackages.${pkgs.system}) python3;
   };
   slackMcpUrl = "https://mcp.slack.com/mcp";
-  baseMcpServers = {
-    chrome-devtools = {
-      command = "${chrome-devtools-mcp}/bin/chrome-devtools-mcp";
-      args = ["--isolated"];
-    };
-    context7 = {
-      command = "${pkgs.context7-mcp}/bin/context7-mcp";
-    };
-  };
-
-  mcpServers =
-    baseMcpServers
-    // {
-      linear = {
-        command = "${mcp-remote}/bin/mcp-remote";
-        args = ["https://mcp.linear.app/mcp"];
-      };
-      slack = {
-        type = "http";
-        url = slackMcpUrl;
-      };
-      mixpanel = {
-        # Mixpanel's hosted MCP server uses OAuth for authentication; the
-        # regional endpoints are listed at https://docs.mixpanel.com/docs/mcp.
-        command = "${mcp-remote}/bin/mcp-remote";
-        args = ["https://mcp.mixpanel.com/mcp"];
-      };
-      mlflow = {
-        command = "${mlflow-mcp}/bin/mlflow-mcp";
-      };
-    };
-  isHttpMcp = server: (server.type or null) == "http";
-  codexMcpServers = lib.mapAttrs (_: server:
-    if isHttpMcp server
-    then {inherit (server) url;}
-    else server)
-  mcpServers;
-  antigravityMcpServers = lib.mapAttrs (_: server:
-    if isHttpMcp server
-    then {httpUrl = server.url;}
-    else server)
-  mcpServers;
   codexSettings = {
     model_provider = "openrouter";
     model = "openai/gpt-5.6-luna";
     model_reasoning_effort = "medium";
-    mcp_servers = codexMcpServers;
+    mcp_servers = aiRenderers.renderCodex aiManifest.mcpServers;
     model_providers.openrouter = {
       name = "openrouter";
       base_url = "https://openrouter.ai/api/v1";
@@ -84,12 +44,6 @@
     '';
   };
 
-  rulesDir = ../../ai/rules;
-  rulesContext = lib.concatStringsSep "\n\n" (
-    map (name: builtins.readFile (rulesDir + "/${name}"))
-    (builtins.attrNames (lib.filterAttrs (n: _: lib.hasSuffix ".md" n)
-        (builtins.readDir rulesDir)))
-  );
   # Force aws-saml to open Keycloak login in Safari instead of the default browser.
   # aws-saml uses pkg/browser which hardcodes `open <url>` on Darwin, ignoring $BROWSER.
   # We shadow `open` with a shim that routes through Safari.
@@ -155,6 +109,39 @@ in {
   };
 
   programs = {
+    ai.manifest = {
+      mcpServers = {
+        chrome-devtools = {
+          transport = "stdio";
+          command = "${chrome-devtools-mcp}/bin/chrome-devtools-mcp";
+          args = ["--isolated"];
+        };
+        context7 = {
+          transport = "stdio";
+          command = "${pkgs.context7-mcp}/bin/context7-mcp";
+        };
+        linear = {
+          transport = "stdio";
+          command = "${mcp-remote}/bin/mcp-remote";
+          args = ["https://mcp.linear.app/mcp"];
+        };
+        slack = {
+          transport = "http";
+          url = slackMcpUrl;
+        };
+        mixpanel = {
+          transport = "stdio";
+          command = "${mcp-remote}/bin/mcp-remote";
+          args = ["https://mcp.mixpanel.com/mcp"];
+        };
+        mlflow = {
+          transport = "stdio";
+          command = "${mlflow-mcp}/bin/mlflow-mcp";
+        };
+      };
+      rules = [../../ai/rules/linear-issue-compliance.md];
+      skills = ../../ai/skills;
+    };
     _1password-shell-plugins = {
       enable = true;
       plugins = [];
@@ -219,10 +206,10 @@ in {
 
     antigravity-cli = {
       enable = true;
-      skills = ../../ai/skills;
-      mcpServers = antigravityMcpServers;
+      skills = aiRenderers.renderSkills aiManifest.skills;
+      mcpServers = aiRenderers.renderAntigravity aiManifest.mcpServers;
       context = {
-        GEMINI = rulesContext;
+        GEMINI = aiRenderers.renderRulesContext aiManifest.rules;
       };
       settings = {
         colorScheme = "light";
@@ -249,7 +236,7 @@ in {
     codex = {
       enable = true;
       package = codex;
-      skills = ../../ai/skills;
+      skills = aiRenderers.renderSkills aiManifest.skills;
       # Codex persists project trust in config.toml, so it cannot be a Nix store symlink.
       settings = null;
     };
@@ -267,7 +254,7 @@ in {
         '';
       };
       enableMcpIntegration = true;
-      context = rulesContext;
+      context = aiRenderers.renderRulesContext aiManifest.rules;
       settings = {
         model = "openrouter/openrouter/auto";
         small_model = "openrouter/anthropic/claude-3.5-haiku";
@@ -280,19 +267,7 @@ in {
             };
           };
         };
-        mcp = lib.mapAttrs (_: server:
-          if isHttpMcp server
-          then {
-            inherit (server) url;
-            enabled = true;
-            type = "remote";
-          }
-          else {
-            command = [server.command] ++ (server.args or []);
-            enabled = true;
-            type = "local";
-          })
-        mcpServers;
+        mcp = aiRenderers.renderOpenCode aiManifest.mcpServers;
       };
       tui = {
         theme = "system";
@@ -303,9 +278,7 @@ in {
     };
 
     omp = {
-      # The canonical MCP definitions feed every coding harness. Each
-      # harness maps the shared HTTP entry to its native remote-server schema.
-      inherit mcpServers;
+      mcpServers = aiRenderers.renderOmp aiManifest.mcpServers;
     };
 
     git = {
