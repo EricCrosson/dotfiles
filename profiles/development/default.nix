@@ -24,7 +24,7 @@ in {
         yazi
         showboat
       ]
-      ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+      ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
         pkgs.libiconv
       ];
 
@@ -36,7 +36,7 @@ in {
 
   services = {
     cargo-sweep.enable = true;
-    docker-prune.enable = pkgs.stdenv.isDarwin;
+    docker-prune.enable = pkgs.stdenv.hostPlatform.isDarwin;
     docker-prune.maxAge = 14;
   };
 
