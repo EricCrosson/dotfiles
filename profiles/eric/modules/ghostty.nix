@@ -27,12 +27,12 @@
   programs.ghostty = {
     enable = true;
     package =
-      if pkgs.stdenv.isDarwin
+      if pkgs.stdenv.hostPlatform.isDarwin
       then null
       else pkgs.ghostty;
     enableZshIntegration = true;
-    installBatSyntax = !pkgs.stdenv.isDarwin;
-    installVimSyntax = !pkgs.stdenv.isDarwin;
+    installBatSyntax = !pkgs.stdenv.hostPlatform.isDarwin;
+    installVimSyntax = !pkgs.stdenv.hostPlatform.isDarwin;
     settings = {
       theme =
         if config.appearance-sync.enable
