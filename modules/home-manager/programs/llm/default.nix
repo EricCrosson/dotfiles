@@ -28,7 +28,7 @@ in {
     configDir = mkOption {
       type = types.str;
       default =
-        if pkgs.stdenv.isDarwin
+        if pkgs.stdenv.hostPlatform.isDarwin
         then "Library/Application Support/io.datasette.llm"
         else ".config/llm";
       description = "Directory for LLM configuration files (relative to home directory)";
