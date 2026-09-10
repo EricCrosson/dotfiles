@@ -4,7 +4,7 @@
   inputs,
   ...
 }: let
-  inherit (pkgs) stdenv;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux;
   darwinImports = [
     ../../os/darwin
     ./modules/aerospace.nix
@@ -22,7 +22,7 @@ in {
       ./modules/zsh.nix
     ]
     ++ (
-      if stdenv.isDarwin
+      if isDarwin
       then darwinImports
       else linuxImports
     );
@@ -43,7 +43,7 @@ in {
         SMART_CD_ONLY_IF_FITS_RATIO = 66;
         ZSH_WAKATIME_BIN = "/etc/profiles/per-user/${profile.username}/bin/wakatime-cli";
       }
-      // pkgs.lib.optionalAttrs stdenv.isLinux {
+      // pkgs.lib.optionalAttrs isLinux {
         SSH_AUTH_SOCK = "${profile.homeDirectory}/.1password/agent.sock";
       };
 
@@ -97,9 +97,9 @@ in {
         starship
         wakatime-cli
       ]
-      ++ pkgs.lib.optionals stdenv.isLinux [_1password-gui];
+      ++ pkgs.lib.optionals isLinux [_1password-gui];
 
-    file = pkgs.lib.optionalAttrs stdenv.isDarwin {
+    file = pkgs.lib.optionalAttrs isDarwin {
       ".homebrew/brew.env".text = ''
         HOMEBREW_NO_ENV_HINTS=1
         HOMEBREW_NO_UPDATE_REPORT_NEW=1
