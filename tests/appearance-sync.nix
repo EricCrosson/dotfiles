@@ -19,7 +19,11 @@
       stdenv =
         pkgs.stdenv
         // {
-          isDarwin = true;
+          hostPlatform =
+            pkgs.stdenv.hostPlatform
+            // {
+              isDarwin = true;
+            };
         };
     };
 

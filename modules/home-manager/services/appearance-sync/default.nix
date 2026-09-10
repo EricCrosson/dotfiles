@@ -68,7 +68,7 @@ in {
     description = "Services that sync application config with macOS appearance.";
   };
 
-  config = lib.mkIf (pkgs.stdenv.isDarwin && cfg.enable) {
+  config = lib.mkIf (pkgs.stdenv.hostPlatform.isDarwin && cfg.enable) {
     launchd-with-logs.services = lib.mapAttrs (name: svc:
       lib.mkIf svc.enable {
         command = lib.getExe (mkSyncScript name svc);
