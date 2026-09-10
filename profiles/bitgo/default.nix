@@ -32,21 +32,8 @@
         args = ["https://mcp.linear.app/mcp"];
       };
       slack = {
-        command = "${mcp-remote}/bin/mcp-remote";
-        # The Slack app's registered redirect is http://localhost:3118/callback
-        # (Slack's documented path), so the callback port and path must match
-        # exactly. Slack's MCP server does not support dynamic client
-        # registration, so the pre-registered public PKCE client_id is passed
-        # statically. Keep it that way: these args land in world-readable
-        # nix-store artifacts, so a client_secret must never be added here.
-        args = [
-          slackMcpUrl
-          "3118"
-          "--callback-path"
-          "/callback"
-          "--static-oauth-client-info"
-          ''{"client_id":"1601185624273.8899143856786"}''
-        ];
+        type = "http";
+        url = slackMcpUrl;
       };
       mixpanel = {
         # Mixpanel's hosted MCP server uses OAuth for authentication; the
@@ -58,11 +45,22 @@
         command = "${mlflow-mcp}/bin/mlflow-mcp";
       };
     };
+  isHttpMcp = server: (server.type or null) == "http";
+  codexMcpServers = lib.mapAttrs (_: server:
+    if isHttpMcp server
+    then {inherit (server) url;}
+    else server)
+  mcpServers;
+  antigravityMcpServers = lib.mapAttrs (_: server:
+    if isHttpMcp server
+    then {httpUrl = server.url;}
+    else server)
+  mcpServers;
   codexSettings = {
     model_provider = "openrouter";
     model = "openai/gpt-5.6-luna";
     model_reasoning_effort = "medium";
-    mcp_servers = mcpServers;
+    mcp_servers = codexMcpServers;
     model_providers.openrouter = {
       name = "openrouter";
       base_url = "https://openrouter.ai/api/v1";
@@ -222,7 +220,7 @@ in {
     antigravity-cli = {
       enable = true;
       skills = ../../ai/skills;
-      inherit mcpServers;
+      mcpServers = antigravityMcpServers;
       context = {
         GEMINI = rulesContext;
       };
@@ -282,13 +280,19 @@ in {
             };
           };
         };
-        mcp =
-          lib.mapAttrs (_: server: {
-            type = "local";
+        mcp = lib.mapAttrs (_: server:
+          if isHttpMcp server
+          then {
+            inherit (server) url;
+            enabled = true;
+            type = "remote";
+          }
+          else {
             command = [server.command] ++ (server.args or []);
             enabled = true;
+            type = "local";
           })
-          mcpServers;
+        mcpServers;
       };
       tui = {
         theme = "system";
@@ -299,10 +303,8 @@ in {
     };
 
     omp = {
-      # Single source of truth: the same mcpServers attrset feeds agy, codex,
-      # opencode, and omp's ~/.omp/agent/mcp.json (via omp-mcp-sync). omp
-      # also discovers these servers through its opencode/gemini imports, but
-      # same-named entries dedupe to this native (priority-100) file.
+      # The canonical MCP definitions feed every coding harness. Each
+      # harness maps the shared HTTP entry to its native remote-server schema.
       inherit mcpServers;
     };
 
