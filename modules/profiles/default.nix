@@ -51,7 +51,7 @@ with lib; {
               the location of the user's home directory. The path must be absolute.
             '';
             default =
-              if pkgs.stdenv.isDarwin
+              if pkgs.stdenv.hostPlatform.isDarwin
               then "/Users/${config.username}"
               else "/home/${config.username}";
             example = "On macOS: /Users/alice, On Linux: /home/alice";
