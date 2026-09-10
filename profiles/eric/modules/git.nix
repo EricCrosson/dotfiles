@@ -64,7 +64,7 @@ in {
         format = "ssh";
         signByDefault = true;
         signer =
-          if pkgs.stdenv.isDarwin
+          if pkgs.stdenv.hostPlatform.isDarwin
           then "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
           else "${pkgs._1password-gui}/bin/op-ssh-sign";
       };
