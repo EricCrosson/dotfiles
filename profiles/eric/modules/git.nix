@@ -12,6 +12,9 @@
     sha256 = "sha256-04po0A7bVMsmYdJcKL6oL39RlMLij1lRKvWl5AUXJ7Q=";
   };
   alabasterDelta = ../../../pkgs/delta-themes;
+  # Global git hook dispatcher: runs prek in every repo and worktree,
+  # regenerating git-hooks.nix config via the devShell when missing.
+  hookDispatch = pkgs.writeShellScript "git-hook-dispatch" (builtins.readFile ./git-hook-dispatch.sh);
 in {
   home.file = {
     ".config/git/allowed_signers" = {
@@ -67,6 +70,11 @@ in {
           if pkgs.stdenv.hostPlatform.isDarwin
           then "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
           else "${pkgs._1password-gui}/bin/op-ssh-sign";
+      };
+      # Single global dispatcher; see git-hook-dispatch.sh for the policy.
+      hooks = {
+        pre-commit = hookDispatch;
+        pre-push = hookDispatch;
       };
       ignores = [
         ".DS_Store"
