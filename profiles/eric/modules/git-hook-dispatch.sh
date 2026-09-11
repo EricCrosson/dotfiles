@@ -83,7 +83,8 @@ if [ -f "$CONFIG" ]; then
     run_hooks "$@"
 fi
 
-if [ -f "$REPO/flake.nix" ]; then
+if [ -f "$REPO/flake.nix" ] \
+    && grep -Eq 'git-hooks|pre-commit|prek' "$REPO/flake.nix" 2>/dev/null; then
     if ! nix develop --no-update-lock-file -c true; then
         printf 'hook dispatcher: nix develop failed; blocking %s (bypass with --no-verify)\n' "$STAGE" >&2
         exit 1
@@ -100,6 +101,10 @@ if [ -f "$REPO/flake.nix" ]; then
             run_hooks "$@"
         fi
     fi
+    printf 'hook dispatcher: devShell declares no pre-commit hooks; skipping %s\n' "$STAGE" >&2
+    exit 0
+fi
+if [ -f "$REPO/flake.nix" ]; then
     printf 'hook dispatcher: devShell declares no pre-commit hooks; skipping %s\n' "$STAGE" >&2
     exit 0
 fi
