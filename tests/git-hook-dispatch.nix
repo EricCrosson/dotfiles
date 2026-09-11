@@ -1,5 +1,6 @@
 {pkgs}: let
   dispatch = ../profiles/eric/modules/git-hook-dispatch.sh;
+  gitModule = ../profiles/eric/modules/git.nix;
 in
   pkgs.runCommand "git-hook-dispatch-test" {
     nativeBuildInputs = [
@@ -180,6 +181,11 @@ in
           "$base/hooks/pre-push" origin https://example.invalid/repo.git
     ) || fail "pre-push scenario exited nonzero"
     assert_contains "$base/log11" "prek hook-impl --hook-type=pre-push --config=.pre-commit-config.yaml"
+    # --- 12. home-manager wiring keeps both stages on this dispatcher ------
+    assert_contains ${gitModule} 'hookDispatch = pkgs.writeShellScript "git-hook-dispatch"'
+    assert_contains ${gitModule} 'pre-commit = hookDispatch;'
+    assert_contains ${gitModule} 'pre-push = hookDispatch;'
+
 
     touch "$out"
   ''
