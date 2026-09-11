@@ -129,6 +129,7 @@ in
 
     # --- 6. cold path: nix develop generates config, then prek runs --------
     mkrepo cold flake none none marker
+    (cd "$base/repos/cold" && git config core.hooksPath "$base/hooks")
     invoke cold pre-commit "$base/stubs" NIX_BEHAVIOR=ok \
       STUB_LOG="$base/log6" NIX_LOG="$base/plog6" \
       || fail "cold path exited nonzero"
@@ -137,6 +138,9 @@ in
     [ -f "$base/repos/cold/.pre-commit-config.yaml" ] \
       || fail "cold path did not produce config in repo"
 
+    if (cd "$base/repos/cold" && git config --local --get core.hooksPath >/dev/null 2>&1); then
+      fail "cold path left a repo-local hooksPath override"
+    fi
     # --- 7. skip loudly: flake, devShell declares no hooks -> exit 0 --------
     # Ordinary flakes without hook integration must not invoke nix develop;
     # test fixtures commonly contain intentionally non-evaluable flake.nix.
