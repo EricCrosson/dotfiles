@@ -33,6 +33,7 @@
     checks = forEachSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
       pre-commit-check = pkgs.callPackage ./git-hooks.nix {inherit git-hooks;};
+      git-hook-dispatch-test = import ../tests/git-hook-dispatch.nix {inherit pkgs;};
       launchd-with-logs-test =
         builtins.seq
         (import ../tests/launchd-with-logs.nix {inherit pkgs;})
@@ -109,6 +110,7 @@
     in {
       inherit
         pre-commit-check
+        git-hook-dispatch-test
         launchd-with-logs-test
         litellm-proxy-test
         cargo-sweep-test
