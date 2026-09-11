@@ -151,6 +151,12 @@ in
     [ ! -f "$base/plog-ordinary" ] || fail "ordinary flake invoked nix develop"
     grep -q 'devShell declares no pre-commit hooks' "$base/err-ordinary" \
       || fail "ordinary-flake skip message missing"
+    mkrepo flakelegacy flake none legacy
+    invoke flakelegacy pre-commit "$base/stubs" STUB_LOG="$base/log-flakelegacy" \
+      LEGACY_LOG="$base/legacy-flake" || fail "flake legacy hook should run"
+    [ -f "$base/legacy-flake" ] && grep -q 'legacy-ran' "$base/legacy-flake" \
+      || fail "flake legacy hook did not run"
+
 
     # Hook-enabled flake whose shellHook produces no config must skip loudly.
     mkrepo nohooks flake none none marker
