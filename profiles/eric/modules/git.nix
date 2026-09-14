@@ -78,7 +78,6 @@ in {
       };
       ignores = [
         ".DS_Store"
-        "/.antigravitycli"
         "/.direnv"
         "/.pre-commit-config.yaml"
         "/scratch/"

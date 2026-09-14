@@ -68,10 +68,6 @@ in {
   ];
 
   home = {
-    file = {
-      ".gemini/antigravity-cli/settings.json".force = true;
-    };
-
     packages = with pkgs; [
       agent-browser
       amazon-ecr-credential-helper
@@ -204,35 +200,6 @@ in {
       };
     };
 
-    antigravity-cli = {
-      enable = true;
-      skills = aiRenderers.renderSkills aiManifest.skills;
-      mcpServers = aiRenderers.renderAntigravity aiManifest.mcpServers;
-      context = {
-        GEMINI = aiRenderers.renderRulesContext aiManifest.rules;
-      };
-      settings = {
-        colorScheme = "light";
-        enableTelemetry = false;
-        gcp = {
-          project = "ai-enablement-500217";
-          location = "us";
-        };
-        model = "Gemini 3.5 Flash (Medium)";
-        runningLightSpeed = "fast";
-      };
-      permissions = {
-        allow = [
-          "mcp(linear/get_issue)"
-          "mcp(linear/list_issues)"
-          "command(git config)"
-          "mcp(linear/list_comments)"
-          "command(which)"
-          "mcp(linear/search_documentation)"
-        ];
-      };
-    };
-
     codex = {
       enable = true;
       package = codex;
@@ -240,43 +207,6 @@ in {
       # Codex persists project trust in config.toml, so it cannot be a Nix store symlink.
       settings = null;
     };
-    opencode = {
-      enable = true;
-      package = pkgs.writeShellApplication {
-        name = "opencode";
-        runtimeInputs = [pkgs.opencode];
-        text = ''
-          if [[ -r ${config.bitgo.sops.secretPaths.openrouter_api_key} ]]; then
-            export OPENROUTER_API_KEY
-            OPENROUTER_API_KEY="$(< ${config.bitgo.sops.secretPaths.openrouter_api_key})"
-          fi
-          exec ${pkgs.opencode}/bin/opencode "$@"
-        '';
-      };
-      enableMcpIntegration = true;
-      context = aiRenderers.renderRulesContext aiManifest.rules;
-      settings = {
-        model = "openrouter/openrouter/auto";
-        small_model = "openrouter/anthropic/claude-3.5-haiku";
-        provider = {
-          openrouter = {
-            models = {
-              "openrouter/auto" = {};
-              "anthropic/claude-3.7-sonnet" = {};
-              "anthropic/claude-3.5-haiku" = {};
-            };
-          };
-        };
-        mcp = aiRenderers.renderOpenCode aiManifest.mcpServers;
-      };
-      tui = {
-        theme = "system";
-        keybinds = {
-          leader = "alt+b";
-        };
-      };
-    };
-
     omp = {
       mcpServers = aiRenderers.renderOmp aiManifest.mcpServers;
     };
