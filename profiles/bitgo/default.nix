@@ -209,6 +209,9 @@ in {
     };
     omp = {
       mcpServers = aiRenderers.renderOmp aiManifest.mcpServers;
+      formatMarkdown = {
+        enable = true;
+      };
     };
 
     git = {

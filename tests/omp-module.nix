@@ -35,13 +35,19 @@
 
         {
           options = {
-            home.file = lib.mkOption {
-              type = lib.types.attrsOf lib.types.anything;
-              default = {};
-            };
-            home.activation = lib.mkOption {
-              type = lib.types.attrsOf lib.types.anything;
-              default = {};
+            home = {
+              file = lib.mkOption {
+                type = lib.types.attrsOf lib.types.anything;
+                default = {};
+              };
+              activation = lib.mkOption {
+                type = lib.types.attrsOf lib.types.anything;
+                default = {};
+              };
+              packages = lib.mkOption {
+                type = lib.types.listOf lib.types.package;
+                default = [];
+              };
             };
             lib.dag.entryAfter = lib.mkOption {
               type = lib.types.functionTo (lib.types.functionTo lib.types.anything);
@@ -53,6 +59,9 @@
         {
           programs.omp = {
             enable = true;
+            formatMarkdown = {
+              enable = true;
+            };
             mcpServers = renderOmp {
               slack = {
                 transport = "http";
@@ -79,6 +88,7 @@
   basePath = builtins.head (lib.filter (lib.hasSuffix "-omp-mcp-base.json") (lib.splitString " " activationData));
   baseConfig = builtins.fromJSON (builtins.readFile basePath);
   server = baseConfig.mcpServers.slack;
+  formatMdFile = eval.home.file.".omp/agent/extensions/format-md.ts".text;
 
   test-schema = assert assertEq "schema" baseConfig."$schema"
   "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/config/mcp-schema.json"; true;
@@ -90,7 +100,14 @@
   test-activation = assert assertContains "sync invocation" activationData "omp-mcp-sync";
   assert assertContains "base config path" activationData "omp-mcp-base.json";
   assert assertEq "activation dependency" activation.deps ["linkGeneration"]; true;
+  test-format-md = assert assertContains "format extension file" formatMdFile
+  "/bin/prettier";
+  assert assertContains "quoted prettier path" formatMdFile "bin/prettier\",";
+  assert assertContains "prose-wrap flag" formatMdFile "--prose-wrap=always";
+  assert assertContains "write-only guard" formatMdFile "toolName !== \"write\"";
+  assert assertEq "prettier package in packages" (lib.count (p: p == pkgs.prettier) eval.home.packages) 1; true;
 in
   assert test-schema;
   assert test-server;
-  assert test-activation; "all tests passed"
+  assert test-activation;
+  assert test-format-md; "all tests passed"

@@ -71,6 +71,25 @@ in {
         only omp's runtime state (disabledServers/enabledServers) is preserved.
       '';
     };
+
+    formatMarkdown = mkOption {
+      type = types.submodule {
+        options = {
+          enable = mkEnableOption "prose-wrap markdown after a write";
+          prettier = mkOption {
+            type = types.package;
+            default = pkgs.prettier;
+            description = "Prettier binary used to format markdown.";
+          };
+        };
+      };
+      default = {};
+      description = ''
+        Render an omp extension that runs prettier with --prose-wrap=always on
+        markdown files after the write tool completes. Deterministic: the tool
+        result is delivered to the model only after formatting finishes.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
@@ -99,13 +118,43 @@ in {
         fi
       '';
 
-      file.".omp/agent/models.yml" = mkIf (cfg.models != {}) {
-        source = yamlFormat.generate "omp-models.yml" cfg.models;
+      file = {
+        ".omp/agent/models.yml" = mkIf (cfg.models != {}) {
+          source = yamlFormat.generate "omp-models.yml" cfg.models;
+        };
+
+        ".omp/agent/.env" = mkIf (cfg.env != {}) {
+          text = concatStringsSep "\n" (mapAttrsToList (k: v: "${k}=${v}") cfg.env) + "\n";
+        };
+
+        ".omp/agent/extensions/format-md.ts" = mkIf cfg.formatMarkdown.enable {
+          text = ''
+            import type { ExtensionAPI } from "@oh-my-pi/pi-coding-agent";
+
+            export default function formatProse(pi: ExtensionAPI): void {
+              pi.on("tool_result", async (event) => {
+                if (event.isError) return;
+                if (event.toolName !== "write") return;
+
+                const path = event.input.path;
+                if (typeof path !== "string" || !/\.mdx?$/.test(path)) return;
+
+                const res = await pi.exec(
+                  "${cfg.formatMarkdown.prettier}/bin/prettier",
+                  ["--prose-wrap=always", "--write", "--log-level=warn", path],
+                );
+                if (res.code !== 0) {
+                  pi.logger.warn(`prettier failed for ''${path}: ''${res.stderr}`);
+                }
+              });
+            }
+          '';
+        };
       };
 
-      file.".omp/agent/.env" = mkIf (cfg.env != {}) {
-        text = concatStringsSep "\n" (mapAttrsToList (k: v: "${k}=${v}") cfg.env) + "\n";
-      };
+      packages = mkIf cfg.formatMarkdown.enable [
+        cfg.formatMarkdown.prettier
+      ];
     };
   };
 }
