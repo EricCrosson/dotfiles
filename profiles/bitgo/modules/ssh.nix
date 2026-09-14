@@ -70,6 +70,9 @@ in {
         settings = {
           "github.com-bitgo" = {
             HostName = "github.com";
+            # Pin work authentication to the YubiKey-backed gpg-agent instead
+            # of inheriting SSH_AUTH_SOCK from a different agent.
+            IdentityAgent = cfg.gpgAuthSock;
             # Enable ControlMaster for work since this is a work machine
             # and work operations are frequent. YubiKey touch is expected.
             ControlMaster = cfg.github.controlMaster;
