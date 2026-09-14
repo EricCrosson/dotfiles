@@ -27,7 +27,6 @@
       };
 
       taps = [
-        "can1357/tap"
         "kunobi-ninja/kunobi"
       ];
 
