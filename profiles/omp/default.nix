@@ -11,10 +11,9 @@
 
   bitgo.sops.enable = true;
 
-  home.packages = [inputs.omp.packages.${pkgs.system}.default];
-
   programs.omp = {
     enable = true;
+    package = inputs.omp.packages.${pkgs.system}.default;
     settings = {
       advisor.enabled = true;
       modelProviderOrder = [

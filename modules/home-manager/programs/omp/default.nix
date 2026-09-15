@@ -15,9 +15,18 @@ with lib; let
   };
   ompConfigSync = pkgs.callPackage ../../../../pkgs/omp-config-sync {};
   ompMcpSync = pkgs.callPackage ../../../../pkgs/omp-mcp-sync {};
+  ompCompletions = pkgs.callPackage ../../../../pkgs/omp-completions {omp = cfg.package;};
 in {
   options.programs.omp = {
     enable = mkEnableOption "Oh My Pi (omp) configuration";
+    package = mkOption {
+      type = types.package;
+      description = ''
+        The omp package to install and to derive shell completions from.
+        Hosts must set this to the flake-input package so completions always
+        match the installed binary version.
+      '';
+    };
 
     settings = mkOption {
       inherit (yamlFormat) type;
@@ -94,29 +103,37 @@ in {
 
   config = mkIf cfg.enable {
     home = {
-      activation.syncOmpConfig = config.lib.dag.entryAfter ["linkGeneration"] ''
-        if [[ -v DRY_RUN ]]; then
-          echo "Would synchronize writable Oh My Pi configuration"
-        else
-          ${ompConfigSync}/bin/omp-config-sync \
-            ${baseConfig} \
-            "$HOME/.omp/agent/config.yml"
-        fi
-      '';
+      activation = {
+        syncOmpConfig = config.lib.dag.entryAfter ["linkGeneration"] ''
+          if [[ -v DRY_RUN ]]; then
+            echo "Would synchronize writable Oh My Pi configuration"
+          else
+            ${ompConfigSync}/bin/omp-config-sync \
+              ${baseConfig} \
+              "$HOME/.omp/agent/config.yml"
+          fi
+        '';
 
-      # Merge-syncs the generated base into ~/.omp/agent/mcp.json (base is
-      # authoritative; omp's disabledServers/enabledServers write-backs are
-      # preserved). Hosts that enable programs.omp without setting
-      # mcpServers sync an empty server set.
-      activation.syncOmpMcpConfig = config.lib.dag.entryAfter ["linkGeneration"] ''
-        if [[ -v DRY_RUN ]]; then
-          echo "Would synchronize writable Oh My Pi MCP configuration"
-        else
-          ${ompMcpSync}/bin/omp-mcp-sync \
-            ${mcpBaseConfig} \
-            "$HOME/.omp/agent/mcp.json"
-        fi
-      '';
+        # Merge-syncs the generated base into ~/.omp/agent/mcp.json (base is
+        # authoritative; omp's disabledServers/enabledServers write-backs are
+        # preserved). Hosts that enable programs.omp without setting
+        # mcpServers sync an empty server set.
+        syncOmpMcpConfig = config.lib.dag.entryAfter ["linkGeneration"] ''
+          if [[ -v DRY_RUN ]]; then
+            echo "Would synchronize writable Oh My Pi MCP configuration"
+          else
+            ${ompMcpSync}/bin/omp-mcp-sync \
+              ${mcpBaseConfig} \
+              "$HOME/.omp/agent/mcp.json"
+          fi
+        '';
+        # compinit trusts its cached completion map (compinit -C) and only
+        # rebuilds weekly, so it never notices new fpath entries. Invalidate
+        # the dump once per activation so _omp registers on the next shell.
+        removeStaleOmpCompdump = config.lib.dag.entryAfter ["linkGeneration"] ''
+          rm -f "$HOME/.zcompdump" "$HOME/.zcompdump.zwc"
+        '';
+      };
 
       file = {
         ".omp/agent/models.yml" = mkIf (cfg.models != {}) {
@@ -152,9 +169,18 @@ in {
         };
       };
 
-      packages = mkIf cfg.formatMarkdown.enable [
-        cfg.formatMarkdown.prettier
-      ];
+      packages =
+        [cfg.package ompCompletions]
+        ++ optionals cfg.formatMarkdown.enable [
+          cfg.formatMarkdown.prettier
+        ];
     };
+
+    # Completion scripts are pre-generated at build time and served from
+    # fpath; compinit (deferred via zsh-defer) links _omp from the cached
+    # dump — nothing executes at shell startup.
+    programs.zsh.initContent = ''
+      fpath+=(${ompCompletions}/share/zsh/site-functions)
+    '';
   };
 }
