@@ -87,6 +87,9 @@ jobs:
 
       - run: |
           : build nixos configuration
+          # The root flake declares binary caches, including
+          # ericcrosson-gh-arm.cachix.org, which serves the crate tarball
+          # otherwise 403'd by crates.io's API endpoint on GitHub runner IPs.
           retry --up-to 2x -- nix build \
             .#nixosConfigurations.athens.config.system.build.toplevel \
-            --keep-going --print-build-logs
+            --accept-flake-config --keep-going --print-build-logs
