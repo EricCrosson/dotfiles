@@ -19,7 +19,32 @@
       modelProviderOrder = [
         "openrouter"
       ];
+      display.cacheMissMarker = true;
+      statusLine = {
+        preset = "custom";
+        separator = "powerline-thin";
+        leftSegments = [
+          "pi"
+          "vim"
+          "model"
+          "mode"
+          "path"
+          "git"
+          "pr"
+          "subagents"
+          "context_pct"
+        ];
+        rightSegments = [
+          "session_name"
+          "cache_hit"
+          "cache_read"
+          "cache_write"
+          "token_out"
+          "cost"
+        ];
+      };
     };
+    cacheTemperature.enable = true;
     models.providers.openrouter.apiKey = "!cat ${config.bitgo.sops.secretPaths.openrouter_api_key}";
     models.providers.litellm = {
       baseUrl = "http://127.0.0.1:4000/v1";

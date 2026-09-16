@@ -103,6 +103,23 @@
         builtins.seq
         (import ../tests/omp-module.nix {inherit pkgs;})
         (pkgs.runCommand "omp-module-test" {} "touch $out");
+      omp-cache-temperature-test =
+        builtins.seq
+        (import ../tests/omp-cache-temperature.nix {inherit pkgs;})
+        (pkgs.runCommand "omp-cache-temperature-test" {} "touch $out");
+      cache-temperature-bun-test =
+        pkgs.runCommand "cache-temperature-bun-test" {
+          nativeBuildInputs = [pkgs.bun];
+        } ''
+          export HOME=$TMPDIR
+          tree=$TMPDIR/tree
+          mkdir -p "$tree"
+          cp -r ${../tests} "$tree/tests"
+          cp -r ${../modules} "$tree/modules"
+          cd "$tree/tests"
+          bun test cache-temperature.test.ts
+          touch $out
+        '';
       mlflow-mcp-test = import ../tests/mlflow-mcp.nix {
         inherit pkgs;
         mlflowPython3 = nixpkgs-mlflow.legacyPackages.${system}.python3;
@@ -129,6 +146,8 @@
         omp-mcp-sync-test
         ai-manifest-test
         ai-harness-parity-test
+        omp-cache-temperature-test
+        cache-temperature-bun-test
         omp-module-test
         ;
     });

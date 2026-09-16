@@ -35,6 +35,10 @@
 
         {
           options = {
+            programs.zsh.initContent = lib.mkOption {
+              type = lib.types.lines;
+              default = "";
+            };
             home = {
               file = lib.mkOption {
                 type = lib.types.attrsOf lib.types.anything;
@@ -59,6 +63,7 @@
         {
           programs.omp = {
             enable = true;
+            package = pkgs.hello;
             formatMarkdown = {
               enable = true;
             };

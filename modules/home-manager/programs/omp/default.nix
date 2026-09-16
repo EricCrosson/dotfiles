@@ -16,6 +16,12 @@ with lib; let
   ompConfigSync = pkgs.callPackage ../../../../pkgs/omp-config-sync {};
   ompMcpSync = pkgs.callPackage ../../../../pkgs/omp-mcp-sync {};
   ompCompletions = pkgs.callPackage ../../../../pkgs/omp-completions {omp = cfg.package;};
+  # .env contents: configured vars plus the cache-temperature TTL override.
+  resolvedEnv =
+    cfg.env
+    // optionalAttrs (cfg.cacheTemperature.ttlSeconds != null) {
+      OMP_CACHE_TTL_SECONDS = toString cfg.cacheTemperature.ttlSeconds;
+    };
 in {
   options.programs.omp = {
     enable = mkEnableOption "Oh My Pi (omp) configuration";
@@ -99,6 +105,30 @@ in {
         result is delivered to the model only after formatting finishes.
       '';
     };
+
+    cacheTemperature = mkOption {
+      type = types.submodule {
+        options = {
+          enable = mkEnableOption "cache-temperature widget extension";
+          ttlSeconds = mkOption {
+            type = types.nullOr types.int;
+            default = null;
+            description = ''
+              Cache-warm window exported to the extension as OMP_CACHE_TTL_SECONDS.
+              Null leaves the extension default (600s, the OpenRouter sticky-routing
+              idle expiry).
+            '';
+          };
+        };
+      };
+      default = {};
+      description = ''
+        Render an omp extension that keeps a widget below the editor showing the
+        prompt-cache temperature: countdown to a certain cache miss with the
+        projected re-read size, flipping to a "/shake first" recommendation once
+        the window lapses.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
@@ -140,8 +170,8 @@ in {
           source = yamlFormat.generate "omp-models.yml" cfg.models;
         };
 
-        ".omp/agent/.env" = mkIf (cfg.env != {}) {
-          text = concatStringsSep "\n" (mapAttrsToList (k: v: "${k}=${v}") cfg.env) + "\n";
+        ".omp/agent/.env" = mkIf (resolvedEnv != {}) {
+          text = concatStringsSep "\n" (mapAttrsToList (k: v: "${k}=${v}") resolvedEnv) + "\n";
         };
 
         ".omp/agent/extensions/format-md.ts" = mkIf cfg.formatMarkdown.enable {
@@ -166,6 +196,10 @@ in {
               });
             }
           '';
+        };
+
+        ".omp/agent/extensions/cache-temperature.ts" = mkIf cfg.cacheTemperature.enable {
+          source = ./extensions/cache-temperature.ts;
         };
       };
 
