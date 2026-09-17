@@ -92,10 +92,10 @@ describe("widgetModel", () => {
 });
 
 describe("formatting", () => {
-  test("formatClock renders local HH:MM:SS", () => {
+  test("formatClock renders local HH:MM", () => {
     const d = new Date(2026, 8, 15, 15, 42, 7); // local time, zero-based month
-    expect(formatClock(d.getTime())).toBe("15:42:07");
-    expect(formatClock(new Date(2026, 0, 2, 3, 4, 5).getTime())).toBe("03:04:05");
+    expect(formatClock(d.getTime())).toBe("15:42");
+    expect(formatClock(new Date(2026, 0, 2, 3, 4, 5).getTime())).toBe("03:04");
   });
 
   test("formatTokens", () => {
