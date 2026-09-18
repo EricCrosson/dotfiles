@@ -124,9 +124,8 @@ in {
       default = {};
       description = ''
         Render an omp extension that keeps a widget below the editor showing the
-        prompt-cache temperature: countdown to a certain cache miss with the
-        projected re-read size, flipping to a "/shake first" recommendation once
-        the window lapses.
+        prompt-cache temperature: countdown to a certain cache miss; once
+        the miss is certain, it shows the re-read size and advises "/shake first".
       '';
     };
   };

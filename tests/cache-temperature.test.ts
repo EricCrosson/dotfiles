@@ -42,15 +42,15 @@ describe("widgetModel", () => {
     expect(model.status).toBe("no-data");
     expect(model.lines).toEqual([]);
   });
-
-  test("warm shows hit ratio, expiry timestamp, and miss size", () => {
+  test("warm shows hit ratio and expiry timestamp", () => {
     const model = widgetModel(stateAt(120_000), NOW, 600, usage, stats);
     expect(model.status).toBe("warm");
     expect(model.lines).toHaveLength(1);
     expect(model.lines[0]).toContain("cache warm");
     expect(model.lines[0]).toContain("(92% hit)");
     expect(model.lines[0]).toContain(`expires ${formatClock(NOW + 480_000)}`);
-    expect(model.lines[0]).toContain("118k tok");
+    // miss size is intentionally not shown while warm — noise, not value
+    expect(model.lines[0]).not.toContain("tok");
   });
 
   test("omits hit ratio when usage statistics are empty", () => {
@@ -87,7 +87,8 @@ describe("widgetModel", () => {
   test("renders without usage data", () => {
     const model = widgetModel(stateAt(120_000), NOW, 600, undefined, stats);
     expect(model.status).toBe("warm");
-    expect(model.lines[0]).toContain("an unknown number of tokens");
+    expect(model.lines).toHaveLength(1);
+    expect(model.lines[0]).not.toContain("tok");
   });
 });
 

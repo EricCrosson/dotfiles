@@ -100,7 +100,7 @@ export function widgetModel(
     const hit = ratio === null ? "" : ` (${Math.round(ratio)}% hit)`;
     return {
       status: "warm",
-      lines: [`⚑ cache warm${hit} · expires ${formatClock(expiresAt)} · a miss would re-read ${miss}`],
+      lines: [`⚑ cache warm${hit} · expires ${formatClock(expiresAt)}`],
     };
   }
   return {
