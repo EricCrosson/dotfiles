@@ -13,7 +13,9 @@
 
   programs.omp = {
     enable = true;
-    package = inputs.omp.packages.${pkgs.system}.default;
+    package = pkgs.callPackage ../../pkgs/omp {
+      omp = inputs.omp.packages.${pkgs.system}.default;
+    };
     settings = {
       advisor.enabled = true;
       modelProviderOrder = [
