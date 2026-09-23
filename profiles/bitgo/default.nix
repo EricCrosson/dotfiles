@@ -126,9 +126,8 @@ in {
           url = slackMcpUrl;
         };
         mixpanel = {
-          transport = "stdio";
-          command = "${mcp-remote}/bin/mcp-remote";
-          args = ["https://mcp.mixpanel.com/mcp"];
+          transport = "http";
+          url = "https://mcp.mixpanel.com/mcp";
         };
         mlflow = {
           transport = "stdio";
