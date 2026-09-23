@@ -113,5 +113,38 @@ in {
         };
       };
     };
+
+    # HM's darwin launchd agent runs `gpg-agent --supervised` behind a launchd
+    # Sockets dict, but launchd never sets LISTEN_FDS/LISTEN_PID, so
+    # --supervised aborts ("Fatal: file descriptor 3 must be valid") and
+    # launchd crash-loops the job (5000+ spawns, exit 2). Supervised mode also
+    # serves sockets under /private/var/run, which the pinned IdentityAgent
+    # (~/.gnupg/S.gpg-agent.ssh) never points at. HM's launchd layer itself
+    # wraps ProgramArguments in a wait4path/`sh -c` boot-delay wrapper, so
+    # pass bare argv here.
+    #
+    # Instead, run `gpgconf --launch gpg-agent` on a timer: it is idempotent
+    # (exits 0 when an agent already listens) and otherwise spawns gpg-agent
+    # as a proper detached daemon owning the standard sockets in GNUPGHOME —
+    # exactly the socket SSH_AUTH_SOCK and the work IdentityAgent point at.
+    # RunAtLoad covers login; StartInterval re-checks every 30s, so a dead
+    # agent is replaced within half a minute instead of breaking work pulls
+    # until a gpg command happens to run.
+    launchd.agents.gpg-agent.config = {
+      ProgramArguments = mkForce [
+        "${config.programs.gpg.package}/bin/gpgconf"
+        "--launch"
+        "gpg-agent"
+      ];
+      Sockets = mkForce {};
+      RunAtLoad = mkForce true;
+      StartInterval = 30;
+      StandardErrorPath = "${config.home.homeDirectory}/.gnupg/gpg-agent-launchd.log";
+      # StartInterval owns the scheduling; never restart on exit.
+      KeepAlive = mkForce {
+        Crashed = false;
+        SuccessfulExit = false;
+      };
+    };
   };
 }
