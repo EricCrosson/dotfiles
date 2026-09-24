@@ -7,7 +7,6 @@ import ext, {
   resolveTtlSeconds,
   widgetModel,
   type CacheState,
-  type UsageStatsLike,
 } from "../modules/home-manager/programs/omp/extensions/cache-temperature.ts";
 
 const NOW = 1_800_000_000_000;
@@ -17,7 +16,6 @@ function stateAt(ageMs: number | null, compacted = false): CacheState {
 }
 
 const usage = { tokens: 118_000, contextWindow: 262_144, percent: 45 };
-const stats: UsageStatsLike = { input: 8, cacheRead: 92, cacheWrite: 0 };
 
 describe("resolveTtlSeconds", () => {
   test("defaults to OpenRouter sticky-routing window", () => {
@@ -38,40 +36,31 @@ describe("resolveTtlSeconds", () => {
 
 describe("widgetModel", () => {
   test("hides before the first provider response", () => {
-    const model = widgetModel(stateAt(null), NOW, 600, usage, stats);
+    const model = widgetModel(stateAt(null), NOW, 600, usage);
     expect(model.status).toBe("no-data");
     expect(model.lines).toEqual([]);
   });
-  test("warm shows hit ratio and expiry timestamp", () => {
-    const model = widgetModel(stateAt(120_000), NOW, 600, usage, stats);
+  test("warm shows the expiry timestamp", () => {
+    const model = widgetModel(stateAt(120_000), NOW, 600, usage);
     expect(model.status).toBe("warm");
     expect(model.lines).toHaveLength(1);
     expect(model.lines[0]).toContain("cache warm");
-    expect(model.lines[0]).toContain("(92% hit)");
+    // hit ratio is intentionally not shown while warm — the statusline
+    // cache_hit segment already carries it in the bar above the prompt
+    expect(model.lines[0]).not.toContain("% hit");
     expect(model.lines[0]).toContain(`expires ${formatClock(NOW + 480_000)}`);
     // miss size is intentionally not shown while warm — noise, not value
     expect(model.lines[0]).not.toContain("tok");
   });
 
-  test("omits hit ratio when usage statistics are empty", () => {
-    const model = widgetModel(stateAt(120_000), NOW, 600, usage, {
-      input: 0,
-      cacheRead: 0,
-      cacheWrite: 0,
-    });
-    expect(model.status).toBe("warm");
-    expect(model.lines[0]).not.toContain("% hit");
-    expect(model.lines[0]).toContain(`expires ${formatClock(NOW + 480_000)}`);
-  });
-
   test("the expiry boundary itself is already cold", () => {
     // lastResponseAt + ttl == now: expired.
-    const model = widgetModel(stateAt(600_000), NOW, 600, usage, stats);
+    const model = widgetModel(stateAt(600_000), NOW, 600, usage);
     expect(model.status).toBe("cold");
   });
 
   test("cold names the expired timestamp and advises /shake", () => {
-    const model = widgetModel(stateAt(700_000), NOW, 600, usage, stats);
+    const model = widgetModel(stateAt(700_000), NOW, 600, usage);
     expect(model.status).toBe("cold");
     expect(model.lines[0]).toContain(`COLD (expired ${formatClock(NOW - 100_000)})`);
     expect(model.lines[0]).toContain("/shake first");
@@ -79,13 +68,13 @@ describe("widgetModel", () => {
   });
 
   test("cold-compacted after compaction regardless of age", () => {
-    const model = widgetModel(stateAt(1000, true), NOW, 600, usage, stats);
+    const model = widgetModel(stateAt(1000, true), NOW, 600, usage);
     expect(model.status).toBe("cold-compacted");
     expect(model.lines[0]).toContain("cache COLD (context rewritten)");
   });
 
   test("renders without usage data", () => {
-    const model = widgetModel(stateAt(120_000), NOW, 600, undefined, stats);
+    const model = widgetModel(stateAt(120_000), NOW, 600, undefined);
     expect(model.status).toBe("warm");
     expect(model.lines).toHaveLength(1);
     expect(model.lines[0]).not.toContain("tok");
@@ -135,9 +124,6 @@ function makeHarness(env: Record<string, string> = {}): Harness {
   const ctx = {
     hasUI: true,
     getContextUsage: () => usage,
-    sessionManager: {
-      getUsageStatistics: () => stats,
-    },
     ui: {
       setWidget: (key: string, content: unknown, options: unknown) => {
         widgets.push({ key, content, options });
@@ -176,7 +162,7 @@ describe("extension wiring", () => {
     expect(first.key).toBe("cache-temperature");
     expect(first.options).toEqual({ placement: "belowEditor" });
     expect(first.content).toEqual(expect.arrayContaining([expect.stringContaining("cache warm")]));
-    expect(JSON.stringify(first.content)).toContain("92% hit");
+    expect(JSON.stringify(first.content)).not.toContain("% hit");
     expect(JSON.stringify(first.content)).toContain("expires");
 
     // Identical rendering must not re-push: the text never moves.

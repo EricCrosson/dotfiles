@@ -20,11 +20,9 @@ import type { ExtensionAPI } from "@oh-my-pi/pi-coding-agent";
  *   keep it warm even longer, so the oracle errs conservative (warns early).
  * - `OMP_CACHE_TTL_SECONDS` overrides the window (minimum 5s).
  *
- * Miss size comes from live context usage, hit ratio from the session's
- * cumulative usage statistics (same source as the statusline cache_hit
- * segment): a cold request re-reads the whole context at full input price,
- * so `/shake` (mechanical, local, free) first shrinks the miss whenever the
- * cache is already cold anyway.
+ * Miss size comes from live context usage: a cold request re-reads the whole
+ * context at full input price, so `/shake` (mechanical, local, free) first
+ * shrinks the miss whenever the cache is already cold anyway.
  */
 
 export const DEFAULT_TTL_SECONDS = 600;
@@ -39,12 +37,6 @@ export interface CacheState {
 
 export interface ContextUsageLike {
   tokens: number;
-}
-
-export interface UsageStatsLike {
-  input: number;
-  cacheRead: number;
-  cacheWrite: number;
 }
 
 export type CacheStatus = "no-data" | "warm" | "cold" | "cold-compacted";
@@ -81,7 +73,6 @@ export function widgetModel(
   now: number,
   ttl: number,
   usage: ContextUsageLike | undefined,
-  stats: UsageStatsLike | undefined,
 ): WidgetModel {
   const miss = usage === undefined ? "an unknown number of tokens" : `≈ ${formatTokens(usage.tokens)} tok`;
   if (state.lastResponseAt === null) return { status: "no-data", lines: [] };
@@ -93,14 +84,9 @@ export function widgetModel(
   }
   const expiresAt = state.lastResponseAt + ttl * 1000;
   if (now < expiresAt) {
-    // Cache hit ratio over all prompt tokens — cached / (cached + written +
-    // uncached) — matching the statusline cache_hit segment's denominator.
-    const denom = stats === undefined ? 0 : stats.cacheRead + stats.cacheWrite + stats.input;
-    const ratio = stats === undefined || denom <= 0 ? null : (100 * stats.cacheRead) / denom;
-    const hit = ratio === null ? "" : ` (${Math.round(ratio)}% hit)`;
     return {
       status: "warm",
-      lines: [`⚑ cache warm${hit} · expires ${formatClock(expiresAt)}`],
+      lines: [`⚑ cache warm · expires ${formatClock(expiresAt)}`],
     };
   }
   return {
@@ -138,11 +124,7 @@ export default function cacheTemperature(pi: ExtensionAPI): void {
     if (!ctx.hasUI) return;
     ctx.setInterval(() => {
       const usage = typeof ctx.getContextUsage === "function" ? ctx.getContextUsage() : ctx.ui.getContextUsage?.();
-      const stats =
-        typeof ctx.sessionManager?.getUsageStatistics === "function"
-          ? ctx.sessionManager.getUsageStatistics()
-          : undefined;
-      const model = widgetModel(state, Date.now(), ttl, usage, stats);
+      const model = widgetModel(state, Date.now(), ttl, usage);
       if (model.lines.length === 0) {
         // Only push the hide when something was actually shown before.
         if (lastPushed !== null) {
