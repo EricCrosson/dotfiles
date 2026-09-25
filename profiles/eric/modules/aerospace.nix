@@ -44,11 +44,6 @@ _: {
           alt-shift-semicolon = "mode service";
           alt-comma = "layout h_tiles h_accordion";
           alt-shift-comma = "layout v_tiles h_accordion";
-          alt-shift-enter = ''
-            exec-and-forget osascript \
-              -e 'tell application "ghostty" to activate' \
-              -e 'tell application "System Events" to keystroke "n" using {command down}'
-          '';
         };
         service.binding = {
           esc = ["reload-config" "mode main"];
@@ -135,12 +130,12 @@ _: {
         "2" = "dell u2718q";
         "3" = "dell u2718q";
         "4" = "dell u2718q";
-        "5" = "built-in";
-        "6" = "built-in";
-        "7" = "built-in";
-        "8" = "dell u2723qe";
-        "9" = "dell u2723qe";
-        "0" = "dell u2723qe";
+        "5" = "dell u2718q";
+        "6" = "dell u2718q";
+        "7" = "dell u2718q";
+        "8" = "built-in";
+        "9" = "built-in";
+        "0" = "built-in";
       };
     };
   };
