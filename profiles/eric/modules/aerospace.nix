@@ -1,6 +1,8 @@
 _: {
+  # Disabled in favor of Rift (see ./rift.nix); the settings below are kept
+  # as the reference for rolling back.
   programs.aerospace = {
-    enable = true;
+    enable = false;
     launchd.enable = true;
     settings = {
       "config-version" = 2;

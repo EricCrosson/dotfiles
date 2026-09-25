@@ -3,5 +3,6 @@
     ./llm
     ./omp
     ./ai
+    ./rift
   ];
 }

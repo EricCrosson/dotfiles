@@ -123,6 +123,7 @@ and `gh-gantt`.
 
 ## Known hardware-specific config
 
-- **AeroSpace monitor assignments** (`profiles/eric/modules/aerospace.nix`) reference specific Dell monitor model strings — non-fatal if different monitors are attached.
+- **Rift requires "Displays have separate Spaces"** (`hosts/MBP-0954/configuration.nix` sets `system.defaults.spaces.spans-displays = false`) — Rift exits at launch without it, and needs macOS Accessibility permission before it manages windows.
+- **AeroSpace is kept disabled** (`profiles/eric/modules/aerospace.nix`) as the rollback reference; its monitor assignments reference specific Dell monitor model strings, and Rift has no per-workspace monitor pinning equivalent.
 - **Hostname** must be `MBP-0954` or specified explicitly with `--flake ./private#MBP-0954`.
 - **`/opt/homebrew`** paths are hardcoded — standard for Apple Silicon; amd64 Macs use `/usr/local/homebrew`.

@@ -8,6 +8,7 @@
   darwinImports = [
     ../../os/darwin
     ./modules/aerospace.nix
+    ./modules/rift.nix
   ];
   linuxImports = [
     ../../os/linux

@@ -154,7 +154,10 @@
           _FXSortFoldersFirstOnDesktop = true;
         };
         spaces = {
-          spans-displays = true;
+          # Rift requires "Displays have separate Spaces" (System Settings →
+          # Desktop & Dock → Mission Control) and exits at launch otherwise;
+          # nix-darwin's spans-displays = true is the inverse setting.
+          spans-displays = false;
         };
         NSGlobalDomain = {
           ApplePressAndHoldEnabled = false;
