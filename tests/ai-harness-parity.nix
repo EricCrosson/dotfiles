@@ -217,6 +217,29 @@
     };
   }); true;
 
+  test-empty-required-field =
+    # renderers.nix documents that a field carries author intent only when
+    # it has a non-empty value. An empty command/url satisfies nothing: the
+    # renderer must reject it like a missing field, never emit it.
+    assert assertThrows "codex stdio empty command" (renderCodex {
+      server = {
+        transport = "stdio";
+        command = "";
+      };
+    });
+    assert assertThrows "codex http empty url" (renderCodex {
+      server = {
+        transport = "http";
+        url = "";
+      };
+    });
+    assert assertThrows "omp http empty url" (renderOmp {
+      server = {
+        transport = "http";
+        url = "";
+      };
+    }); true;
+
   test-mixed-manifest =
     # Realistic manifest: full HTTP metadata that only OMP can carry, plus
     # portable stdio/http entries all four harnesses accept.
@@ -239,4 +262,5 @@ in
   assert test-malformed-transport;
   assert test-mixed-manifest;
   assert test-omp-unsupported;
+  assert test-empty-required-field;
   assert test-module-renderer; "all parity tests passed"

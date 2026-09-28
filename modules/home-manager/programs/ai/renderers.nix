@@ -4,9 +4,9 @@
   transports = ["stdio" "http"];
 
   # A field carries author intent only when it has a non-empty value; the
-  # manifest option defaults (null, [], {}) mean the author wrote nothing.
+  # manifest option defaults (null, "", [], {}) mean the author wrote nothing.
   isDeclared = value:
-    value != null && value != [] && value != {};
+    value != null && value != "" && value != [] && value != {};
 
   declaredFields = server:
     filter (field: isDeclared (server.${field} or null))
@@ -30,7 +30,7 @@
       then
         builtins.throw
         "${harness} renderer: MCP server '${name}' has unsupported value for field 'transport': ${builtins.toJSON transport}"
-      else if (server.${requiredField} or null) == null
+      else if !isDeclared (server.${requiredField} or null)
       then
         builtins.throw
         "${harness} renderer: MCP server '${name}' with transport '${transport}' requires field '${requiredField}'"
