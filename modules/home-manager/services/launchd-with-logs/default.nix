@@ -201,7 +201,33 @@ in {
             };
           }
       )
-      config.launchd-with-logs.services;
+      config.launchd-with-logs.services
+      // {
+        # The conf above is only useful if something executes it: macOS's
+        # system newsyslog job reads /etc/newsyslog.conf (root) only, so
+        # the user-level conf needs its own periodic invocation. This
+        # agent runs as the user, and newsyslog refuses non-root without
+        # -r ("Remove the restriction that newsyslog must be running as
+        # root").
+        newsyslog-launchd-with-logs =
+          mkIf
+          (any (
+            s:
+              s.enable && (s.logging.stdout != null || s.logging.stderr != null)
+          ) (attrValues config.launchd-with-logs.services)) {
+            enable = true;
+            config = {
+              ProgramArguments = [
+                "/usr/sbin/newsyslog"
+                "-r"
+                "-f"
+                "${config.home.homeDirectory}/.config/newsyslog-launchd-with-logs.conf"
+              ];
+              StartInterval = 3600;
+              RunAtLoad = true;
+            };
+          };
+      };
 
     # Create newsyslog configuration for log rotation in a file in ~/.config
     # that will be picked up by newsyslog

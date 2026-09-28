@@ -41,6 +41,10 @@
                 type = lib.types.str;
                 default = "testuser";
               };
+              homeDirectory = lib.mkOption {
+                type = lib.types.str;
+                default = "/home/testuser";
+              };
             };
           };
         }
@@ -142,6 +146,28 @@
   in
     assert assertHasAttr "newsyslog-config" result.home.file ".config/newsyslog-launchd-with-logs.conf"; true;
 
+  # Test: The newsyslog conf is actually consumed — a launchd agent must
+  # invoke newsyslog against it. macOS's system newsyslog only reads
+  # /etc/newsyslog.conf, so a user conf that nothing executes is dead
+  # config and the managed logs grow unbounded.
+  test-newsyslog-consumed = let
+    result = eval {
+      launchd-with-logs.services.test-service = {
+        command = "/usr/bin/true";
+        logging = {
+          stdout = "/tmp/test.log";
+          stderr = "/tmp/test.error.log";
+        };
+      };
+    };
+    agentConfig = result.launchd.agents.newsyslog-launchd-with-logs.config;
+  in
+    assert assertEq
+    "newsyslog-agent-args"
+    agentConfig.ProgramArguments
+    ["/usr/sbin/newsyslog" "-r" "-f" "/home/testuser/.config/newsyslog-launchd-with-logs.conf"];
+    assert assertEq "newsyslog-agent-interval" agentConfig.StartInterval 3600; true;
+
   # Test: No newsyslog config when logging is disabled
   test-no-newsyslog = let
     result = eval {
@@ -150,14 +176,45 @@
       };
     };
   in
-    assert assertNotHasAttr "no-newsyslog-config" result.home.file ".config/newsyslog-launchd-with-logs.conf"; true;
-in
-  # Force evaluation of all tests
-  assert test-interval;
-  assert test-no-interval;
-  assert test-args;
-  assert test-no-args;
-  assert test-logging;
-  assert test-logging-null;
-  assert test-newsyslog;
-  assert test-no-newsyslog; "all tests passed"
+    assert assertNotHasAttr "no-newsyslog-config" result.home.file ".config/newsyslog-launchd-with-logs.conf";
+    assert assertNotHasAttr "no-newsyslog-agent" result.launchd.agents "newsyslog-launchd-with-logs"; true;
+in {
+  asserts =
+    # Force evaluation of all tests
+    assert test-interval;
+    assert test-no-interval;
+    assert test-args;
+    assert test-no-args;
+    assert test-logging;
+    assert test-logging-null;
+    assert test-newsyslog;
+    assert test-newsyslog-consumed;
+    assert test-no-newsyslog; "all tests passed";
+
+  # The exact invocation the rotator agent must use, and the conf it must
+  # consume, exported for behavioral validation: newsyslog refuses to run
+  # as non-root without -r, so the flake check executes these args
+  # (dry-run) against this conf.
+  userInvocation = let
+    logged = eval {
+      # newsyslog validates the owner field against real users, so the
+      # behavioral check must name one that exists on the build host.
+      home.username = "root";
+      launchd-with-logs.services.test-service = {
+        command = "/usr/bin/true";
+        logging = {
+          stdout = "/tmp/test.log";
+          stderr = "/tmp/test.error.log";
+        };
+      };
+    };
+    flags = ["-r"];
+  in {
+    inherit flags;
+    programArguments =
+      ["/usr/sbin/newsyslog"]
+      ++ flags
+      ++ ["-f" "/home/testuser/.config/newsyslog-launchd-with-logs.conf"];
+    conf = logged.home.file.".config/newsyslog-launchd-with-logs.conf".text;
+  };
+}

@@ -34,10 +34,22 @@
       pkgs = nixpkgs.legacyPackages.${system};
       pre-commit-check = pkgs.callPackage ./git-hooks.nix {inherit git-hooks;};
       git-hook-dispatch-test = import ../tests/git-hook-dispatch.nix {inherit pkgs;};
-      launchd-with-logs-test =
-        builtins.seq
-        (import ../tests/launchd-with-logs.nix {inherit pkgs;})
-        (pkgs.runCommand "launchd-with-logs-test" {} "touch $out");
+      launchd-with-logs-test = let
+        suite = import ../tests/launchd-with-logs.nix {inherit pkgs;};
+        invocation = suite.userInvocation;
+        confFile = pkgs.writeText "newsyslog-launchd-with-logs.conf" invocation.conf;
+      in
+        builtins.seq suite.asserts
+        # Behavioral validation: run the rotator's real flag set (dry-run)
+        # against the module-generated conf. newsyslog must accept it as
+        # non-root, which requires -r to be present.
+        (pkgs.runCommand "launchd-with-logs-user-invocation-test" {} ''
+          set -eu
+          /usr/sbin/newsyslog -n ${
+            pkgs.lib.strings.concatStringsSep " " suite.userInvocation.flags
+          } -f ${confFile}
+          touch $out
+        '');
       litellm-proxy-test =
         builtins.seq
         (import ../tests/litellm-proxy.nix {inherit pkgs;})
@@ -132,6 +144,7 @@
         inherit pkgs;
         mlflowPython3 = nixpkgs-mlflow.legacyPackages.${system}.python3;
       };
+      zsh-compinit-test = import ../tests/zsh-compinit.nix {inherit pkgs;};
     in {
       inherit
         pre-commit-check
@@ -159,6 +172,7 @@
         omp-module-test
         rift-module-test
         ghostty-module-test
+        zsh-compinit-test
         ;
     });
 
