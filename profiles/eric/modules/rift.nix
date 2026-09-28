@@ -16,9 +16,11 @@ _: {
         # wait for a per-Space activation toggle (alt-z), but AeroSpace tiled
         # everywhere.
         default_disable = false;
-        layout.mode = "traditional";
-        layout.traditional = {
-          equalize_nodes = true;
+        layout = {
+          mode = "traditional";
+          traditional = {
+            equalize_nodes = true;
+          };
         };
 
         # Apps that should not steal focus across workspaces.
@@ -173,7 +175,7 @@ _: {
         "Alt + Shift + 9" = {move_window_to_workspace = 8;};
         "Alt + Shift + 0" = {move_window_to_workspace = 9;};
 
-        "Alt + Comma" = "toggle_stack";
+        "Alt + Comma" = "toggle_fullscreen";
         "Alt + Shift + Comma" = "toggle_orientation";
         "Alt + Shift + Space" = "toggle_window_floating";
 
