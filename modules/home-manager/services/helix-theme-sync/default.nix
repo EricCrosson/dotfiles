@@ -19,6 +19,7 @@
   helixConfigDir = "${config.home.homeDirectory}/.config/helix";
 
   swapHelixConfig = target: ''
+    mkdir -p -- "${helixConfigDir}"
     ln -sf "${target}" "${helixConfigDir}/config.toml.tmp"
     mv "${helixConfigDir}/config.toml.tmp" "${helixConfigDir}/config.toml"
     pkill -USR1 hx || true

@@ -91,9 +91,26 @@
     };
   in
     assert !(result.appearance-sync.services ? helix-theme-sync); true;
+  # Invariant: each fragment must create ~/.config/helix before linking
+  # into it. On a fresh host (helix never launched) the dir does not
+  # exist, and writeShellApplication's set -e would abort the whole
+  # theme-sync run, leaving the theme stale until a manual fix.
+  test-fragments-create-config-dir = let
+    result = eval {
+      services.helix-theme-sync = {
+        enable = true;
+        light-theme = "test-light";
+        dark-theme = "test-dark";
+      };
+    };
+    svc = result.appearance-sync.services.helix-theme-sync;
+  in
+    assert assertContains "onLight-mkdir-before-symlink" svc.onLight "mkdir -p -- \"/home/testuser/.config/helix\"\nln -sf";
+    assert assertContains "onDark-mkdir-before-symlink" svc.onDark "mkdir -p -- \"/home/testuser/.config/helix\"\nln -sf"; true;
 in
   assert test-appearance-sync-registered;
   assert test-onLight-contains-light-config;
   assert test-onDark-contains-dark-config;
   assert test-onLight-signals-helix;
+  assert test-fragments-create-config-dir;
   assert test-disabled; "all tests passed"
