@@ -195,7 +195,11 @@ _: {
         # vertical. With 5+ windows Rift's smart insertion may nest small
         # sub-containers instead of keeping everything at the root.
         "Alt + Shift + R" = {
-          exec = ["sh" "-c" "rift-cli execute workspace set-layout bsp && rift-cli execute workspace set-layout traditional && rift-cli execute layout toggle-orientation"];
+          exec = [
+            "sh"
+            "-c"
+            "rift-cli execute workspace set-layout bsp && rift-cli execute workspace set-layout traditional"
+          ];
         };
       };
     };
