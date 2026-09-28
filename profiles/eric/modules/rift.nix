@@ -41,6 +41,8 @@ _: {
           display_style = "label";
           active_label = "index";
         };
+
+        hot_reload = true;
       };
 
       virtual_workspaces = {
