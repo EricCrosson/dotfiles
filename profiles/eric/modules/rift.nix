@@ -102,6 +102,10 @@ _: {
             app_id = "com.apple.dt.Xcode";
             floating = true;
           }
+          {
+            app_id = "com.pais.handy";
+            floating = true;
+          }
         ];
       };
 
