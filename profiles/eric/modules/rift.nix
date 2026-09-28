@@ -177,6 +177,7 @@ _: {
 
         "Alt + Comma" = "toggle_fullscreen";
         "Alt + Shift + Comma" = "toggle_orientation";
+        "Alt + Shift + E" = "unjoin_windows";
         "Alt + Shift + Space" = "toggle_window_floating";
 
         # Join the focused window with its nearest neighbor in that
