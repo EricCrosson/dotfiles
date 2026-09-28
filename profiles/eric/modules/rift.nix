@@ -128,8 +128,6 @@ _: {
         ];
       };
 
-      modifier_combinations.comb1 = "Alt + Shift";
-
       # AeroSpace's service mode (alt-shift-semicolon) has no Rift equivalent;
       # reload is automatic (hot_reload plus the module's activation hook).
       keys = {
@@ -141,10 +139,10 @@ _: {
         "Alt + K" = {move_focus = "up";};
         "Alt + L" = {move_focus = "right";};
 
-        "comb1 + H" = {move_node = "left";};
-        "comb1 + J" = {move_node = "down";};
-        "comb1 + K" = {move_node = "up";};
-        "comb1 + L" = {move_node = "right";};
+        "Alt + Shift + H" = {move_node = "left";};
+        "Alt + Shift + J" = {move_node = "down";};
+        "Alt + Shift + K" = {move_node = "up";};
+        "Alt + Shift + L" = {move_node = "right";};
 
         "Alt + Ctrl + H" = {move_window_to_display = {selector = "left";};};
         "Alt + Ctrl + J" = {move_window_to_display = {selector = "down";};};
@@ -165,28 +163,28 @@ _: {
         "Alt + 9" = {switch_to_workspace = 8;};
         "Alt + 0" = {switch_to_workspace = 9;};
 
-        "comb1 + 1" = {move_window_to_workspace = 0;};
-        "comb1 + 2" = {move_window_to_workspace = 1;};
-        "comb1 + 3" = {move_window_to_workspace = 2;};
-        "comb1 + 4" = {move_window_to_workspace = 3;};
-        "comb1 + 5" = {move_window_to_workspace = 4;};
-        "comb1 + 6" = {move_window_to_workspace = 5;};
-        "comb1 + 7" = {move_window_to_workspace = 6;};
-        "comb1 + 8" = {move_window_to_workspace = 7;};
-        "comb1 + 9" = {move_window_to_workspace = 8;};
-        "comb1 + 0" = {move_window_to_workspace = 9;};
+        "Alt + Shift + 1" = {move_window_to_workspace = 0;};
+        "Alt + Shift + 2" = {move_window_to_workspace = 1;};
+        "Alt + Shift + 3" = {move_window_to_workspace = 2;};
+        "Alt + Shift + 4" = {move_window_to_workspace = 3;};
+        "Alt + Shift + 5" = {move_window_to_workspace = 4;};
+        "Alt + Shift + 6" = {move_window_to_workspace = 5;};
+        "Alt + Shift + 7" = {move_window_to_workspace = 6;};
+        "Alt + Shift + 8" = {move_window_to_workspace = 7;};
+        "Alt + Shift + 9" = {move_window_to_workspace = 8;};
+        "Alt + Shift + 0" = {move_window_to_workspace = 9;};
 
         "Alt + Comma" = "toggle_stack";
-        "comb1 + Comma" = "toggle_orientation";
-        "comb1 + Space" = "toggle_window_floating";
+        "Alt + Shift + Comma" = "toggle_orientation";
+        "Alt + Shift + Space" = "toggle_window_floating";
 
         # Join the focused window with its nearest neighbor in that
         # direction into one group. One row above the H/J/K/L move keys:
         # Y=left, U=down, I=up, O=right.
-        "comb1 + Y" = {join_window = "left";};
-        "comb1 + U" = {join_window = "down";};
-        "comb1 + I" = {join_window = "up";};
-        "comb1 + O" = {join_window = "right";};
+        "Alt + Shift + Y" = {join_window = "left";};
+        "Alt + Shift + U" = {join_window = "down";};
+        "Alt + Shift + I" = {join_window = "up";};
+        "Alt + Shift + O" = {join_window = "right";};
       };
     };
   };
