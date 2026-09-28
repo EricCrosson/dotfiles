@@ -180,10 +180,13 @@ _: {
         "comb1 + Comma" = "toggle_orientation";
         "comb1 + Space" = "toggle_window_floating";
 
-        "comb1 + Left" = {join_window = "left";};
-        "comb1 + Right" = {join_window = "right";};
-        "comb1 + Up" = {join_window = "up";};
-        "comb1 + Down" = {join_window = "down";};
+        # Join the focused window with its nearest neighbor in that
+        # direction into one group. One row above the H/J/K/L move keys:
+        # Y=left, U=down, I=up, O=right.
+        "comb1 + Y" = {join_window = "left";};
+        "comb1 + U" = {join_window = "down";};
+        "comb1 + I" = {join_window = "up";};
+        "comb1 + O" = {join_window = "right";};
       };
     };
   };
