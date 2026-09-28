@@ -26,8 +26,11 @@ autoload -Uz compinit
   if (( rebuild )); then
     # Full audit + map build (slow path, but only weekly)
     compinit -u -d "$compdump"
-    # Byte-compile for faster subsequent reads
-    (( $+commands[zrecompile] )) && zrecompile -q -p "$compdump" 2>/dev/null
+    # Byte-compile for faster subsequent reads. zrecompile is an
+    # autoloadable function, not a PATH binary, so $+commands never sees
+    # it — autoload first, then guard on function existence.
+    autoload -Uz zrecompile
+    (( $+functions[zrecompile] )) && zrecompile -q -p "$compdump" 2>/dev/null
   else
     # Fast path: trust cache, skip audits
     compinit -C -d "$compdump"
