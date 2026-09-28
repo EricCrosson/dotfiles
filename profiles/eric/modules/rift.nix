@@ -131,7 +131,6 @@ _: {
       # AeroSpace's service mode (alt-shift-semicolon) has no Rift equivalent;
       # reload is automatic (hot_reload plus the module's activation hook).
       keys = {
-        "Alt + Z" = "toggle_space_activated";
         "Alt + Tab" = "switch_to_last_workspace";
 
         "Alt + H" = {move_focus = "left";};
