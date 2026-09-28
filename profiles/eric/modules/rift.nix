@@ -187,6 +187,16 @@ _: {
         "Alt + Shift + U" = {join_window = "down";};
         "Alt + Shift + I" = {join_window = "up";};
         "Alt + Shift + O" = {join_window = "right";};
+
+        # Get-me-out-of-jail: rebuild the active workspace as a flat,
+        # equalized vertical strip. Round-tripping bsp -> traditional rebuilds
+        # the tree with every window as an equal-weight sibling, and
+        # toggle-orientation flips the root container from horizontal to
+        # vertical. With 5+ windows Rift's smart insertion may nest small
+        # sub-containers instead of keeping everything at the root.
+        "Alt + Shift + R" = {
+          exec = ["sh" "-c" "rift-cli execute workspace set-layout bsp && rift-cli execute workspace set-layout traditional && rift-cli execute layout toggle-orientation"];
+        };
       };
     };
   };
