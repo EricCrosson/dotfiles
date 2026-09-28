@@ -7,7 +7,6 @@
   inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux;
   darwinImports = [
     ../../os/darwin
-    ./modules/aerospace.nix
     ./modules/rift.nix
   ];
   linuxImports = [

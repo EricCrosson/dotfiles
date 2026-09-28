@@ -5,16 +5,15 @@ _: {
 
     settings = {
       settings = {
-        # Rift's bundled defaults animate layout changes and move the mouse
-        # with focus; AeroSpace did neither.
+        # No layout-change animations; the pointer follows keyboard focus but
+        # hovering never steals focus.
         animate = false;
         focus_follows_mouse = false;
         mouse_follows_focus = true;
         mouse_hides_on_focus = false;
 
-        # Manage every macOS Space from the start. Rift's own default is to
-        # wait for a per-Space activation toggle (alt-z), but AeroSpace tiled
-        # everywhere.
+        # Manage every macOS Space from the start rather than waiting for
+        # Rift's own per-Space activation toggle (alt-z).
         default_disable = false;
         layout = {
           mode = "traditional";
@@ -30,10 +29,9 @@ _: {
           "com.apple.Spotlight"
         ];
 
-        # Native macOS menu-bar workspace indicator. AeroSpace had no built-in
-        # statusbar; this is Rift's equivalent (a status item on each display's
-        # menu bar), labeling every workspace by number so you can see which
-        # workspace/window a display is showing at a glance.
+        # Native macOS menu-bar workspace indicator: a status item on each
+        # display's menu bar, labeling every workspace by number so you can
+        # see which workspace/window a display is showing at a glance.
         ui.menu_bar = {
           enabled = true;
           # Show every workspace, not just the active one.
@@ -53,10 +51,8 @@ _: {
         auto_assign_windows = true;
         preserve_focus_per_workspace = true;
 
-        # Workspace indexes are zero-based: AeroSpace workspace "1" is 0 here.
-        # Rift has no equivalent of AeroSpace's
-        # workspace-to-monitor-force-assignment; move windows between displays
-        # with alt-ctrl-h/j/k/l instead.
+        # Workspace indexes are zero-based. There is no per-workspace monitor
+        # pinning; move windows between displays with alt-ctrl-h/j/k/l instead.
         app_rules = [
           {
             app_id = "com.tinyspeck.slackmacgap";
@@ -130,8 +126,8 @@ _: {
         ];
       };
 
-      # AeroSpace's service mode (alt-shift-semicolon) has no Rift equivalent;
-      # reload is automatic (hot_reload plus the module's activation hook).
+      # Reload is automatic (hot_reload plus the module's activation hook);
+      # there is no service mode to toggle.
       keys = {
         "Alt + Tab" = "switch_to_last_workspace";
 

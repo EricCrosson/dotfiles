@@ -60,8 +60,8 @@ See the full documentation in the module's source file or in the [module documen
 
 A Home Manager module for the [Rift](https://github.com/acsandmann/rift) tiling
 window manager (`pkgs.rift-wm`). There is no upstream module, so this one
-follows the shape of Home Manager's `programs.aerospace`: free-form `settings`
-rendered to `~/.config/rift/config.toml`, plus a launchd agent.
+provides free-form `settings` rendered to `~/.config/rift/config.toml`,
+plus a launchd agent.
 
 ### Features
 
