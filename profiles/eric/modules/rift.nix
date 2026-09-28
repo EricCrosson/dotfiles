@@ -9,7 +9,8 @@ _: {
         # with focus; AeroSpace did neither.
         animate = false;
         focus_follows_mouse = false;
-        mouse_follows_focus = false;
+        mouse_follows_focus = true;
+        mouse_hides_on_focus = false;
 
         # Manage every macOS Space from the start. Rift's own default is to
         # wait for a per-Space activation toggle (alt-z), but AeroSpace tiled
