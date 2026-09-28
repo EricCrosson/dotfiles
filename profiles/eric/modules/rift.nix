@@ -16,6 +16,10 @@ _: {
         # wait for a per-Space activation toggle (alt-z), but AeroSpace tiled
         # everywhere.
         default_disable = false;
+        mode = "traditional";
+        layout.traditional = {
+          equalize_nodes = true;
+        };
 
         # Apps that should not steal focus across workspaces.
         auto_focus_blacklist = [
@@ -23,8 +27,6 @@ _: {
           "com.apple.systemuiserver"
           "com.apple.Spotlight"
         ];
-
-        layout.mode = "traditional";
       };
 
       virtual_workspaces = {
