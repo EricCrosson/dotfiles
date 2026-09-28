@@ -27,6 +27,7 @@ writeShellApplication {
     # omp expects its agent dir to be 0700; don't fabricate it looser than that.
     install -d -m 0700 -- "$target_dir"
     temp_dir=$(mktemp -d "$target_dir/.omp-mcp-sync.XXXXXX")
+    trap 'rm -rf -- "$temp_dir"' EXIT
 
     jq . < "$base_config" > "$temp_dir/base.json"
 

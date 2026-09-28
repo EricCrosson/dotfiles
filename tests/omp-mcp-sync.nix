@@ -112,5 +112,13 @@ in
     omp-mcp-sync "$work/base.json" "$work/mcp.json"
     cmp "$work/mcp.first" "$work/mcp.json"
 
+    # Invariant: every sync leaves no temp workspace in the target dir,
+    # whether it succeeded above or failed mid-run (malformed/nonobject
+    # targets). Checked once, after all sync invocations.
+    residue=$(find "$work" -maxdepth 1 -name '.omp-mcp-sync.*' -print -quit)
+    if [[ -n "$residue" ]]; then
+      echo "expected no .omp-mcp-sync.* residue in target dir, found: $residue" >&2
+      exit 1
+    fi
     touch "$out"
   ''
