@@ -16,7 +16,7 @@ _: {
         # wait for a per-Space activation toggle (alt-z), but AeroSpace tiled
         # everywhere.
         default_disable = false;
-        mode = "traditional";
+        layout.mode = "traditional";
         layout.traditional = {
           equalize_nodes = true;
         };
@@ -27,6 +27,20 @@ _: {
           "com.apple.systemuiserver"
           "com.apple.Spotlight"
         ];
+
+        # Native macOS menu-bar workspace indicator. AeroSpace had no built-in
+        # statusbar; this is Rift's equivalent (a status item on each display's
+        # menu bar), labeling every workspace by number so you can see which
+        # workspace/window a display is showing at a glance.
+        ui.menu_bar = {
+          enabled = true;
+          # Show every workspace, not just the active one.
+          mode = "all";
+          # A number/label chip is easier to read at a glance than a miniature
+          # layout, and we have 10 workspaces.
+          display_style = "label";
+          active_label = "index";
+        };
       };
 
       virtual_workspaces = {
