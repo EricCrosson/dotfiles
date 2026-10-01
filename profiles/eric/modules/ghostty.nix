@@ -2,7 +2,17 @@
   config,
   pkgs,
   ...
-}: {
+}: let
+  inherit (pkgs.stdenv.hostPlatform) isDarwin;
+
+  # Split-creation leader: cmd+d on macOS, alt+d on Linux. Keyboards and OS
+  # customs differ per platform. Ghostty trigger syntax spells these "super"
+  # (cmd alias) and "alt" (left Alt; there is no left/right Alt distinction).
+  splitLeader =
+    if isDarwin
+    then "super+d"
+    else "alt+d";
+in {
   home.file.".config/ghostty/focus-pane.glsl".text = ''
     // Shows border on focused pane
     void mainImage(out vec4 fragColor, in vec2 fragCoord) {
@@ -48,12 +58,13 @@
       working-directory = "home";
       window-inherit-working-directory = false;
       keybind = [
-        # Unbind default cmd+d (single-press split right) to use as leader
+        # Unbind default cmd+d single-press split-right so cmd+d works as the
+        # sequence leader (no-op on Linux: no super+d default binding)
         "super+d=unbind"
 
-        # Split creation (leader: cmd+d, then vim mnemonic)
-        "super+d>v=new_split:right"
-        "super+d>s=new_split:down"
+        # Split creation (leader, then vim mnemonic)
+        "${splitLeader}>v=new_split:right"
+        "${splitLeader}>s=new_split:down"
 
         # Pane navigation (vim-style, direct)
         "ctrl+shift+h=goto_split:left"

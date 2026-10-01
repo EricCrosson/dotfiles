@@ -107,6 +107,10 @@
         builtins.seq
         (import ../tests/rift-module.nix {inherit pkgs;})
         (pkgs.runCommand "rift-module-test" {} "touch $out");
+      ghostty-module-test =
+        builtins.seq
+        (import ../tests/ghostty-module.nix {inherit pkgs;})
+        (pkgs.runCommand "ghostty-module-test" {} "touch $out");
       omp-cache-temperature-test =
         builtins.seq
         (import ../tests/omp-cache-temperature.nix {inherit pkgs;})
@@ -154,6 +158,7 @@
         cache-temperature-bun-test
         omp-module-test
         rift-module-test
+        ghostty-module-test
         ;
     });
 
