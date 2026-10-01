@@ -25,6 +25,11 @@
   # Match macOS natural scrolling for physical mice.
   services = {
     libinput.mouse.naturalScrolling = true;
+
+    # handy evdev hotkeys use /dev/uinput: open it to the input group.
+    udev.extraRules = ''
+      KERNEL=="uinput", GROUP="input", MODE="0660"
+    '';
     xserver = {
       enable = true;
       videoDrivers = ["nvidia"];
@@ -89,7 +94,7 @@
   users.users.eric = {
     isNormalUser = true;
     home = "/home/eric";
-    extraGroups = ["wheel" "networkmanager"];
+    extraGroups = ["wheel" "networkmanager" "input"];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9idpkqe6Rk8pLXKhqCfL6Bc3jGMHdfDj06C0AU5P3J"
@@ -121,9 +126,6 @@
       '';
     in ["${autostartEntry}/share/applications/1password.desktop"];
   };
-  # Handy speech-to-text runs as a user service from the cjpais/handy flake.
-  home-manager.users.eric.services.handy.enable = true;
-
   security.sudo.wheelNeedsPassword = false;
 
   nix = {

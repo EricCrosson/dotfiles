@@ -14,256 +14,259 @@
     ../../os/linux
   ];
   alabasterBat = ../../pkgs/bat-themes;
-in {
-  imports =
-    [
-      inputs.nix-index-database.homeModules.nix-index
-      ./modules/ghostty.nix
-      ./modules/git.nix
-      ./modules/zsh.nix
-    ]
-    ++ (
-      if isDarwin
-      then darwinImports
-      else linuxImports
-    );
-
-  home = {
-    username = "${profile.username}";
-    homeDirectory = "${profile.homeDirectory}";
-    stateVersion = "22.05";
-
-    sessionVariables =
-      {
-        EDITOR = "${config.programs.helix.package}/bin/hx";
-        FZF_ALT_C_COMMAND = "fd --type d";
-        FZF_DEFAULT_COMMAND = "fd --type f";
-        FZF_CTRL_T_COMMAND = "fd --type f";
-        MANPAGER = "sh -c 'col -bx | bat -l man -p'";
-        MANROFFOPT = "-c";
-        SMART_CD_ONLY_IF_FITS_RATIO = 66;
-        ZSH_WAKATIME_BIN = "/etc/profiles/per-user/${profile.username}/bin/wakatime-cli";
-      }
-      // pkgs.lib.optionalAttrs isLinux {
-        SSH_AUTH_SOCK = "${profile.homeDirectory}/.1password/agent.sock";
-      };
-
-    packages = with pkgs;
+in
+  {
+    imports =
       [
-        inputs.bell.packages.${pkgs.system}.default
-        inputs.retry.packages.${pkgs.system}.default
-
-        age-plugin-yubikey
-        amber
-        atuin-desktop
-        bottom
-        broot
-        curl
-        dust
-        entr
-        fd
-        ffmpeg
-
-        fx
-        git
-        git-absorb
-        git-extras
-        gnupg
-        gron
-        htmlq
-        htop
-        hyperfine
-        imagemagick
-        jq
-        moreutils
-        mprocs
-        pass
-        pueue
-        sd
-        spacer
-        units
-        viddy
-        viu
-        vim
-        watchexec
-        wget
-        yubikey-manager
-
-        # yt-dlp # derivation temporarily broken
-
-        # for shell
-        eza
-        fzf
-        python3
-        starship
-        wakatime-cli
+        inputs.nix-index-database.homeModules.nix-index
+        ./modules/ghostty.nix
+        ./modules/git.nix
+        ./modules/zsh.nix
       ]
-      ++ pkgs.lib.optionals isLinux [
-        _1password-gui
-        inputs.handy.packages.${pkgs.system}.handy
-      ];
+      ++ (
+        if isDarwin
+        then darwinImports
+        else linuxImports
+      );
 
-    file = pkgs.lib.optionalAttrs isDarwin {
-      ".homebrew/brew.env".text = ''
-        HOMEBREW_NO_ENV_HINTS=1
-        HOMEBREW_NO_UPDATE_REPORT_NEW=1
-      '';
-    };
-  };
+    home = {
+      username = "${profile.username}";
+      homeDirectory = "${profile.homeDirectory}";
+      stateVersion = "22.05";
 
-  programs = {
-    atuin = {
-      enable = true;
-      enableZshIntegration = false; # sourced via zsh-defer in initContent
-      flags = [
-        "--disable-up-arrow"
-      ];
-      settings = {
-        dialect = "us";
-        auto_sync = true;
-        sync_frequency = "5m";
-        update_check = false;
-        search_mode = "fuzzy";
-      };
-    };
-
-    bat = {
-      enable = true;
-      config = {
-        theme = "Alabaster";
-        theme-light = "Alabaster";
-        theme-dark = "Catppuccin Mocha";
-        style = "plain";
-        paging = "never";
-      };
-      themes = let
-        catppuccin-bat = pkgs.fetchFromGitHub {
-          owner = "catppuccin";
-          repo = "bat";
-          rev = "699f60fc8ec434574ca7451b444b880430319941";
-          sha256 = "sha256-6fWoCH90IGumAMc4buLRWL0N61op+AuMNN9CAR9/OdI=";
+      sessionVariables =
+        {
+          EDITOR = "${config.programs.helix.package}/bin/hx";
+          FZF_ALT_C_COMMAND = "fd --type d";
+          FZF_DEFAULT_COMMAND = "fd --type f";
+          FZF_CTRL_T_COMMAND = "fd --type f";
+          MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+          MANROFFOPT = "-c";
+          SMART_CD_ONLY_IF_FITS_RATIO = 66;
+          ZSH_WAKATIME_BIN = "/etc/profiles/per-user/${profile.username}/bin/wakatime-cli";
+        }
+        // pkgs.lib.optionalAttrs isLinux {
+          SSH_AUTH_SOCK = "${profile.homeDirectory}/.1password/agent.sock";
         };
-      in {
-        "Alabaster" = {
-          src = alabasterBat;
-          file = "Alabaster.tmTheme";
-        };
-        "Catppuccin Frappe" = {
-          src = catppuccin-bat;
-          file = "themes/Catppuccin Frappe.tmTheme";
-        };
-        "Catppuccin Latte" = {
-          src = catppuccin-bat;
-          file = "themes/Catppuccin Latte.tmTheme";
-        };
-        "Catppuccin Macchiato" = {
-          src = catppuccin-bat;
-          file = "themes/Catppuccin Macchiato.tmTheme";
-        };
-        "Catppuccin Mocha" = {
-          src = catppuccin-bat;
-          file = "themes/Catppuccin Mocha.tmTheme";
-        };
-      };
-    };
 
-    broot = {
-      enable = true;
-      enableZshIntegration = false; # sourced via zsh-defer in initContent
-    };
+      packages = with pkgs;
+        [
+          inputs.bell.packages.${pkgs.system}.default
+          inputs.retry.packages.${pkgs.system}.default
 
-    direnv = {
-      enable = true;
-      enableZshIntegration = false; # sourced via zsh-defer in initContent
-      config = {
-        global = {
-          hide_env_diff = true;
-        };
-      };
-      nix-direnv.enable = true;
-    };
+          age-plugin-yubikey
+          amber
+          atuin-desktop
+          bottom
+          broot
+          curl
+          dust
+          entr
+          fd
+          ffmpeg
 
-    home-manager.enable = true; # Let Home Manager install and manage itself.
+          fx
+          git
+          git-absorb
+          git-extras
+          gnupg
+          gron
+          htmlq
+          htop
+          hyperfine
+          imagemagick
+          jq
+          moreutils
+          mprocs
+          pass
+          pueue
+          sd
+          spacer
+          units
+          viddy
+          viu
+          vim
+          watchexec
+          wget
+          yubikey-manager
 
-    nix-index-database.comma.enable = true;
+          # yt-dlp # derivation temporarily broken
 
-    ripgrep = {
-      enable = true;
-      arguments = [
-        "-."
-        "--glob=!.git/"
-        "--no-heading"
-        "--smart-case"
-      ];
-    };
-
-    starship = {
-      enable = true;
-      enableZshIntegration = false; # sourced from pre-generated cache in initContent
-      settings = {
-        format = pkgs.lib.concatStrings [
-          "$username"
-          "$hostname"
-          "$directory"
-          "$git_branch"
-          "$git_state"
-          "$git_status"
-          "$cmd_duration"
-          "$line_break"
-          "$character"
+          # for shell
+          eza
+          fzf
+          python3
+          starship
+          wakatime-cli
+        ]
+        ++ pkgs.lib.optionals isLinux [
+          _1password-gui
+          inputs.handy.packages.${pkgs.system}.handy
+          wtype
         ];
-        character = {
-          success_symbol = "[;](yellow)";
-          error_symbol = "[;](red)";
-          vicmd_symbol = "[;](green)";
+
+      file = pkgs.lib.optionalAttrs isDarwin {
+        ".homebrew/brew.env".text = ''
+          HOMEBREW_NO_ENV_HINTS=1
+          HOMEBREW_NO_UPDATE_REPORT_NEW=1
+        '';
+      };
+    };
+
+    programs = {
+      atuin = {
+        enable = true;
+        enableZshIntegration = false; # sourced via zsh-defer in initContent
+        flags = [
+          "--disable-up-arrow"
+        ];
+        settings = {
+          dialect = "us";
+          auto_sync = true;
+          sync_frequency = "5m";
+          update_check = false;
+          search_mode = "fuzzy";
         };
-        directory = {
-          style = "blue";
-          truncation_length = 100;
+      };
+
+      bat = {
+        enable = true;
+        config = {
+          theme = "Alabaster";
+          theme-light = "Alabaster";
+          theme-dark = "Catppuccin Mocha";
+          style = "plain";
+          paging = "never";
         };
-        cmd_duration = {
-          format = "[$duration]($style) ";
-          style = "yellow";
+        themes = let
+          catppuccin-bat = pkgs.fetchFromGitHub {
+            owner = "catppuccin";
+            repo = "bat";
+            rev = "699f60fc8ec434574ca7451b444b880430319941";
+            sha256 = "sha256-6fWoCH90IGumAMc4buLRWL0N61op+AuMNN9CAR9/OdI=";
+          };
+        in {
+          "Alabaster" = {
+            src = alabasterBat;
+            file = "Alabaster.tmTheme";
+          };
+          "Catppuccin Frappe" = {
+            src = catppuccin-bat;
+            file = "themes/Catppuccin Frappe.tmTheme";
+          };
+          "Catppuccin Latte" = {
+            src = catppuccin-bat;
+            file = "themes/Catppuccin Latte.tmTheme";
+          };
+          "Catppuccin Macchiato" = {
+            src = catppuccin-bat;
+            file = "themes/Catppuccin Macchiato.tmTheme";
+          };
+          "Catppuccin Mocha" = {
+            src = catppuccin-bat;
+            file = "themes/Catppuccin Mocha.tmTheme";
+          };
         };
-        git_branch = {
-          format = "[$branch]($style)";
-          style = "bright-black";
+      };
+
+      broot = {
+        enable = true;
+        enableZshIntegration = false; # sourced via zsh-defer in initContent
+      };
+
+      direnv = {
+        enable = true;
+        enableZshIntegration = false; # sourced via zsh-defer in initContent
+        config = {
+          global = {
+            hide_env_diff = true;
+          };
         };
-        git_status = {
-          format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)";
-          style = "cyan";
-          conflicted = "​";
-          untracked = "​";
-          modified = "​";
-          staged = "​";
-          renamed = "​";
-          deleted = "​";
-          stashed = "≡";
-        };
-        git_state = {
-          format = "\([$state( $progress_current/$progress_total)]($style)\) ";
-          style = "bright-black";
-        };
-        python = {
-          format = "[$virtualenv]($style) ";
-          style = "bright-black";
+        nix-direnv.enable = true;
+      };
+
+      home-manager.enable = true; # Let Home Manager install and manage itself.
+
+      nix-index-database.comma.enable = true;
+
+      ripgrep = {
+        enable = true;
+        arguments = [
+          "-."
+          "--glob=!.git/"
+          "--no-heading"
+          "--smart-case"
+        ];
+      };
+
+      starship = {
+        enable = true;
+        enableZshIntegration = false; # sourced from pre-generated cache in initContent
+        settings = {
+          format = pkgs.lib.concatStrings [
+            "$username"
+            "$hostname"
+            "$directory"
+            "$git_branch"
+            "$git_state"
+            "$git_status"
+            "$cmd_duration"
+            "$line_break"
+            "$character"
+          ];
+          character = {
+            success_symbol = "[;](yellow)";
+            error_symbol = "[;](red)";
+            vicmd_symbol = "[;](green)";
+          };
+          directory = {
+            style = "blue";
+            truncation_length = 100;
+          };
+          cmd_duration = {
+            format = "[$duration]($style) ";
+            style = "yellow";
+          };
+          git_branch = {
+            format = "[$branch]($style)";
+            style = "bright-black";
+          };
+          git_status = {
+            format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)";
+            style = "cyan";
+            conflicted = "​";
+            untracked = "​";
+            modified = "​";
+            staged = "​";
+            renamed = "​";
+            deleted = "​";
+            stashed = "≡";
+          };
+          git_state = {
+            format = "\([$state( $progress_current/$progress_total)]($style)\) ";
+            style = "bright-black";
+          };
+          python = {
+            format = "[$virtualenv]($style) ";
+            style = "bright-black";
+          };
         };
       };
     };
-  };
 
-  appearance-sync.enable = false;
+    appearance-sync.enable = false;
 
-  xdg.userDirs = {
-    createDirectories = true;
-    desktop = "${profile.homeDirectory}/tmp";
-    download = "${profile.homeDirectory}/tmp";
-    documents = "${profile.homeDirectory}/files";
-    music = "${profile.homeDirectory}/files/media";
-    pictures = "${profile.homeDirectory}/files/media";
-    videos = "${profile.homeDirectory}/files/media";
-    extraConfig = {
-      XDG_DATA_HOME = "${profile.homeDirectory}/.local/share";
+    xdg.userDirs = {
+      createDirectories = true;
+      desktop = "${profile.homeDirectory}/tmp";
+      download = "${profile.homeDirectory}/tmp";
+      documents = "${profile.homeDirectory}/files";
+      music = "${profile.homeDirectory}/files/media";
+      pictures = "${profile.homeDirectory}/files/media";
+      videos = "${profile.homeDirectory}/files/media";
+      extraConfig = {
+        XDG_DATA_HOME = "${profile.homeDirectory}/.local/share";
+      };
     };
-  };
-}
+  }
+  // pkgs.lib.optionalAttrs isLinux {services.handy.enable = true;}
