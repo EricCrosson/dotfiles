@@ -23,7 +23,28 @@
 
   programs.helix = {
     enable = true;
-    package = inputs.helix.packages.${pkgs.system}.default;
+    package = inputs.helix.packages.${pkgs.system}.default.override {
+      # tree-sitter-perl at the rev pinned by helix's languages.toml vendors a
+      # `bsearch` definition (src/bsearch.c, included via src/tsp_unicode.h).
+      # glibc >= 2.44 defines `bsearch` as a C23 _Generic macro under
+      # __GLIBC_USE(ISOC23), which expands that definition and breaks the
+      # build. Fixed upstream in tree-sitter-perl (2e66b1c1: rename to
+      # tsp_bsearch and make static), but helix has not picked up a fixed
+      # pin; apply the same rename here via the grammarOverlays seam.
+      grammarOverlays = [
+        (_: prev: {
+          perl = prev.perl.overrideAttrs (old: {
+            postPatch =
+              (old.postPatch or "")
+              + ''
+                substituteInPlace src/bsearch.c \
+                  --replace-fail 'void *bsearch(' 'static void *tsp_bsearch('
+                sed -i 's/\bbsearch(/tsp_bsearch(/g' src/tsp_unicode.h
+              '';
+          });
+        })
+      ];
+    };
 
     languages.language = [
       {

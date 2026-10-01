@@ -2,6 +2,7 @@
   pkgs,
   profile,
   inputs,
+  config,
   ...
 }: let
   gh-stack = pkgs.callPackage ../../../pkgs/gh-stack {};
@@ -150,7 +151,7 @@ in {
         };
         core = {
           autocrlf = false;
-          editor = "${inputs.helix.packages.${pkgs.system}.default}/bin/hx";
+          editor = "${config.programs.helix.package}/bin/hx";
           fsmonitor = true;
           untrackedCache = true;
         };

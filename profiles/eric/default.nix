@@ -2,6 +2,7 @@
   pkgs,
   profile,
   inputs,
+  config,
   ...
 }: let
   inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux;
@@ -34,7 +35,7 @@ in {
 
     sessionVariables =
       {
-        EDITOR = "${inputs.helix.packages.${pkgs.system}.default}/bin/hx";
+        EDITOR = "${config.programs.helix.package}/bin/hx";
         FZF_ALT_C_COMMAND = "fd --type d";
         FZF_DEFAULT_COMMAND = "fd --type f";
         FZF_CTRL_T_COMMAND = "fd --type f";

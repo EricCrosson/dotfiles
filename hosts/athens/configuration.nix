@@ -114,7 +114,7 @@
     entries = let
       autostartEntry = pkgs.runCommandLocal "1password-autostart" {} ''
         mkdir -p $out/share/applications
-        cp ${pkgs._1password-gui}/share/applications/1password.desktop \
+        cp ${pkgs._1password-gui}/share/applications/com.onepassword.OnePassword.desktop \
           $out/share/applications/1password.desktop
         substituteInPlace $out/share/applications/1password.desktop \
           --replace-fail 'Exec=1password %U' 'Exec=1password --silent'
