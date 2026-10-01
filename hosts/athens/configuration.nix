@@ -121,6 +121,8 @@
       '';
     in ["${autostartEntry}/share/applications/1password.desktop"];
   };
+  # Handy speech-to-text runs as a user service from the cjpais/handy flake.
+  home-manager.users.eric.services.handy.enable = true;
 
   security.sudo.wheelNeedsPassword = false;
 

@@ -172,6 +172,7 @@
       homeManagerModules = [
         ../profiles/omp
         ../profiles/eric
+        inputs.handy.homeManagerModules.default
         ../profiles/development
         ../home/editor/helix
         ({lib, ...}: {services.cargo-sweep.enable = lib.mkForce false;})

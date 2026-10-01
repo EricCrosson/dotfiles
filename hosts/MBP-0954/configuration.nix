@@ -2,6 +2,10 @@
   config = {
     environment = {
       shells = [pkgs.zsh];
+      # Handy is NOT installable from the cjpais/handy flake on darwin — that
+      # flake only supports Linux. Install nixpkgs' flake-built handy package
+      # instead of the Homebrew cask.
+      systemPackages = [pkgs.handy];
 
       variables = {
         SHELL = "${pkgs.zsh}/bin/zsh";
@@ -44,7 +48,6 @@
       casks = [
         "1password"
         "ghostty"
-        "handy"
         "postman"
       ];
     };

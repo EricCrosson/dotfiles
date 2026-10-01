@@ -98,7 +98,10 @@ in {
         starship
         wakatime-cli
       ]
-      ++ pkgs.lib.optionals isLinux [_1password-gui];
+      ++ pkgs.lib.optionals isLinux [
+        _1password-gui
+        inputs.handy.packages.${pkgs.system}.handy
+      ];
 
     file = pkgs.lib.optionalAttrs isDarwin {
       ".homebrew/brew.env".text = ''
