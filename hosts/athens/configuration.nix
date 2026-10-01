@@ -26,10 +26,10 @@
   services = {
     libinput.mouse.naturalScrolling = true;
 
-    # handy evdev hotkeys use /dev/uinput: open it to the input group.
-    udev.extraRules = ''
-      KERNEL=="uinput", GROUP="input", MODE="0660"
-    '';
+    # handy evdev hotkeys use /dev/uinput. NixOS's built-in rule
+    # (SUBSYSTEM=="misc", KERNEL=="uinput", GROUP="uinput") appends after
+    # extraRules, so a GROUP="input" assignment here loses (last match wins).
+    # Access therefore comes from eric's `uinput` group membership below.
     xserver = {
       enable = true;
       videoDrivers = ["nvidia"];
@@ -94,7 +94,7 @@
   users.users.eric = {
     isNormalUser = true;
     home = "/home/eric";
-    extraGroups = ["wheel" "networkmanager" "input"];
+    extraGroups = ["wheel" "networkmanager" "input" "uinput"];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM9idpkqe6Rk8pLXKhqCfL6Bc3jGMHdfDj06C0AU5P3J"
