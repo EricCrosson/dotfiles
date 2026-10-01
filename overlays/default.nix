@@ -2,6 +2,7 @@
 {
   # Individual overlays for selective importing
   git-extras-remove-pr = import ./git-extras-remove-pr.nix;
+  nixos-rebuild-ng-systemd-run-compat = import ./nixos-rebuild-ng-systemd-run-compat.nix;
   pypandoc-disable-tests = import ./pypandoc-disable-tests.nix;
   wakatime-disable-tests = import ./wakatime-disable-tests.nix;
 
@@ -10,6 +11,7 @@
     overlays = [
       (import ./git-extras-remove-pr.nix)
       (import ./pypandoc-disable-tests.nix)
+      (import ./nixos-rebuild-ng-systemd-run-compat.nix)
       (import ./wakatime-disable-tests.nix)
     ];
   in
