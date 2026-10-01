@@ -110,7 +110,12 @@
     "org/gnome/settings-daemon/plugins/color" = {
       "night-light-enabled" = true;
       "night-light-schedule-automatic" = true;
-      "night-light-temperature" = inputs.home-manager.lib.hm.gvariant.mkUint32 1000;
+      # Slider's most-red end. The control-center slider is bound directly to
+      # this key (raw Kelvin, 1700..4700, `inverted: true` so 1700 K is the
+      # right-hand end); anything outside that range gets clamped back on
+      # every activation, which is why the screen went hella red after each
+      # rebuild (the old value, 1000 K, is redder than the slider can express).
+      "night-light-temperature" = inputs.home-manager.lib.hm.gvariant.mkUint32 1700;
     };
     "org/gnome/settings-daemon/plugins/power"."power-button-action" = "nothing";
   };
