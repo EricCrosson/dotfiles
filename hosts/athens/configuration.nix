@@ -104,6 +104,8 @@
   # GNOME on Wayland reads mouse scrolling from dconf rather than Xorg.
   home-manager.users.eric.dconf.settings = {
     "org/gnome/desktop/peripherals/mouse"."natural-scroll" = true;
+    # Unbind the lock-screen shortcut: Super+L fires too easily on the Kinesis.
+    "org/gnome/settings-daemon/plugins/media-keys"."screensaver" = [];
     "org/gnome/shell"."enabled-extensions" = ["caffeine@patapon.info"];
     "org/gnome/settings-daemon/plugins/color" = {
       "night-light-enabled" = true;
