@@ -38,18 +38,21 @@
         suite = import ../tests/launchd-with-logs.nix {inherit pkgs;};
         invocation = suite.userInvocation;
         confFile = pkgs.writeText "newsyslog-launchd-with-logs.conf" invocation.conf;
-      in
-        builtins.seq suite.asserts
-        # Behavioral validation: run the rotator's real flag set (dry-run)
-        # against the module-generated conf. newsyslog must accept it as
-        # non-root, which requires -r to be present.
-        (pkgs.runCommand "launchd-with-logs-user-invocation-test" {} ''
+        evalOnly = pkgs.runCommand "launchd-with-logs-test" {} "touch $out";
+        behavioral = pkgs.runCommand "launchd-with-logs-user-invocation-test" {} ''
           set -eu
           /usr/sbin/newsyslog -n ${
             pkgs.lib.strings.concatStringsSep " " suite.userInvocation.flags
           } -f ${confFile}
           touch $out
-        '');
+        '';
+      in
+        # Eval-level asserts are pure and run on every system. The
+        # behavioral dry-run invokes /usr/sbin/newsyslog, which only
+        # exists on macOS: gate it to darwin hosts.
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then builtins.seq suite.asserts behavioral
+        else builtins.seq suite.asserts evalOnly;
       litellm-proxy-test =
         builtins.seq
         (import ../tests/litellm-proxy.nix {inherit pkgs;})
