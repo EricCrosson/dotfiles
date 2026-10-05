@@ -98,7 +98,7 @@ darwin-rebuild switch --flake ./private#MBP-0954
 ### Stubbed Darwin activation
 
 Use this when the BitGo SSH key or GPG keys are not yet available. It replaces
-the four private inputs with empty local stubs; work tools and sops secrets are
+the five private inputs with empty local stubs; work tools and sops secrets are
 not functional in this mode:
 
 ```bash
@@ -106,11 +106,12 @@ nix run nix-darwin -- switch --flake ./private#MBP-0954 \
   --override-input aws-console-bitgo path:./stubs/private-input-stub \
   --override-input aws-saml-bitgo    path:./stubs/private-input-stub \
   --override-input gh-endorse        path:./stubs/private-input-stub \
-  --override-input gh-gantt          path:./stubs/private-input-stub
+  --override-input gh-gantt          path:./stubs/private-input-stub \
+  --override-input macwhisper-cli    path:./stubs/private-input-stub
 ```
 
-The four private inputs are `aws-console-bitgo`, `aws-saml-bitgo`, `gh-endorse`,
-and `gh-gantt`.
+The five private inputs are `aws-console-bitgo`, `aws-saml-bitgo`, `gh-endorse`,
+`gh-gantt`, and `macwhisper-cli`.
 
 ## Known bootstrap dependencies
 
