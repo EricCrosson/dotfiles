@@ -472,11 +472,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1791074870,
-        "narHash": "sha256-bze+p3HsIL3Heb8EFAI+LuRA8jpMF+chxoOI/J3p/DQ=",
+        "lastModified": 1791200710,
+        "narHash": "sha256-4JNZGAEP2a9wlxH/8knPFGqfTiPjNtz3K2MSp4grd1M=",
         "owner": "cjpais",
         "repo": "handy",
-        "rev": "73ab851c2b6242283759a4c101b60f0ece132f08",
+        "rev": "a94b403e0610049fafa54b0a4077db2945084dd8",
         "type": "github"
       },
       "original": {
