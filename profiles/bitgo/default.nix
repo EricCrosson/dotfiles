@@ -45,6 +45,23 @@
     '';
   };
 
+  # aichat authenticates to the local litellm proxy via its master key.
+  # Read the key at invocation time, not in zshrc: sops-nix materializes
+  # secrets on darwin via a login-time LaunchAgent (its files live on a
+  # RAM disk), and the first shell opened after login can start before
+  # the secrets exist.
+  aichat = pkgs.writeShellApplication {
+    name = "aichat";
+    runtimeInputs = [pkgs.aichat];
+    text = ''
+      if [[ -r ${config.bitgo.sops.secretPaths.litellm_master_key} ]]; then
+        export BEDROCK_CLAUDE_API_KEY
+        BEDROCK_CLAUDE_API_KEY="$(< ${config.bitgo.sops.secretPaths.litellm_master_key})"
+      fi
+      exec ${pkgs.aichat}/bin/aichat "$@"
+    '';
+  };
+
   # Force aws-saml to open Keycloak login in Safari instead of the default browser.
   # aws-saml uses pkg/browser which hardcodes `open <url>` on Darwin, ignoring $BROWSER.
   # We shadow `open` with a shim that routes through Safari.
@@ -151,6 +168,7 @@ in {
 
     aichat = {
       enable = true;
+      package = aichat;
       settings = {
         model = "bedrock-claude:${config.claude-options.models.default}";
         stream = true;
@@ -315,9 +333,6 @@ in {
         # Background gpg-agent tty update (doesn't need to block startup)
         export GPG_TTY=$TTY
         ${pkgs.gnupg}/bin/gpg-connect-agent --quiet updatestartuptty /bye > /dev/null &!
-
-        # aichat authenticates to the local litellm proxy via its master key.
-        export BEDROCK_CLAUDE_API_KEY="$(cat ${config.bitgo.sops.secretPaths.litellm_master_key})"
       '';
       shellAliases = {
         chat = "aichat";
