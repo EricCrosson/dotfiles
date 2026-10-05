@@ -33,6 +33,10 @@
     retry.follows = "public/retry";
     sops-nix.follows = "public/sops-nix";
 
+    macwhisper-cli = {
+      url = "git+ssh://git@github.com-bitgo/ericcrosson-bitgo/macwhisper-cli";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     aws-console-bitgo = {
       url = "git+ssh://git@github.com-bitgo/bitgo/aws-console";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -8,6 +8,7 @@
 }: let
   aiRenderers = import ../../modules/home-manager/programs/ai/renderers.nix {inherit lib;};
   aiManifest = config.programs.ai.manifest;
+  macwhisper-cli = inputs.macwhisper-cli.packages.${pkgs.system}.default;
   chrome-devtools-mcp = pkgs.callPackage ../../pkgs/chrome-devtools-mcp {};
   mcp-remote = pkgs.callPackage ../../pkgs/mcp-remote {};
   mlflow-mcp = pkgs.callPackage ../../pkgs/mlflow-mcp {
@@ -78,6 +79,7 @@ in {
       google-cloud-sdk
       inputs.git-disjoint.packages.${pkgs.system}.default
       inputs.git-dl.packages.${pkgs.system}.default
+      macwhisper-cli
       k9s
       kubectl
       kubectx
@@ -120,6 +122,11 @@ in {
           transport = "stdio";
           command = "${mcp-remote}/bin/mcp-remote";
           args = ["https://mcp.linear.app/mcp"];
+        };
+        mac-whisper = {
+          transport = "stdio";
+          command = "${macwhisper-cli}/bin/macwhisper";
+          args = ["mcp"];
         };
         slack = {
           transport = "http";
