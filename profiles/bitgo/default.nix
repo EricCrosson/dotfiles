@@ -214,7 +214,16 @@ in {
       settings = null;
     };
     omp = {
-      mcpServers = aiRenderers.renderOmp aiManifest.mcpServers;
+      # Slack's MCP server has no dynamic client registration: the client must
+      # present a fixed Slack-app client id, and the local callback
+      # (http://localhost:3118/callback) must be registered on that app. The
+      # shared manifest stays oauth-free because codex cannot represent it.
+      mcpServers = pkgs.lib.recursiveUpdate (aiRenderers.renderOmp aiManifest.mcpServers) {
+        slack.oauth = {
+          clientId = "1601185624273.8899143856786";
+          callbackPort = 3118;
+        };
+      };
       formatMarkdown = {
         enable = true;
       };
