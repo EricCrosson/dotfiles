@@ -29,7 +29,23 @@ jobs:
       - id: get-inputs
         name: Get flake inputs
         run: |
-          inputs=$(nix flake metadata --json | jq --raw-output '.locks.nodes.root.inputs | keys[]' | jq --raw-input --slurp --compact-output 'split("\n")[:-1]')
+          # Union of the public flake's inputs and the private flake's
+          # direct, non-ssh inputs: private-only inputs still get a PR, for
+          # the private lock alone. Followed private inputs are handled by
+          # the per-input jobs via the 'public' input; git+ssh inputs are
+          # not updatable from Actions (no SSH keys or host aliases).
+          public_inputs=$(nix flake metadata --json | jq -c '.locks.nodes.root.inputs | keys')
+          private_inputs=$(jq -c '
+            .nodes as $nodes
+            | [
+              .nodes.root.inputs
+              | to_entries[]
+              | select(.value | type == "string")
+              | select(.key != "public")
+              | select(($nodes[.key].locked.url // "") | test("^ssh://") | not)
+              | .key
+            ]' private/flake.lock)
+          inputs=$(printf '%s\n%s' "$public_inputs" "$private_inputs" | jq -c -s 'add | unique')
           echo "matrix=$inputs" >> "$GITHUB_OUTPUT"
 
   update-flake-inputs:
@@ -47,25 +63,79 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
       - uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
 
       - name: Update ${{ matrix.flake-input }} flake input
-        uses: DeterminateSystems/update-flake-lock@834c491b2ece4de0bbd00d85214bb5e83b4da5c6
-        with:
-          branch: update-flake-input-${{ matrix.flake-input }}
-          commit-msg: "chore(nix): update ${{ matrix.flake-input }} flake input"
-          inputs: ${{ matrix.flake-input }}
-          git-author-name: github-actions
-          git-author-email: action@github.com
-          git-committer-name: github-actions
-          git-committer-email: action@github.com
-          pr-assignees: EricCrosson
-          pr-title: Update ${{ matrix.flake-input }} flake input
-          pr-labels: |
-            dependencies
-            nix
-            ${{ matrix.flake-input }}
-          token: ${{ secrets.GH_TOKEN_PR }}
+        env:
+          FLAKE_INPUT: ${{ matrix.flake-input }}
+          GIT_AUTHOR_NAME: github-actions
+          GIT_AUTHOR_EMAIL: action@github.com
+          GIT_COMMITTER_NAME: github-actions
+          GIT_COMMITTER_EMAIL: action@github.com
+          GH_TOKEN: ${{ secrets.GH_TOKEN_PR }}
+        run: |
+          set -euo pipefail
+
+          # Public lock: every enumerated input is a direct input here.
+          if jq -e --arg i "$FLAKE_INPUT" '.nodes.root.inputs | has($i)' flake.lock > /dev/null; then
+            nix flake lock --update-input "$FLAKE_INPUT" \
+              --commit-lock-file \
+              --commit-lockfile-summary "chore(nix): update $FLAKE_INPUT flake input"
+          else
+            echo "'$FLAKE_INPUT' is not a public flake input; skipped the public lock"
+          fi
+
+          # Private lock: followed inputs re-resolve through 'public'
+          # (path:.., reading the freshly updated public lock from disk);
+          # direct non-ssh inputs update in place; git+ssh inputs cannot be
+          # fetched from Actions (no SSH keys or host aliases). Re-resolving
+          # 'public' also heals drift in the other mirrors. One commit per
+          # lock keeps the public and private pins on the same rev.
+          kind=$(jq -r --arg i "$FLAKE_INPUT" '
+            .nodes as $nodes
+            | (.nodes.root.inputs[$i] // empty)
+            | if type == "array" then "follow"
+              elif ($nodes[$i].locked.url // "" | test("^ssh://")) then "ssh"
+              else "direct" end' private/flake.lock)
+          case "$kind" in
+            follow)
+              (cd private && nix flake lock --update-input public \
+                --commit-lock-file \
+                --commit-lockfile-summary "chore(nix): update $FLAKE_INPUT in private lock via public sync") ;;
+            direct)
+              (cd private && nix flake lock --update-input "$FLAKE_INPUT" \
+                --commit-lock-file \
+                --commit-lockfile-summary "chore(nix): update $FLAKE_INPUT in private lock") ;;
+            *)
+              echo "'$FLAKE_INPUT' is not updatable in the private lock; skipped" ;;
+          esac
+
+          if git diff --quiet origin/master HEAD -- flake.lock private/flake.lock; then
+            echo "No lock update needed for $FLAKE_INPUT"
+            exit 0
+          fi
+
+          branch="update-flake-input-$FLAKE_INPUT"
+          git checkout -B "$branch"
+          gh auth setup-git
+          git push --force origin "$branch"
+          {
+            echo "Automated changes by the auto-update workflow."
+            echo
+            echo '```'
+            git log --reverse --format='%s%n%n%b' origin/master..HEAD
+            echo '```'
+          } > pr_body.md
+          if [ "$(gh pr list --head "$branch" --state open --json number --jq length)" -eq 0 ]; then
+            gh pr create \
+              --title "Update $FLAKE_INPUT flake input" \
+              --body-file pr_body.md \
+              --assignee EricCrosson \
+              --label dependencies --label nix --label "$FLAKE_INPUT"
+          fi
 
   enumerate-dev-shell-inputs:
     needs: update-flake-inputs
@@ -109,6 +179,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
 
       - name: Update ${{ matrix.flake-input }} in nix/flake.nix
@@ -128,30 +200,4 @@ jobs:
             dependencies
             nix
             ${{ matrix.flake-input }}
-          token: ${{ secrets.GH_TOKEN_PR }}
-  update-private-flake-inputs:
-    needs: update-flake-inputs
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v7.0.1
-        with:
-          persist-credentials: false
-      - uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
-      - name: Update private Darwin flake OMP input
-        uses: DeterminateSystems/update-flake-lock@834c491b2ece4de0bbd00d85214bb5e83b4da5c6
-        with:
-          path-to-flake-dir: private
-          branch: update-private-flake-omp
-          inputs: omp
-          git-author-name: github-actions
-          git-author-email: action@github.com
-          git-committer-name: github-actions
-          git-committer-email: action@github.com
-          pr-assignees: EricCrosson
-          pr-title: Update private Darwin flake OMP input
-          pr-labels: |
-            dependencies
-            nix
           token: ${{ secrets.GH_TOKEN_PR }}
