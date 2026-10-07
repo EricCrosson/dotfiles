@@ -129,28 +129,115 @@ jobs:
             nix
             ${{ matrix.flake-input }}
           token: ${{ secrets.GH_TOKEN_PR }}
-  update-private-flake-inputs:
+  sync-private-flake-mirrors:
     needs: update-flake-inputs
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
+
     steps:
       - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
+
       - uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
-      - name: Update private Darwin flake OMP input
+
+      - name: Sync private flake mirrors with public flake lock
         uses: DeterminateSystems/update-flake-lock@834c491b2ece4de0bbd00d85214bb5e83b4da5c6
         with:
           path-to-flake-dir: private
-          branch: update-private-flake-omp
-          inputs: omp
+          branch: update-private-flake-mirrors
+          commit-msg: "chore(nix): sync private flake mirrors with public lock"
+          # Updating 'public' (path:.. to this repo) re-resolves every
+          # follows-input of the private flake against the public flake's
+          # current lock, atomically. Updating a followed input directly
+          # (e.g. 'omp') is a silent no-op, which left this lock frozen for
+          # five weeks. The sync lags the public lock by one merge cycle
+          # because this job runs after the public PRs are opened, not
+          # merged.
+          inputs: public
           git-author-name: github-actions
           git-author-email: action@github.com
           git-committer-name: github-actions
           git-committer-email: action@github.com
           pr-assignees: EricCrosson
-          pr-title: Update private Darwin flake OMP input
+          pr-title: Update private flake mirrors from public lock
+          pr-labels: |
+            dependencies
+            nix
+          token: ${{ secrets.GH_TOKEN_PR }}
+
+  enumerate-private-flake-inputs:
+    needs: sync-private-flake-mirrors
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    outputs:
+      matrix: ${{ steps.get-inputs.outputs.matrix }}
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - id: get-inputs
+        name: Get updatable private flake inputs
+        run: |
+          # Updatable private flake inputs = direct inputs that are not:
+          # - 'public' (path:.. to this repo; the mirror-sync job above
+          #   updates it to re-resolve all follows-inputs), and
+          # - git+ssh inputs (macwhisper-cli, aws-*-bitgo, gh-gantt,
+          #   gh-endorse): Actions has no SSH keys or host aliases, so it
+          #   cannot fetch or bump them here.
+          # In the lock file, follows-inputs map to arrays; direct inputs
+          # map to strings.
+          inputs=$(jq --compact-output '
+            .nodes as $nodes
+            | [
+              .nodes.root.inputs
+              | to_entries[]
+              | select(.value | type == "string")
+              | select(.key != "public")
+              | select(($nodes[.key].locked.url // "") | test("^ssh://") | not)
+              | .key
+            ]' private/flake.lock)
+          echo "matrix=$inputs" >> "$GITHUB_OUTPUT"
+
+  update-private-flake-inputs:
+    needs: enumerate-private-flake-inputs
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        flake-input: ${{ fromJson(needs.enumerate-private-flake-inputs.outputs.matrix) }}
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
+
+      - name: Update ${{ matrix.flake-input }} in private/flake.nix
+        uses: DeterminateSystems/update-flake-lock@834c491b2ece4de0bbd00d85214bb5e83b4da5c6
+        with:
+          path-to-flake-dir: private
+          branch: update-private-flake-input-${{ matrix.flake-input }}
+          commit-msg: "chore(nix): update ${{ matrix.flake-input }} in private/flake.nix"
+          inputs: ${{ matrix.flake-input }}
+          git-author-name: github-actions
+          git-author-email: action@github.com
+          git-committer-name: github-actions
+          git-committer-email: action@github.com
+          pr-assignees: EricCrosson
+          pr-title: Update ${{ matrix.flake-input }} in private/flake.nix
           pr-labels: |
             dependencies
             nix
