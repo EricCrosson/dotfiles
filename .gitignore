@@ -1,6 +1,7 @@
 /.direnv/
 /.git-submodule-shas
 /.pre-commit-config.yaml
+/nix/result
 /result
 *.swp
 
