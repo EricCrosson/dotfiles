@@ -669,11 +669,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1791600081,
-        "narHash": "sha256-z0onZ0XHhScZg48eUbapxmEPLSWaJn/d9Q0RRqMQZi4=",
+        "lastModified": 1791792379,
+        "narHash": "sha256-ac3ZAu0IB9U2AbU9GYIq6L5cEZJvShL51mzxbipNqbg=",
         "owner": "cjpais",
         "repo": "handy",
-        "rev": "48a3d8e9ee456c1c6a3b7223779271c457890b4d",
+        "rev": "7b2a28a30aa24174292ddd7f4e92e12e6e3bd501",
         "type": "github"
       },
       "original": {
@@ -769,11 +769,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791584098,
-        "narHash": "sha256-vUKpZao/sExKmV2m3mkdyMaWVJ5X07GBc+edkfJHP+U=",
+        "lastModified": 1791899597,
+        "narHash": "sha256-GO+QtF+qQr1KvjXQOCc40vkMAcyVVJUS7GktsJj3Lcg=",
         "owner": "natsukium",
         "repo": "mcp-servers-nix",
-        "rev": "1e69e55cd3416427f54df7216f771d68162a32cb",
+        "rev": "8398274cfd1264129d062a0c6e33f72d4bb21baf",
         "type": "github"
       },
       "original": {
