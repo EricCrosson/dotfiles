@@ -669,11 +669,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1791792379,
-        "narHash": "sha256-ac3ZAu0IB9U2AbU9GYIq6L5cEZJvShL51mzxbipNqbg=",
+        "lastModified": 1791850721,
+        "narHash": "sha256-q5+npEtRdfKXWApGFnnmUIMDPFLlTd37ElIY4aJ7L8E=",
         "owner": "cjpais",
         "repo": "handy",
-        "rev": "7b2a28a30aa24174292ddd7f4e92e12e6e3bd501",
+        "rev": "14ae9c6b42d729371c443c8617ad02c89c4c8061",
         "type": "github"
       },
       "original": {
@@ -910,11 +910,11 @@
     },
     "nixpkgs-mlflow_2": {
       "locked": {
-        "lastModified": 1791594108,
-        "narHash": "sha256-XK4KceonkwD8LuMAt/vNrz982mXJM5jeHAxMwsUXXAQ=",
+        "lastModified": 1791734076,
+        "narHash": "sha256-i5qk1kLiit98rRbh1AXmWBNT9QXC/y4l5Wk/u5EdpDQ=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "6510408d147d8c5e6d76043e899e9251756f6a75",
+        "rev": "7fd4004d0511991fff3a0524856a9be09e28c5f0",
         "type": "github"
       },
       "original": {
@@ -1033,11 +1033,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1791572379,
-        "narHash": "sha256-W7g20NiL8GjviFKrJvWUNMAmK8Z+XC+VlUPQGJJq5eg=",
+        "lastModified": 1791898144,
+        "narHash": "sha256-dZJmyaiKk0jN/ocE6mgPyXsiJcnGv+w6CzAzPT3X91c=",
         "owner": "1Password",
         "repo": "shell-plugins",
-        "rev": "577cd15f61f067084eb7bb532bb214dc12776e9c",
+        "rev": "61ac039814d462c9dca37ccf3ad8d4554af532a5",
         "type": "github"
       },
       "original": {
