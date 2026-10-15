@@ -364,6 +364,10 @@
   test-profile-schema = assert assertEq "unknown top-level keys" (lib.subtractLists allowedTopKeys (builtins.attrNames profileTomlJson)) [];
   assert assertEq "unknown settings keys" (lib.subtractLists allowedSettingsKeys (builtins.attrNames (profileTomlJson.settings or {}))) [];
   assert assertEq "unknown virtual_workspaces keys" (lib.subtractLists allowedVirtualWorkspaceKeys (builtins.attrNames (profileTomlJson.virtual_workspaces or {}))) []; true;
+
+  # Test: the shipped profile never lets rift warp the pointer to the
+  # focused window (keyboard-driven focus and workspace changes included)
+  test-profile-mouse-follows-focus = assert assertEq "profile mouse_follows_focus" profileTomlJson.settings.mouse_follows_focus false; true;
 in
   assert test-config-file;
   assert test-toml-roundtrip;
@@ -379,4 +383,5 @@ in
   assert test-disabled;
   assert test-platform-assertion;
   assert test-profile-enables-rift;
-  assert test-profile-schema; "all tests passed"
+  assert test-profile-schema;
+  assert test-profile-mouse-follows-focus; "all tests passed"

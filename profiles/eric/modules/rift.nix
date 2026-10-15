@@ -9,11 +9,11 @@ _: {
 
     settings = {
       settings = {
-        # No layout-change animations; the pointer follows keyboard focus but
-        # hovering never steals focus.
+        # No layout-change animations; hovering never steals focus and the
+        # pointer never follows keyboard focus.
         animate = false;
         focus_follows_mouse = false;
-        mouse_follows_focus = true;
+        mouse_follows_focus = false;
         mouse_hides_on_focus = false;
 
         # Manage every macOS Space from the start rather than waiting for
