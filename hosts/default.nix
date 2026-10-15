@@ -183,6 +183,9 @@
             slow = "litellm/gemini-3.8-flash:auto";
           };
         })
+        ({config, ...}: {
+          programs.omp.models.providers.openrouter.apiKey = "!cat ${config.bitgo.sops.secretPaths.openrouter_api_key}";
+        })
       ];
       nixosModules = [];
     };

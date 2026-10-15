@@ -47,7 +47,6 @@
       };
     };
     cacheTemperature.enable = true;
-    models.providers.openrouter.apiKey = "!cat ${config.bitgo.sops.secretPaths.openrouter_api_key}";
     models.providers.litellm = {
       baseUrl = "http://127.0.0.1:4000/v1";
       apiKey = "!cat ${config.bitgo.sops.secretPaths.litellm_master_key}";

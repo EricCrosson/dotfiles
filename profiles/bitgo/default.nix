@@ -35,9 +35,11 @@
   codexConfigSync = pkgs.callPackage ../../pkgs/codex-config-sync {};
   codex = pkgs.writeShellApplication {
     name = "codex";
-    runtimeInputs = [pkgs.codex];
+    runtimeInputs = [pkgs.codex config.programs.omp.package];
     text = ''
-      if [[ -r ${config.bitgo.sops.secretPaths.openrouter_api_key} ]]; then
+      if omp_token="$(omp token openrouter 2>/dev/null)" && [[ -n "$omp_token" ]]; then
+        export OPENROUTER_API_KEY="$omp_token"
+      elif [[ -r ${config.bitgo.sops.secretPaths.openrouter_api_key} ]]; then
         export OPENROUTER_API_KEY
         OPENROUTER_API_KEY="$(< ${config.bitgo.sops.secretPaths.openrouter_api_key})"
       fi
