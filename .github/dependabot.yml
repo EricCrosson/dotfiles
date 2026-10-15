@@ -1,0 +1,23 @@
+# Dependabot is configured for SECURITY UPDATES ONLY.
+# Version updates are owned by Renovate (.github/renovate.json).
+# open-pull-requests-limit: 0 disables Dependabot version-update PRs;
+# security-update PRs for open Dependabot alerts are unaffected.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/pkgs/mcp-remote"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 0
+
+  - package-ecosystem: "cargo"
+    directory: "/modules/home-manager/programs/rift/hotkey-bridge"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 0
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 0
