@@ -1,0 +1,11 @@
+[package]
+name = "rift-hotkey-bridge"
+version = "0.1.0"
+edition = "2021"
+description = "Relays session-posted synthetic keystrokes to the HID event tap for rift"
+publish = false
+
+[dependencies]
+
+[profile.release]
+strip = true

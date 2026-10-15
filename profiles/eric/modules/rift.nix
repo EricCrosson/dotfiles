@@ -3,6 +3,10 @@ _: {
     enable = true;
     launchd.enable = true;
 
+    # G HUB plays macros by posting keystrokes at the session event point,
+    # which rift 0.6.x's HID-level hotkey tap never sees; relay them across.
+    hotkeyBridge.enable = true;
+
     settings = {
       settings = {
         # No layout-change animations; the pointer follows keyboard focus but

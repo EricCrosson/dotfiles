@@ -74,6 +74,10 @@ plus a launchd agent.
 - Reloads a running daemon (`rift-cli execute config reload`) when the
   generated config changes
 - Installs `rift` and `rift-cli` from `pkgs.rift-wm`
+- Optionally runs `rift-hotkey-bridge`, which relays synthetic keystrokes
+  (for example Logitech G HUB macro playback) from the macOS session event
+  point to the HID event point, where rift 0.6.x's hotkey tap listens; see
+  `programs.rift.hotkeyBridge`
 
 ### Prerequisites
 
@@ -82,6 +86,9 @@ plus a launchd agent.
 - macOS Accessibility permission must be granted to Rift. Until it is, the
   daemon exits; restart the agent after granting:
   `launchctl kickstart -k gui/$(id -u)/org.nix-community.home.rift`
+- `programs.rift.hotkeyBridge` needs macOS Accessibility permission for
+  `rift-hotkey-bridge` (same handling as above; the agent label is
+  `org.nix-community.home.rift-hotkey-bridge`)
 - If Rift was ever installed with `rift service install`, run
   `rift service uninstall` first so two daemons do not compete
 

@@ -301,6 +301,33 @@
   # Test: the rift package is installed
   test-package-installed = assert assertEq "rift in packages" (lib.count (p: p == stubRift) eval.home.packages) 1; true;
 
+  # Test: the hotkey bridge is off unless enabled
+  test-bridge-disabled = assert assertNotHasAttr "no bridge agent" eval.launchd.agents "rift-hotkey-bridge"; true;
+
+  # Test: enabling the bridge registers a launchd agent relaying Option+Comma
+  bridgeFixture = lib.recursiveUpdate mainFixture {
+    programs.rift.hotkeyBridge = {
+      enable = true;
+      keepAlive = true;
+      relays = ["43:alt"];
+    };
+  };
+  bridgeEval = evalWith darwinPkgs bridgeFixture;
+  bridgeAgent = bridgeEval.launchd.agents."rift-hotkey-bridge".config;
+  test-bridge-agent = assert assertContains "bridge command" (builtins.elemAt bridgeAgent.ProgramArguments 0) "bin/rift-hotkey-bridge";
+  assert assertEq "bridge relay arguments" (lib.drop 1 bridgeAgent.ProgramArguments) ["--relay=43:alt"];
+  assert assertEq "bridge run at load" bridgeAgent.RunAtLoad true;
+  assert assertEq "bridge keep alive" bridgeAgent.KeepAlive true;
+  assert assertEq "bridge stdout log" bridgeAgent.StandardOutPath "/home/testuser/Library/Logs/rift-hotkey-bridge.log";
+  assert assertEq "bridge stderr log" bridgeAgent.StandardErrorPath "/home/testuser/Library/Logs/rift-hotkey-bridge.error.log"; true;
+
+  # Test: newsyslog rotation covers the bridge logs
+  test-bridge-log-rotation = let
+    bridgeNewsyslog = bridgeEval.home.file.".config/newsyslog-launchd-with-logs.conf".text;
+  in
+    assert assertContains "bridge stdout rotation" bridgeNewsyslog "/home/testuser/Library/Logs/rift-hotkey-bridge.log";
+    assert assertContains "bridge stderr rotation" bridgeNewsyslog "/home/testuser/Library/Logs/rift-hotkey-bridge.error.log"; true;
+
   # Test: config file change triggers a rift config reload
   test-onchange-reload = let
     inherit (eval.home.file.".config/rift/config.toml") onChange;
@@ -328,9 +355,10 @@
   test-platform-assertion = assert assertEq "linux rejected" (lib.any (a: !a.assertion) linuxEval.assertions) true;
   assert assertEq "darwin accepted" (lib.all (a: a.assertion) darwinEval.assertions) true; true;
 
-  # Test: the shipped profile enables rift and its launchd agent
+  # Test: the shipped profile enables rift, its launchd agent, and the bridge
   test-profile-enables-rift = assert assertEq "profile enables rift" profileRift.enable true;
-  assert assertEq "profile enables launchd" profileRift.launchd.enable true; true;
+  assert assertEq "profile enables launchd" profileRift.launchd.enable true;
+  assert assertEq "profile enables hotkey bridge" profileRift.hotkeyBridge.enable true; true;
 
   # Test: shipped profile settings only use fields rift 0.5.5 accepts
   test-profile-schema = assert assertEq "unknown top-level keys" (lib.subtractLists allowedTopKeys (builtins.attrNames profileTomlJson)) [];
@@ -342,6 +370,9 @@ in
   assert test-launchd-agent;
   assert test-log-rotation;
   assert test-package-installed;
+  assert test-bridge-disabled;
+  assert test-bridge-agent;
+  assert test-bridge-log-rotation;
   assert test-onchange-reload;
   assert test-empty-settings;
   assert test-launchd-disabled;

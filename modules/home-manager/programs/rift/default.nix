@@ -49,6 +49,55 @@ in {
       };
     };
 
+    hotkeyBridge = {
+      enable = mkEnableOption ''
+        a bridge that lets synthetic keystrokes (for example Logitech G HUB
+        macro playback) trigger rift hotkeys.
+
+        Rift 0.6.x listens for hotkeys at the macOS HID event point, which
+        keystrokes posted at the session event point never reach; affected
+        combos fall through to the focused application instead (Option+Comma
+        types "≤" on a US layout). The bridge listens at the annotated-session
+        event point, consumes matching keydowns, and re-posts them at the HID
+        point, where rift dispatches and consumes them normally. Rift and its
+        configuration stay untouched. Note that it relays the configured
+        combos from any synthetic sender, not just G HUB.
+
+        The bridge needs macOS Accessibility permission for
+        rift-hotkey-bridge; until it is granted the agent exits and launchd
+        restarts it. Verify with `launchctl list | grep rift-hotkey-bridge`;
+        logs are written to ~/Library/Logs/rift-hotkey-bridge.log and
+        ~/Library/Logs/rift-hotkey-bridge.error.log.
+      '';
+
+      package = mkOption {
+        type = types.package;
+        default = pkgs.callPackage ./hotkey-bridge.nix {};
+        defaultText = literalExpression "pkgs.callPackage ./hotkey-bridge.nix {}";
+        description = "The rift-hotkey-bridge package to run.";
+      };
+
+      keepAlive = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether launchd should restart the bridge when it exits.";
+      };
+
+      relays = mkOption {
+        type = types.listOf types.str;
+        default = ["43:alt"];
+        example = ["43:alt" "7:cmd"];
+        description = ''
+          Combos to relay from the session event point to the HID event point,
+          as `KEYCODE:MODIFIERS` with macOS virtual keycodes and
+          comma-separated modifiers (alt|shift|ctrl|cmd). Keycode 43 is
+          Comma, so the default relays Option+Comma. Keep this list in sync
+          with the matching bindings under `settings.keys`; a relayed combo
+          that rift no longer binds falls through to the focused application.
+        '';
+      };
+    };
+
     settings = mkOption {
       inherit (tomlFormat) type;
       default = {};
@@ -105,31 +154,52 @@ in {
       };
     };
 
-    launchd-with-logs.services = mkIf cfg.launchd.enable {
-      rift = {
-        enable = true;
-        command = lib.getExe cfg.package;
-        inherit (cfg.launchd) keepAlive;
-        runAtLoad = true;
+    launchd-with-logs.services = mkMerge [
+      (mkIf cfg.launchd.enable {
+        rift = {
+          enable = true;
+          command = lib.getExe cfg.package;
+          inherit (cfg.launchd) keepAlive;
+          runAtLoad = true;
 
-        environment = {
-          # Mirror the environment `rift service install` writes.
-          RUST_LOG = "error,warn,info";
-          PATH = concatStringsSep ":" [
-            "${config.home.profileDirectory}/bin"
-            "/run/current-system/sw/bin"
-            "/usr/bin"
-            "/bin"
-            "/usr/sbin"
-            "/sbin"
-          ];
-        };
+          environment = {
+            # Mirror the environment `rift service install` writes.
+            RUST_LOG = "error,warn,info";
+            PATH = concatStringsSep ":" [
+              "${config.home.profileDirectory}/bin"
+              "/run/current-system/sw/bin"
+              "/usr/bin"
+              "/bin"
+              "/usr/sbin"
+              "/sbin"
+            ];
+          };
 
-        logging = {
-          stdout = "${config.home.homeDirectory}/Library/Logs/rift.log";
-          stderr = "${config.home.homeDirectory}/Library/Logs/rift.error.log";
+          logging = {
+            stdout = "${config.home.homeDirectory}/Library/Logs/rift.log";
+            stderr = "${config.home.homeDirectory}/Library/Logs/rift.error.log";
+          };
         };
-      };
-    };
+      })
+
+      (mkIf cfg.hotkeyBridge.enable {
+        rift-hotkey-bridge = {
+          enable = true;
+          command = lib.getExe cfg.hotkeyBridge.package;
+          args = map (relay: "--relay=${relay}") cfg.hotkeyBridge.relays;
+          inherit (cfg.hotkeyBridge) keepAlive;
+          runAtLoad = true;
+
+          environment = {
+            RUST_LOG = "error,warn,info";
+          };
+
+          logging = {
+            stdout = "${config.home.homeDirectory}/Library/Logs/rift-hotkey-bridge.log";
+            stderr = "${config.home.homeDirectory}/Library/Logs/rift-hotkey-bridge.error.log";
+          };
+        };
+      })
+    ];
   };
 }
