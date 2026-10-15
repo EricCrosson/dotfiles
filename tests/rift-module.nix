@@ -22,6 +22,11 @@
   # Stub of pkgs.rift-wm so tests never build the real package
   stubRift = pkgs.runCommand "rift-wm-stub" {meta.mainProgram = "rift";} "mkdir -p $out/bin && touch $out/bin/rift $out/bin/rift-cli";
 
+  # Stub of pkgs.rift-hotkey-bridge so tests never force the real package:
+  # it links CoreGraphics/CoreFoundation and declares platforms.darwin, so
+  # evaluating it under a linux hostPlatform refuses to evaluate.
+  stubBridge = pkgs.runCommand "rift-hotkey-bridge-stub" {meta.mainProgram = "rift-hotkey-bridge";} "mkdir -p $out/bin && touch $out/bin/rift-hotkey-bridge";
+
   darwinPkgs =
     pkgs
     // {
@@ -308,6 +313,7 @@
   bridgeFixture = lib.recursiveUpdate mainFixture {
     programs.rift.hotkeyBridge = {
       enable = true;
+      package = stubBridge;
       keepAlive = true;
       relays = ["43:alt"];
     };
