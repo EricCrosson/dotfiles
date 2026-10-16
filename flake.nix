@@ -52,6 +52,8 @@
 
     gh-arm = {
       url = "github:ericcrosson/gh-arm";
+      # Share the root nixpkgs pin instead of vendoring a stale snapshot.
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     gh-automerge = {
       url = "github:ericcrosson/gh-automerge";
@@ -83,6 +85,8 @@
     };
     handy = {
       url = "github:cjpais/handy";
+      # Share the root nixpkgs pin instead of vendoring a stale snapshot.
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     mcp-servers-nix = {
       url = "github:natsukium/mcp-servers-nix";
