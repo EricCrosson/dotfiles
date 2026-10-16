@@ -85,8 +85,9 @@
     };
     handy = {
       url = "github:cjpais/handy";
-      # Share the root nixpkgs pin instead of vendoring a stale snapshot.
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Must keep its own nixpkgs pin: handy's bun2nix evaluates x86_64-darwin,
+      # which nixpkgs 26.11 dropped (b2d66618). Following the root pin breaks
+      # eval in every consumer, including the athens NixOS build.
     };
     mcp-servers-nix = {
       url = "github:natsukium/mcp-servers-nix";
