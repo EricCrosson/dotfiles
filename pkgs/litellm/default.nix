@@ -1,24 +1,16 @@
-# Add dependencies necessary to run the litellm proxy. I'm not sure why these
-# aren't in the upstream derivation -- or maybe I'm using it incorrectly?
-{pkgs}: let
-  python-packages = pkgs.python313Packages;
-  rq-no-tests = python-packages.rq.overridePythonAttrs (_: {doCheck = false;});
-in
-  python-packages.litellm.overridePythonAttrs (old: {
-    propagatedBuildInputs =
-      (old.propagatedBuildInputs or [])
-      ++ (map (
-          pkg:
-            if pkg == python-packages.rq
-            then rq-no-tests
-            else pkg
-        )
-        old.optional-dependencies.proxy)
-      ++ (with python-packages; [
-        email-validator
-        uvloop
-        botocore
-        boto3
-        google-auth
-      ]);
-  })
+# LiteLLM proxy runtime: upstream litellm plus its proxy extras in one python
+# env. Composing an env (instead of overriding litellm's
+# propagatedBuildInputs) keeps litellm's own store path identical to
+# nixpkgs', so it substitutes from cache.nixos.org instead of being rebuilt
+# (a 3.6 GB NAR) on every nixpkgs bump.
+{pkgs}:
+pkgs.python313.withPackages (ps:
+    [ps.litellm]
+    ++ ps.litellm.optional-dependencies.proxy
+    ++ (with ps; [
+      email-validator
+      uvloop
+      botocore
+      boto3
+      google-auth
+    ]))

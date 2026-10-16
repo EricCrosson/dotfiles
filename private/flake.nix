@@ -20,7 +20,6 @@
     git-disjoint.follows = "public/git-disjoint";
     git-dl.follows = "public/git-dl";
     git-review.follows = "public/git-review";
-    helix.follows = "public/helix";
     home-manager.follows = "public/home-manager";
     mcp-servers-nix.follows = "public/mcp-servers-nix";
     nix-index-database.follows = "public/nix-index-database";

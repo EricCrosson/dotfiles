@@ -75,10 +75,6 @@
       url = "github:ericcrosson/git-review";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    helix = {
-      url = "github:helix-editor/helix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -126,7 +122,6 @@
     "https://ericcrosson-git-dl.cachix.org"
     "https://ericcrosson-retry.cachix.org"
     "https://git-disjoint.cachix.org"
-    "https://helix.cachix.org"
     "https://nix-community.cachix.org"
   ];
 
@@ -137,7 +132,6 @@
     "ericcrosson-git-dl.cachix.org-1:qhFI0OIKhtlyEQeKRnyfXryIiDkk/p8R77xfjiOfntM="
     "ericcrosson-retry.cachix.org-1:3l9PEQ/c6PDI+P+avNRPS40irPntuh9hldgjXMttWIs="
     "git-disjoint.cachix.org-1:KldtYCsH4nhDDfgWwx79lZF75P1smpKtjzoENpwDynw="
-    "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
   ];
 }
