@@ -8,6 +8,14 @@ on:
         description: The name of the flake input to update
         required: true
         type: string
+      scope:
+        description: "Lock to update: root (flake.lock + private mirror) or dev (nix/flake.lock)"
+        required: true
+        type: choice
+        options:
+          - root
+          - dev
+        default: root
 
 permissions: {}
 
@@ -20,22 +28,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
       - uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
 
       - name: Update ${{ inputs.flake-input }} flake input
-        uses: DeterminateSystems/update-flake-lock@834c491b2ece4de0bbd00d85214bb5e83b4da5c6
-        with:
-          branch: update-flake-input-${{ inputs.flake-input }}
-          commit-msg: "chore(nix): update ${{ inputs.flake-input }} flake input"
-          inputs: ${{ inputs.flake-input }}
-          git-author-name: github-actions
-          git-author-email: action@github.com
-          git-committer-name: github-actions
-          git-committer-email: action@github.com
-          pr-assignees: EricCrosson
-          pr-title: Update ${{ inputs.flake-input }} flake input
-          pr-labels: |
-            dependencies
-            nix
-            ${{ inputs.flake-input }}
-          token: ${{ secrets.GH_TOKEN_PR }}
+        env:
+          SCOPE: ${{ inputs.scope }}
+          FLAKE_INPUT: ${{ inputs.flake-input }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN_PR }}
+          GIT_AUTHOR_NAME: github-actions
+          GIT_AUTHOR_EMAIL: action@github.com
+          GIT_COMMITTER_NAME: github-actions
+          GIT_COMMITTER_EMAIL: action@github.com
+        run: gh auth setup-git && bash .github/scripts/update-flake-input.sh "$SCOPE" "$FLAKE_INPUT"

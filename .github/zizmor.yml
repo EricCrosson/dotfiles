@@ -1,5 +1,0 @@
----
-rules:
-  artipacked:
-    ignore:
-      - update-flake-input.yaml:22:9
