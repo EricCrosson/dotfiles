@@ -48,6 +48,7 @@
           # Import profile modules
           ../modules/profiles
           ../modules/profiles/profiles.nix
+          ../modules/nix-caches.nix
 
           # Standard modules
           ../modules/darwin
@@ -118,6 +119,7 @@
           # Import profile modules
           ../modules/profiles
           ../modules/profiles/profiles.nix
+          ../modules/nix-caches.nix
 
           # Disk layout
           inputs.disko.nixosModules.disko

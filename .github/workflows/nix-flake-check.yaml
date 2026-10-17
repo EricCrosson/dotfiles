@@ -8,6 +8,19 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # Keep in sync with modules/nix-caches.nix and flake.nix nixConfig.
+  # ericcrosson.cachix.org itself is added by cachix-action.
+  # ericcrosson-gh-arm.cachix.org also serves the crate tarball otherwise
+  # 403'd by crates.io's API endpoint on GitHub runner IPs.
+  NIX_EXTRA_CONF: |
+    extra-substituters = https://ericcrosson-gh-arm.cachix.org https://ericcrosson-gh-automerge.cachix.org https://ericcrosson-git-dl.cachix.org https://ericcrosson-retry.cachix.org https://git-disjoint.cachix.org https://nix-community.cachix.org
+    extra-trusted-public-keys = ericcrosson-gh-arm.cachix.org-1:F/7TLvBGov4xjEE3MSRgNNmYRxPDxW8BUeAyy0rbVu4= ericcrosson-gh-automerge.cachix.org-1:GbweXYwKQnDBSkYtrGQQ9qYfsjh2Ar9CYUoa78pvqRM= ericcrosson-git-dl.cachix.org-1:qhFI0OIKhtlyEQeKRnyfXryIiDkk/p8R77xfjiOfntM= ericcrosson-retry.cachix.org-1:3l9PEQ/c6PDI+P+avNRPS40irPntuh9hldgjXMttWIs= git-disjoint.cachix.org-1:KldtYCsH4nhDDfgWwx79lZF75P1smpKtjzoENpwDynw= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
+
 jobs:
   check-nix:
     name: Nix flake check
@@ -50,22 +63,29 @@ jobs:
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
+        with:
+          extra-conf: ${{ env.NIX_EXTRA_CONF }}
+
+      - name: Cachix
+        uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
+        with:
+          name: ericcrosson
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       - name: Install EricCrosson/retry
         uses: EricCrosson/install-github-release-binary@c5bb56044443694d485fa40eb6d6f7ed600ff3b4
         with:
           targets: EricCrosson/retry@v1
 
-      - run: |
-          : build darwin configuration with stubbed private inputs
-          retry --up-to 2x -- nix build \
+      - name: Build darwin configuration with stubbed private inputs
+        run: |
+          bash .github/scripts/build-unless-cached.sh \
             ./private#darwinConfigurations.MBP-0954.system \
             --override-input aws-console-bitgo path:./stubs/private-input-stub \
             --override-input aws-saml-bitgo path:./stubs/private-input-stub \
             --override-input gh-endorse path:./stubs/private-input-stub \
             --override-input gh-gantt path:./stubs/private-input-stub \
-            --override-input macwhisper-cli path:./stubs/private-input-stub \
-            --keep-going --print-build-logs
+            --override-input macwhisper-cli path:./stubs/private-input-stub
 
   check-nixos-config:
     name: NixOS configuration build
@@ -82,17 +102,39 @@ jobs:
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@b66b36319cc6fde4ea85edd583b088c65d6b8710
+        with:
+          extra-conf: ${{ env.NIX_EXTRA_CONF }}
+
+      - name: Cachix
+        uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
+        with:
+          name: ericcrosson
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       - name: Install EricCrosson/retry
         uses: EricCrosson/install-github-release-binary@c5bb56044443694d485fa40eb6d6f7ed600ff3b4
         with:
           targets: EricCrosson/retry@v1
 
-      - run: |
-          : build nixos configuration
-          # The root flake declares binary caches, including
-          # ericcrosson-gh-arm.cachix.org, which serves the crate tarball
-          # otherwise 403'd by crates.io's API endpoint on GitHub runner IPs.
-          retry --up-to 2x -- nix build \
-            .#nixosConfigurations.athens.config.system.build.toplevel \
-            --accept-flake-config --keep-going --print-build-logs
+      - name: Build NixOS configuration
+        run: bash .github/scripts/build-unless-cached.sh .#nixosConfigurations.athens.config.system.build.toplevel
+
+  ci:
+    name: CI
+    if: always()
+    needs: [check-nix, check-darwin-config, check-nixos-config]
+    runs-on: ubuntu-latest
+
+    permissions: {}
+
+    steps:
+      - name: Require every job to succeed
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          for r in $RESULTS; do
+            if [ "$r" != success ]; then
+              echo "::error::needed job result: $r"
+              exit 1
+            fi
+          done
