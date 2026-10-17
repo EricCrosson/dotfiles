@@ -24,6 +24,10 @@ _: {
           traditional = {
             equalize_nodes = true;
           };
+          stack = {
+            stack_offset = 40.0;
+            default_orientation = "horizontal";
+          };
         };
 
         # Apps that should not steal focus across workspaces.
@@ -175,7 +179,42 @@ _: {
         "Alt + Shift + 9" = {move_window_to_workspace = 8;};
         "Alt + Shift + 0" = {move_window_to_workspace = 9;};
 
-        "Alt + Comma" = "toggle_fullscreen";
+        "Alt + Comma" = {
+          exec = [
+            "sh"
+            "-c"
+            ''
+              layout="$(rift-cli query layout 2>/dev/null)" || exit 0
+              fs=$(echo "$layout" | jq -r '[.. | objects | select(.node_type == "window" and (.is_fullscreen == true or .is_fullscreen_within_gaps == true))][0] | if . == null then empty else "\(.window_id.pid) \(.window_id.idx) \(if .is_fullscreen == true then "full" else "gaps" end)" end')
+              mode=$(echo "$layout" | jq -r .mode)
+              count=$(echo "$layout" | jq -r '.tiled_windows | length')
+
+              if [ -n "$fs" ]; then
+                # toggle-fullscreen only ever acts on the selected window, so
+                # focus the stuck window first and verify it owns the
+                # selection; otherwise this press would toggle the wrong
+                # window into fullscreen. Each flag needs its matching toggle:
+                # toggle-fullscreen on a gaps-fullscreen window converts it to
+                # regular fullscreen instead of releasing it.
+                set -- $fs
+                rift-cli execute window focus --window-id "{\"pid\":$1,\"idx\":$2}"
+                layout="$(rift-cli query layout 2>/dev/null)" || exit 0
+                sel=$(echo "$layout" | jq -r '[.. | objects | select(.node_type == "window" and .is_selected == true)][0] | if . == null then empty else "\(.window_id.pid) \(.window_id.idx)" end')
+                if [ "$sel" = "$1 $2" ]; then
+                  if [ "$3" = "full" ]; then
+                    rift-cli execute window toggle-fullscreen
+                  else
+                    rift-cli execute window toggle-fullscreen-within-gaps
+                  fi
+                fi
+              elif [ "$mode" = "stack" ]; then
+                rift-cli execute workspace set-layout traditional
+              elif [ "$count" -gt 1 ]; then
+                rift-cli execute workspace set-layout stack
+              fi
+            ''
+          ];
+        };
         "Alt + Shift + Comma" = "toggle_orientation";
         "Alt + Shift + E" = "unjoin_windows";
         "Alt + Shift + Space" = "toggle_window_floating";
