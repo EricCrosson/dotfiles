@@ -47,63 +47,275 @@ index 7253234..442cb80 100644
  }
  
  struct PendingFrame {
+diff --git a/src/actor/reactor.rs b/src/actor/reactor.rs
+index 21e4a04..e48ca38 100644
+--- a/src/actor/reactor.rs
++++ b/src/actor/reactor.rs
+@@ -2555,6 +2555,7 @@ impl Reactor {
+             for _ in 0..outcome.arrange.passes.max(1) {
+                 layout_changed |= self.update_layout_or_warn(
+                     outcome.arrange.is_resize,
++                    outcome.arrange.animate,
+                     matches!(
+                         self.workspace_switch_manager.workspace_switch_state,
+                         WorkspaceSwitchState::Active
+@@ -2563,8 +2564,12 @@ impl Reactor {
+                 );
+             }
+             if let Some(space) = outcome.arrange.secondary_space_scope {
+-                layout_changed |=
+-                    self.update_layout_or_warn(outcome.arrange.is_resize, false, Some(space));
++                layout_changed |= self.update_layout_or_warn(
++                    outcome.arrange.is_resize,
++                    outcome.arrange.animate,
++                    false,
++                    Some(space),
++                );
+             }
+             // Publish the menu state once after all arrange passes have completed.
+             self.maybe_send_menu_update();
+@@ -2857,7 +2862,7 @@ impl Reactor {
+             }
+ 
+             self.refocus_manager.refocus_state = RefocusState::Pending(space);
+-            self.update_layout_or_warn(false, false, None);
++            self.update_layout_or_warn(false, false, false, None);
+             self.update_focus_follows_mouse_state();
+         }
+     }
+@@ -3889,6 +3894,7 @@ impl Reactor {
+         self.handle_layout_response(response, workspace_switch_space);
+         if geometry_changed {
+             self.update_layout_or_warn(
++                false,
+                 false,
+                 workspace_switch_space.is_some(),
+                 workspace_switch_space.or(event_space),
+@@ -4838,7 +4844,7 @@ impl Reactor {
+             !self.space_state.membership_complete,
+         );
+         self.request_window_inventories();
+-        self.update_layout_or_warn(false, false, None);
++        self.update_layout_or_warn(false, false, false, None);
+         self.maybe_send_menu_update();
+     }
+ 
+@@ -5118,11 +5124,13 @@ impl Reactor {
+     pub(crate) fn update_layout_or_warn(
+         &mut self,
+         is_resize: bool,
++        force_animate: bool,
+         is_workspace_switch: bool,
+         space_scope: Option<SpaceId>,
+     ) -> bool {
+         self.update_layout_or_warn_with(
+             is_resize,
++            force_animate,
+             is_workspace_switch,
+             space_scope,
+             "Layout update failed",
+@@ -5132,6 +5140,7 @@ impl Reactor {
+     pub(crate) fn update_layout_or_warn_with(
+         &mut self,
+         is_resize: bool,
++        force_animate: bool,
+         is_workspace_switch: bool,
+         space_scope: Option<SpaceId>,
+         context: &'static str,
+@@ -5140,7 +5149,7 @@ impl Reactor {
+         {
+             self.layout_update_count += 1;
+         }
+-        LayoutManager::update_layout(self, is_resize, is_workspace_switch, space_scope)
++        LayoutManager::update_layout(self, is_resize, force_animate, is_workspace_switch, space_scope)
+             .unwrap_or_else(|e| {
+                 warn!(error = ?e, "{}", context);
+                 false
+diff --git a/src/actor/reactor/animation.rs b/src/actor/reactor/animation.rs
+index b78c872..92ff830 100644
+--- a/src/actor/reactor/animation.rs
++++ b/src/actor/reactor/animation.rs
+@@ -969,13 +969,21 @@ impl AnimationManager {
+         space: SpaceId,
+         layout: &[(WindowId, CGRect)],
+         is_resize: bool,
++        force_animate: bool,
+         skip_wid: Option<WindowId>,
+     ) -> bool {
+         reactor.retire_presentations();
+         let setting = reactor.layout_manager.layout_engine.layout_specific_animate_settings(space);
+-        let animate_camera = !is_resize
+-            && setting.unwrap_or(reactor.config.settings.animate)
+-            && !(setting.is_none() && power::is_low_power_mode_enabled());
++        // A forced animate (fullscreen toggles) animates regardless of the
++        // configured animate setting; the position-write tear would otherwise
++        // read as a discrete background flash.
++        let animate_camera = if force_animate {
++            !is_resize && !power::is_low_power_mode_enabled()
++        } else {
++            !is_resize
++                && setting.unwrap_or(reactor.config.settings.animate)
++                && !(setting.is_none() && power::is_low_power_mode_enabled())
++        };
+         let presentation = reactor.present_camera(space, animate_camera, None, skip_wid);
+         let camera = presentation.is_some();
+         let presented = presentation.unwrap_or_default();
 diff --git a/src/actor/reactor/events/command.rs b/src/actor/reactor/events/command.rs
-index 09075d6..0f544ad 100644
+index 09075d6..f973002 100644
 --- a/src/actor/reactor/events/command.rs
 +++ b/src/actor/reactor/events/command.rs
-@@ -44,6 +44,13 @@ pub fn handle_command_layout(
+@@ -44,6 +44,10 @@ pub fn handle_command_layout(
      } = payload;
      info!(?cmd);
      let is_move_node = matches!(cmd, LayoutCommand::MoveNode(_));
-+    // A fullscreen toggle resizes one window to the whole display; animating
-+    // that sweep exposes every sibling and background window as intermediate
-+    // frames. Apply the resulting layout in a single step instead.
-+    let instant_layout = matches!(
++    let is_fullscreen_toggle = matches!(
 +        cmd,
 +        LayoutCommand::ToggleFullscreen | LayoutCommand::ToggleFullscreenWithinGaps
 +    );
      let is_selection_command = matches!(cmd, LayoutCommand::Ascend | LayoutCommand::Descend);
      let is_focus_command = matches!(
          cmd,
-@@ -168,7 +175,7 @@ pub fn handle_command_layout(
+@@ -167,13 +171,24 @@ pub fn handle_command_layout(
+     // commands provide one, so preserve their no-op behavior.
      let needs_arrange = response_changed
          || (!is_focus_command && !is_selection_command && !is_virtual_workspace_command);
++    // A fullscreen toggle splits by direction. Entering animates: the resize
++    // needs a position write that macOS clamps cannot avoid exposing the old
++    // frame, and an interpolated transition presents that exposure as
++    // deliberate motion instead of a discrete flash. Exiting is tear-free at
++    // instant speed because the write order moves position before size, so
++    // the intermediate frame overhangs off-screen harmlessly. The raise list
++    // is non-empty exactly when the toggle enters fullscreen.
++    let fullscreen_exit = is_fullscreen_toggle && response.raise_windows.is_empty();
      let mut outcome = if needs_arrange {
 -        EventOutcome::layout_changed(false)
-+        EventOutcome::layout_changed(instant_layout)
++        EventOutcome::layout_changed(fullscreen_exit)
      } else {
          EventOutcome::no_change()
      }
+     .with_layout_response(response, workspace_space)
+     .with_arrange_space_scope(arrange_space_scope);
++    if is_fullscreen_toggle && !fullscreen_exit {
++        outcome.arrange.animate = true;
++    }
+     outcome.broadcast_selection_changed = selection_changed;
+     if is_move_node && let Some(window) = post_arrange_mouse_warp {
+         outcome.post_arrange_mouse_warp = Some(window);
+diff --git a/src/actor/reactor/events/outcome.rs b/src/actor/reactor/events/outcome.rs
+index 102ffd2..edd05f1 100644
+--- a/src/actor/reactor/events/outcome.rs
++++ b/src/actor/reactor/events/outcome.rs
+@@ -95,6 +95,8 @@ pub(crate) struct EventOutcome {
+ pub(crate) struct ArrangeRequest {
+     pub(crate) passes: u8,
+     pub(crate) is_resize: bool,
++    /// Animate this arrange even when the configured animate setting is off.
++    pub(crate) animate: bool,
+     pub(crate) window_was_destroyed: bool,
+     pub(crate) space_scope: Option<SpaceId>,
+     pub(crate) secondary_space_scope: Option<SpaceId>,
+@@ -161,6 +163,7 @@ impl EventOutcome {
+             }
+             self.arrange.passes = self.arrange.passes.saturating_add(other.arrange.passes).max(1);
+             self.arrange.is_resize |= other.arrange.is_resize;
++            self.arrange.animate |= other.arrange.animate;
+             self.arrange.window_was_destroyed |= other.arrange.window_was_destroyed;
+         }
+         self.focused_window = other.focused_window.or(self.focused_window);
+@@ -175,6 +178,7 @@ impl EventOutcome {
+             arrange: ArrangeRequest {
+                 passes: 1,
+                 is_resize,
++                animate: false,
+                 window_was_destroyed: false,
+                 space_scope: None,
+                 secondary_space_scope: None,
+diff --git a/src/actor/reactor/managers.rs b/src/actor/reactor/managers.rs
+index 5ffb3e0..f968c90 100644
+--- a/src/actor/reactor/managers.rs
++++ b/src/actor/reactor/managers.rs
+@@ -250,11 +250,18 @@ impl LayoutManager {
+     pub fn update_layout(
+         reactor: &mut Reactor,
+         is_resize: bool,
++        force_animate: bool,
+         is_workspace_switch: bool,
+         space_scope: Option<SpaceId>,
+     ) -> Result<bool, crate::model::reactor::ReactorError> {
+         let layout_result = Self::calculate_layout(reactor, space_scope);
+-        Self::apply_layout(reactor, layout_result, is_resize, is_workspace_switch)
++        Self::apply_layout(
++            reactor,
++            layout_result,
++            is_resize,
++            force_animate,
++            is_workspace_switch,
++        )
+     }
+ 
+     fn calculate_layout(reactor: &mut Reactor, space_scope: Option<SpaceId>) -> LayoutResult {
+@@ -331,6 +338,7 @@ impl LayoutManager {
+         reactor: &mut Reactor,
+         layout_result: LayoutResult,
+         is_resize: bool,
++        force_animate: bool,
+         is_workspace_switch: bool,
+     ) -> Result<bool, crate::model::reactor::ReactorError> {
+         let main_window = reactor.main_window();
+@@ -453,7 +461,14 @@ impl LayoutManager {
+                     AnimationManager::instant_layout(reactor, space, &layout, skip_wid);
+             } else {
+                 any_frame_changed |=
+-                    AnimationManager::animate_layout(reactor, space, &layout, is_resize, skip_wid);
++                    AnimationManager::animate_layout(
++                        reactor,
++                        space,
++                        &layout,
++                        is_resize,
++                        force_animate,
++                        skip_wid,
++                    );
+             }
+         }
+ 
 diff --git a/src/actor/reactor/tests.rs b/src/actor/reactor/tests.rs
-index 325846f..d421c99 100644
+index 325846f..fed4e65 100644
 --- a/src/actor/reactor/tests.rs
 +++ b/src/actor/reactor/tests.rs
-@@ -78,6 +78,32 @@ fn geometry_commands_request_arrangement_without_camera_movement() {
+@@ -78,6 +78,40 @@ fn geometry_commands_request_arrangement_without_camera_movement() {
      }
  }
  
 +#[test]
-+fn fullscreen_toggles_arrange_instantly_without_animation() {
-+    let (mut reactor, _, _, _, _, _) = reactor_with_window_on_space1();
-+    for command in [
-+        LayoutCommand::ToggleFullscreen,
-+        LayoutCommand::ToggleFullscreenWithinGaps,
-+    ] {
-+        let outcome = reactor.dispatch_test_layout_command(command.clone());
-+        assert_eq!(
-+            outcome.arrange.passes, 1,
-+            "{command:?} must reconcile window frames"
-+        );
-+        assert!(
-+            outcome.arrange.is_resize,
-+            "{command:?} must apply its frames instantly: animating a fullscreen \
-+             toggle sweeps the window over its siblings and exposes every window \
-+             behind it as intermediate frames"
-+        );
-+    }
++fn fullscreen_toggle_directions_pick_their_arrange_mode() {
++    let (mut apps, mut reactor) = test_context();
++    let screen = CGRect::new(CGPoint::new(0., 0.), CGSize::new(1000., 1000.));
++    let space = SpaceId::new(1);
++    apps.make_app_and_settle_on_screen(&mut reactor, screen, space, 1, make_windows(1));
++    apps.requests();
++    // Entering fullscreen keeps the (unavoidable) position-write tear visible
++    // as a discrete flash, so the enter direction animates: the interpolation
++    // presents the same exposure as deliberate motion instead.
++    let enter = reactor.dispatch_test_layout_command(LayoutCommand::ToggleFullscreen);
++    assert_eq!(enter.arrange.passes, 1, "enter must reconcile window frames");
++    assert!(
++        !enter.arrange.is_resize && enter.arrange.animate,
++        "fullscreen enter must animate instead of exposing the position-write \
++         tear as a discrete flash"
++    );
++    // Exiting fullscreen is tear-free at instant speed once the write order
++    // moves position before size (the intermediate overhangs off-screen), so
++    // exit stays instant.
++    let exit = reactor.dispatch_test_layout_command(LayoutCommand::ToggleFullscreen);
++    assert_eq!(exit.arrange.passes, 1, "exit must reconcile window frames");
++    assert!(
++        exit.arrange.is_resize && !exit.arrange.animate,
++        "fullscreen exit must apply its frames instantly: the position-first \
++         write order already hides the intermediate"
++    );
 +    let outcome = reactor.dispatch_test_layout_command(LayoutCommand::MoveNode(Direction::Left));
 +    assert!(
-+        !outcome.arrange.is_resize,
++        !outcome.arrange.is_resize && !outcome.arrange.animate,
 +        "ordinary geometry commands keep their animation"
 +    );
 +}
@@ -111,6 +323,39 @@ index 325846f..d421c99 100644
  #[test]
  fn no_op_layout_command_does_not_schedule_arrange() {
      let mut reactor = test_reactor();
+@@ -3039,7 +3073,7 @@ fn topology_change_clears_stale_pending_hide_target_before_next_workspace_layout
+     let txid = reactor.transaction_manager.generate_next_txid(wsid);
+     reactor.transaction_manager.store_txid(wsid, txid, hidden_target);
+ 
+-    assert!(!reactor.update_layout_or_warn(false, true, None));
++    assert!(!reactor.update_layout_or_warn(false, false, true, None));
+     assert!(
+         apps.requests().is_empty(),
+         "a stale pending target suppresses the hide write before topology invalidation"
+@@ -4401,6 +4435,7 @@ fn changed_layout_retargets_window_already_at_new_position_during_animation() {
+         space,
+         &[(left, frame(228.)), (right, frame(1284.))],
+         false,
++        false,
+         None,
+     ));
+     manager.handle_message(rx.commands.try_recv().unwrap());
+@@ -4428,6 +4463,7 @@ fn changed_layout_retargets_window_already_at_new_position_during_animation() {
+         space,
+         &[(left, frame(-1056.)), (right, frame(228.))],
+         false,
++        false,
+         None,
+     ));
+     manager.handle_message(rx.commands.try_recv().unwrap());
+@@ -4484,6 +4520,7 @@ fn animated_layout_handles_windows_without_server_ids() {
+         space,
+         &[(WindowId::new(1, 1), target)],
+         true,
++        false,
+         None,
+     ));
+ 
 diff --git a/src/layout_engine/engine.rs b/src/layout_engine/engine.rs
 index 9e94404..26aea67 100644
 --- a/src/layout_engine/engine.rs
