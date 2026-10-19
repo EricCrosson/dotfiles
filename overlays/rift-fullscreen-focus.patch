@@ -279,10 +279,10 @@ index 5ffb3e0..f968c90 100644
          }
  
 diff --git a/src/actor/reactor/tests.rs b/src/actor/reactor/tests.rs
-index 325846f..fed4e65 100644
+index 325846f..8dc71e7 100644
 --- a/src/actor/reactor/tests.rs
 +++ b/src/actor/reactor/tests.rs
-@@ -78,6 +78,40 @@ fn geometry_commands_request_arrangement_without_camera_movement() {
+@@ -78,6 +78,67 @@ fn geometry_commands_request_arrangement_without_camera_movement() {
      }
  }
  
@@ -320,10 +320,37 @@ index 325846f..fed4e65 100644
 +    );
 +}
 +
++#[test]
++fn fullscreen_toggle_directions_hold_in_scrolling_layouts() {
++    let (mut apps, mut reactor) = test_context();
++    let screen = CGRect::new(CGPoint::new(0., 0.), CGSize::new(1000., 1000.));
++    let space = SpaceId::new(1);
++    apps.make_app_and_settle_on_screen(&mut reactor, screen, space, 1, make_windows(2));
++    apps.requests();
++    reactor.handle_test_layout_command(LayoutCommand::SetWorkspaceLayout {
++        workspace: None,
++        mode: LayoutMode::Scrolling,
++    });
++    // The scrolling layout system reports the raised window on both toggle
++    // directions; the engine must normalize the exit response so the reactor
++    // keeps exit instant and only animates the entry.
++    let enter = reactor.dispatch_test_layout_command(LayoutCommand::ToggleFullscreen);
++    assert!(
++        !enter.arrange.is_resize && enter.arrange.animate,
++        "scrolling fullscreen enter must animate"
++    );
++    let exit = reactor.dispatch_test_layout_command(LayoutCommand::ToggleFullscreen);
++    assert!(
++        exit.arrange.is_resize && !exit.arrange.animate,
++        "scrolling fullscreen exit must stay instant: normalizing the exit \
++         response keeps the direction detectable across layout systems"
++    );
++}
++
  #[test]
  fn no_op_layout_command_does_not_schedule_arrange() {
      let mut reactor = test_reactor();
-@@ -3039,7 +3073,7 @@ fn topology_change_clears_stale_pending_hide_target_before_next_workspace_layout
+@@ -3039,7 +3100,7 @@ fn topology_change_clears_stale_pending_hide_target_before_next_workspace_layout
      let txid = reactor.transaction_manager.generate_next_txid(wsid);
      reactor.transaction_manager.store_txid(wsid, txid, hidden_target);
  
@@ -332,7 +359,7 @@ index 325846f..fed4e65 100644
      assert!(
          apps.requests().is_empty(),
          "a stale pending target suppresses the hide write before topology invalidation"
-@@ -4401,6 +4435,7 @@ fn changed_layout_retargets_window_already_at_new_position_during_animation() {
+@@ -4401,6 +4462,7 @@ fn changed_layout_retargets_window_already_at_new_position_during_animation() {
          space,
          &[(left, frame(228.)), (right, frame(1284.))],
          false,
@@ -340,7 +367,7 @@ index 325846f..fed4e65 100644
          None,
      ));
      manager.handle_message(rx.commands.try_recv().unwrap());
-@@ -4428,6 +4463,7 @@ fn changed_layout_retargets_window_already_at_new_position_during_animation() {
+@@ -4428,6 +4490,7 @@ fn changed_layout_retargets_window_already_at_new_position_during_animation() {
          space,
          &[(left, frame(-1056.)), (right, frame(228.))],
          false,
@@ -348,7 +375,7 @@ index 325846f..fed4e65 100644
          None,
      ));
      manager.handle_message(rx.commands.try_recv().unwrap());
-@@ -4484,6 +4520,7 @@ fn animated_layout_handles_windows_without_server_ids() {
+@@ -4484,6 +4547,7 @@ fn animated_layout_handles_windows_without_server_ids() {
          space,
          &[(WindowId::new(1, 1), target)],
          true,
@@ -357,7 +384,7 @@ index 325846f..fed4e65 100644
      ));
  
 diff --git a/src/layout_engine/engine.rs b/src/layout_engine/engine.rs
-index 9e94404..26aea67 100644
+index 9e94404..7a4385d 100644
 --- a/src/layout_engine/engine.rs
 +++ b/src/layout_engine/engine.rs
 @@ -490,8 +490,12 @@ impl LayoutEngine {
@@ -400,23 +427,55 @@ index 9e94404..26aea67 100644
      fn toggle_orientation_for_system<S: LayoutSystem>(
          system: &mut S,
          layout: LayoutId,
-@@ -2286,6 +2309,7 @@ impl LayoutEngine {
+@@ -2286,10 +2309,25 @@ impl LayoutEngine {
                  EventResponse::default()
              }
              LayoutCommand::ToggleFullscreen => {
 +                self.sync_selection_to_focused_window(workspace_id, layout);
++                // The toggle flips the selection's fullscreen state; the
++                // direction decides how the reactor presents the transition
++                // (enter animates, exit is instant). Scrolling reports the
++                // raised window on both directions, so the response is
++                // normalized here: exits carry no raise (the window stays
++                // focused) and the empty raise list marks the exit downstream.
++                let was_fullscreen = self.workspaces[workspace_id]
++                    .layout_system
++                    .selected_window(layout)
++                    .is_some_and(|wid| {
++                        self.workspaces[workspace_id]
++                            .layout_system
++                            .window_is_fullscreen(layout, wid, false)
++                    });
                  let raise_windows = self.workspaces[workspace_id]
                      .layout_system
                      .toggle_fullscreen_of_selection(layout);
-@@ -2301,6 +2325,7 @@ impl LayoutEngine {
+-                if raise_windows.is_empty() {
++                if was_fullscreen || raise_windows.is_empty() {
+                     EventResponse::default()
+                 } else {
+                     EventResponse {
+@@ -2301,10 +2339,19 @@ impl LayoutEngine {
                  }
              }
              LayoutCommand::ToggleFullscreenWithinGaps => {
 +                self.sync_selection_to_focused_window(workspace_id, layout);
++                let was_fullscreen = self.workspaces[workspace_id]
++                    .layout_system
++                    .selected_window(layout)
++                    .is_some_and(|wid| {
++                        self.workspaces[workspace_id]
++                            .layout_system
++                            .window_is_fullscreen(layout, wid, true)
++                    });
                  let raise_windows = self.workspaces[workspace_id]
                      .layout_system
                      .toggle_fullscreen_within_gaps_of_selection(layout);
-@@ -3593,6 +3618,134 @@ mod tests {
+-                if raise_windows.is_empty() {
++                if was_fullscreen || raise_windows.is_empty() {
+                     EventResponse::default()
+                 } else {
+                     EventResponse {
+@@ -3593,6 +3640,134 @@ mod tests {
          }
      }
  
@@ -551,3 +610,99 @@ index 9e94404..26aea67 100644
      #[test]
      fn floating_toggle_frame_sizes_then_centers_in_the_native_screen_frame() {
          let screen = CGRect::new(CGPoint::new(100.0, 40.0), CGSize::new(1000.0, 800.0));
+diff --git a/src/layout_engine/systems.rs b/src/layout_engine/systems.rs
+index e4fb441..0024fae 100644
+--- a/src/layout_engine/systems.rs
++++ b/src/layout_engine/systems.rs
+@@ -271,6 +271,9 @@ pub trait LayoutSystem: Serialize + for<'de> Deserialize<'de> {
+ 
+     fn toggle_fullscreen_of_selection(&mut self, layout: LayoutId) -> Vec<WindowId>;
+     fn toggle_fullscreen_within_gaps_of_selection(&mut self, layout: LayoutId) -> Vec<WindowId>;
++    /// Whether `wid` currently sits in the fullscreen (or fullscreen-within-gaps)
++    /// state of `layout`. Lets callers detect the direction of a toggle.
++    fn window_is_fullscreen(&self, layout: LayoutId, wid: WindowId, within_gaps: bool) -> bool;
+     fn has_any_fullscreen_node(&self, layout: LayoutId) -> bool;
+ 
+     fn join_selection_with_direction(&mut self, _layout: LayoutId, _direction: Direction) {}
+@@ -359,6 +362,9 @@ macro_rules! delegate_traditional_layout_system {
+         ) -> Vec<WindowId> {
+             self.inner.toggle_fullscreen_within_gaps_of_selection(layout)
+         }
++        fn window_is_fullscreen(&self, layout: LayoutId, wid: WindowId, within_gaps: bool) -> bool {
++            self.inner.window_is_fullscreen(layout, wid, within_gaps)
++        }
+         fn has_any_fullscreen_node(&self, layout: LayoutId) -> bool {
+             self.inner.has_any_fullscreen_node(layout)
+         }
+diff --git a/src/layout_engine/systems/bsp.rs b/src/layout_engine/systems/bsp.rs
+index aa53211..aa37361 100644
+--- a/src/layout_engine/systems/bsp.rs
++++ b/src/layout_engine/systems/bsp.rs
+@@ -1874,6 +1874,22 @@ impl LayoutSystem for BspLayoutSystem {
+         vec![]
+     }
+ 
++    fn window_is_fullscreen(&self, layout: LayoutId, wid: WindowId, within_gaps: bool) -> bool {
++        let Some(node) = self.node_for_window_in_layout(layout, wid) else {
++            return false;
++        };
++        match self.kind.get(node) {
++            Some(NodeKind::Leaf {
++                fullscreen,
++                fullscreen_within_gaps,
++                ..
++            }) => {
++                *if within_gaps { fullscreen_within_gaps } else { fullscreen }
++            }
++            _ => false,
++        }
++    }
++
+     fn has_any_fullscreen_node(&self, layout: LayoutId) -> bool {
+         if let Some(state) = self.layouts.get(layout).copied() {
+             self.has_fullscreen_in_subtree(state.root)
+diff --git a/src/layout_engine/systems/scrolling.rs b/src/layout_engine/systems/scrolling.rs
+index 167ac3e..eab48e8 100644
+--- a/src/layout_engine/systems/scrolling.rs
++++ b/src/layout_engine/systems/scrolling.rs
+@@ -1953,6 +1953,17 @@ impl LayoutSystem for ScrollingLayoutSystem {
+         self.toggle_fullscreen(layout, true)
+     }
+ 
++    fn window_is_fullscreen(&self, layout: LayoutId, wid: WindowId, within_gaps: bool) -> bool {
++        let Some(state) = self.layouts.get(layout) else {
++            return false;
++        };
++        if within_gaps {
++            state.fullscreen_within_gaps.contains(&wid)
++        } else {
++            state.fullscreen.contains(&wid)
++        }
++    }
++
+     fn has_any_fullscreen_node(&self, layout: LayoutId) -> bool {
+         self.layouts
+             .get(layout)
+diff --git a/src/layout_engine/systems/traditional.rs b/src/layout_engine/systems/traditional.rs
+index a8a7040..4e97aeb 100644
+--- a/src/layout_engine/systems/traditional.rs
++++ b/src/layout_engine/systems/traditional.rs
+@@ -987,6 +987,18 @@ impl LayoutSystem for TraditionalLayoutSystem {
+         }
+     }
+ 
++    fn window_is_fullscreen(&self, layout: LayoutId, wid: WindowId, within_gaps: bool) -> bool {
++        let Some(node) = self.tree.data.window.node_for(layout, wid) else {
++            return false;
++        };
++        let info = &self.tree.data.layout.info[node];
++        if within_gaps {
++            info.is_fullscreen_within_gaps
++        } else {
++            info.is_fullscreen
++        }
++    }
++
+     fn has_any_fullscreen_node(&self, layout: LayoutId) -> bool {
+         let root = self.root(layout);
+         root.traverse_preorder(&self.tree.map)

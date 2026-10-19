@@ -23,11 +23,12 @@
 # 4fe24e5 ("fix(layout): preserve sibling order across layout-mode
 # switches"), e309144 ("fix(reactor): apply fullscreen toggles without
 # animation"), 00c25b4 ("fix(app): write window position before size when
-# shrinking") and 7c6eceb ("fix(reactor): animate fullscreen entry, keep
-# exit instant") against rift 0.6.7. Fullscreen entry animates regardless
-# of the configured animate setting (macOS clamps size writes, so the
-# position-write tear is unavoidable at instant speed); fullscreen exit
-# stays instant and tear-free via the write order. The regression tests
+# shrinking"), 7c6eceb ("fix(reactor): animate fullscreen entry, keep
+# exit instant") and 2c61871 ("fix(layout): detect fullscreen toggle
+# direction portably") against rift 0.6.7. Fullscreen entry animates
+# regardless of the configured animate setting (macOS clamps size writes,
+# so the position-write tear is unavoidable at instant speed); fullscreen
+# exit stays instant and tear-free via the write order. The regression tests
 # fullscreen_toggle_targets_focused_window_not_stale_selection,
 # layout_mode_switch_preserves_window_order and
 # fullscreen_toggle_directions_pick_their_arrange_mode are included and
