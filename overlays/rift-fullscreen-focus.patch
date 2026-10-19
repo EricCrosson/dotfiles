@@ -132,7 +132,7 @@ index 21e4a04..e48ca38 100644
                  warn!(error = ?e, "{}", context);
                  false
 diff --git a/src/actor/reactor/animation.rs b/src/actor/reactor/animation.rs
-index b78c872..92ff830 100644
+index b78c872..d1e20c7 100644
 --- a/src/actor/reactor/animation.rs
 +++ b/src/actor/reactor/animation.rs
 @@ -969,13 +969,21 @@ impl AnimationManager {
@@ -148,10 +148,10 @@ index b78c872..92ff830 100644
 -            && setting.unwrap_or(reactor.config.settings.animate)
 -            && !(setting.is_none() && power::is_low_power_mode_enabled());
 +        // A forced animate (fullscreen toggles) animates regardless of the
-+        // configured animate setting; the position-write tear would otherwise
-+        // read as a discrete background flash.
++        // configured animate setting and of Low Power Mode: the position-write
++        // tear it masks would otherwise read as a discrete background flash.
 +        let animate_camera = if force_animate {
-+            !is_resize && !power::is_low_power_mode_enabled()
++            !is_resize
 +        } else {
 +            !is_resize
 +                && setting.unwrap_or(reactor.config.settings.animate)
