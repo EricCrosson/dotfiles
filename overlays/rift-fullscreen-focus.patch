@@ -1,6 +1,20 @@
 --- a/src/layout_engine/engine.rs
 +++ b/src/layout_engine/engine.rs
-@@ -556,6 +556,25 @@
+@@ -490,8 +490,12 @@
+             let old_layout = workspace.active_layout();
+             let selected =
+                 old_layout.and_then(|layout| workspace.layout_system.selected_window(layout));
++            // Rebuild in tree order, not visible order: visible order visits a
++            // stack group's selected member first, which would move the
++            // focused window into the first slot on every stack↔traditional
++            // round trip.
+             let mut ordered = old_layout
+-                .map(|layout| workspace.layout_system.visible_windows_in_layout(layout))
++                .map(|layout| workspace.layout_system.all_windows_in_layout(layout))
+                 .unwrap_or_default();
+             // Keep windows hidden by stack/group selection when rebuilding into a new mode.
+             let mut hidden_windows: Vec<_> = self
+@@ -556,6 +560,25 @@
          }
      }
  
@@ -26,7 +40,7 @@
      fn toggle_orientation_for_system<S: LayoutSystem>(
          system: &mut S,
          layout: LayoutId,
-@@ -2286,6 +2305,7 @@
+@@ -2286,6 +2309,7 @@
                  EventResponse::default()
              }
              LayoutCommand::ToggleFullscreen => {
@@ -34,7 +48,7 @@
                  let raise_windows = self.workspaces[workspace_id]
                      .layout_system
                      .toggle_fullscreen_of_selection(layout);
-@@ -2301,6 +2321,7 @@
+@@ -2301,6 +2325,7 @@
                  }
              }
              LayoutCommand::ToggleFullscreenWithinGaps => {
@@ -42,7 +56,7 @@
                  let raise_windows = self.workspaces[workspace_id]
                      .layout_system
                      .toggle_fullscreen_within_gaps_of_selection(layout);
-@@ -3594,6 +3615,76 @@
+@@ -3594,6 +3619,134 @@
      }
  
      #[test]
@@ -113,6 +127,64 @@
 +            );
 +            assert!(exit.raise_windows.is_empty());
 +        }
++    }
++
++    #[test]
++    fn layout_mode_switch_preserves_window_order() {
++        let mut window_store = WindowStore::default();
++        let mut settings = LayoutSettings::default();
++        settings.mode = LayoutMode::Traditional;
++        let mut engine = LayoutEngine::new(&VirtualWorkspaceSettings::default(), &settings, None);
++        let space = SpaceId::new(96);
++        let w1 = WindowId::new(1, 1);
++        let w2 = WindowId::new(1, 2);
++
++        let _ = engine.handle_event(
++            &mut window_store,
++            LayoutEvent::SpaceExposed(space, CGSize::new(1728.0, 1083.0)),
++        );
++        let _ = engine.handle_event(
++            &mut window_store,
++            LayoutEvent::windows_observed(
++                space,
++                1,
++                vec![
++                    window_layout_info(w1, CGSize::new(864.0, 1083.0)),
++                    window_layout_info(w2, CGSize::new(864.0, 1083.0)),
++                ],
++                None,
++            ),
++        );
++
++        // The user is typing in the second window.
++        let _ = engine.handle_event(&mut window_store, LayoutEvent::WindowFocused(space, w2));
++        let (workspace, layout) = engine.workspaces.active_layout_for_space(space).unwrap();
++
++        // A stack↔traditional round trip (e.g. a set-layout macro) must not
++        // reorder siblings: the rebuild previously iterated
++        // visible_windows_in_layout, which visits a stack group's selected
++        // member first and moved the focused window into the first slot.
++        assert!(engine.switch_workspace_layout_mode(
++            &window_store,
++            space,
++            workspace,
++            LayoutMode::Stack,
++        ));
++        assert!(engine.switch_workspace_layout_mode(
++            &window_store,
++            space,
++            workspace,
++            LayoutMode::Traditional,
++        ));
++
++        let (_, layout) = engine.workspaces.active_layout_for_space(space).unwrap();
++        assert_eq!(
++            engine.workspaces[workspace].layout_system.all_windows_in_layout(layout),
++            vec![w1, w2],
++            "focused window must keep its original sibling position"
++        );
++        // Focus is preserved across the rebuild.
++        assert_eq!(engine.selected_window(space), Some(w2));
 +    }
 +
 +    #[test]
