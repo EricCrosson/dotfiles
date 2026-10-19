@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mlflow-cf-access"
+version = "0.1.0"
+description = "MLflow request-auth provider that attaches the Cloudflare Access JWT"
+requires-python = ">=3.9"
+
+[project.entry-points."mlflow.request_auth_provider"]
+cloudflare-access = "mlflow_cf_access:CloudflareAccessAuthProvider"
+
+[tool.setuptools]
+py-modules = ["mlflow_cf_access"]

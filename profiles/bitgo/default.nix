@@ -15,13 +15,30 @@
     # mlflow's bundled MCP server (mlflow mcp run) needs mlflow >= 3.4;
     # the main nixpkgs pin may lag, so draw python from a dedicated input.
     inherit (inputs.nixpkgs-mlflow.legacyPackages.${pkgs.system}) python3;
+    # Observed contract for mlflow.bitgo-prod.com: requests must carry the
+    # Cloudflare Access assertion (cf-access-jwt-assertion header) and HTTP
+    # basic auth where the personal access token is the password. The wrapper
+    # attaches the Cloudflare JWT through the mlflow-cf-access request-auth
+    # provider and reads the access token from the sops-materialized secret
+    # at invocation time; the workspace default matches
+    # agent-inference-service, overridable per-shell.
+    inherit (pkgs) cloudflared;
+    env = {
+      MLFLOW_TRACKING_URI = "https://mlflow.bitgo-prod.com";
+      MLFLOW_TRACKING_AUTH = "cloudflare-access";
+      MLFLOW_TRACKING_USERNAME = "ericcrosson@bitgo.com";
+      MLFLOW_WORKSPACE = "agent-inference-service";
+      MLFLOW_CF_ACCESS_APP = "https://mlflow.bitgo-prod.com";
+    };
+    tokenFile = config.bitgo.sops.secretPaths.mlflow_access_token;
   };
   slackMcpUrl = "https://mcp.slack.com/mcp";
+  inherit (aiRenderers) renderCodex;
   codexSettings = {
     model_provider = "openrouter";
     model = "openai/gpt-5.6-luna";
     model_reasoning_effort = "medium";
-    mcp_servers = aiRenderers.renderCodex aiManifest.mcpServers;
+    mcp_servers = renderCodex aiManifest.mcpServers;
     model_providers.openrouter = {
       name = "openrouter";
       base_url = "https://openrouter.ai/api/v1";

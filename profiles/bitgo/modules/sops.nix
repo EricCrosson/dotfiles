@@ -34,6 +34,10 @@ in {
         type = types.str;
         readOnly = true;
       };
+      mlflow_access_token = mkOption {
+        type = types.str;
+        readOnly = true;
+      };
     };
   };
 
@@ -54,6 +58,9 @@ in {
         litellm_master_key = {
           mode = "0600";
         };
+        mlflow_access_token = {
+          mode = "0600";
+        };
       };
     };
 
@@ -66,6 +73,7 @@ in {
         openrouter_api_key = config.sops.secrets.openrouter_api_key.path;
         linear_api_key = config.sops.secrets.linear_api_key.path;
         litellm_master_key = config.sops.secrets.litellm_master_key.path;
+        mlflow_access_token = config.sops.secrets.mlflow_access_token.path;
       }
       else {
         bedrock_opus_arn = "/dev/null";
@@ -74,6 +82,7 @@ in {
         openrouter_api_key = "/dev/null";
         linear_api_key = "/dev/null";
         litellm_master_key = "/dev/null";
+        mlflow_access_token = "/dev/null";
       };
   };
 }

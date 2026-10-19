@@ -147,6 +147,10 @@
         inherit pkgs;
         mlflowPython3 = nixpkgs-mlflow.legacyPackages.${system}.python3;
       };
+      mlflow-cf-access-test = import ../tests/mlflow-cf-access.nix {
+        inherit pkgs;
+        mlflowPython3 = nixpkgs-mlflow.legacyPackages.${system}.python3;
+      };
       zsh-compinit-test = import ../tests/zsh-compinit.nix {inherit pkgs;};
     in {
       inherit
@@ -167,6 +171,7 @@
         codex-config-sync-test
         omp-config-sync-test
         mlflow-mcp-test
+        mlflow-cf-access-test
         omp-mcp-sync-test
         ai-manifest-test
         ai-harness-parity-test
