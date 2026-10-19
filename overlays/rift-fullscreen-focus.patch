@@ -1363,7 +1363,7 @@ index 167ac3e..eab48e8 100644
          self.layouts
              .get(layout)
 diff --git a/src/layout_engine/systems/traditional.rs b/src/layout_engine/systems/traditional.rs
-index a8a7040..4e97aeb 100644
+index a8a7040..165ee8a 100644
 --- a/src/layout_engine/systems/traditional.rs
 +++ b/src/layout_engine/systems/traditional.rs
 @@ -987,6 +987,18 @@ impl LayoutSystem for TraditionalLayoutSystem {
@@ -1385,6 +1385,255 @@ index a8a7040..4e97aeb 100644
      fn has_any_fullscreen_node(&self, layout: LayoutId) -> bool {
          let root = self.root(layout);
          root.traverse_preorder(&self.tree.map)
+@@ -3015,49 +3027,69 @@ impl Layout {
+                 let is_horizontal = matches!(info.kind, HorizontalStack);
+                 let focused_child =
+                     selection.local_selection(map, node).unwrap_or_else(|| children[0]);
+-                let focused_idx = children.iter().position(|&c| c == focused_child).unwrap_or(0);
+-                let effective_stack_offset = if children.len() > 1 {
+-                    let focused_child = children[focused_idx];
+-                    let (focus_min, focus_fixed, _focus_max, _) = self.node_axis_constraints(
+-                        map,
+-                        window,
+-                        selection,
+-                        focused_child,
+-                        constraints,
+-                        stack_offset,
+-                        stack_line_thickness,
+-                        gaps,
+-                        is_horizontal,
+-                    );
+-                    let axis_len = if is_horizontal {
+-                        rect.size.width
+-                    } else {
+-                        rect.size.height
+-                    };
+-                    // Stack offset capping exists to preserve required focused size.
+-                    // A max-only cap is not a required reservation and should not shrink
+-                    // the stack slot or reduce offset budget.
+-                    let desired = focus_fixed.unwrap_or(focus_min).clamp(0.0, axis_len.max(0.0));
+-                    let max_offset = (axis_len - desired).max(0.0) / (children.len() - 1) as f64;
+-                    stack_offset.min(max_offset)
+-                } else {
+-                    stack_offset
++                // Only members that can fill a slot take one. A member that
++                // cannot grow to its slot (a fixed size, or a smaller maximum)
++                // left the margin strip only that slot covers showing the
++                // desktop; the fillers' slots together always span the
++                // container. The rest sit inside the front slot.
++                let slotted = self.stack_fillers(
++                    map,
++                    window,
++                    selection,
++                    &children,
++                    rect,
++                    stack_offset,
++                    constraints,
++                    gaps,
++                    stack_line_thickness,
++                    stack_line_horiz,
++                    stack_line_vert,
++                    is_horizontal,
++                );
++                let front_idx = slotted.iter().position(|&c| c == focused_child);
++                let effective_stack_offset = match front_idx {
++                    Some(front_idx) if slotted.len() > 1 => {
++                        let (focus_min, focus_fixed, _focus_max, _) = self.node_axis_constraints(
++                            map,
++                            window,
++                            selection,
++                            slotted[front_idx],
++                            constraints,
++                            stack_offset,
++                            stack_line_thickness,
++                            gaps,
++                            is_horizontal,
++                        );
++                        let axis_len = if is_horizontal {
++                            rect.size.width
++                        } else {
++                            rect.size.height
++                        };
++                        // Stack offset capping exists to preserve required focused size.
++                        // A max-only cap is not a required reservation and should not shrink
++                        // the stack slot or reduce offset budget.
++                        let desired =
++                            focus_fixed.unwrap_or(focus_min).clamp(0.0, axis_len.max(0.0));
++                        let max_offset = (axis_len - desired).max(0.0) / (slotted.len() - 1) as f64;
++                        stack_offset.min(max_offset)
++                    }
++                    _ => stack_offset,
+                 };
+                 let layout = stack_layout_result(
+                     rect,
+-                    children.len(),
++                    slotted.len(),
+                     effective_stack_offset,
+                     is_horizontal,
+                     stack_line_thickness,
+                     stack_line_horiz,
+                     stack_line_vert,
+                 );
+-                for (idx, &child) in children.iter().enumerate() {
+-                    let frame = if idx == focused_idx {
+-                        layout.get_frame_for_index(idx)
+-                    } else {
+-                        layout.get_frame_for_index(idx)
+-                    };
++                let front = layout.get_frame_for_index(front_idx.unwrap_or(0));
++                for &child in &children {
++                    let frame = slotted
++                        .iter()
++                        .position(|&c| c == child)
++                        .map_or(front, |idx| layout.get_frame_for_index(idx));
+                     self.apply_with_gaps(
+                         map,
+                         window,
+@@ -3110,6 +3142,73 @@ impl Layout {
+         }
+     }
+ 
++    /// The members of a stack that can fill a slot, in order: no fixed size
++    /// and no maximum below the slot on either axis. Every member when none
++    /// can. Slots grow as members drop out, so this repeats until stable.
++    fn stack_fillers(
++        &self,
++        map: &NodeMap,
++        window: &WindowIndex,
++        selection: &Selection,
++        children: &[NodeId],
++        rect: CGRect,
++        stack_offset: f64,
++        constraints: &HashMap<WindowId, WindowLayoutConstraints>,
++        gaps: &crate::common::config::GapSettings,
++        stack_line_thickness: f64,
++        stack_line_horiz: crate::common::config::HorizontalPlacement,
++        stack_line_vert: crate::common::config::VerticalPlacement,
++        is_horizontal: bool,
++    ) -> Vec<NodeId> {
++        let fills = |child: NodeId, len: f64, horizontal: bool| {
++            let (_, fixed, max, _) = self.node_axis_constraints(
++                map,
++                window,
++                selection,
++                child,
++                constraints,
++                stack_offset,
++                stack_line_thickness,
++                gaps,
++                horizontal,
++            );
++            fixed.is_none() && max.is_none_or(|max| max + 0.5 >= len)
++        };
++        let mut fillers = children.to_vec();
++        loop {
++            let slot = stack_layout_result(
++                rect,
++                fillers.len(),
++                stack_offset,
++                is_horizontal,
++                stack_line_thickness,
++                stack_line_horiz,
++                stack_line_vert,
++            )
++            .get_frame_for_index(0)
++            .size;
++            let (along, across) = if is_horizontal {
++                (slot.width, slot.height)
++            } else {
++                (slot.height, slot.width)
++            };
++            let next: Vec<_> = fillers
++                .iter()
++                .copied()
++                .filter(|&child| {
++                    fills(child, along, is_horizontal) && fills(child, across, !is_horizontal)
++                })
++                .collect();
++            if next.is_empty() {
++                return children.to_vec();
++            }
++            if next.len() == fillers.len() {
++                return fillers;
++            }
++            fillers = next;
++        }
++    }
++
+     fn layout_axis(
+         &self,
+         map: &NodeMap,
+@@ -4442,6 +4541,70 @@ mod tests {
+         );
+     }
+ 
++    #[test]
++    fn stack_slots_cover_the_container_when_a_member_cannot_fill_one() {
++        let mut system = TraditionalLayoutSystem::default();
++        let layout = system.create_layout();
++        let root = system.root(layout);
++        system.tree.data.layout.set_kind(root, LayoutKind::HorizontalStack);
++        let [w1, w2, w3, fixed] = [31, 32, 33, 34].map(w);
++        for wid in [w1, w2, w3, fixed] {
++            system.add_window_after_selection(layout, wid);
++        }
++        system.select_window(layout, w2);
++
++        // A window whose size cannot be set (Safari reported one at 1x32):
++        // it keeps its size wherever its slot puts it.
++        let mut constraints = HashMap::default();
++        constraints.insert(
++            fixed,
++            WindowLayoutConstraints {
++                is_resizable: false,
++                locked_width: 1.0,
++                locked_height: 32.0,
++                ..Default::default()
++            }
++            .normalized(),
++        );
++        let screen = CGRect::new(CGPoint::new(0.0, 0.0), CGSize::new(1728.0, 1083.0));
++        let frames: HashMap<WindowId, CGRect> = system
++            .calculate_layout(
++                layout,
++                screen,
++                40.0,
++                &constraints,
++                &Default::default(),
++                0.0,
++                Default::default(),
++                Default::default(),
++            )
++            .into_iter()
++            .collect();
++
++        // Every point shows a window: the last slot's margin strip used to be
++        // covered by the fixed window's slot alone and showed the desktop.
++        let covered = |x: f64, y: f64| {
++            frames.values().any(|f| {
++                f.origin.x <= x
++                    && x < f.origin.x + f.size.width
++                    && f.origin.y <= y
++                    && y < f.origin.y + f.size.height
++            })
++        };
++        for y in [5.0, 541.0, 1078.0] {
++            for x in (0..1728).step_by(4).map(f64::from) {
++                assert!(covered(x, y), "({x}, {y}) is uncovered: {frames:?}");
++            }
++        }
++        // The window that cannot fill a slot sits inside the front one.
++        let (front, small) = (frames[&w2], frames[&fixed]);
++        assert!(
++            front.origin.x <= small.origin.x
++                && small.origin.x + small.size.width <= front.origin.x + front.size.width,
++            "{small:?} must sit inside the front slot {front:?}"
++        );
++    }
++
+     #[test]
+     fn stack_offset_is_capped_to_respect_focused_fixed_width() {
+         use crate::common::config::StackDefaultOrientation;
 diff --git a/src/layout_engine/workspaces.rs b/src/layout_engine/workspaces.rs
 index 5e83dbf..a9238d7 100644
 --- a/src/layout_engine/workspaces.rs

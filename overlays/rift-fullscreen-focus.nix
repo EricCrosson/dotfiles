@@ -30,16 +30,20 @@
 # - stage the instant writes of toggles and layout switches by z-order: a
 #   growing foreground first, a shrinking one last, the second stage once the
 #   first shows in the window server (a clamped size counts; 150ms deadline),
-#   dropping held writes that a newer arrange superseded.
+#   dropping held writes that a newer arrange superseded;
+# - give stack slots only to windows that can fill them, so the stack always
+#   covers the screen (a non-resizable 1x32 Safari window left a 40px strip
+#   at the right edge showing the desktop).
 # Measured live with a window-server probe, two-window round trips show no
-# third window or desktop at any probed point. In nested layouts a 40px edge
-# strip can still show the desktop for up to ~70ms where one window's
-# position and size land separately (AX has no atomic frame write).
-# Regression tests in the patch cover the selection, restore, order and
-# staging fixes (each observed failing before its fix) and the instant
-# toggles; all pass against the 0.6.7 tree. The position-before-size order
-# was verified live; its unit test needs main's FrameTarget mock. None has
-# run in upstream CI yet.
+# third window or desktop at any probed point. With three or more windows a
+# 40px peek strip can still flicker (desktop or a neighbor, up to ~70ms)
+# where one window's position and size land separately (AX has no atomic
+# frame write).
+# Regression tests in the patch cover the selection, restore, order, staging
+# and stack coverage fixes (each observed failing before its fix) and the
+# instant toggles; all pass against the 0.6.7 tree. The position-before-size
+# order was verified live; its unit test needs main's FrameTarget mock. None
+# has run in upstream CI yet.
 #
 # doCheck is disabled: rift's macOS-Space-sensitive reactor tests fail in a
 # local sandbox on this host regardless of the patch (unpatched
