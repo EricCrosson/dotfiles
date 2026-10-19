@@ -48,14 +48,14 @@ index 7253234..442cb80 100644
  
  struct PendingFrame {
 diff --git a/src/actor/reactor.rs b/src/actor/reactor.rs
-index 21e4a04..e48ca38 100644
+index 21e4a04..6a0e059 100644
 --- a/src/actor/reactor.rs
 +++ b/src/actor/reactor.rs
 @@ -2555,6 +2555,7 @@ impl Reactor {
              for _ in 0..outcome.arrange.passes.max(1) {
                  layout_changed |= self.update_layout_or_warn(
                      outcome.arrange.is_resize,
-+                    outcome.arrange.animate,
++                    outcome.arrange.staged,
                      matches!(
                          self.workspace_switch_manager.workspace_switch_state,
                          WorkspaceSwitchState::Active
@@ -67,7 +67,7 @@ index 21e4a04..e48ca38 100644
 -                    self.update_layout_or_warn(outcome.arrange.is_resize, false, Some(space));
 +                layout_changed |= self.update_layout_or_warn(
 +                    outcome.arrange.is_resize,
-+                    outcome.arrange.animate,
++                    outcome.arrange.staged,
 +                    false,
 +                    Some(space),
 +                );
@@ -104,13 +104,13 @@ index 21e4a04..e48ca38 100644
      pub(crate) fn update_layout_or_warn(
          &mut self,
          is_resize: bool,
-+        force_animate: bool,
++        staged: bool,
          is_workspace_switch: bool,
          space_scope: Option<SpaceId>,
      ) -> bool {
          self.update_layout_or_warn_with(
              is_resize,
-+            force_animate,
++            staged,
              is_workspace_switch,
              space_scope,
              "Layout update failed",
@@ -118,7 +118,7 @@ index 21e4a04..e48ca38 100644
      pub(crate) fn update_layout_or_warn_with(
          &mut self,
          is_resize: bool,
-+        force_animate: bool,
++        staged: bool,
          is_workspace_switch: bool,
          space_scope: Option<SpaceId>,
          context: &'static str,
@@ -127,44 +127,282 @@ index 21e4a04..e48ca38 100644
              self.layout_update_count += 1;
          }
 -        LayoutManager::update_layout(self, is_resize, is_workspace_switch, space_scope)
-+        LayoutManager::update_layout(self, is_resize, force_animate, is_workspace_switch, space_scope)
++        LayoutManager::update_layout(self, is_resize, staged, is_workspace_switch, space_scope)
              .unwrap_or_else(|e| {
                  warn!(error = ?e, "{}", context);
                  false
 diff --git a/src/actor/reactor/animation.rs b/src/actor/reactor/animation.rs
-index b78c872..d1e20c7 100644
+index b78c872..bade09a 100644
 --- a/src/actor/reactor/animation.rs
 +++ b/src/actor/reactor/animation.rs
-@@ -969,13 +969,21 @@ impl AnimationManager {
+@@ -4,7 +4,7 @@ use std::time::{Duration, Instant};
+ use crossbeam_channel::{Receiver, Sender};
+ use objc2_core_foundation::{CGPoint, CGRect, CGSize};
+ use parking_lot::Mutex;
+-use tracing::{debug, trace};
++use tracing::{debug, trace, warn};
+ 
+ use super::TransactionId;
+ use crate::actor::app::{AppThreadHandle, FrameMode, FrameSource, Request, WindowId, pid_t};
+@@ -151,6 +151,102 @@ pub struct Animation {
+     display: u32,
+     windows: Vec<PresentedWindow>,
+     handled_windows: Vec<WindowId>,
++    stage: Option<WriteStage>,
++}
++
++/// Orders the instant writes of an arrange whose windows overlap before or
++/// after it, so no window is caught mid-write in front of the old or the new
++/// view (see [`Animation::skip_to_end`]).
++#[derive(Debug)]
++struct WriteStage {
++    /// The window that ends up in front: the arrange's selection.
++    foreground: WindowId,
++    /// Window-server ids of the arranged windows, to see a stage land.
++    server_ids: HashMap<WindowId, WindowServerId>,
++}
++
++impl WriteStage {
++    /// Split `windows` into the writes to send first and the ones to send
++    /// once those have landed. A growing foreground goes first: it covers the
++    /// background windows while they move. A shrinking one goes last: it
++    /// reveals background windows already in place. `None` when there is
++    /// nothing to order.
++    fn split<'a>(
++        &self,
++        windows: &'a [PresentedWindow],
++    ) -> Option<(Vec<&'a PresentedWindow>, Vec<&'a PresentedWindow>)> {
++        let foreground = windows.iter().find(|window| window.wid == self.foreground)?;
++        let background: Vec<_> =
++            windows.iter().filter(|window| window.wid != self.foreground).collect();
++        if background.is_empty() {
++            return None;
++        }
++        let area = |rect: CGRect| rect.size.width * rect.size.height;
++        Some(if area(foreground.to) >= area(foreground.from) {
++            (vec![foreground], background)
++        } else {
++            (background, vec![foreground])
++        })
++    }
++}
++
++/// How long a staged arrange waits for its first stage to reach the screen
++/// before writing the rest anyway: an unresponsive app must not strand them.
++#[cfg_attr(test, allow(dead_code))]
++const STAGE_DEADLINE: Duration = Duration::from_millis(150);
++
++/// Send `then` once every first-stage window shows its target on screen.
++#[cfg(not(test))]
++fn release_when_landed(
++    landed: Vec<(WindowServerId, CGRect)>,
++    then: Vec<(AppThreadHandle, Request)>,
++) {
++    release_when(
++        landed,
++        then,
++        crate::sys::window_server::window_bounds,
++        STAGE_DEADLINE,
++    );
++}
++
++/// Tests have no window server: the stages are sent in order, immediately.
++#[cfg(test)]
++fn release_when_landed(
++    _landed: Vec<(WindowServerId, CGRect)>,
++    then: Vec<(AppThreadHandle, Request)>,
++) {
++    for (handle, request) in then {
++        _ = handle.send(request);
++    }
++}
++
++/// Send `then` once `bounds` reports every `landed` window at its target, or
++/// once `deadline` passes.
++fn release_when(
++    landed: Vec<(WindowServerId, CGRect)>,
++    then: Vec<(AppThreadHandle, Request)>,
++    bounds: impl Fn(WindowServerId) -> Option<CGRect> + Send + 'static,
++    deadline: Duration,
++) {
++    let release = move || {
++        let start = Instant::now();
++        while !landed
++            .iter()
++            .all(|&(wsid, target)| bounds(wsid).is_some_and(|frame| frame.same_as(target)))
++        {
++            if start.elapsed() >= deadline {
++                debug!(?deadline, "Staged arrange: first stage did not land in time");
++                break;
++            }
++            std::thread::sleep(Duration::from_millis(1));
++        }
++        for (handle, request) in then {
++            _ = handle.send(request);
++        }
++    };
++    if let Err(err) = std::thread::Builder::new().name("rift-frame-stage".into()).spawn(release) {
++        warn!(?err, "Failed to start a staged arrange's second stage");
++    }
+ }
+ 
+ #[derive(Clone, Debug)]
+@@ -969,6 +1065,7 @@ impl AnimationManager {
          space: SpaceId,
          layout: &[(WindowId, CGRect)],
          is_resize: bool,
-+        force_animate: bool,
++        stage_around: Option<WindowId>,
          skip_wid: Option<WindowId>,
      ) -> bool {
          reactor.retire_presentations();
-         let setting = reactor.layout_manager.layout_engine.layout_specific_animate_settings(space);
--        let animate_camera = !is_resize
--            && setting.unwrap_or(reactor.config.settings.animate)
--            && !(setting.is_none() && power::is_low_power_mode_enabled());
-+        // A forced animate (fullscreen toggles) animates regardless of the
-+        // configured animate setting and of Low Power Mode: the position-write
-+        // tear it masks would otherwise read as a discrete background flash.
-+        let animate_camera = if force_animate {
-+            !is_resize
-+        } else {
-+            !is_resize
-+                && setting.unwrap_or(reactor.config.settings.animate)
-+                && !(setting.is_none() && power::is_low_power_mode_enabled())
+@@ -1000,6 +1097,10 @@ impl AnimationManager {
+             return false;
+         };
+         anim.display = screen.id.as_u32();
++        anim.stage = stage_around.map(|foreground| WriteStage {
++            foreground,
++            server_ids: HashMap::default(),
++        });
+         let mut any_frame_changed = camera;
+ 
+         for &(wid, target_frame) in layout {
+@@ -1052,6 +1153,9 @@ impl AnimationManager {
+             if is_active {
+                 trace!(?wid, ?current_frame, ?target_frame, "Animating visible window");
+                 anim.add_window(&app_state.handle, wid, current_frame, target_frame, txid);
++                if let Some((stage, wsid)) = anim.stage.as_mut().zip(window_server_id) {
++                    stage.server_ids.insert(wid, wsid);
++                }
+             } else {
+                 anim.mark_handled(wid);
+                 trace!(
+@@ -1395,6 +1499,7 @@ impl Animation {
+             display: 0,
+             windows: vec![],
+             handled_windows: vec![],
++            stage: None,
+         }
+     }
+ 
+@@ -1428,15 +1533,30 @@ impl Animation {
+         }
+     }
+ 
++    /// Write every window's final frame. A staged arrange orders the writes
++    /// around its foreground (see [`WriteStage::split`]) and sends the second
++    /// stage once the first is on screen.
+     pub fn skip_to_end(&self) {
+-        for window in &self.windows {
+-            _ = window.handle.send(Request::set_window_frame(
+-                window.wid,
+-                window.to,
+-                window.txid,
+-                true,
+-            ));
++        let write = |window: &PresentedWindow| {
++            Request::set_window_frame(window.wid, window.to, window.txid, true)
 +        };
-         let presentation = reactor.present_camera(space, animate_camera, None, skip_wid);
-         let camera = presentation.is_some();
-         let presented = presentation.unwrap_or_default();
++        let staged =
++            self.stage.as_ref().and_then(|stage| Some((stage, stage.split(&self.windows)?)));
++        let Some((stage, (first, then))) = staged else {
++            for window in &self.windows {
++                _ = window.handle.send(write(window));
++            }
++            return;
++        };
++        for window in &first {
++            _ = window.handle.send(write(window));
+         }
++        let landed = first
++            .iter()
++            .filter_map(|window| stage.server_ids.get(&window.wid).map(|&id| (id, window.to)))
++            .collect();
++        let then = then.iter().map(|window| (window.handle.clone(), write(window))).collect();
++        release_when_landed(landed, then);
+     }
+ 
+     fn is_empty(&self) -> bool { self.windows.is_empty() }
+@@ -2414,4 +2534,75 @@ mod tests {
+         );
+         assert_set_window_frame(&requests[3], wid, rect(80.0, 90.0, 10.0, 10.0));
+     }
++
++    /// Waits up to five seconds for the next request on `rx`.
++    fn next_request_within(rx: &mut crate::actor::Receiver<Request>) -> Option<Request> {
++        let start = Instant::now();
++        while start.elapsed() < Duration::from_secs(5) {
++            if let Ok((_, request)) = rx.try_recv() {
++                return Some(request);
++            }
++            std::thread::sleep(Duration::from_millis(1));
++        }
++        None
++    }
++
++    #[test]
++    fn staged_release_waits_for_the_first_stage_to_land() {
++        use std::sync::atomic::{AtomicBool, Ordering};
++
++        let (tx, mut rx) = crate::actor::channel();
++        let handle = AppThreadHandle::new_for_test(tx);
++        let target = rect(40.0, 0.0, 960.0, 1000.0);
++        let landed = Arc::new(AtomicBool::new(false));
++        let bounds = {
++            let landed = landed.clone();
++            move |_| {
++                Some(if landed.load(Ordering::SeqCst) {
++                    target
++                } else {
++                    rect(500.0, 0.0, 500.0, 1000.0)
++                })
++            }
++        };
++        let write =
++            Request::set_window_frame(WindowId::new(1, 1), target, TransactionId::default(), true);
++        release_when(
++            vec![(WindowServerId::new(7), target)],
++            vec![(handle, write)],
++            bounds,
++            Duration::from_secs(60),
++        );
++
++        std::thread::sleep(Duration::from_millis(30));
++        assert!(
++            rx.try_recv().is_err(),
++            "the second stage must wait for the first to land"
++        );
++        landed.store(true, Ordering::SeqCst);
++        assert!(
++            matches!(next_request_within(&mut rx), Some(Request::SetWindowFrames(..))),
++            "the second stage must follow once the first lands"
++        );
++    }
++
++    #[test]
++    fn staged_release_writes_the_rest_when_the_first_stage_never_lands() {
++        let (tx, mut rx) = crate::actor::channel();
++        let handle = AppThreadHandle::new_for_test(tx);
++        let target = rect(40.0, 0.0, 960.0, 1000.0);
++        let write =
++            Request::set_window_frame(WindowId::new(1, 1), target, TransactionId::default(), true);
++        // An unresponsive app never applies its frame.
++        release_when(
++            vec![(WindowServerId::new(7), target)],
++            vec![(handle, write)],
++            |_| None,
++            Duration::from_millis(20),
++        );
++        assert!(
++            matches!(next_request_within(&mut rx), Some(Request::SetWindowFrames(..))),
++            "an unresponsive first stage must not strand the rest"
++        );
++    }
+ }
 diff --git a/src/actor/reactor/events/command.rs b/src/actor/reactor/events/command.rs
-index 09075d6..f973002 100644
+index 09075d6..f640923 100644
 --- a/src/actor/reactor/events/command.rs
 +++ b/src/actor/reactor/events/command.rs
-@@ -44,6 +44,10 @@ pub fn handle_command_layout(
+@@ -44,6 +44,11 @@ pub fn handle_command_layout(
      } = payload;
      info!(?cmd);
      let is_move_node = matches!(cmd, LayoutCommand::MoveNode(_));
@@ -172,156 +410,143 @@ index 09075d6..f973002 100644
 +        cmd,
 +        LayoutCommand::ToggleFullscreen | LayoutCommand::ToggleFullscreenWithinGaps
 +    );
++    let is_layout_switch = matches!(cmd, LayoutCommand::SetWorkspaceLayout { .. });
      let is_selection_command = matches!(cmd, LayoutCommand::Ascend | LayoutCommand::Descend);
      let is_focus_command = matches!(
          cmd,
-@@ -167,13 +171,24 @@ pub fn handle_command_layout(
+@@ -167,13 +172,19 @@ pub fn handle_command_layout(
      // commands provide one, so preserve their no-op behavior.
      let needs_arrange = response_changed
          || (!is_focus_command && !is_selection_command && !is_virtual_workspace_command);
-+    // A fullscreen toggle splits by direction. Entering animates: the resize
-+    // needs a position write that macOS clamps cannot avoid exposing the old
-+    // frame, and an interpolated transition presents that exposure as
-+    // deliberate motion instead of a discrete flash. Exiting is tear-free at
-+    // instant speed because the write order moves position before size, so
-+    // the intermediate frame overhangs off-screen harmlessly. The raise list
-+    // is non-empty exactly when the toggle enters fullscreen.
-+    let fullscreen_exit = is_fullscreen_toggle && response.raise_windows.is_empty();
++    // Fullscreen toggles apply instantly in both directions, whatever the
++    // configured animate setting: every interpolated frame is another split
++    // position/size write, so animating a toggle reads as stutter.
      let mut outcome = if needs_arrange {
 -        EventOutcome::layout_changed(false)
-+        EventOutcome::layout_changed(fullscreen_exit)
++        EventOutcome::layout_changed(is_fullscreen_toggle)
      } else {
          EventOutcome::no_change()
      }
      .with_layout_response(response, workspace_space)
      .with_arrange_space_scope(arrange_space_scope);
-+    if is_fullscreen_toggle && !fullscreen_exit {
-+        outcome.arrange.animate = true;
-+    }
++    // Toggles and layout switches move windows that overlap before or after
++    // (the toggled window, the stack): order their writes by z-order.
++    outcome.arrange.staged = is_fullscreen_toggle || is_layout_switch;
      outcome.broadcast_selection_changed = selection_changed;
      if is_move_node && let Some(window) = post_arrange_mouse_warp {
          outcome.post_arrange_mouse_warp = Some(window);
 diff --git a/src/actor/reactor/events/outcome.rs b/src/actor/reactor/events/outcome.rs
-index 102ffd2..edd05f1 100644
+index 102ffd2..58485eb 100644
 --- a/src/actor/reactor/events/outcome.rs
 +++ b/src/actor/reactor/events/outcome.rs
-@@ -95,6 +95,8 @@ pub(crate) struct EventOutcome {
+@@ -95,6 +95,9 @@ pub(crate) struct EventOutcome {
  pub(crate) struct ArrangeRequest {
      pub(crate) passes: u8,
      pub(crate) is_resize: bool,
-+    /// Animate this arrange even when the configured animate setting is off.
-+    pub(crate) animate: bool,
++    /// Order this arrange's instant writes by z-order around the selection
++    /// (see `Animation::skip_to_end`), for transitions where windows overlap.
++    pub(crate) staged: bool,
      pub(crate) window_was_destroyed: bool,
      pub(crate) space_scope: Option<SpaceId>,
      pub(crate) secondary_space_scope: Option<SpaceId>,
-@@ -161,6 +163,7 @@ impl EventOutcome {
+@@ -161,6 +164,7 @@ impl EventOutcome {
              }
              self.arrange.passes = self.arrange.passes.saturating_add(other.arrange.passes).max(1);
              self.arrange.is_resize |= other.arrange.is_resize;
-+            self.arrange.animate |= other.arrange.animate;
++            self.arrange.staged |= other.arrange.staged;
              self.arrange.window_was_destroyed |= other.arrange.window_was_destroyed;
          }
          self.focused_window = other.focused_window.or(self.focused_window);
-@@ -175,6 +178,7 @@ impl EventOutcome {
+@@ -175,6 +179,7 @@ impl EventOutcome {
              arrange: ArrangeRequest {
                  passes: 1,
                  is_resize,
-+                animate: false,
++                staged: false,
                  window_was_destroyed: false,
                  space_scope: None,
                  secondary_space_scope: None,
 diff --git a/src/actor/reactor/managers.rs b/src/actor/reactor/managers.rs
-index 5ffb3e0..f968c90 100644
+index 5ffb3e0..583cdbf 100644
 --- a/src/actor/reactor/managers.rs
 +++ b/src/actor/reactor/managers.rs
-@@ -250,11 +250,18 @@ impl LayoutManager {
+@@ -250,11 +250,12 @@ impl LayoutManager {
      pub fn update_layout(
          reactor: &mut Reactor,
          is_resize: bool,
-+        force_animate: bool,
++        staged: bool,
          is_workspace_switch: bool,
          space_scope: Option<SpaceId>,
      ) -> Result<bool, crate::model::reactor::ReactorError> {
          let layout_result = Self::calculate_layout(reactor, space_scope);
 -        Self::apply_layout(reactor, layout_result, is_resize, is_workspace_switch)
-+        Self::apply_layout(
-+            reactor,
-+            layout_result,
-+            is_resize,
-+            force_animate,
-+            is_workspace_switch,
-+        )
++        Self::apply_layout(reactor, layout_result, is_resize, staged, is_workspace_switch)
      }
  
      fn calculate_layout(reactor: &mut Reactor, space_scope: Option<SpaceId>) -> LayoutResult {
-@@ -331,6 +338,7 @@ impl LayoutManager {
+@@ -331,6 +332,7 @@ impl LayoutManager {
          reactor: &mut Reactor,
          layout_result: LayoutResult,
          is_resize: bool,
-+        force_animate: bool,
++        staged: bool,
          is_workspace_switch: bool,
      ) -> Result<bool, crate::model::reactor::ReactorError> {
          let main_window = reactor.main_window();
-@@ -453,7 +461,14 @@ impl LayoutManager {
+@@ -452,8 +454,19 @@ impl LayoutManager {
+                 any_frame_changed |=
                      AnimationManager::instant_layout(reactor, space, &layout, skip_wid);
              } else {
-                 any_frame_changed |=
+-                any_frame_changed |=
 -                    AnimationManager::animate_layout(reactor, space, &layout, is_resize, skip_wid);
-+                    AnimationManager::animate_layout(
-+                        reactor,
-+                        space,
-+                        &layout,
-+                        is_resize,
-+                        force_animate,
-+                        skip_wid,
-+                    );
++                // A staged arrange orders its writes around the selection,
++                // the window that ends up in front.
++                let stage_around = staged
++                    .then(|| reactor.layout_manager.layout_engine.selected_window(space))
++                    .flatten();
++                any_frame_changed |= AnimationManager::animate_layout(
++                    reactor,
++                    space,
++                    &layout,
++                    is_resize,
++                    stage_around,
++                    skip_wid,
++                );
              }
          }
  
 diff --git a/src/actor/reactor/tests.rs b/src/actor/reactor/tests.rs
-index 325846f..8dc71e7 100644
+index 325846f..843a67b 100644
 --- a/src/actor/reactor/tests.rs
 +++ b/src/actor/reactor/tests.rs
-@@ -78,6 +78,67 @@ fn geometry_commands_request_arrangement_without_camera_movement() {
+@@ -78,6 +78,112 @@ fn geometry_commands_request_arrangement_without_camera_movement() {
      }
  }
  
 +#[test]
-+fn fullscreen_toggle_directions_pick_their_arrange_mode() {
++fn fullscreen_toggles_apply_instantly_in_both_directions() {
 +    let (mut apps, mut reactor) = test_context();
 +    let screen = CGRect::new(CGPoint::new(0., 0.), CGSize::new(1000., 1000.));
 +    let space = SpaceId::new(1);
 +    apps.make_app_and_settle_on_screen(&mut reactor, screen, space, 1, make_windows(1));
 +    apps.requests();
-+    // Entering fullscreen keeps the (unavoidable) position-write tear visible
-+    // as a discrete flash, so the enter direction animates: the interpolation
-+    // presents the same exposure as deliberate motion instead.
-+    let enter = reactor.dispatch_test_layout_command(LayoutCommand::ToggleFullscreen);
-+    assert_eq!(enter.arrange.passes, 1, "enter must reconcile window frames");
-+    assert!(
-+        !enter.arrange.is_resize && enter.arrange.animate,
-+        "fullscreen enter must animate instead of exposing the position-write \
-+         tear as a discrete flash"
-+    );
-+    // Exiting fullscreen is tear-free at instant speed once the write order
-+    // moves position before size (the intermediate overhangs off-screen), so
-+    // exit stays instant.
-+    let exit = reactor.dispatch_test_layout_command(LayoutCommand::ToggleFullscreen);
-+    assert_eq!(exit.arrange.passes, 1, "exit must reconcile window frames");
-+    assert!(
-+        exit.arrange.is_resize && !exit.arrange.animate,
-+        "fullscreen exit must apply its frames instantly: the position-first \
-+         write order already hides the intermediate"
-+    );
++    // Every interpolated frame of a toggle is another split position/size
++    // write, so toggles skip the animation whatever the animate setting.
++    for direction in ["enter", "exit"] {
++        let outcome = reactor.dispatch_test_layout_command(LayoutCommand::ToggleFullscreen);
++        assert_eq!(
++            outcome.arrange.passes, 1,
++            "{direction} must reconcile window frames"
++        );
++        assert!(outcome.arrange.is_resize, "{direction} must apply instantly");
++    }
 +    let outcome = reactor.dispatch_test_layout_command(LayoutCommand::MoveNode(Direction::Left));
 +    assert!(
-+        !outcome.arrange.is_resize && !outcome.arrange.animate,
++        !outcome.arrange.is_resize,
 +        "ordinary geometry commands keep their animation"
 +    );
 +}
 +
 +#[test]
-+fn fullscreen_toggle_directions_hold_in_scrolling_layouts() {
++fn scrolling_fullscreen_exit_raises_nothing() {
 +    let (mut apps, mut reactor) = test_context();
 +    let screen = CGRect::new(CGPoint::new(0., 0.), CGSize::new(1000., 1000.));
 +    let space = SpaceId::new(1);
@@ -331,26 +556,81 @@ index 325846f..8dc71e7 100644
 +        workspace: None,
 +        mode: LayoutMode::Scrolling,
 +    });
-+    // The scrolling layout system reports the raised window on both toggle
-+    // directions; the engine must normalize the exit response so the reactor
-+    // keeps exit instant and only animates the entry.
 +    let enter = reactor.dispatch_test_layout_command(LayoutCommand::ToggleFullscreen);
 +    assert!(
-+        !enter.arrange.is_resize && enter.arrange.animate,
-+        "scrolling fullscreen enter must animate"
++        enter.arrange.is_resize,
++        "scrolling fullscreen enter must apply instantly"
 +    );
++    // The scrolling system reported the toggled window on both directions;
++    // the engine normalizes the exit so it does not re-raise (and thereby
++    // re-activate) a window that is already in front.
 +    let exit = reactor.dispatch_test_layout_command(LayoutCommand::ToggleFullscreen);
 +    assert!(
-+        exit.arrange.is_resize && !exit.arrange.animate,
-+        "scrolling fullscreen exit must stay instant: normalizing the exit \
-+         response keeps the direction detectable across layout systems"
++        exit.arrange.is_resize,
++        "scrolling fullscreen exit must apply instantly"
 +    );
++    assert!(
++        exit.layout_responses
++            .iter()
++            .all(|(response, _)| response.raise_windows.is_empty()),
++        "{:?}",
++        exit.layout_responses
++    );
++}
++
++/// Windows of full-frame writes, in request order.
++fn frame_write_order(requests: &[Request]) -> Vec<WindowId> {
++    requests
++        .iter()
++        .flat_map(|request| match request {
++            Request::SetWindowFrames(frames, _, crate::actor::app::FrameMode::Full, _) => {
++                frames.iter().map(|(wid, _)| *wid).collect()
++            }
++            _ => vec![],
++        })
++        .collect()
++}
++
++/// The write orders of a traditional -> stack -> traditional round trip with
++/// `focused` selected.
++fn stack_round_trip_write_orders(focused: WindowId) -> (Vec<WindowId>, Vec<WindowId>) {
++    let (mut apps, mut reactor) = test_context();
++    let screen = CGRect::new(CGPoint::new(0., 0.), CGSize::new(1000., 1000.));
++    let space = SpaceId::new(1);
++    reactor.handle_event(space_state_event(vec![screen], vec![Some(space)]));
++    make_active_app(&mut apps, &mut reactor, 1, make_windows(2), Some(focused));
++    apps.simulate_until_quiet(&mut reactor);
++    let mut switch = |mode| {
++        reactor.handle_test_layout_command(LayoutCommand::SetWorkspaceLayout {
++            workspace: None,
++            mode,
++        });
++        let requests = apps.requests();
++        let order = frame_write_order(&requests);
++        for event in apps.simulate_events_for_requests(requests) {
++            reactor.handle_event(event);
++        }
++        order
++    };
++    (switch(LayoutMode::Stack), switch(LayoutMode::Traditional))
++}
++
++#[test]
++fn stack_switches_write_a_growing_foreground_first_and_a_shrinking_one_last() {
++    let [left, right] = [WindowId::new(1, 1), WindowId::new(1, 2)];
++    // Entering grows the selected window over the others: it lands first,
++    // so the background windows move behind it instead of in front of the
++    // old tiles.
++    assert_eq!(stack_round_trip_write_orders(right).0, vec![right, left]);
++    // Leaving shrinks it: the background windows land first, so it reveals
++    // them already in their tiles.
++    assert_eq!(stack_round_trip_write_orders(left).1, vec![right, left]);
 +}
 +
  #[test]
  fn no_op_layout_command_does_not_schedule_arrange() {
      let mut reactor = test_reactor();
-@@ -3039,7 +3100,7 @@ fn topology_change_clears_stale_pending_hide_target_before_next_workspace_layout
+@@ -3039,7 +3145,7 @@ fn topology_change_clears_stale_pending_hide_target_before_next_workspace_layout
      let txid = reactor.transaction_manager.generate_next_txid(wsid);
      reactor.transaction_manager.store_txid(wsid, txid, hidden_target);
  
@@ -359,38 +639,47 @@ index 325846f..8dc71e7 100644
      assert!(
          apps.requests().is_empty(),
          "a stale pending target suppresses the hide write before topology invalidation"
-@@ -4401,6 +4462,7 @@ fn changed_layout_retargets_window_already_at_new_position_during_animation() {
-         space,
+@@ -4402,6 +4508,7 @@ fn changed_layout_retargets_window_already_at_new_position_during_animation() {
          &[(left, frame(228.)), (right, frame(1284.))],
          false,
-+        false,
          None,
++        None,
      ));
      manager.handle_message(rx.commands.try_recv().unwrap());
-@@ -4428,6 +4490,7 @@ fn changed_layout_retargets_window_already_at_new_position_during_animation() {
-         space,
+     let wsid = reactor.state.windows.window(right).unwrap().info.sys_id.unwrap();
+@@ -4429,6 +4536,7 @@ fn changed_layout_retargets_window_already_at_new_position_during_animation() {
          &[(left, frame(-1056.)), (right, frame(228.))],
          false,
-+        false,
          None,
++        None,
      ));
      manager.handle_message(rx.commands.try_recv().unwrap());
-@@ -4484,6 +4547,7 @@ fn animated_layout_handles_windows_without_server_ids() {
-         space,
+     apps.requests();
+@@ -4485,6 +4593,7 @@ fn animated_layout_handles_windows_without_server_ids() {
          &[(WindowId::new(1, 1), target)],
          true,
-+        false,
          None,
++        None,
      ));
  
+     let requests = apps.requests();
 diff --git a/src/layout_engine/engine.rs b/src/layout_engine/engine.rs
-index 9e94404..7a4385d 100644
+index 9e94404..dfcd400 100644
 --- a/src/layout_engine/engine.rs
 +++ b/src/layout_engine/engine.rs
-@@ -490,8 +490,12 @@ impl LayoutEngine {
+@@ -488,10 +488,19 @@ impl LayoutEngine {
+                 return false;
+             }
              let old_layout = workspace.active_layout();
-             let selected =
-                 old_layout.and_then(|layout| workspace.layout_system.selected_window(layout));
+-            let selected =
+-                old_layout.and_then(|layout| workspace.layout_system.selected_window(layout));
++            // Carry the window the user is in: the tree selection can trail
++            // the real focus when a focus notification was missed.
++            let selected = old_layout.and_then(|layout| {
++                self.focused_window
++                    .filter(|&wid| workspace.layout_system.contains_window(layout, wid))
++                    .or_else(|| workspace.layout_system.selected_window(layout))
++            });
 +            // Rebuild in tree order, not visible order: visible order visits a
 +            // stack group's selected member first, which would move the
 +            // focused window into the first slot on every stack↔traditional
@@ -401,7 +690,55 @@ index 9e94404..7a4385d 100644
                  .unwrap_or_default();
              // Keep windows hidden by stack/group selection when rebuilding into a new mode.
              let mut hidden_windows: Vec<_> = self
-@@ -556,6 +560,25 @@ impl LayoutEngine {
+@@ -522,18 +531,37 @@ impl LayoutEngine {
+         let Some(workspace) = self.workspaces.workspaces.get_mut(workspace_id) else {
+             return false;
+         };
+-        let new_layout = workspace.replace_layout_mode(mode, &self.layout_settings);
+-
+-        for wid in window_order {
+-            workspace.layout_system.add_window_after_selection(new_layout, wid);
+-        }
+-
+-        if let LayoutSystemKind::Floating(system) = &mut workspace.layout_system {
+-            system.spread_initial_windows();
+-        }
++        let layout = if let Some(restored) = workspace.restore_layout_mode(mode) {
++            // Reconcile the restored arrangement with the windows the stack
++            // held: drop those that left the workspace meanwhile, then insert
++            // newcomers after the carried selection like any new window.
++            for wid in workspace.layout_system.all_windows_in_layout(restored) {
++                if !window_order.contains(&wid) {
++                    workspace.layout_system.remove_window(wid);
++                }
++            }
++            if let Some(selected) = selected_window {
++                let _ = workspace.layout_system.select_window(restored, selected);
++            }
++            for &wid in &window_order {
++                if !workspace.layout_system.contains_window(restored, wid) {
++                    workspace.layout_system.add_window_after_selection(restored, wid);
++                }
++            }
++            restored
++        } else {
++            let new_layout = workspace.replace_layout_mode(mode, &self.layout_settings);
++            for &wid in &window_order {
++                workspace.layout_system.add_window_after_selection(new_layout, wid);
++            }
++            if let LayoutSystemKind::Floating(system) = &mut workspace.layout_system {
++                system.spread_initial_windows();
++            }
++            new_layout
++        };
+ 
+         if let Some(selected) = selected_window.filter(|wid| !self.floating.is_floating(*wid)) {
+-            let _ = workspace.layout_system.select_window(new_layout, selected);
++            let _ = workspace.layout_system.select_window(layout, selected);
+         }
+ 
+         if mode == LayoutMode::Scrolling {
+@@ -556,6 +584,25 @@ impl LayoutEngine {
          }
      }
  
@@ -427,7 +764,7 @@ index 9e94404..7a4385d 100644
      fn toggle_orientation_for_system<S: LayoutSystem>(
          system: &mut S,
          layout: LayoutId,
-@@ -2286,10 +2309,25 @@ impl LayoutEngine {
+@@ -2286,10 +2333,25 @@ impl LayoutEngine {
                  EventResponse::default()
              }
              LayoutCommand::ToggleFullscreen => {
@@ -454,7 +791,7 @@ index 9e94404..7a4385d 100644
                      EventResponse::default()
                  } else {
                      EventResponse {
-@@ -2301,10 +2339,19 @@ impl LayoutEngine {
+@@ -2301,10 +2363,19 @@ impl LayoutEngine {
                  }
              }
              LayoutCommand::ToggleFullscreenWithinGaps => {
@@ -475,7 +812,32 @@ index 9e94404..7a4385d 100644
                      EventResponse::default()
                  } else {
                      EventResponse {
-@@ -3593,6 +3640,134 @@ mod tests {
+@@ -2765,8 +2836,8 @@ impl LayoutEngine {
+         positions.into_iter().collect()
+     }
+ 
+-    #[cfg(test)]
+-    pub(crate) fn selected_window(&mut self, space: SpaceId) -> Option<WindowId> {
++    /// The selection of the active workspace's layout on `space`.
++    pub(crate) fn selected_window(&self, space: SpaceId) -> Option<WindowId> {
+         let (ws_id, layout) = self.workspaces.active_layout_for_space(space)?;
+         self.workspaces[ws_id].layout_system.selected_window(layout)
+     }
+@@ -2977,8 +3048,12 @@ impl LayoutEngine {
+ 
+                 let is_active_workspace =
+                     self.workspaces.active_workspace(space) == Some(workspace_id);
++                // Only the carried selection must end up on top. Raising
++                // activates each window's app, so raising every member made
++                // the activations race, and whichever landed last stole
++                // focus and the selection (and flashed over the others).
+                 let raise_windows = if is_active_workspace {
+-                    self.workspaces.windows_in_active_workspace(window_store, space)
++                    self.selected_window(space).into_iter().collect()
+                 } else {
+                     Vec::new()
+                 };
+@@ -3593,6 +3668,342 @@ mod tests {
          }
      }
  
@@ -578,7 +940,7 @@ index 9e94404..7a4385d 100644
 +
 +        // The user is typing in the second window.
 +        let _ = engine.handle_event(&mut window_store, LayoutEvent::WindowFocused(space, w2));
-+        let (workspace, layout) = engine.workspaces.active_layout_for_space(space).unwrap();
++        let (workspace, _) = engine.workspaces.active_layout_for_space(space).unwrap();
 +
 +        // A stack↔traditional round trip (e.g. a set-layout macro) must not
 +        // reorder siblings: the rebuild previously iterated
@@ -605,6 +967,214 @@ index 9e94404..7a4385d 100644
 +        );
 +        // Focus is preserved across the rebuild.
 +        assert_eq!(engine.selected_window(space), Some(w2));
++    }
++
++    #[test]
++    fn layout_switch_keeps_focused_window_selected_and_raises_only_it() {
++        let mut window_store = WindowStore::default();
++        let mut settings = LayoutSettings::default();
++        settings.mode = LayoutMode::Traditional;
++        let mut engine = LayoutEngine::new(&VirtualWorkspaceSettings::default(), &settings, None);
++        let space = SpaceId::new(97);
++        let [w1, w2, w3] = [1, 2, 3].map(|idx| WindowId::new(1, idx));
++
++        let _ = engine.handle_event(
++            &mut window_store,
++            LayoutEvent::SpaceExposed(space, CGSize::new(1728.0, 1083.0)),
++        );
++        let _ = engine.handle_event(
++            &mut window_store,
++            LayoutEvent::windows_observed(
++                space,
++                1,
++                [w1, w2, w3]
++                    .map(|wid| window_layout_info(wid, CGSize::new(576.0, 1083.0)))
++                    .to_vec(),
++                None,
++            ),
++        );
++        let _ = engine.handle_event(&mut window_store, LayoutEvent::WindowFocused(space, w2));
++        // A missed focus notification leaves the tree selection trailing the
++        // window the user is actually in.
++        let (workspace, layout) = engine.workspaces.active_layout_for_space(space).unwrap();
++        assert!(engine.workspaces[workspace].layout_system.select_window(layout, w1));
++
++        for mode in [LayoutMode::Stack, LayoutMode::Traditional] {
++            let response = engine.handle_virtual_workspace_command(
++                &mut window_store,
++                space,
++                &LayoutCommand::SetWorkspaceLayout { workspace: None, mode },
++            );
++            assert!(response.changed);
++            // Raising activates each window's app; raising every member made
++            // the activations race, so whichever landed last stole focus and
++            // the selection. Only the carried selection needs to be on top.
++            assert_eq!(response.raise_windows, vec![w2], "{mode:?}");
++            assert_eq!(response.focus_window, Some(w2), "{mode:?}");
++            assert_eq!(engine.selected_window(space), Some(w2), "{mode:?}");
++        }
++    }
++
++    const ROUND_TRIP_SCREEN: CGRect =
++        CGRect::new(CGPoint::new(0.0, 0.0), CGSize::new(1728.0, 1083.0));
++
++    /// A traditional engine tiling `windows` on `space`, with `focused` focused.
++    fn traditional_engine_with(
++        space: SpaceId,
++        windows: &[WindowId],
++        focused: WindowId,
++    ) -> (WindowStore, LayoutEngine) {
++        let mut window_store = WindowStore::default();
++        let mut settings = LayoutSettings::default();
++        settings.mode = LayoutMode::Traditional;
++        let mut engine = LayoutEngine::new(&VirtualWorkspaceSettings::default(), &settings, None);
++        let _ = engine.handle_event(
++            &mut window_store,
++            LayoutEvent::SpaceExposed(space, ROUND_TRIP_SCREEN.size),
++        );
++        let _ = engine.handle_event(
++            &mut window_store,
++            LayoutEvent::windows_observed(
++                space,
++                1,
++                windows
++                    .iter()
++                    .map(|&wid| window_layout_info(wid, CGSize::new(576.0, 1083.0)))
++                    .collect(),
++                None,
++            ),
++        );
++        let _ = engine.handle_event(&mut window_store, LayoutEvent::WindowFocused(space, focused));
++        (window_store, engine)
++    }
++
++    fn set_layout(
++        engine: &mut LayoutEngine,
++        window_store: &mut WindowStore,
++        space: SpaceId,
++        mode: LayoutMode,
++    ) {
++        let response = engine.handle_virtual_workspace_command(
++            window_store,
++            space,
++            &LayoutCommand::SetWorkspaceLayout { workspace: None, mode },
++        );
++        assert!(response.changed, "switch to {mode:?}");
++    }
++
++    fn layout_command(
++        engine: &mut LayoutEngine,
++        window_store: &mut WindowStore,
++        space: SpaceId,
++        command: LayoutCommand,
++    ) {
++        let _ = engine.handle_command(
++            window_store,
++            Some(space),
++            &[space],
++            &HashMap::default(),
++            command,
++        );
++    }
++
++    fn round_trip_frames(engine: &mut LayoutEngine, space: SpaceId) -> Vec<(WindowId, CGRect)> {
++        let gaps = engine.layout_settings.gaps.clone();
++        engine.calculate_layout(
++            space,
++            ROUND_TRIP_SCREEN,
++            &gaps,
++            0.0,
++            Default::default(),
++            Default::default(),
++        )
++    }
++
++    #[test]
++    fn stack_round_trip_restores_the_arrangement_it_left() {
++        let space = SpaceId::new(99);
++        let [w1, w2, w3] = [1, 2, 3].map(|idx| WindowId::new(1, idx));
++        let (mut store, mut engine) = traditional_engine_with(space, &[w1, w2, w3], w2);
++        // A lopsided, re-oriented arrangement that no rebuild reproduces.
++        layout_command(&mut engine, &mut store, space, LayoutCommand::ResizeWindowBy {
++            amount: 0.3,
++        });
++        layout_command(&mut engine, &mut store, space, LayoutCommand::ToggleOrientation);
++        let before = round_trip_frames(&mut engine, space);
++
++        set_layout(&mut engine, &mut store, space, LayoutMode::Stack);
++        assert_ne!(
++            round_trip_frames(&mut engine, space),
++            before,
++            "the stack view must show"
++        );
++        set_layout(&mut engine, &mut store, space, LayoutMode::Traditional);
++
++        assert_eq!(round_trip_frames(&mut engine, space), before);
++        assert_eq!(engine.selected_window(space), Some(w2));
++    }
++
++    #[test]
++    fn stack_round_trip_reconciles_windows_that_came_and_went() {
++        let space = SpaceId::new(100);
++        let [w1, w2, w3, w4] = [1, 2, 3, 4].map(|idx| WindowId::new(1, idx));
++        let (mut store, mut engine) = traditional_engine_with(space, &[w1, w2, w3], w2);
++        layout_command(&mut engine, &mut store, space, LayoutCommand::ToggleOrientation);
++
++        set_layout(&mut engine, &mut store, space, LayoutMode::Stack);
++        let _ = engine.handle_event(&mut store, LayoutEvent::WindowRemoved(w3));
++        let _ = engine.handle_event(
++            &mut store,
++            LayoutEvent::windows_observed(
++                space,
++                1,
++                vec![window_layout_info(w4, CGSize::new(576.0, 1083.0))],
++                None,
++            ),
++        );
++        set_layout(&mut engine, &mut store, space, LayoutMode::Traditional);
++
++        let (workspace, layout) = engine.workspaces.active_layout_for_space(space).unwrap();
++        assert_eq!(
++            engine.workspaces[workspace].layout_system.all_windows_in_layout(layout),
++            vec![w1, w2, w4],
++            "the closed window is gone and the new one follows the selection"
++        );
++        assert_eq!(engine.selected_window(space), Some(w2));
++        // The restored tree keeps its vertical root; a rebuild lays the
++        // windows out side by side again.
++        let frames = round_trip_frames(&mut engine, space);
++        assert!(
++            frames.iter().all(|(_, frame)| frame.origin.x == frames[0].1.origin.x),
++            "{frames:?}"
++        );
++    }
++
++    #[test]
++    fn layout_round_trip_outside_the_stack_still_rebuilds() {
++        let space = SpaceId::new(101);
++        let [w1, w2] = [1, 2].map(|idx| WindowId::new(1, idx));
++        let (mut store, mut engine) = traditional_engine_with(space, &[w1, w2], w2);
++        let even = round_trip_frames(&mut engine, space);
++        let lopsided = |engine: &mut LayoutEngine, store: &mut WindowStore| {
++            layout_command(engine, store, space, LayoutCommand::ResizeWindowBy {
++                amount: 0.3,
++            });
++            assert_ne!(round_trip_frames(engine, space), even);
++        };
++
++        // The jail-break binding (set-layout bsp, then traditional) relies on
++        // every non-stack round trip rebuilding an even tree.
++        lopsided(&mut engine, &mut store);
++        set_layout(&mut engine, &mut store, space, LayoutMode::Bsp);
++        set_layout(&mut engine, &mut store, space, LayoutMode::Traditional);
++        assert_eq!(round_trip_frames(&mut engine, space), even);
++
++        // Leaving the stack for another mode forgets the arrangement it left.
++        lopsided(&mut engine, &mut store);
++        set_layout(&mut engine, &mut store, space, LayoutMode::Stack);
++        set_layout(&mut engine, &mut store, space, LayoutMode::Bsp);
++        set_layout(&mut engine, &mut store, space, LayoutMode::Traditional);
++        assert_eq!(round_trip_frames(&mut engine, space), even);
 +    }
 +
      #[test]
@@ -635,10 +1205,10 @@ index e4fb441..0024fae 100644
              self.inner.has_any_fullscreen_node(layout)
          }
 diff --git a/src/layout_engine/systems/bsp.rs b/src/layout_engine/systems/bsp.rs
-index aa53211..aa37361 100644
+index aa53211..8ea1528 100644
 --- a/src/layout_engine/systems/bsp.rs
 +++ b/src/layout_engine/systems/bsp.rs
-@@ -1874,6 +1874,22 @@ impl LayoutSystem for BspLayoutSystem {
+@@ -1874,6 +1874,26 @@ impl LayoutSystem for BspLayoutSystem {
          vec![]
      }
  
@@ -652,7 +1222,11 @@ index aa53211..aa37361 100644
 +                fullscreen_within_gaps,
 +                ..
 +            }) => {
-+                *if within_gaps { fullscreen_within_gaps } else { fullscreen }
++                *if within_gaps {
++                    fullscreen_within_gaps
++                } else {
++                    fullscreen
++                }
 +            }
 +            _ => false,
 +        }
@@ -706,3 +1280,116 @@ index a8a7040..4e97aeb 100644
      fn has_any_fullscreen_node(&self, layout: LayoutId) -> bool {
          let root = self.root(layout);
          root.traverse_preorder(&self.tree.map)
+diff --git a/src/layout_engine/workspaces.rs b/src/layout_engine/workspaces.rs
+index 5e83dbf..a9238d7 100644
+--- a/src/layout_engine/workspaces.rs
++++ b/src/layout_engine/workspaces.rs
+@@ -5,7 +5,7 @@ use super::{LayoutId, LayoutSystem};
+ use crate::common::collections::HashMap;
+ 
+ /// Display-size configurations belong to their workspace; layout systems own the arrangements.
+-#[derive(Serialize, Deserialize, Debug, Default)]
++#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+ pub(crate) struct WorkspaceLayoutState {
+     pub(crate) configurations: HashMap<Size, LayoutId>,
+     active_size: Size,
+diff --git a/src/model/virtual_workspace.rs b/src/model/virtual_workspace.rs
+index 767a102..8b4c930 100644
+--- a/src/model/virtual_workspace.rs
++++ b/src/model/virtual_workspace.rs
+@@ -60,6 +60,20 @@ pub struct VirtualWorkspace {
+     pub layout_mode: LayoutMode,
+     #[serde(default)]
+     pub(crate) layout_state: WorkspaceLayoutState,
++    /// The arrangement this workspace left when it entered the stack layout.
++    /// Not persisted: after a restart, leaving the stack rebuilds instead.
++    #[serde(skip)]
++    stashed_layout: Option<StashedLayout>,
++}
++
++/// The stack layout acts as a whole-workspace fullscreen view over the same
++/// windows, so leaving it for the mode it was entered from restores the
++/// arrangement (tree shape, sizes, order) instead of rebuilding one.
++#[derive(Debug)]
++struct StashedLayout {
++    mode: LayoutMode,
++    system: LayoutSystemKind,
++    state: WorkspaceLayoutState,
+ }
+ 
+ fn default_layout_system_kind() -> LayoutSystemKind {
+@@ -76,6 +90,7 @@ impl VirtualWorkspace {
+             layout_system,
+             layout_mode: mode,
+             layout_state: WorkspaceLayoutState::default(),
++            stashed_layout: None,
+         }
+     }
+ 
+@@ -85,18 +100,46 @@ impl VirtualWorkspace {
+         self.layout_state.ensure_active(size, &mut self.layout_system);
+     }
+ 
++    /// Switch to a fresh, empty layout system for `mode`.
++    ///
++    /// Entering the stack layout keeps the outgoing arrangement so that
++    /// [`Self::restore_layout_mode`] can bring it back; any other switch
++    /// forgets it.
+     pub(crate) fn replace_layout_mode(
+         &mut self,
+         mode: LayoutMode,
+         settings: &LayoutSettings,
+     ) -> LayoutId {
++        let previous = std::mem::replace(
++            &mut self.layout_system,
++            Self::create_layout_system(mode, settings),
++        );
++        self.stashed_layout = (mode == LayoutMode::Stack).then(|| StashedLayout {
++            mode: self.layout_mode,
++            system: previous,
++            state: self.layout_state.clone(),
++        });
+         self.layout_mode = mode;
+-        self.layout_system = Self::create_layout_system(mode, settings);
+         let layout = self.layout_system.create_layout();
+         self.layout_state.replace(layout);
+         layout
+     }
+ 
++    /// Leave the stack layout for `mode` by restoring the arrangement it was
++    /// entered from, returning that arrangement's active layout. Returns
++    /// `None`, and forgets any stashed arrangement, when there is nothing to
++    /// restore for this switch.
++    pub(crate) fn restore_layout_mode(&mut self, mode: LayoutMode) -> Option<LayoutId> {
++        let stash = self.stashed_layout.take()?;
++        if self.layout_mode != LayoutMode::Stack || stash.mode != mode {
++            return None;
++        }
++        self.layout_mode = stash.mode;
++        self.layout_system = stash.system;
++        self.layout_state = stash.state;
++        self.active_layout()
++    }
++
+     pub fn layout_mode(&self) -> LayoutMode { self.layout_mode }
+ 
+     pub fn create_layout_system(mode: LayoutMode, settings: &LayoutSettings) -> LayoutSystemKind {
+diff --git a/src/sys/window_server.rs b/src/sys/window_server.rs
+index 2fd635d..3434546 100644
+--- a/src/sys/window_server.rs
++++ b/src/sys/window_server.rs
+@@ -708,6 +708,14 @@ pub fn window_level(wid: u32) -> Option<NSWindowLevel> {
+     Some(query.advance()?.level() as NSWindowLevel)
+ }
+ 
++/// The window's frame as the window server currently presents it.
++#[cfg(not(test))]
++pub fn window_bounds(wsid: WindowServerId) -> Option<CGRect> {
++    let mut frame = CGRect::default();
++    let status = unsafe { CGSGetWindowBounds(*G_CONNECTION, wsid.as_u32(), &mut frame) };
++    (status == 0).then_some(frame)
++}
++
+ pub fn window_sub_level(wid: u32) -> c_int { unsafe { mach_get_window_sub_level(wid) } }
+ 
+ /// Returns the typed Skylight tags exposed by a window-query iterator.

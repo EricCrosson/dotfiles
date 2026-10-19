@@ -1,42 +1,39 @@
-# This overlay patches rift-wm so fullscreen toggles act on the active window,
-# and without animation.
+# This overlay patches rift-wm so fullscreen toggles and the stack layout
+# (used as a whole-workspace fullscreen view by Alt+Comma in
+# profiles/eric/modules/rift.nix) switch instantly without flashing, and a
+# round trip restores both the arrangement and the selected window.
 #
-# Context: rift's fullscreen toggles acted on the layout tree's selection,
-# which can trail the actually focused window when a focus notification was
-# missed. The toggle's response raises (and thereby activates) its target, so
-# fullscreening buried the window the user was typing in, activated the wrong
-# one, and the toggle/untoggle round trip flipped the window stacking order.
-# Separately, the fullscreen toggle was animated: the interpolated frames
-# sweep the window over its siblings and expose every window behind it,
-# reading as a distracting flash.
+# Context (rift 0.6.7):
+# - Toggles and layout switches acted on the layout tree's selection, which
+#   can trail the focused window when a focus notification was missed.
+# - set-layout raised every window of the workspace. Each raise activates its
+#   app; the activations raced, and whichever landed last stole focus and the
+#   selection (a stack round trip started on Ghostty and came back on Slack)
+#   and was drawn over the selected window mid-switch.
+# - Every layout-mode switch rebuilt the tree from scratch, so a stack round
+#   trip lost the traditional tree's shape and sizes (346/1382 -> 864/864).
+# - Instant arranges wrote every window concurrently, so whichever app was
+#   fastest landed first: background windows were caught mid-move in front
+#   of the old tiles, and a shrinking stack front revealed unmoved neighbors.
 #
-# Fix: pin the tree selection to the engine's focused window before both
-# fullscreen toggles, rebuild the tree in tree order (not selection order)
-# across layout-mode switches, apply the fullscreen toggle's arrange pass
-# instantly (no animation), and write window position before size when
-# shrinking so the intermediate frame overhangs off-screen instead of
-# exposing the region behind the old wide frame (the fullscreen-exit flash;
-# macOS clamps size writes to the screen edge, so the order matters).
-# Backported from EricCrosson/rift commits f034caf ("fix(layout): toggle
-# fullscreen on the active window, not a stale selection"), 9f7d64d
-# ("fix(layout): toggle fullscreen-within-gaps on the active window too"),
-# 4fe24e5 ("fix(layout): preserve sibling order across layout-mode
-# switches"), e309144 ("fix(reactor): apply fullscreen toggles without
-# animation"), 00c25b4 ("fix(app): write window position before size when
-# shrinking"), 7c6eceb ("fix(reactor): animate fullscreen entry, keep
-# exit instant") and 2c61871 ("fix(layout): detect fullscreen toggle
-# direction portably") against rift 0.6.7. Fullscreen entry animates
-# regardless of the configured animate setting (macOS clamps size writes,
-# so the position-write tear is unavoidable at instant speed); fullscreen
-# exit stays instant and tear-free via the write order. The regression tests
-# fullscreen_toggle_targets_focused_window_not_stale_selection,
-# layout_mode_switch_preserves_window_order and
-# fullscreen_toggle_directions_pick_their_arrange_mode are included and
-# were verified locally against the 0.6.7 tree (they fail without the source
-# changes); the write-order fix is verified live (captured compositor
-# frames) and carries its unit test on main only, where the FrameTarget
-# mock exists. None of these have run in upstream CI yet - the fixes are
-# local commits.
+# Fix (branch backport/0.6.7 of EricCrosson/rift, on the v0.6.7 tag):
+# - carry the focused window as the selection across toggles and layout
+#   switches, and raise only that window;
+# - keep the arrangement a workspace leaves when it enters the stack layout
+#   and restore it, reconciling windows that came and went, when leaving the
+#   stack for the mode it came from; every other switch still rebuilds, which
+#   the Alt+Shift+R jail-break relies on;
+# - preserve sibling order when a switch does rebuild;
+# - apply fullscreen toggles instantly in both directions, and write window
+#   position before size (macOS clamps size writes at the screen edge);
+# - stage the instant writes of toggles and layout switches by z-order: a
+#   growing foreground first, a shrinking one last, the second stage once the
+#   first shows in the window server (150ms deadline).
+# Regression tests in the patch cover the selection, restore, order and
+# staging fixes (each observed failing before its fix) and the instant
+# toggles; all pass against the 0.6.7 tree. The position-before-size order
+# was verified live; its unit test needs main's FrameTarget mock. None has
+# run in upstream CI yet.
 #
 # doCheck is disabled: rift's macOS-Space-sensitive reactor tests fail in a
 # local sandbox on this host regardless of the patch (unpatched
