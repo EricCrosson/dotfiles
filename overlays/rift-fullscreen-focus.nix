@@ -8,14 +8,15 @@
 #
 # Fix: pin the tree selection to the engine's focused window before both
 # fullscreen toggles, and rebuild the tree in tree order (not selection
-# order) across layout-mode switches. Backported from EricCrosson/rift
+# order across layout-mode switches. Backported from EricCrosson/rift
 # commits f034caf ("fix(layout): toggle fullscreen on the active window, not
 # a stale selection"), 9f7d64d ("fix(layout): toggle fullscreen-within-gaps
 # on the active window too") and 4fe24e5 ("fix(layout): preserve sibling
 # order across layout-mode switches") against rift 0.6.7. The regression
 # tests fullscreen_toggle_targets_focused_window_not_stale_selection and
-# layout_mode_switch_preserves_window_order are included and pass against
-# the 0.6.7 tree; they also run in rift's own CI on the main branch.
+# layout_mode_switch_preserves_window_order are included and were verified
+# locally against the 0.6.7 tree (they fail without the source changes);
+# they have not run in upstream CI yet - the fixes are local commits.
 #
 # doCheck is disabled: rift's macOS-Space-sensitive reactor tests fail in a
 # local sandbox on this host regardless of the patch (unpatched
