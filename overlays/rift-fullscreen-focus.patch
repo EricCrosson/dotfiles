@@ -1,6 +1,72 @@
+diff --git a/src/actor/reactor/events/command.rs b/src/actor/reactor/events/command.rs
+index 09075d6..0f544ad 100644
+--- a/src/actor/reactor/events/command.rs
++++ b/src/actor/reactor/events/command.rs
+@@ -44,6 +44,13 @@ pub fn handle_command_layout(
+     } = payload;
+     info!(?cmd);
+     let is_move_node = matches!(cmd, LayoutCommand::MoveNode(_));
++    // A fullscreen toggle resizes one window to the whole display; animating
++    // that sweep exposes every sibling and background window as intermediate
++    // frames. Apply the resulting layout in a single step instead.
++    let instant_layout = matches!(
++        cmd,
++        LayoutCommand::ToggleFullscreen | LayoutCommand::ToggleFullscreenWithinGaps
++    );
+     let is_selection_command = matches!(cmd, LayoutCommand::Ascend | LayoutCommand::Descend);
+     let is_focus_command = matches!(
+         cmd,
+@@ -168,7 +175,7 @@ pub fn handle_command_layout(
+     let needs_arrange = response_changed
+         || (!is_focus_command && !is_selection_command && !is_virtual_workspace_command);
+     let mut outcome = if needs_arrange {
+-        EventOutcome::layout_changed(false)
++        EventOutcome::layout_changed(instant_layout)
+     } else {
+         EventOutcome::no_change()
+     }
+diff --git a/src/actor/reactor/tests.rs b/src/actor/reactor/tests.rs
+index 325846f..d421c99 100644
+--- a/src/actor/reactor/tests.rs
++++ b/src/actor/reactor/tests.rs
+@@ -78,6 +78,32 @@ fn geometry_commands_request_arrangement_without_camera_movement() {
+     }
+ }
+ 
++#[test]
++fn fullscreen_toggles_arrange_instantly_without_animation() {
++    let (mut reactor, _, _, _, _, _) = reactor_with_window_on_space1();
++    for command in [
++        LayoutCommand::ToggleFullscreen,
++        LayoutCommand::ToggleFullscreenWithinGaps,
++    ] {
++        let outcome = reactor.dispatch_test_layout_command(command.clone());
++        assert_eq!(
++            outcome.arrange.passes, 1,
++            "{command:?} must reconcile window frames"
++        );
++        assert!(
++            outcome.arrange.is_resize,
++            "{command:?} must apply its frames instantly: animating a fullscreen \
++             toggle sweeps the window over its siblings and exposes every window \
++             behind it as intermediate frames"
++        );
++    }
++    let outcome = reactor.dispatch_test_layout_command(LayoutCommand::MoveNode(Direction::Left));
++    assert!(
++        !outcome.arrange.is_resize,
++        "ordinary geometry commands keep their animation"
++    );
++}
++
+ #[test]
+ fn no_op_layout_command_does_not_schedule_arrange() {
+     let mut reactor = test_reactor();
+diff --git a/src/layout_engine/engine.rs b/src/layout_engine/engine.rs
+index 9e94404..26aea67 100644
 --- a/src/layout_engine/engine.rs
 +++ b/src/layout_engine/engine.rs
-@@ -490,8 +490,12 @@
+@@ -490,8 +490,12 @@ impl LayoutEngine {
              let old_layout = workspace.active_layout();
              let selected =
                  old_layout.and_then(|layout| workspace.layout_system.selected_window(layout));
@@ -14,7 +80,7 @@
                  .unwrap_or_default();
              // Keep windows hidden by stack/group selection when rebuilding into a new mode.
              let mut hidden_windows: Vec<_> = self
-@@ -556,6 +560,25 @@
+@@ -556,6 +560,25 @@ impl LayoutEngine {
          }
      }
  
@@ -40,7 +106,7 @@
      fn toggle_orientation_for_system<S: LayoutSystem>(
          system: &mut S,
          layout: LayoutId,
-@@ -2286,6 +2309,7 @@
+@@ -2286,6 +2309,7 @@ impl LayoutEngine {
                  EventResponse::default()
              }
              LayoutCommand::ToggleFullscreen => {
@@ -48,7 +114,7 @@
                  let raise_windows = self.workspaces[workspace_id]
                      .layout_system
                      .toggle_fullscreen_of_selection(layout);
-@@ -2301,6 +2325,7 @@
+@@ -2301,6 +2325,7 @@ impl LayoutEngine {
                  }
              }
              LayoutCommand::ToggleFullscreenWithinGaps => {
@@ -56,10 +122,11 @@
                  let raise_windows = self.workspaces[workspace_id]
                      .layout_system
                      .toggle_fullscreen_within_gaps_of_selection(layout);
-@@ -3594,6 +3619,134 @@
+@@ -3593,6 +3618,134 @@ mod tests {
+         }
      }
  
-     #[test]
++    #[test]
 +    fn fullscreen_toggle_targets_focused_window_not_stale_selection() {
 +        let mut window_store = WindowStore::default();
 +        let mut settings = LayoutSettings::default();
@@ -187,7 +254,6 @@
 +        assert_eq!(engine.selected_window(space), Some(w2));
 +    }
 +
-+    #[test]
+     #[test]
      fn floating_toggle_frame_sizes_then_centers_in_the_native_screen_frame() {
          let screen = CGRect::new(CGPoint::new(100.0, 40.0), CGSize::new(1000.0, 800.0));
-         let current = CGRect::new(CGPoint::new(0.0, 0.0), CGSize::new(300.0, 200.0));
