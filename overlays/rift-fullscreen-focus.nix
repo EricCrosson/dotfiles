@@ -1,7 +1,8 @@
 # This overlay patches rift-wm so fullscreen toggles and the stack layout
 # (used as a whole-workspace fullscreen view by Alt+Comma in
-# profiles/eric/modules/rift.nix) switch instantly without flashing, and a
-# round trip restores both the arrangement and the selected window.
+# profiles/eric/modules/rift.nix) switch instantly with the selected window
+# in front, and a round trip restores both the arrangement and the selected
+# window.
 #
 # Context (rift 0.6.7):
 # - Toggles and layout switches acted on the layout tree's selection, which
@@ -28,7 +29,12 @@
 #   position before size (macOS clamps size writes at the screen edge);
 # - stage the instant writes of toggles and layout switches by z-order: a
 #   growing foreground first, a shrinking one last, the second stage once the
-#   first shows in the window server (150ms deadline).
+#   first shows in the window server (a clamped size counts; 150ms deadline),
+#   dropping held writes that a newer arrange superseded.
+# Measured live with a window-server probe, two-window round trips show no
+# third window or desktop at any probed point. In nested layouts a 40px edge
+# strip can still show the desktop for up to ~70ms where one window's
+# position and size land separately (AX has no atomic frame write).
 # Regression tests in the patch cover the selection, restore, order and
 # staging fixes (each observed failing before its fix) and the instant
 # toggles; all pass against the 0.6.7 tree. The position-before-size order

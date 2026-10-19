@@ -132,7 +132,7 @@ index 21e4a04..6a0e059 100644
                  warn!(error = ?e, "{}", context);
                  false
 diff --git a/src/actor/reactor/animation.rs b/src/actor/reactor/animation.rs
-index b78c872..0cf4263 100644
+index b78c872..b08e6dd 100644
 --- a/src/actor/reactor/animation.rs
 +++ b/src/actor/reactor/animation.rs
 @@ -4,7 +4,7 @@ use std::time::{Duration, Instant};
@@ -153,7 +153,7 @@ index b78c872..0cf4263 100644
  use crate::sys::power;
  use crate::sys::screen::SpaceId;
  use crate::sys::window_server::WindowServerId;
-@@ -151,6 +151,106 @@ pub struct Animation {
+@@ -151,6 +151,123 @@ pub struct Animation {
      display: u32,
      windows: Vec<PresentedWindow>,
      handled_windows: Vec<WindowId>,
@@ -169,6 +169,8 @@ index b78c872..0cf4263 100644
 +    foreground: WindowId,
 +    /// Window-server ids of the arranged windows, to see a stage land.
 +    server_ids: HashMap<WindowId, WindowServerId>,
++    /// Window transactions, to drop held writes a newer arrange superseded.
++    store: WindowTxStore,
 +}
 +
 +impl WriteStage {
@@ -203,23 +205,26 @@ index b78c872..0cf4263 100644
 +/// A staged window write: the window, the frame it starts at, its target.
 +type StagedWrite = (WindowServerId, CGRect, CGRect);
 +
++/// A write held for the second stage, with the window transaction it belongs
++/// to (when the window has a server id).
++type HeldWrite = (AppThreadHandle, Request, Option<(WindowServerId, TransactionId)>);
++
 +/// Send `then` once every first-stage window shows its write on screen.
 +#[cfg(not(test))]
-+fn release_when_landed(landed: Vec<StagedWrite>, then: Vec<(AppThreadHandle, Request)>) {
++fn release_when_landed(landed: Vec<StagedWrite>, then: Vec<HeldWrite>, store: WindowTxStore) {
 +    release_when(
 +        landed,
 +        then,
 +        crate::sys::window_server::window_bounds,
 +        STAGE_DEADLINE,
++        store,
 +    );
 +}
 +
 +/// Tests have no window server: the stages are sent in order, immediately.
 +#[cfg(test)]
-+fn release_when_landed(_landed: Vec<StagedWrite>, then: Vec<(AppThreadHandle, Request)>) {
-+    for (handle, request) in then {
-+        _ = handle.send(request);
-+    }
++fn release_when_landed(_landed: Vec<StagedWrite>, then: Vec<HeldWrite>, store: WindowTxStore) {
++    send_current(then, &store);
 +}
 +
 +/// Whether the window server shows a write from `from` to `to` as applied:
@@ -231,13 +236,27 @@ index b78c872..0cf4263 100644
 +        && (frame.size.same_as(to.size) || !frame.size.same_as(from.size))
 +}
 +
-+/// Send `then` once `bounds` shows every `landed` write applied, or once
-+/// `deadline` passes.
++/// Send the held writes that are still their window's latest transaction. A
++/// newer arrange (a second toggle inside the hold) supersedes the rest;
++/// sending them would put windows back where the first toggle wanted them.
++fn send_current(then: Vec<HeldWrite>, store: &WindowTxStore) {
++    for (handle, request, txn) in then {
++        if txn.is_some_and(|(wsid, txid)| store.last_txid(&wsid) != txid) {
++            trace!("Dropping a staged write superseded by a newer arrange");
++            continue;
++        }
++        _ = handle.send(request);
++    }
++}
++
++/// Send the current writes of `then` once `bounds` shows every `landed` write
++/// applied, or once `deadline` passes.
 +fn release_when(
 +    landed: Vec<StagedWrite>,
-+    then: Vec<(AppThreadHandle, Request)>,
++    then: Vec<HeldWrite>,
 +    bounds: impl Fn(WindowServerId) -> Option<CGRect> + Send + 'static,
 +    deadline: Duration,
++    store: WindowTxStore,
 +) {
 +    let release = move || {
 +        let start = Instant::now();
@@ -250,9 +269,7 @@ index b78c872..0cf4263 100644
 +            }
 +            std::thread::sleep(Duration::from_millis(1));
 +        }
-+        for (handle, request) in then {
-+            _ = handle.send(request);
-+        }
++        send_current(then, &store);
 +    };
 +    if let Err(err) = std::thread::Builder::new().name("rift-frame-stage".into()).spawn(release) {
 +        warn!(?err, "Failed to start a staged arrange's second stage");
@@ -260,7 +277,7 @@ index b78c872..0cf4263 100644
  }
  
  #[derive(Clone, Debug)]
-@@ -969,6 +1069,7 @@ impl AnimationManager {
+@@ -969,6 +1086,7 @@ impl AnimationManager {
          space: SpaceId,
          layout: &[(WindowId, CGRect)],
          is_resize: bool,
@@ -268,18 +285,19 @@ index b78c872..0cf4263 100644
          skip_wid: Option<WindowId>,
      ) -> bool {
          reactor.retire_presentations();
-@@ -1000,6 +1101,10 @@ impl AnimationManager {
+@@ -1000,6 +1118,11 @@ impl AnimationManager {
              return false;
          };
          anim.display = screen.id.as_u32();
 +        anim.stage = stage_around.map(|foreground| WriteStage {
 +            foreground,
 +            server_ids: HashMap::default(),
++            store: reactor.transaction_manager.store.clone(),
 +        });
          let mut any_frame_changed = camera;
  
          for &(wid, target_frame) in layout {
-@@ -1052,6 +1157,9 @@ impl AnimationManager {
+@@ -1052,6 +1175,9 @@ impl AnimationManager {
              if is_active {
                  trace!(?wid, ?current_frame, ?target_frame, "Animating visible window");
                  anim.add_window(&app_state.handle, wid, current_frame, target_frame, txid);
@@ -289,7 +307,7 @@ index b78c872..0cf4263 100644
              } else {
                  anim.mark_handled(wid);
                  trace!(
-@@ -1395,6 +1503,7 @@ impl Animation {
+@@ -1395,6 +1521,7 @@ impl Animation {
              display: 0,
              windows: vec![],
              handled_windows: vec![],
@@ -297,7 +315,7 @@ index b78c872..0cf4263 100644
          }
      }
  
-@@ -1428,15 +1537,33 @@ impl Animation {
+@@ -1428,15 +1555,39 @@ impl Animation {
          }
      }
  
@@ -333,12 +351,18 @@ index b78c872..0cf4263 100644
 +                Some((id, window.from, window.to))
 +            })
 +            .collect();
-+        let then = then.iter().map(|window| (window.handle.clone(), write(window))).collect();
-+        release_when_landed(landed, then);
++        let then = then
++            .iter()
++            .map(|window| {
++                let txn = stage.server_ids.get(&window.wid).map(|&id| (id, window.txid));
++                (window.handle.clone(), write(window), txn)
++            })
++            .collect();
++        release_when_landed(landed, then, stage.store.clone());
      }
  
      fn is_empty(&self) -> bool { self.windows.is_empty() }
-@@ -2414,4 +2541,102 @@ mod tests {
+@@ -2414,4 +2565,140 @@ mod tests {
          );
          assert_set_window_frame(&requests[3], wid, rect(80.0, 90.0, 10.0, 10.0));
      }
@@ -380,9 +404,10 @@ index b78c872..0cf4263 100644
 +            Request::set_window_frame(WindowId::new(1, 1), target, TransactionId::default(), true);
 +        release_when(
 +            vec![(WindowServerId::new(7), from, target)],
-+            vec![(handle, write)],
++            vec![(handle, write, None)],
 +            bounds,
 +            Duration::from_secs(60),
++            WindowTxStore::new(),
 +        );
 +
 +        std::thread::sleep(Duration::from_millis(30));
@@ -410,9 +435,10 @@ index b78c872..0cf4263 100644
 +            Request::set_window_frame(WindowId::new(1, 1), target, TransactionId::default(), true);
 +        release_when(
 +            vec![(WindowServerId::new(7), from, target)],
-+            vec![(handle, write)],
++            vec![(handle, write, None)],
 +            move |_| Some(clamped),
 +            Duration::from_secs(60),
++            WindowTxStore::new(),
 +        );
 +        assert!(
 +            matches!(next_request_within(&mut rx), Some(Request::SetWindowFrames(..))),
@@ -431,13 +457,49 @@ index b78c872..0cf4263 100644
 +        // An unresponsive app never applies its frame.
 +        release_when(
 +            vec![(WindowServerId::new(7), from, target)],
-+            vec![(handle, write)],
++            vec![(handle, write, None)],
 +            |_| None,
 +            Duration::from_millis(20),
++            WindowTxStore::new(),
 +        );
 +        assert!(
 +            matches!(next_request_within(&mut rx), Some(Request::SetWindowFrames(..))),
 +            "an unresponsive first stage must not strand the rest"
++        );
++    }
++
++    #[test]
++    fn staged_release_drops_writes_a_newer_arrange_superseded() {
++        let (tx, mut rx) = crate::actor::channel();
++        let handle = AppThreadHandle::new_for_test(tx);
++        let store = WindowTxStore::new();
++        let target = rect(40.0, 0.0, 960.0, 1000.0);
++        let held = |idx: u32| {
++            let wsid = WindowServerId::new(idx);
++            let txid = store.next_txid(wsid);
++            let write = Request::set_window_frame(WindowId::new(1, idx), target, txid, true);
++            (handle.clone(), write, Some((wsid, txid)))
++        };
++        let (superseded, current) = (held(8), held(9));
++        // A second toggle inside the hold writes window 8 again.
++        let _ = store.next_txid(WindowServerId::new(8));
++        release_when(
++            vec![],
++            vec![superseded, current],
++            |_| None,
++            Duration::from_secs(60),
++            store,
++        );
++
++        let written = |request: Option<Request>| match request {
++            Some(Request::SetWindowFrames(frames, ..)) => Some(frames[0].0),
++            _ => None,
++        };
++        assert_eq!(written(next_request_within(&mut rx)), Some(WindowId::new(1, 9)));
++        std::thread::sleep(Duration::from_millis(20));
++        assert!(
++            rx.try_recv().is_err(),
++            "the superseded write would put window 8 back where the first toggle wanted it"
 +        );
 +    }
  }
