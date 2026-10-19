@@ -1363,7 +1363,7 @@ index 167ac3e..eab48e8 100644
          self.layouts
              .get(layout)
 diff --git a/src/layout_engine/systems/traditional.rs b/src/layout_engine/systems/traditional.rs
-index a8a7040..165ee8a 100644
+index a8a7040..248e785 100644
 --- a/src/layout_engine/systems/traditional.rs
 +++ b/src/layout_engine/systems/traditional.rs
 @@ -987,6 +987,18 @@ impl LayoutSystem for TraditionalLayoutSystem {
@@ -1489,13 +1489,14 @@ index a8a7040..165ee8a 100644
                      self.apply_with_gaps(
                          map,
                          window,
-@@ -3110,6 +3142,73 @@ impl Layout {
+@@ -3110,6 +3142,75 @@ impl Layout {
          }
      }
  
-+    /// The members of a stack that can fill a slot, in order: no fixed size
-+    /// and no maximum below the slot on either axis. Every member when none
-+    /// can. Slots grow as members drop out, so this repeats until stable.
++    /// The members of a stack that can cover a slot, in order: neither a
++    /// fixed size nor a maximum below the slot on either axis (a fixed size
++    /// at least as large covers it). Every member when none can. Slots grow
++    /// as members drop out, so this repeats until stable.
 +    fn stack_fillers(
 +        &self,
 +        map: &NodeMap,
@@ -1523,7 +1524,8 @@ index a8a7040..165ee8a 100644
 +                gaps,
 +                horizontal,
 +            );
-+            fixed.is_none() && max.is_none_or(|max| max + 0.5 >= len)
++            let covers = |size: Option<f64>| size.is_none_or(|size| size + 0.5 >= len);
++            covers(fixed) && covers(max)
 +        };
 +        let mut fillers = children.to_vec();
 +        loop {
@@ -1563,52 +1565,43 @@ index a8a7040..165ee8a 100644
      fn layout_axis(
          &self,
          map: &NodeMap,
-@@ -4442,6 +4541,70 @@ mod tests {
+@@ -4442,6 +4543,112 @@ mod tests {
          );
      }
  
-+    #[test]
-+    fn stack_slots_cover_the_container_when_a_member_cannot_fill_one() {
++    /// Frames of a horizontal stack root holding `windows`, with `front`
++    /// selected, on a 1728x1083 screen with a 40px stack offset.
++    fn stack_frames(
++        windows: &[WindowId],
++        front: WindowId,
++        constraints: &HashMap<WindowId, WindowLayoutConstraints>,
++    ) -> HashMap<WindowId, CGRect> {
 +        let mut system = TraditionalLayoutSystem::default();
 +        let layout = system.create_layout();
 +        let root = system.root(layout);
 +        system.tree.data.layout.set_kind(root, LayoutKind::HorizontalStack);
-+        let [w1, w2, w3, fixed] = [31, 32, 33, 34].map(w);
-+        for wid in [w1, w2, w3, fixed] {
++        for &wid in windows {
 +            system.add_window_after_selection(layout, wid);
 +        }
-+        system.select_window(layout, w2);
-+
-+        // A window whose size cannot be set (Safari reported one at 1x32):
-+        // it keeps its size wherever its slot puts it.
-+        let mut constraints = HashMap::default();
-+        constraints.insert(
-+            fixed,
-+            WindowLayoutConstraints {
-+                is_resizable: false,
-+                locked_width: 1.0,
-+                locked_height: 32.0,
-+                ..Default::default()
-+            }
-+            .normalized(),
-+        );
++        system.select_window(layout, front);
 +        let screen = CGRect::new(CGPoint::new(0.0, 0.0), CGSize::new(1728.0, 1083.0));
-+        let frames: HashMap<WindowId, CGRect> = system
++        system
 +            .calculate_layout(
 +                layout,
 +                screen,
 +                40.0,
-+                &constraints,
++                constraints,
 +                &Default::default(),
 +                0.0,
 +                Default::default(),
 +                Default::default(),
 +            )
 +            .into_iter()
-+            .collect();
++            .collect()
++    }
 +
-+        // Every point shows a window: the last slot's margin strip used to be
-+        // covered by the fixed window's slot alone and showed the desktop.
++    /// Every probed point of the 1728x1083 screen shows a window.
++    fn assert_stack_covers_screen(frames: &HashMap<WindowId, CGRect>) {
 +        let covered = |x: f64, y: f64| {
 +            frames.values().any(|f| {
 +                f.origin.x <= x
@@ -1622,13 +1615,64 @@ index a8a7040..165ee8a 100644
 +                assert!(covered(x, y), "({x}, {y}) is uncovered: {frames:?}");
 +            }
 +        }
-+        // The window that cannot fill a slot sits inside the front one.
-+        let (front, small) = (frames[&w2], frames[&fixed]);
++    }
++
++    /// `inner` lies within `outer` horizontally.
++    fn assert_inside(inner: CGRect, outer: CGRect) {
 +        assert!(
-+            front.origin.x <= small.origin.x
-+                && small.origin.x + small.size.width <= front.origin.x + front.size.width,
-+            "{small:?} must sit inside the front slot {front:?}"
++            outer.origin.x <= inner.origin.x
++                && inner.origin.x + inner.size.width <= outer.origin.x + outer.size.width,
++            "{inner:?} must sit inside the front slot {outer:?}"
 +        );
++    }
++
++    fn fixed_size(width: f64, height: f64) -> WindowLayoutConstraints {
++        WindowLayoutConstraints {
++            is_resizable: false,
++            locked_width: width,
++            locked_height: height,
++            ..Default::default()
++        }
++        .normalized()
++    }
++
++    #[test]
++    fn stack_slots_cover_the_container_when_a_member_cannot_fill_one() {
++        let [w1, w2, w3, fixed] = [31, 32, 33, 34].map(w);
++        // A window whose size cannot be set (Safari reported one at 1x32):
++        // it keeps its size wherever its slot puts it.
++        let constraints = HashMap::from_iter([(fixed, fixed_size(1.0, 32.0))]);
++        let frames = stack_frames(&[w1, w2, w3, fixed], w2, &constraints);
++        // The last slot's margin strip used to be covered by the fixed
++        // window's slot alone and showed the desktop.
++        assert_stack_covers_screen(&frames);
++        assert_inside(frames[&fixed], frames[&w2]);
++    }
++
++    #[test]
++    fn stack_keeps_slots_for_fixed_windows_that_cover_them() {
++        let [big, w2, w3] = [41, 42, 43].map(w);
++        // Not resizable, but larger than any slot: it covers its own.
++        let constraints = HashMap::from_iter([(big, fixed_size(1700.0, 1083.0))]);
++        let frames = stack_frames(&[big, w2, w3], w3, &constraints);
++        assert_stack_covers_screen(&frames);
++        // Three slots 40px apart, so the peeks stay as they were.
++        let origins: Vec<_> = [big, w2, w3].iter().map(|wid| frames[wid].origin.x).collect();
++        assert_eq!(origins, vec![0.0, 40.0, 80.0]);
++    }
++
++    #[test]
++    fn stack_gives_no_slot_to_a_resizable_window_capped_below_it() {
++        let [w1, capped, w3] = [51, 52, 53].map(w);
++        let cap = WindowLayoutConstraints {
++            is_resizable: true,
++            max_width: 800.0,
++            ..Default::default()
++        }
++        .normalized();
++        let frames = stack_frames(&[w1, capped, w3], w1, &HashMap::from_iter([(capped, cap)]));
++        assert_stack_covers_screen(&frames);
++        assert_inside(frames[&capped], frames[&w1]);
 +    }
 +
      #[test]

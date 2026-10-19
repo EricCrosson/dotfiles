@@ -31,7 +31,7 @@
 #   growing foreground first, a shrinking one last, the second stage once the
 #   first shows in the window server (a clamped size counts; 150ms deadline),
 #   dropping held writes that a newer arrange superseded;
-# - give stack slots only to windows that can fill them, so the stack always
+# - give stack slots only to windows that can cover them, so the stack always
 #   covers the screen (a non-resizable 1x32 Safari window left a 40px strip
 #   at the right edge showing the desktop).
 # Measured live with a window-server probe, two-window round trips show no
