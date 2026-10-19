@@ -132,7 +132,7 @@ index 21e4a04..6a0e059 100644
                  warn!(error = ?e, "{}", context);
                  false
 diff --git a/src/actor/reactor/animation.rs b/src/actor/reactor/animation.rs
-index b78c872..bade09a 100644
+index b78c872..0cf4263 100644
 --- a/src/actor/reactor/animation.rs
 +++ b/src/actor/reactor/animation.rs
 @@ -4,7 +4,7 @@ use std::time::{Duration, Instant};
@@ -144,7 +144,16 @@ index b78c872..bade09a 100644
  
  use super::TransactionId;
  use crate::actor::app::{AppThreadHandle, FrameMode, FrameSource, Request, WindowId, pid_t};
-@@ -151,6 +151,102 @@ pub struct Animation {
+@@ -17,7 +17,7 @@ use crate::layout_engine::systems::scrolling::{
+ use crate::layout_engine::{LayoutId, LayoutSystem, LayoutSystemKind, VirtualWorkspaceId};
+ use crate::model::tx_store::WindowTxStore;
+ use crate::sys::display_link::DisplayLink;
+-use crate::sys::geometry::{Round, SameAs};
++use crate::sys::geometry::{CGRectExt, Round, SameAs};
+ use crate::sys::power;
+ use crate::sys::screen::SpaceId;
+ use crate::sys::window_server::WindowServerId;
+@@ -151,6 +151,106 @@ pub struct Animation {
      display: u32,
      windows: Vec<PresentedWindow>,
      handled_windows: Vec<WindowId>,
@@ -178,8 +187,7 @@ index b78c872..bade09a 100644
 +        if background.is_empty() {
 +            return None;
 +        }
-+        let area = |rect: CGRect| rect.size.width * rect.size.height;
-+        Some(if area(foreground.to) >= area(foreground.from) {
++        Some(if foreground.to.area() >= foreground.from.area() {
 +            (vec![foreground], background)
 +        } else {
 +            (background, vec![foreground])
@@ -192,12 +200,12 @@ index b78c872..bade09a 100644
 +#[cfg_attr(test, allow(dead_code))]
 +const STAGE_DEADLINE: Duration = Duration::from_millis(150);
 +
-+/// Send `then` once every first-stage window shows its target on screen.
++/// A staged window write: the window, the frame it starts at, its target.
++type StagedWrite = (WindowServerId, CGRect, CGRect);
++
++/// Send `then` once every first-stage window shows its write on screen.
 +#[cfg(not(test))]
-+fn release_when_landed(
-+    landed: Vec<(WindowServerId, CGRect)>,
-+    then: Vec<(AppThreadHandle, Request)>,
-+) {
++fn release_when_landed(landed: Vec<StagedWrite>, then: Vec<(AppThreadHandle, Request)>) {
 +    release_when(
 +        landed,
 +        then,
@@ -208,29 +216,34 @@ index b78c872..bade09a 100644
 +
 +/// Tests have no window server: the stages are sent in order, immediately.
 +#[cfg(test)]
-+fn release_when_landed(
-+    _landed: Vec<(WindowServerId, CGRect)>,
-+    then: Vec<(AppThreadHandle, Request)>,
-+) {
++fn release_when_landed(_landed: Vec<StagedWrite>, then: Vec<(AppThreadHandle, Request)>) {
 +    for (handle, request) in then {
 +        _ = handle.send(request);
 +    }
 +}
 +
-+/// Send `then` once `bounds` reports every `landed` window at its target, or
-+/// once `deadline` passes.
++/// Whether the window server shows a write from `from` to `to` as applied:
++/// at the target origin and no longer at the starting size. Apps may clamp
++/// the size (minimum widths), so any new size counts; the one intermediate
++/// frame, from writing position before size, keeps the starting size.
++fn write_landed(frame: CGRect, from: CGRect, to: CGRect) -> bool {
++    frame.origin.same_as(to.origin)
++        && (frame.size.same_as(to.size) || !frame.size.same_as(from.size))
++}
++
++/// Send `then` once `bounds` shows every `landed` write applied, or once
++/// `deadline` passes.
 +fn release_when(
-+    landed: Vec<(WindowServerId, CGRect)>,
++    landed: Vec<StagedWrite>,
 +    then: Vec<(AppThreadHandle, Request)>,
 +    bounds: impl Fn(WindowServerId) -> Option<CGRect> + Send + 'static,
 +    deadline: Duration,
 +) {
 +    let release = move || {
 +        let start = Instant::now();
-+        while !landed
-+            .iter()
-+            .all(|&(wsid, target)| bounds(wsid).is_some_and(|frame| frame.same_as(target)))
-+        {
++        while !landed.iter().all(|&(wsid, from, to)| {
++            bounds(wsid).is_some_and(|frame| write_landed(frame, from, to))
++        }) {
 +            if start.elapsed() >= deadline {
 +                debug!(?deadline, "Staged arrange: first stage did not land in time");
 +                break;
@@ -247,7 +260,7 @@ index b78c872..bade09a 100644
  }
  
  #[derive(Clone, Debug)]
-@@ -969,6 +1065,7 @@ impl AnimationManager {
+@@ -969,6 +1069,7 @@ impl AnimationManager {
          space: SpaceId,
          layout: &[(WindowId, CGRect)],
          is_resize: bool,
@@ -255,7 +268,7 @@ index b78c872..bade09a 100644
          skip_wid: Option<WindowId>,
      ) -> bool {
          reactor.retire_presentations();
-@@ -1000,6 +1097,10 @@ impl AnimationManager {
+@@ -1000,6 +1101,10 @@ impl AnimationManager {
              return false;
          };
          anim.display = screen.id.as_u32();
@@ -266,7 +279,7 @@ index b78c872..bade09a 100644
          let mut any_frame_changed = camera;
  
          for &(wid, target_frame) in layout {
-@@ -1052,6 +1153,9 @@ impl AnimationManager {
+@@ -1052,6 +1157,9 @@ impl AnimationManager {
              if is_active {
                  trace!(?wid, ?current_frame, ?target_frame, "Animating visible window");
                  anim.add_window(&app_state.handle, wid, current_frame, target_frame, txid);
@@ -276,7 +289,7 @@ index b78c872..bade09a 100644
              } else {
                  anim.mark_handled(wid);
                  trace!(
-@@ -1395,6 +1499,7 @@ impl Animation {
+@@ -1395,6 +1503,7 @@ impl Animation {
              display: 0,
              windows: vec![],
              handled_windows: vec![],
@@ -284,7 +297,7 @@ index b78c872..bade09a 100644
          }
      }
  
-@@ -1428,15 +1533,30 @@ impl Animation {
+@@ -1428,15 +1537,33 @@ impl Animation {
          }
      }
  
@@ -315,14 +328,17 @@ index b78c872..bade09a 100644
          }
 +        let landed = first
 +            .iter()
-+            .filter_map(|window| stage.server_ids.get(&window.wid).map(|&id| (id, window.to)))
++            .filter_map(|window| {
++                let &id = stage.server_ids.get(&window.wid)?;
++                Some((id, window.from, window.to))
++            })
 +            .collect();
 +        let then = then.iter().map(|window| (window.handle.clone(), write(window))).collect();
 +        release_when_landed(landed, then);
      }
  
      fn is_empty(&self) -> bool { self.windows.is_empty() }
-@@ -2414,4 +2534,75 @@ mod tests {
+@@ -2414,4 +2541,102 @@ mod tests {
          );
          assert_set_window_frame(&requests[3], wid, rect(80.0, 90.0, 10.0, 10.0));
      }
@@ -340,12 +356,15 @@ index b78c872..bade09a 100644
 +    }
 +
 +    #[test]
-+    fn staged_release_waits_for_the_first_stage_to_land() {
++    fn staged_release_waits_out_the_position_first_intermediate() {
 +        use std::sync::atomic::{AtomicBool, Ordering};
 +
 +        let (tx, mut rx) = crate::actor::channel();
 +        let handle = AppThreadHandle::new_for_test(tx);
++        let from = rect(500.0, 0.0, 500.0, 1000.0);
 +        let target = rect(40.0, 0.0, 960.0, 1000.0);
++        // Position lands before size: the target origin with the old size.
++        let intermediate = rect(40.0, 0.0, 500.0, 1000.0);
 +        let landed = Arc::new(AtomicBool::new(false));
 +        let bounds = {
 +            let landed = landed.clone();
@@ -353,14 +372,14 @@ index b78c872..bade09a 100644
 +                Some(if landed.load(Ordering::SeqCst) {
 +                    target
 +                } else {
-+                    rect(500.0, 0.0, 500.0, 1000.0)
++                    intermediate
 +                })
 +            }
 +        };
 +        let write =
 +            Request::set_window_frame(WindowId::new(1, 1), target, TransactionId::default(), true);
 +        release_when(
-+            vec![(WindowServerId::new(7), target)],
++            vec![(WindowServerId::new(7), from, target)],
 +            vec![(handle, write)],
 +            bounds,
 +            Duration::from_secs(60),
@@ -379,15 +398,39 @@ index b78c872..bade09a 100644
 +    }
 +
 +    #[test]
++    fn staged_release_accepts_a_size_the_app_clamped() {
++        let (tx, mut rx) = crate::actor::channel();
++        let handle = AppThreadHandle::new_for_test(tx);
++        // Leaving the stack shrinks a background window toward its tile, but
++        // the app enforces a minimum width and stops short of the target.
++        let from = rect(0.0, 0.0, 960.0, 1000.0);
++        let target = rect(0.0, 0.0, 346.0, 1000.0);
++        let clamped = rect(0.0, 0.0, 668.0, 1000.0);
++        let write =
++            Request::set_window_frame(WindowId::new(1, 1), target, TransactionId::default(), true);
++        release_when(
++            vec![(WindowServerId::new(7), from, target)],
++            vec![(handle, write)],
++            move |_| Some(clamped),
++            Duration::from_secs(60),
++        );
++        assert!(
++            matches!(next_request_within(&mut rx), Some(Request::SetWindowFrames(..))),
++            "a clamped write has landed: the second stage must not wait out the deadline"
++        );
++    }
++
++    #[test]
 +    fn staged_release_writes_the_rest_when_the_first_stage_never_lands() {
 +        let (tx, mut rx) = crate::actor::channel();
 +        let handle = AppThreadHandle::new_for_test(tx);
++        let from = rect(500.0, 0.0, 500.0, 1000.0);
 +        let target = rect(40.0, 0.0, 960.0, 1000.0);
 +        let write =
 +            Request::set_window_frame(WindowId::new(1, 1), target, TransactionId::default(), true);
 +        // An unresponsive app never applies its frame.
 +        release_when(
-+            vec![(WindowServerId::new(7), target)],
++            vec![(WindowServerId::new(7), from, target)],
 +            vec![(handle, write)],
 +            |_| None,
 +            Duration::from_millis(20),
