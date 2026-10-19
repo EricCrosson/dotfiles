@@ -1,3 +1,52 @@
+diff --git a/src/actor/app.rs b/src/actor/app.rs
+index 7253234..442cb80 100644
+--- a/src/actor/app.rs
++++ b/src/actor/app.rs
+@@ -647,36 +647,14 @@ struct AppWindowState {
+     frame_source: FrameSource,
+ }
+ 
+-#[derive(Debug, PartialEq, Eq)]
+-enum FrameWriteOrder {
+-    SizeThenPosition,
+-    PositionThenSize,
+-}
+-
+-fn frame_write_order(current: Option<CGRect>, target: CGRect) -> FrameWriteOrder {
+-    let Some(current) = current else {
+-        return FrameWriteOrder::SizeThenPosition;
+-    };
+-    if target.size.width > current.size.width + 0.5
+-        || target.size.height > current.size.height + 0.5
+-    {
+-        FrameWriteOrder::PositionThenSize
+-    } else {
+-        FrameWriteOrder::SizeThenPosition
+-    }
+-}
+-
+-fn write_frame(elem: &AXUIElement, current: Option<CGRect>, target: CGRect) {
+-    match frame_write_order(current, target) {
+-        FrameWriteOrder::SizeThenPosition => {
+-            let _ = elem.set_size(target.size);
+-            let _ = elem.set_position(target.origin);
+-        }
+-        FrameWriteOrder::PositionThenSize => {
+-            let _ = elem.set_position(target.origin);
+-            let _ = elem.set_size(target.size);
+-        }
+-    }
++fn write_frame(elem: &AXUIElement, _current: Option<CGRect>, target: CGRect) {
++    // Always write position before size: growing with an unchanged origin
++    // would clamp the size to the screen edge, and when shrinking the
++    // position-first intermediate keeps the old, wider frame, which
++    // overhangs off-screen harmlessly instead of exposing the region behind
++    // the old frame as a visible flash (the fullscreen-exit flash).
++    let _ = elem.set_position(target.origin);
++    let _ = elem.set_size(target.size);
+ }
+ 
+ struct PendingFrame {
 diff --git a/src/actor/reactor/events/command.rs b/src/actor/reactor/events/command.rs
 index 09075d6..0f544ad 100644
 --- a/src/actor/reactor/events/command.rs
