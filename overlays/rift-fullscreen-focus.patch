@@ -1,0 +1,121 @@
+--- a/src/layout_engine/engine.rs
++++ b/src/layout_engine/engine.rs
+@@ -556,6 +556,25 @@
+         }
+     }
+ 
++    /// Commands that act on the tree selection but raise (and thereby
++    /// activate) their target must act on the active window, not on a
++    /// selection that can trail the real focus when a focus notification
++    /// was missed. Pin the selection to the focused window whenever it is
++    /// a tiled member of this layout; otherwise leave the selection alone.
++    fn sync_selection_to_focused_window(
++        &mut self,
++        workspace_id: VirtualWorkspaceId,
++        layout: LayoutId,
++    ) {
++        let Some(focused) = self.focused_window else {
++            return;
++        };
++        let system = &mut self.workspaces[workspace_id].layout_system;
++        if system.contains_window(layout, focused) {
++            system.select_window(layout, focused);
++        }
++    }
++
+     fn toggle_orientation_for_system<S: LayoutSystem>(
+         system: &mut S,
+         layout: LayoutId,
+@@ -2286,6 +2305,7 @@
+                 EventResponse::default()
+             }
+             LayoutCommand::ToggleFullscreen => {
++                self.sync_selection_to_focused_window(workspace_id, layout);
+                 let raise_windows = self.workspaces[workspace_id]
+                     .layout_system
+                     .toggle_fullscreen_of_selection(layout);
+@@ -2301,6 +2321,7 @@
+                 }
+             }
+             LayoutCommand::ToggleFullscreenWithinGaps => {
++                self.sync_selection_to_focused_window(workspace_id, layout);
+                 let raise_windows = self.workspaces[workspace_id]
+                     .layout_system
+                     .toggle_fullscreen_within_gaps_of_selection(layout);
+@@ -3594,6 +3615,76 @@
+     }
+ 
+     #[test]
++    fn fullscreen_toggle_targets_focused_window_not_stale_selection() {
++        let mut window_store = WindowStore::default();
++        let mut settings = LayoutSettings::default();
++        settings.mode = LayoutMode::Traditional;
++        let mut engine = LayoutEngine::new(&VirtualWorkspaceSettings::default(), &settings, None);
++        let space = SpaceId::new(97);
++        let ghostty = WindowId::new(76500, 117);
++        let slack = WindowId::new(70452, 1981);
++
++        let _ = engine.handle_event(
++            &mut window_store,
++            LayoutEvent::SpaceExposed(space, CGSize::new(1728.0, 1083.0)),
++        );
++        let _ = engine.handle_event(
++            &mut window_store,
++            LayoutEvent::windows_observed(
++                space,
++                76500,
++                vec![
++                    window_layout_info(ghostty, CGSize::new(864.0, 1083.0)),
++                    window_layout_info(slack, CGSize::new(864.0, 1083.0)),
++                ],
++                None,
++            ),
++        );
++
++        // The user is typing in slack: macOS focus and the tree selection
++        // both point at slack.
++        let _ = engine.handle_event(&mut window_store, LayoutEvent::WindowFocused(space, slack));
++        assert_eq!(engine.selected_window(space), Some(slack));
++
++        let commands = [
++            LayoutCommand::ToggleFullscreen,
++            LayoutCommand::ToggleFullscreenWithinGaps,
++        ];
++        for command in &commands {
++            // A missed focus notification can leave the tree selection on
++            // ghostty while slack is still the active window.
++            let (workspace, layout) = engine.workspaces.active_layout_for_space(space).unwrap();
++            assert!(engine.workspaces[workspace].layout_system.select_window(layout, ghostty));
++
++            let response = engine.handle_command(
++                &mut window_store,
++                Some(space),
++                &[space],
++                &HashMap::default(),
++                command.clone(),
++            );
++
++            // Fullscreen must follow the active window: the response raises
++            // the toggled window, and raising activates it, so raising
++            // ghostty here would fullscreen and activate the wrong window.
++            assert_eq!(response.raise_windows, vec![slack]);
++            assert_eq!(engine.selected_window(space), Some(slack));
++            assert_eq!(engine.focused_window, Some(slack));
++
++            // Toggling back off must not raise anything (raising would
++            // reorder the windows the fullscreen transaction just covered).
++            let exit = engine.handle_command(
++                &mut window_store,
++                Some(space),
++                &[space],
++                &HashMap::default(),
++                command.clone(),
++            );
++            assert!(exit.raise_windows.is_empty());
++        }
++    }
++
++    #[test]
+     fn floating_toggle_frame_sizes_then_centers_in_the_native_screen_frame() {
+         let screen = CGRect::new(CGPoint::new(100.0, 40.0), CGSize::new(1000.0, 800.0));
+         let current = CGRect::new(CGPoint::new(0.0, 0.0), CGSize::new(300.0, 200.0));
