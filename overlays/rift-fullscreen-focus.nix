@@ -34,11 +34,13 @@
 # - give stack slots only to windows that can cover them, so the stack always
 #   covers the screen (a non-resizable 1x32 Safari window left a 40px strip
 #   at the right edge showing the desktop).
-# Measured live with a window-server probe, two-window round trips show no
-# third window or desktop at any probed point. With three or more windows a
-# 40px peek strip can still flicker (desktop or a neighbor, up to ~70ms)
-# where one window's position and size land separately (AX has no atomic
-# frame write).
+# Measured live with a window-server probe (432 points, ~4ms sampling):
+# two-window round trips showed no third window or desktop at any point.
+# With four windows, 34 of 38 transitions showed none either; the other 4
+# caught one window's move landing before its resize (AX has no atomic
+# frame write): a strip of up to 72px at the right edge for 5-22ms, once a
+# ~530px region for 43ms. About half also caught a window mid-move in a
+# strip ~36px wide.
 # Regression tests in the patch cover the selection, restore, order, staging
 # and stack coverage fixes (each observed failing before its fix) and the
 # instant toggles; all pass against the 0.6.7 tree. The position-before-size
