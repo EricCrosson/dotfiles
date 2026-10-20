@@ -47,8 +47,12 @@
 #   and the focused window last. Valid cascades are left untouched: a
 #   neighbor click costs no raises at all; a jump over a member costs one
 #   corrective raise plus the focus raise. Raise-induced focus events
-#   resolve to transient key windows, so a restack started within 200ms of
-#   the previous raise request is dropped.
+#   resolve to transient key windows, so a restack planned while raises are
+#   in flight (550ms window, covering the raise manager's 250ms raise and
+#   250ms focus phases) is not discarded but re-armed: the next layout
+#   response after the storm closes corrects the cascade without another
+#   focus change. A focus raise whose simulated result keeps every edge
+#   visible needs no correctives at all.
 # Measured live with a window-server probe (432 points, ~4ms sampling):
 # two-window round trips showed no third window or desktop at any point.
 # With four windows, 34 of 38 transitions showed none either; the other 4

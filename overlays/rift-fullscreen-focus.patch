@@ -48,10 +48,10 @@ index 7253234..442cb80 100644
  
  struct PendingFrame {
 diff --git a/src/actor/raise_manager.rs b/src/actor/raise_manager.rs
-index 544e373..fc7c9fa 100644
+index 544e373..db9db33 100644
 --- a/src/actor/raise_manager.rs
 +++ b/src/actor/raise_manager.rs
-@@ -327,6 +327,102 @@ impl RaiseManager {
+@@ -327,6 +327,109 @@ impl RaiseManager {
      }
  }
  
@@ -68,9 +68,10 @@ index 544e373..fc7c9fa 100644
 +///
 +/// A raise moves a window above everything, so exactly a bottom suffix of
 +/// the target order can be kept; the rest are raised in reverse target
-+/// order. A cascade whose every member is covered from one side only (each
-+/// edge visible) is left untouched unless the focused window still has to be
-+/// raised, which itself scrambles the order.
++/// order. A cascade is left untouched when it already keeps every edge
++/// visible, and also when the pending focus raise alone would: the focused
++/// window above every member is simulated and checked before any
++/// corrective is planned.
 +pub(crate) fn corrective_restack_plan(
 +    members: &[WindowId],
 +    focused: WindowId,
@@ -83,8 +84,14 @@ index 544e373..fc7c9fa 100644
 +    };
 +    let focused_wid = members[focused];
 +    let needs_focus_raise = current.first() != Some(&focused_wid);
-+    if !needs_focus_raise && cascade_edges_all_visible(&slots, current) {
-+        return (Vec::new(), false);
++    // The focus raise moves the focused window above every member; when the
++    // cascade it would produce keeps every edge visible, no corrective is
++    // needed and the focus raise alone finishes the restack.
++    let mut after_focus_raise = Vec::with_capacity(current.len());
++    after_focus_raise.push(focused_wid);
++    after_focus_raise.extend(current.iter().copied().filter(|wid| *wid != focused_wid));
++    if cascade_edges_all_visible(&slots, &after_focus_raise) {
++        return (Vec::new(), needs_focus_raise);
 +    }
 +
 +    let target = crate::layout_engine::canonical_stack_z_order(members, focused_wid);
@@ -154,7 +161,7 @@ index 544e373..fc7c9fa 100644
  #[cfg(test)]
  mod tests {
  
-@@ -854,4 +950,170 @@ mod tests {
+@@ -854,4 +957,185 @@ mod tests {
              }
          });
      }
@@ -232,16 +239,31 @@ index 544e373..fc7c9fa 100644
 +    }
 +
 +    #[test]
-+    fn keyboard_focus_of_a_middle_window_raises_the_buried_left_window() {
-+        // Window 2 taking focus from z [3,2,1]: the focus raise alone would
-+        // bury window 1 under windows 2 and 3, so window 1 is raised first.
++    fn keyboard_focus_of_a_middle_window_needs_only_the_focus_raise() {
++        // Window 2 taking focus from z [3,2,1]: the focus raise alone yields
++        // z [2,3,1], which keeps every edge visible, so no corrective raise.
 +        let current = vec![
 +            WindowId::new(1, 3),
 +            WindowId::new(1, 2),
 +            WindowId::new(1, 1),
 +        ];
 +        let (runs, focus_last) = corrective_restack_plan(&stack(), WindowId::new(1, 2), &current);
-+        assert_eq!(runs, vec![vec![WindowId::new(1, 1)]]);
++        assert!(runs.is_empty());
++        assert!(focus_last);
++    }
++
++    #[test]
++    fn focus_raise_from_ascending_cascade_would_bury_the_middle_window() {
++        // Window 3 taking focus from z [1,2,3]: the focus raise alone yields
++        // z [3,1,2], which buries window 2, so window 2 is raised first and
++        // the focus raise lands it on top of the restored cascade.
++        let current = vec![
++            WindowId::new(1, 1),
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++        ];
++        let (runs, focus_last) = corrective_restack_plan(&stack(), WindowId::new(1, 3), &current);
++        assert_eq!(runs, vec![vec![WindowId::new(1, 2)]]);
 +        assert!(focus_last);
 +    }
 +
@@ -326,7 +348,7 @@ index 544e373..fc7c9fa 100644
 +    }
  }
 diff --git a/src/actor/reactor.rs b/src/actor/reactor.rs
-index 21e4a04..6b0ed68 100644
+index 21e4a04..28891d6 100644
 --- a/src/actor/reactor.rs
 +++ b/src/actor/reactor.rs
 @@ -423,6 +423,10 @@ pub struct Reactor {
@@ -340,19 +362,22 @@ index 21e4a04..6b0ed68 100644
      drag_manager: managers::DragManager,
      workspace_switch_manager: managers::WorkspaceSwitchManager,
      recording_manager: managers::RecordingManager,
-@@ -447,6 +451,11 @@ pub struct Reactor {
+@@ -447,6 +451,14 @@ pub struct Reactor {
  }
  
  impl Reactor {
 +    /// How long RaiseRequest-induced window-server focus churn can keep
 +    /// resolving to transient key windows. A pending stack restack is dropped
-+    /// while this window is open: the raise in flight owns the z-order.
-+    const RAISE_STORM_RESTACK_SUPPRESS: Duration = Duration::from_millis(200);
++    /// while this window is open: the raise in flight owns the z-order. The
++    /// raise manager gives a raise sequence 250ms and the follow-up focus
++    /// batch its own 250ms, so the window must cover both before a stale
++    /// focus event can start a correction that fights the raise.
++    const RAISE_STORM_RESTACK_SUPPRESS: Duration = Duration::from_millis(550);
 +
      pub fn spawn(
          config: Config,
          layout_engine: LayoutEngine,
-@@ -512,6 +521,7 @@ impl Reactor {
+@@ -512,6 +524,7 @@ impl Reactor {
              space_activation_policy: SpaceActivationPolicy::new(),
              main_window_tracker: MainWindowTracker::default(),
              pending_mouse_focus: None,
@@ -360,7 +385,7 @@ index 21e4a04..6b0ed68 100644
              drag_manager: managers::DragManager {
                  actor: crate::actor::drag::DragActor::new(config.settings.drag_drop),
                  native_motion_active: std::sync::Arc::default(),
-@@ -2555,6 +2565,7 @@ impl Reactor {
+@@ -2555,6 +2568,7 @@ impl Reactor {
              for _ in 0..outcome.arrange.passes.max(1) {
                  layout_changed |= self.update_layout_or_warn(
                      outcome.arrange.is_resize,
@@ -368,7 +393,7 @@ index 21e4a04..6b0ed68 100644
                      matches!(
                          self.workspace_switch_manager.workspace_switch_state,
                          WorkspaceSwitchState::Active
-@@ -2563,8 +2574,12 @@ impl Reactor {
+@@ -2563,8 +2577,12 @@ impl Reactor {
                  );
              }
              if let Some(space) = outcome.arrange.secondary_space_scope {
@@ -383,7 +408,7 @@ index 21e4a04..6b0ed68 100644
              }
              // Publish the menu state once after all arrange passes have completed.
              self.maybe_send_menu_update();
-@@ -2857,7 +2872,7 @@ impl Reactor {
+@@ -2857,7 +2875,7 @@ impl Reactor {
              }
  
              self.refocus_manager.refocus_state = RefocusState::Pending(space);
@@ -392,7 +417,7 @@ index 21e4a04..6b0ed68 100644
              self.update_focus_follows_mouse_state();
          }
      }
-@@ -3889,6 +3904,7 @@ impl Reactor {
+@@ -3889,6 +3907,7 @@ impl Reactor {
          self.handle_layout_response(response, workspace_switch_space);
          if geometry_changed {
              self.update_layout_or_warn(
@@ -400,7 +425,7 @@ index 21e4a04..6b0ed68 100644
                  false,
                  workspace_switch_space.is_some(),
                  workspace_switch_space.or(event_space),
-@@ -4315,11 +4331,76 @@ impl Reactor {
+@@ -4315,12 +4334,81 @@ impl Reactor {
          EventOutcome::no_change()
      }
  
@@ -475,9 +500,14 @@ index 21e4a04..6b0ed68 100644
      ) {
 +        let restack = self.layout_manager.layout_engine.take_pending_restack().unwrap_or_default();
          if self.is_in_drag() {
++            // A drag owns the screen; the restack waits for a later response.
++            if !restack.is_empty() {
++                self.layout_manager.layout_engine.rearm_pending_restack(restack);
++            }
              self.workspace_switch_manager.mark_workspace_switch_inactive();
              return;
-@@ -4332,11 +4413,32 @@ impl Reactor {
+         }
+@@ -4332,11 +4420,38 @@ impl Reactor {
              };
          let layout::EventResponse {
              changed: _,
@@ -493,6 +523,12 @@ index 21e4a04..6b0ed68 100644
 +        let restack_in_raise_storm = self
 +            .last_raise_request_sent_at
 +            .is_some_and(|sent_at| sent_at.elapsed() < Self::RAISE_STORM_RESTACK_SUPPRESS);
++        if restack_in_raise_storm && !restack.is_empty() {
++            // The raise in flight owns the z-order; hand the restack back so
++            // a later response corrects the cascade once the storm closes,
++            // without waiting for another focus change.
++            self.layout_manager.layout_engine.rearm_pending_restack(restack.clone());
++        }
 +        let plan = if !restack.is_empty() && !restack_in_raise_storm {
 +            self.stack_restack_plan(&restack)
 +        } else {
@@ -511,7 +547,7 @@ index 21e4a04..6b0ed68 100644
          if let Some(space) = workspace_switch_space
              && matches!(
                  self.workspace_switch_manager.workspace_switch_state,
-@@ -4464,7 +4566,11 @@ impl Reactor {
+@@ -4464,7 +4579,11 @@ impl Reactor {
              }
          }
  
@@ -524,7 +560,7 @@ index 21e4a04..6b0ed68 100644
              if handled_without_raise {
                  self.workspace_switch_manager.mark_workspace_switch_inactive();
              }
-@@ -4519,6 +4625,42 @@ impl Reactor {
+@@ -4519,6 +4638,42 @@ impl Reactor {
              (wid, warp)
          });
  
@@ -567,7 +603,7 @@ index 21e4a04..6b0ed68 100644
          let msg = raise_manager::Event::RaiseRequest(RaiseRequest {
              raise_windows: windows_by_app_and_screen.into_values().collect(),
              focus_window: focus_window_with_warp,
-@@ -4526,6 +4668,7 @@ impl Reactor {
+@@ -4526,6 +4681,7 @@ impl Reactor {
              focus_quiet,
          });
  
@@ -575,7 +611,7 @@ index 21e4a04..6b0ed68 100644
          if let Err(e) = self.communication_manager.raise_manager_tx.try_send(msg) {
              warn!("Failed to send raise request to raise manager: {}", e);
          }
-@@ -4838,7 +4981,7 @@ impl Reactor {
+@@ -4838,7 +4994,7 @@ impl Reactor {
              !self.space_state.membership_complete,
          );
          self.request_window_inventories();
@@ -584,7 +620,7 @@ index 21e4a04..6b0ed68 100644
          self.maybe_send_menu_update();
      }
  
-@@ -5118,11 +5261,13 @@ impl Reactor {
+@@ -5118,11 +5274,13 @@ impl Reactor {
      pub(crate) fn update_layout_or_warn(
          &mut self,
          is_resize: bool,
@@ -598,7 +634,7 @@ index 21e4a04..6b0ed68 100644
              is_workspace_switch,
              space_scope,
              "Layout update failed",
-@@ -5132,6 +5277,7 @@ impl Reactor {
+@@ -5132,6 +5290,7 @@ impl Reactor {
      pub(crate) fn update_layout_or_warn_with(
          &mut self,
          is_resize: bool,
@@ -606,7 +642,7 @@ index 21e4a04..6b0ed68 100644
          is_workspace_switch: bool,
          space_scope: Option<SpaceId>,
          context: &'static str,
-@@ -5140,7 +5286,7 @@ impl Reactor {
+@@ -5140,7 +5299,7 @@ impl Reactor {
          {
              self.layout_update_count += 1;
          }
@@ -1103,7 +1139,7 @@ index 5ffb3e0..583cdbf 100644
          }
  
 diff --git a/src/actor/reactor/tests.rs b/src/actor/reactor/tests.rs
-index 325846f..42cc8e2 100644
+index 325846f..b72d5f2 100644
 --- a/src/actor/reactor/tests.rs
 +++ b/src/actor/reactor/tests.rs
 @@ -78,6 +78,112 @@ fn geometry_commands_request_arrangement_without_camera_movement() {
@@ -1252,7 +1288,7 @@ index 325846f..42cc8e2 100644
      ));
  
      let requests = apps.requests();
-@@ -7378,3 +7487,191 @@ fn inventory_observes_only_eligible_omitted_windows() {
+@@ -7378,3 +7487,210 @@ fn inventory_observes_only_eligible_omitted_windows() {
      assert_eq!(retired, vec![(windows[1], Some(omitted_wsid))]);
      reactor.state.windows.debug_assert_invariants();
  }
@@ -1313,15 +1349,16 @@ index 325846f..42cc8e2 100644
 +
 +#[test]
 +fn clicking_a_straddled_stack_window_raises_the_buried_neighbor_then_the_target() {
-+    // Slots hold [1, 3, 2] and z [2, 3, 1] is the happy cascade for window 2.
-+    // Clicking window 1 (left slot) buries window 3 (middle slot) under both
-+    // sides of its frame. Rift raises window 3 first, then window 1 last.
++    // Slots hold [1, 3, 2]; the happy cascade for window 2 is z [2, 3, 1],
++    // and a click on window 1 (left slot) leaves z [1, 2, 3] — the z-order
++    // the reader sees, with window 3 (middle slot) buried under both sides
++    // of its frame. Rift raises window 3 first, then window 1 last.
 +    let (_, mut reactor, mut raise_rx) = stack_reactor_with_z(
 +        WindowId::new(1, 2),
 +        &[
++            WindowId::new(1, 1),
 +            WindowId::new(1, 2),
 +            WindowId::new(1, 3),
-+            WindowId::new(1, 1),
 +        ],
 +        false,
 +    );
@@ -1392,14 +1429,15 @@ index 325846f..42cc8e2 100644
 +
 +#[test]
 +fn entering_stack_mode_raises_the_buried_member_before_the_focused_window() {
-+    // The traditional leftovers z [2, 1, 3] bury window 3 (middle slot) as
-+    // soon as the cascade appears: entry raises window 1 (corrective), then
-+    // focuses window 3 (the carried selection) on top.
++    // The traditional leftovers z [1, 2, 3] bury window 3 (middle slot) as
++    // soon as the cascade appears, and window 1 (the carried selection, left
++    // slot) raising alone would keep it buried: entry raises window 3
++    // (corrective), then focuses window 1 on top.
 +    let (_, _reactor, mut raise_rx) = stack_reactor_with_z(
-+        WindowId::new(1, 3),
++        WindowId::new(1, 1),
 +        &[
-+            WindowId::new(1, 2),
 +            WindowId::new(1, 1),
++            WindowId::new(1, 2),
 +            WindowId::new(1, 3),
 +        ],
 +        true,
@@ -1407,12 +1445,12 @@ index 325846f..42cc8e2 100644
 +
 +    let requests = raise_requests(&mut raise_rx);
 +    assert_eq!(requests.len(), 2, "{requests:?}");
-+    assert_eq!(requests[0].raise_windows, vec![vec![WindowId::new(1, 1)]]);
++    assert_eq!(requests[0].raise_windows, vec![vec![WindowId::new(1, 3)]]);
 +    assert!(requests[0].focus_window.is_none());
 +    assert!(requests[1].raise_windows.is_empty());
 +    assert_eq!(
 +        requests[1].focus_window.map(|(wid, _)| wid),
-+        Some(WindowId::new(1, 3))
++        Some(WindowId::new(1, 1))
 +    );
 +}
 +
@@ -1443,6 +1481,23 @@ index 325846f..42cc8e2 100644
 +        SpaceId::new(1),
 +    ));
 +    assert!(raise_requests(&mut raise_rx).is_empty());
++
++    // The dropped plan is re-armed, not lost: once the storm window closes,
++    // the next layout response corrects the cascade without another focus
++    // change. (Window 3 now holds focus; the focus raise alone sorts it, so
++    // the plan needs only the focus request — the trailing request is the
++    // empty response itself.)
++    reactor.last_raise_request_sent_at = None;
++    reactor.handle_layout_response(layout::EventResponse::default(), None);
++    let retried = raise_requests(&mut raise_rx);
++    assert_eq!(retried.len(), 2, "{retried:?}");
++    assert!(retried[0].raise_windows.is_empty());
++    assert_eq!(
++        retried[0].focus_window.map(|(wid, _)| wid),
++        Some(WindowId::new(1, 3))
++    );
++    assert!(retried[1].raise_windows.is_empty());
++    assert!(retried[1].focus_window.is_none());
 +}
 diff --git a/src/layout_engine.rs b/src/layout_engine.rs
 index 3f1cf15..01a64d3 100644
@@ -1462,7 +1517,7 @@ index 3f1cf15..01a64d3 100644
  pub use graph::{Direction, LayoutKind, Orientation, ResizeOrientation};
  
 diff --git a/src/layout_engine/engine.rs b/src/layout_engine/engine.rs
-index 9e94404..d474bf1 100644
+index 9e94404..88535c4 100644
 --- a/src/layout_engine/engine.rs
 +++ b/src/layout_engine/engine.rs
 @@ -168,6 +168,32 @@ impl std::ops::Deref for LayoutEventOutcome {
@@ -1509,7 +1564,7 @@ index 9e94404..d474bf1 100644
  }
  
  pub(crate) struct WorkspaceLayoutQuerySnapshot {
-@@ -198,6 +228,28 @@ pub(crate) struct WorkspaceLayoutQuerySnapshot {
+@@ -198,6 +228,34 @@ pub(crate) struct WorkspaceLayoutQuerySnapshot {
  impl LayoutEngine {
      pub fn focused_window(&self) -> Option<WindowId> { self.focused_window }
  
@@ -1518,6 +1573,12 @@ index 9e94404..d474bf1 100644
 +    /// last focus change did not concern a stacked container. The reactor
 +    /// consumes this once to correct native stacking.
 +    pub fn take_pending_restack(&mut self) -> Option<Vec<WindowId>> { self.pending_restack.take() }
++
++    /// Hand a consumed restack back for a later response to plan, when the
++    /// reactor could not act on it immediately (a raise storm in flight).
++    pub fn rearm_pending_restack(&mut self, members: Vec<WindowId>) {
++        self.pending_restack = Some(members);
++    }
 +
 +    /// The stacked container holding `focused` as a plain cascade of window
 +    /// leaves, in slot order, when it qualifies for z-order correction (at
@@ -1538,7 +1599,7 @@ index 9e94404..d474bf1 100644
      pub(crate) fn apply_window_drop(
          &mut self,
          request: crate::layout_engine::WindowDropRequest,
-@@ -488,10 +540,19 @@ impl LayoutEngine {
+@@ -488,10 +546,19 @@ impl LayoutEngine {
                  return false;
              }
              let old_layout = workspace.active_layout();
@@ -1561,7 +1622,7 @@ index 9e94404..d474bf1 100644
                  .unwrap_or_default();
              // Keep windows hidden by stack/group selection when rebuilding into a new mode.
              let mut hidden_windows: Vec<_> = self
-@@ -522,18 +583,37 @@ impl LayoutEngine {
+@@ -522,18 +589,37 @@ impl LayoutEngine {
          let Some(workspace) = self.workspaces.workspaces.get_mut(workspace_id) else {
              return false;
          };
@@ -1609,7 +1670,7 @@ index 9e94404..d474bf1 100644
          }
  
          if mode == LayoutMode::Scrolling {
-@@ -556,6 +636,25 @@ impl LayoutEngine {
+@@ -556,6 +642,25 @@ impl LayoutEngine {
          }
      }
  
@@ -1635,7 +1696,7 @@ index 9e94404..d474bf1 100644
      fn toggle_orientation_for_system<S: LayoutSystem>(
          system: &mut S,
          layout: LayoutId,
-@@ -957,6 +1056,10 @@ impl LayoutEngine {
+@@ -957,6 +1062,10 @@ impl LayoutEngine {
              } else {
                  let _ = self.workspaces[ws_id].layout_system.select_window(layout, wid);
                  self.workspaces.set_last_focused_window(space, ws_id, Some(wid));
@@ -1646,7 +1707,7 @@ index 9e94404..d474bf1 100644
              }
          }
      }
-@@ -1536,6 +1639,7 @@ impl LayoutEngine {
+@@ -1536,6 +1645,7 @@ impl LayoutEngine {
              persistence: PersistenceState::default(),
              startup_restore_pending: false,
              scroll_boundary: None,
@@ -1654,7 +1715,7 @@ index 9e94404..d474bf1 100644
          }
      }
  
-@@ -1883,6 +1987,12 @@ impl LayoutEngine {
+@@ -1883,6 +1993,12 @@ impl LayoutEngine {
                          self.workspaces[ws_id].layout_system.selected_window(layout) != Some(wid);
                      let _ = self.workspaces[ws_id].layout_system.select_window(layout, wid);
                      self.workspaces.set_last_focused_window(space, ws_id, Some(wid));
@@ -1667,7 +1728,7 @@ index 9e94404..d474bf1 100644
                      return EventResponse {
                          changed: selection_changed
                              && matches!(
-@@ -2286,10 +2396,25 @@ impl LayoutEngine {
+@@ -2286,10 +2402,25 @@ impl LayoutEngine {
                  EventResponse::default()
              }
              LayoutCommand::ToggleFullscreen => {
@@ -1694,7 +1755,7 @@ index 9e94404..d474bf1 100644
                      EventResponse::default()
                  } else {
                      EventResponse {
-@@ -2301,10 +2426,19 @@ impl LayoutEngine {
+@@ -2301,10 +2432,19 @@ impl LayoutEngine {
                  }
              }
              LayoutCommand::ToggleFullscreenWithinGaps => {
@@ -1715,7 +1776,7 @@ index 9e94404..d474bf1 100644
                      EventResponse::default()
                  } else {
                      EventResponse {
-@@ -2765,8 +2899,8 @@ impl LayoutEngine {
+@@ -2765,8 +2905,8 @@ impl LayoutEngine {
          positions.into_iter().collect()
      }
  
@@ -1726,7 +1787,7 @@ index 9e94404..d474bf1 100644
          let (ws_id, layout) = self.workspaces.active_layout_for_space(space)?;
          self.workspaces[ws_id].layout_system.selected_window(layout)
      }
-@@ -2977,8 +3111,28 @@ impl LayoutEngine {
+@@ -2977,8 +3117,28 @@ impl LayoutEngine {
  
                  let is_active_workspace =
                      self.workspaces.active_workspace(space) == Some(workspace_id);
@@ -1756,7 +1817,7 @@ index 9e94404..d474bf1 100644
                  } else {
                      Vec::new()
                  };
-@@ -3593,6 +3747,342 @@ mod tests {
+@@ -3593,6 +3753,342 @@ mod tests {
          }
      }
  
@@ -2099,7 +2160,7 @@ index 9e94404..d474bf1 100644
      #[test]
      fn floating_toggle_frame_sizes_then_centers_in_the_native_screen_frame() {
          let screen = CGRect::new(CGPoint::new(100.0, 40.0), CGSize::new(1000.0, 800.0));
-@@ -5602,4 +6092,118 @@ mod tests {
+@@ -5602,4 +6098,118 @@ mod tests {
              Some(target_workspace)
          );
      }
