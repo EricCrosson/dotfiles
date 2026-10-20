@@ -61,6 +61,24 @@
 #   make-key lands before the queued corrective raises, so a jump over a
 #   member buries it for ~10-50ms until the correctives land (sampled at
 #   2ms); AX raises across apps cannot be ordered atomically.
+# - leave the clicked stack window focused: clicking the rightmost window
+#   with the leftmost focused (or the reverse) ended with the middle one
+#   focused in 2 of 4 real clicks. A corrective raise must activate its
+#   app (a bare AXRaise on another app's window is a no-op across apps),
+#   and then (a) the final focus raise was elided because the clicked
+#   app's own AX frontmost still read true right after rift activated the
+#   corrective's app, and (b) the corrective's activation reached the
+#   layout as a focus change, so a settle check could re-target it. The
+#   elision now also requires the window server's key-focus process; while
+#   a restack's correctives are in flight, window-server focus on a
+#   corrective is the raise's unless a mouse button or key was pressed
+#   since they were sent; the settle check re-focuses the target when the
+#   window server reports another window key. Measured: 20 of 20 real
+#   clicks (10 each direction) settled with the clicked window focused, on
+#   top, every edge visible, 59-216ms (median 121ms) after the click. The
+#   corrective's app is still key for 4-92ms (median 47ms) mid-restack (the
+#   native focus broadcast reports it); the layout selection never leaves
+#   the clicked window.
 # Measured live with a window-server probe (432 points, ~4ms sampling):
 # two-window round trips showed no third window or desktop at any point.
 # With four windows, 34 of 38 transitions showed none either; the other 4

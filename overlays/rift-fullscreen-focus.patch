@@ -1,5 +1,5 @@
 diff --git a/src/actor/app.rs b/src/actor/app.rs
-index 7253234..442cb80 100644
+index 7253234..ec20048 100644
 --- a/src/actor/app.rs
 +++ b/src/actor/app.rs
 @@ -647,36 +647,14 @@ struct AppWindowState {
@@ -47,6 +47,24 @@ index 7253234..442cb80 100644
  }
  
  struct PendingFrame {
+@@ -1532,8 +1510,15 @@ impl State {
+         // transient system UI. Complete the request without touching focus.
+         //
+         // Only elide a single-window request. Multi-window batches still need
+-        // their raises to establish the requested stacking order.
+-        if is_frontmost && this.main_window == Some(first) && wids.len() == 1 {
++        // their raises to establish the requested stacking order. The app's own
++        // AX `frontmost` lags its deactivation: right after rift raises another
++        // app's window, it still reads true here, and eliding would leave the
++        // other app focused. The window server's key-focus process is current.
++        if is_frontmost
++            && this.main_window == Some(first)
++            && wids.len() == 1
++            && window_server::key_focus_pid() == Some(this.pid)
++        {
+             trace!(?first, "Skipping raise for already focused window");
+             this.send_event(Event::RaiseCompleted { window_id: first, sequence_id });
+             return Ok(());
 diff --git a/src/actor/raise_manager.rs b/src/actor/raise_manager.rs
 index 544e373..db9db33 100644
 --- a/src/actor/raise_manager.rs
@@ -348,10 +366,27 @@ index 544e373..db9db33 100644
 +    }
  }
 diff --git a/src/actor/reactor.rs b/src/actor/reactor.rs
-index 21e4a04..2e5fd5c 100644
+index 21e4a04..5c956b0 100644
 --- a/src/actor/reactor.rs
 +++ b/src/actor/reactor.rs
-@@ -423,6 +423,23 @@ pub struct Reactor {
+@@ -412,6 +412,16 @@ pub enum WindowInvalidationSource {
+     StaleAxElement,
+ }
+ 
++/// A stack restack's corrective raises in flight. Raising a window activates
++/// its app, so the window server reports each corrective as focused while
++/// the restack runs; those focus changes are the raise's, and `target` (the
++/// window the restack was planned for) must end focused.
++struct RestackFocus {
++    target: WindowId,
++    correctives: Vec<WindowId>,
++    sent_at: Instant,
++}
++
+ pub struct Reactor {
+     pub config: Config,
+     pub one_space: bool,
+@@ -423,6 +433,26 @@ pub struct Reactor {
      space_activation_policy: SpaceActivationPolicy,
      main_window_tracker: MainWindowTracker,
      pending_mouse_focus: Option<(WindowId, Instant)>,
@@ -372,10 +407,13 @@ index 21e4a04..2e5fd5c 100644
 +    /// Whether the restack in flight raised corrective members: only then
 +    /// can cross-app raise landings interleave into a wrong settled order.
 +    restack_had_correctives: bool,
++    /// The corrective raises of the restack in flight and the window it must
++    /// leave focused.
++    restack_focus: Option<RestackFocus>,
      drag_manager: managers::DragManager,
      workspace_switch_manager: managers::WorkspaceSwitchManager,
      recording_manager: managers::RecordingManager,
-@@ -447,6 +464,16 @@ pub struct Reactor {
+@@ -447,6 +477,16 @@ pub struct Reactor {
  }
  
  impl Reactor {
@@ -392,7 +430,7 @@ index 21e4a04..2e5fd5c 100644
      pub fn spawn(
          config: Config,
          layout_engine: LayoutEngine,
-@@ -512,6 +539,11 @@ impl Reactor {
+@@ -512,6 +552,12 @@ impl Reactor {
              space_activation_policy: SpaceActivationPolicy::new(),
              main_window_tracker: MainWindowTracker::default(),
              pending_mouse_focus: None,
@@ -401,10 +439,24 @@ index 21e4a04..2e5fd5c 100644
 +            restack_retries: 0,
 +            restack_container: None,
 +            restack_had_correctives: false,
++            restack_focus: None,
              drag_manager: managers::DragManager {
                  actor: crate::actor::drag::DragActor::new(config.settings.drag_drop),
                  native_motion_active: std::sync::Arc::default(),
-@@ -2005,6 +2037,37 @@ impl Reactor {
+@@ -1354,6 +1400,12 @@ impl Reactor {
+                 return Ok(EventOutcome::focus_changed(None, should_update_notifications));
+             }
+             Event::WindowServerFocusChanged(window, reported_space) => {
++                if self.is_restack_corrective_focus(window) {
++                    // A corrective raise activating its own app: the restack
++                    // re-focuses its target next, so this is not a focus
++                    // change the layout may follow.
++                    return Ok(EventOutcome::default());
++                }
+                 if self.state.windows.contains_window(window)
+                     && self.is_space_active(reported_space)
+                     && self.space_state.screen_by_space(reported_space).is_some()
+@@ -2005,6 +2057,37 @@ impl Reactor {
                  if self.pending_mouse_focus.is_some_and(|(window, _)| window == window_id) {
                      self.pending_mouse_focus = None;
                  }
@@ -442,7 +494,7 @@ index 21e4a04..2e5fd5c 100644
                  return Ok(system_workflow::handle_raise_completed(
                      system_workflow::RaiseCompletedPayload {
                          window: window_id,
-@@ -2013,7 +2076,31 @@ impl Reactor {
+@@ -2013,7 +2096,31 @@ impl Reactor {
                  )?);
              }
              Event::RaiseTimeout { sequence_id } => {
@@ -475,7 +527,7 @@ index 21e4a04..2e5fd5c 100644
              }
              Event::ConfigUpdated(new_cfg) => {
                  return command_workflow::handle_config_updated(
-@@ -2555,6 +2642,7 @@ impl Reactor {
+@@ -2555,6 +2662,7 @@ impl Reactor {
              for _ in 0..outcome.arrange.passes.max(1) {
                  layout_changed |= self.update_layout_or_warn(
                      outcome.arrange.is_resize,
@@ -483,7 +535,7 @@ index 21e4a04..2e5fd5c 100644
                      matches!(
                          self.workspace_switch_manager.workspace_switch_state,
                          WorkspaceSwitchState::Active
-@@ -2563,8 +2651,12 @@ impl Reactor {
+@@ -2563,8 +2671,12 @@ impl Reactor {
                  );
              }
              if let Some(space) = outcome.arrange.secondary_space_scope {
@@ -498,7 +550,7 @@ index 21e4a04..2e5fd5c 100644
              }
              // Publish the menu state once after all arrange passes have completed.
              self.maybe_send_menu_update();
-@@ -2857,7 +2949,7 @@ impl Reactor {
+@@ -2857,7 +2969,7 @@ impl Reactor {
              }
  
              self.refocus_manager.refocus_state = RefocusState::Pending(space);
@@ -507,7 +559,7 @@ index 21e4a04..2e5fd5c 100644
              self.update_focus_follows_mouse_state();
          }
      }
-@@ -3889,6 +3981,7 @@ impl Reactor {
+@@ -3889,6 +4001,7 @@ impl Reactor {
          self.handle_layout_response(response, workspace_switch_space);
          if geometry_changed {
              self.update_layout_or_warn(
@@ -515,7 +567,7 @@ index 21e4a04..2e5fd5c 100644
                  false,
                  workspace_switch_space.is_some(),
                  workspace_switch_space.or(event_space),
-@@ -4315,12 +4408,81 @@ impl Reactor {
+@@ -4315,12 +4428,111 @@ impl Reactor {
          EventOutcome::no_change()
      }
  
@@ -580,7 +632,37 @@ index 21e4a04..2e5fd5c 100644
 +        }
 +        let (runs, focus_last) =
 +            raise_manager::corrective_restack_plan(&members, focused, &current);
++        // Within this target's own restack, a corrective's activation can
++        // land after the target's raise and keep its app key while the target
++        // sits on top: the z-order alone does not prove the target focused.
++        let focus_last = focus_last
++            || (self.restack_focus.as_ref().is_some_and(|restack| {
++                restack.target == focused && restack.sent_at.elapsed() < Self::RETRY_RESTACK_WINDOW
++            }) && self.main_window_tracker.window_server_focus() != Some(focused));
 +        Some((members, runs, focus_last))
++    }
++
++    /// Whether a window-server focus change is a stack restack's corrective
++    /// raise activating its own app rather than the user choosing that
++    /// window: the window is a corrective of the restack in flight and no
++    /// mouse button or key was pressed since the correctives were sent. Focus
++    /// that lands anywhere else ends the restack's claim on focus.
++    fn is_restack_corrective_focus(&mut self, window: WindowId) -> bool {
++        let Some(restack) = &self.restack_focus else {
++            return false;
++        };
++        if window == restack.target {
++            return false;
++        }
++        let elapsed = restack.sent_at.elapsed();
++        if elapsed < Self::RETRY_RESTACK_WINDOW
++            && restack.correctives.contains(&window)
++            && crate::sys::event::seconds_since_user_press() > elapsed.as_secs_f64()
++        {
++            return true;
++        }
++        self.restack_focus = None;
++        false
 +    }
 +
      fn handle_layout_response(
@@ -597,7 +679,7 @@ index 21e4a04..2e5fd5c 100644
              self.workspace_switch_manager.mark_workspace_switch_inactive();
              return;
          }
-@@ -4332,11 +4494,38 @@ impl Reactor {
+@@ -4332,11 +4544,38 @@ impl Reactor {
              };
          let layout::EventResponse {
              changed: _,
@@ -637,7 +719,7 @@ index 21e4a04..2e5fd5c 100644
          if let Some(space) = workspace_switch_space
              && matches!(
                  self.workspace_switch_manager.workspace_switch_state,
-@@ -4464,7 +4653,11 @@ impl Reactor {
+@@ -4464,7 +4703,11 @@ impl Reactor {
              }
          }
  
@@ -650,7 +732,7 @@ index 21e4a04..2e5fd5c 100644
              if handled_without_raise {
                  self.workspace_switch_manager.mark_workspace_switch_inactive();
              }
-@@ -4519,6 +4712,73 @@ impl Reactor {
+@@ -4519,6 +4762,82 @@ impl Reactor {
              (wid, warp)
          });
  
@@ -667,6 +749,15 @@ index 21e4a04..2e5fd5c 100644
 +                self.restack_retries = 0;
 +            }
 +            self.restack_container = Some(restack_members.clone());
++            // The correctives' activations are the raise's: the restack's
++            // target keeps focus while they land.
++            if let Some(target) = self.layout_manager.layout_engine.focused_window() {
++                self.restack_focus = Some(RestackFocus {
++                    target,
++                    correctives: restack_runs.iter().flatten().copied().collect(),
++                    sent_at: Instant::now(),
++                });
++            }
 +        }
 +        self.restack_had_correctives = !restack_runs.is_empty();
 +        for run in &restack_runs {
@@ -724,7 +815,7 @@ index 21e4a04..2e5fd5c 100644
          let msg = raise_manager::Event::RaiseRequest(RaiseRequest {
              raise_windows: windows_by_app_and_screen.into_values().collect(),
              focus_window: focus_window_with_warp,
-@@ -4526,6 +4786,7 @@ impl Reactor {
+@@ -4526,6 +4845,7 @@ impl Reactor {
              focus_quiet,
          });
  
@@ -732,7 +823,7 @@ index 21e4a04..2e5fd5c 100644
          if let Err(e) = self.communication_manager.raise_manager_tx.try_send(msg) {
              warn!("Failed to send raise request to raise manager: {}", e);
          }
-@@ -4838,7 +5099,7 @@ impl Reactor {
+@@ -4838,7 +5158,7 @@ impl Reactor {
              !self.space_state.membership_complete,
          );
          self.request_window_inventories();
@@ -741,7 +832,7 @@ index 21e4a04..2e5fd5c 100644
          self.maybe_send_menu_update();
      }
  
-@@ -5118,11 +5379,13 @@ impl Reactor {
+@@ -5118,11 +5438,13 @@ impl Reactor {
      pub(crate) fn update_layout_or_warn(
          &mut self,
          is_resize: bool,
@@ -755,7 +846,7 @@ index 21e4a04..2e5fd5c 100644
              is_workspace_switch,
              space_scope,
              "Layout update failed",
-@@ -5132,6 +5395,7 @@ impl Reactor {
+@@ -5132,6 +5454,7 @@ impl Reactor {
      pub(crate) fn update_layout_or_warn_with(
          &mut self,
          is_resize: bool,
@@ -763,7 +854,7 @@ index 21e4a04..2e5fd5c 100644
          is_workspace_switch: bool,
          space_scope: Option<SpaceId>,
          context: &'static str,
-@@ -5140,7 +5404,7 @@ impl Reactor {
+@@ -5140,7 +5463,7 @@ impl Reactor {
          {
              self.layout_update_count += 1;
          }
@@ -1211,6 +1302,20 @@ index 102ffd2..58485eb 100644
                  window_was_destroyed: false,
                  space_scope: None,
                  secondary_space_scope: None,
+diff --git a/src/actor/reactor/main_window.rs b/src/actor/reactor/main_window.rs
+index 908aeb3..93110cc 100644
+--- a/src/actor/reactor/main_window.rs
++++ b/src/actor/reactor/main_window.rs
+@@ -117,6 +117,9 @@ impl MainWindowTracker {
+ 
+     pub fn is_globally_frontmost(&self, pid: pid_t) -> bool { self.global_frontmost == Some(pid) }
+ 
++    /// The window the window server last reported as key focus.
++    pub fn window_server_focus(&self) -> Option<WindowId> { self.window_server_focus }
++
+     pub fn app_main_window(&self, pid: pid_t) -> Option<WindowId> {
+         self.apps.get(&pid)?.main_window
+     }
 diff --git a/src/actor/reactor/managers.rs b/src/actor/reactor/managers.rs
 index 5ffb3e0..583cdbf 100644
 --- a/src/actor/reactor/managers.rs
@@ -1260,7 +1365,7 @@ index 5ffb3e0..583cdbf 100644
          }
  
 diff --git a/src/actor/reactor/tests.rs b/src/actor/reactor/tests.rs
-index 325846f..6c8d5b6 100644
+index 325846f..64d462f 100644
 --- a/src/actor/reactor/tests.rs
 +++ b/src/actor/reactor/tests.rs
 @@ -78,6 +78,112 @@ fn geometry_commands_request_arrangement_without_camera_movement() {
@@ -1409,7 +1514,7 @@ index 325846f..6c8d5b6 100644
      ));
  
      let requests = apps.requests();
-@@ -7378,3 +7487,286 @@ fn inventory_observes_only_eligible_omitted_windows() {
+@@ -7378,3 +7487,402 @@ fn inventory_observes_only_eligible_omitted_windows() {
      assert_eq!(retired, vec![(windows[1], Some(omitted_wsid))]);
      reactor.state.windows.debug_assert_invariants();
  }
@@ -1652,9 +1757,9 @@ index 325846f..6c8d5b6 100644
 +}
 +
 +#[test]
-+fn clicks_within_a_raise_storm_do_not_fight_the_raise_in_flight() {
-+    // The first click starts a raise sequence; a second click arriving while
-+    // raises are still in flight must not plan against transient key windows.
++fn a_click_elsewhere_during_a_restack_is_deferred_not_lost() {
++    // The first click starts a raise sequence; a second click on a window
++    // the restack is not raising arrives while raises are still in flight.
 +    let (_, mut reactor, mut raise_rx) = stack_reactor_with_z(
 +        WindowId::new(1, 2),
 +        &[
@@ -1670,31 +1775,147 @@ index 325846f..6c8d5b6 100644
 +    ));
 +    let storm_requests = raise_requests(&mut raise_rx);
 +    assert_eq!(storm_requests.len(), 3, "{storm_requests:?}");
++    assert_eq!(storm_requests[0].raise_windows, vec![vec![WindowId::new(1, 3)]]);
 +
-+    // The corrective raises keep the storm window open; the second click's
-+    // plan is dropped instead of racing the raises in flight.
++    // The second click (window 2, right slot) leaves window 3 buried. The
++    // corrective raises keep the storm window open, so its plan waits
++    // instead of racing the raises in flight.
++    set_stack_z(&reactor, &[
++        WindowId::new(1, 2),
++        WindowId::new(1, 1),
++        WindowId::new(1, 3),
++    ]);
++    reactor.handle_event(Event::WindowServerFocusChanged(
++        WindowId::new(1, 2),
++        SpaceId::new(1),
++    ));
++    assert!(raise_requests(&mut raise_rx).is_empty());
++    assert_eq!(
++        reactor.layout_manager.layout_engine.focused_window(),
++        Some(WindowId::new(1, 2))
++    );
++
++    // The deferred plan is re-armed, not lost: once the storm window closes,
++    // the next layout response corrects the cascade for the second click.
++    reactor.last_raise_request_sent_at = None;
++    reactor.handle_layout_response(layout::EventResponse::default(), None);
++    let retried = raise_requests(&mut raise_rx);
++    assert_eq!(retried.len(), 3, "{retried:?}");
++    assert_eq!(retried[0].raise_windows, vec![vec![WindowId::new(1, 3)]]);
++    assert_eq!(
++        retried[1].focus_window.map(|(wid, _)| wid),
++        Some(WindowId::new(1, 2))
++    );
++}
++
++/// Replace the window-server z-order (front to back) the restack reads.
++fn set_stack_z(reactor: &Reactor, z_order: &[WindowId]) {
++    let z: Vec<u32> =
++        z_order.iter().map(|wid| reactor.test_window_server_id(*wid).as_u32()).collect();
++    window_server::set_space_window_list_for_connection_override(Some(z));
++}
++
++fn focus_requests(requests: &[raise_manager::RaiseRequest]) -> Vec<WindowId> {
++    requests
++        .iter()
++        .filter_map(|request| request.focus_window.map(|(wid, _)| wid))
++        .collect()
++}
++
++/// Click window 1 in the [1, 3, 2] stack while window 3 is buried
++/// (z [1, 2, 3]), then let the window server report the corrective raise's
++/// activation of window 3.
++fn click_with_corrective_activation() -> (Reactor, actor::Receiver<raise_manager::Event>) {
++    let (_, mut reactor, mut raise_rx) = stack_reactor_with_z(
++        WindowId::new(1, 2),
++        &[
++            WindowId::new(1, 1),
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++        ],
++        false,
++    );
++    reactor.handle_event(Event::WindowServerFocusChanged(
++        WindowId::new(1, 1),
++        SpaceId::new(1),
++    ));
++    let first = raise_requests(&mut raise_rx);
++    assert_eq!(first[0].raise_windows, vec![vec![WindowId::new(1, 3)]]);
++    assert_eq!(focus_requests(&first), vec![WindowId::new(1, 1)]);
++    // A raise really activates its app: the corrective makes window 3 key.
 +    reactor.handle_event(Event::WindowServerFocusChanged(
 +        WindowId::new(1, 3),
 +        SpaceId::new(1),
 +    ));
-+    assert!(raise_requests(&mut raise_rx).is_empty());
++    (reactor, raise_rx)
++}
 +
-+    // The dropped plan is re-armed, not lost: once the storm window closes,
-+    // the next layout response corrects the cascade without another focus
-+    // change. (Window 3 now holds focus; the focus raise alone sorts it, so
-+    // the plan needs only the focus request — the trailing request is the
-+    // empty response itself.)
-+    reactor.last_raise_request_sent_at = None;
-+    reactor.handle_layout_response(layout::EventResponse::default(), None);
-+    let retried = raise_requests(&mut raise_rx);
-+    assert_eq!(retried.len(), 2, "{retried:?}");
-+    assert!(retried[0].raise_windows.is_empty());
++fn complete_click_restack(reactor: &mut Reactor) {
++    for window in [WindowId::new(1, 3), WindowId::new(1, 1)] {
++        reactor.handle_event(Event::RaiseCompleted {
++            window_id: window,
++            sequence_id: 1,
++        });
++    }
++}
++
++#[test]
++fn a_corrective_raise_activation_keeps_the_clicked_window_the_target() {
++    // The corrective's activation belongs to the raise, not the user: the
++    // clicked window keeps focus, and when the corrective lands above it the
++    // settle check raises and focuses the clicked window, not window 3.
++    crate::sys::event::set_seconds_since_user_press_override(Some(f64::INFINITY));
++    let (mut reactor, mut raise_rx) = click_with_corrective_activation();
 +    assert_eq!(
-+        retried[0].focus_window.map(|(wid, _)| wid),
++        reactor.layout_manager.layout_engine.focused_window(),
++        Some(WindowId::new(1, 1))
++    );
++
++    set_stack_z(&reactor, &[
++        WindowId::new(1, 3),
++        WindowId::new(1, 1),
++        WindowId::new(1, 2),
++    ]);
++    complete_click_restack(&mut reactor);
++    let settled = raise_requests(&mut raise_rx);
++    assert_eq!(
++        focus_requests(&settled),
++        vec![WindowId::new(1, 1)],
++        "{settled:?}"
++    );
++}
++
++#[test]
++fn restack_settle_check_refocuses_the_target_when_a_corrective_kept_key_focus() {
++    // The cascade can settle valid with the clicked window on top while the
++    // corrective's app still holds key focus. The settle check verifies
++    // window-server focus, not just the z-order.
++    crate::sys::event::set_seconds_since_user_press_override(Some(f64::INFINITY));
++    let (mut reactor, mut raise_rx) = click_with_corrective_activation();
++    set_stack_z(&reactor, &[
++        WindowId::new(1, 1),
++        WindowId::new(1, 3),
++        WindowId::new(1, 2),
++    ]);
++    complete_click_restack(&mut reactor);
++    let settled = raise_requests(&mut raise_rx);
++    assert_eq!(
++        focus_requests(&settled),
++        vec![WindowId::new(1, 1)],
++        "{settled:?}"
++    );
++}
++
++#[test]
++fn a_user_press_before_a_corrective_window_takes_focus_makes_it_the_users() {
++    // A mouse or key press after the corrective was sent means the user
++    // chose window 3 themselves: the focus is theirs, not the raise's.
++    crate::sys::event::set_seconds_since_user_press_override(Some(0.0));
++    let (reactor, _raise_rx) = click_with_corrective_activation();
++    assert_eq!(
++        reactor.layout_manager.layout_engine.focused_window(),
 +        Some(WindowId::new(1, 3))
 +    );
-+    assert!(retried[1].raise_windows.is_empty());
-+    assert!(retried[1].focus_window.is_none());
 +}
 diff --git a/src/layout_engine.rs b/src/layout_engine.rs
 index 3f1cf15..01a64d3 100644
@@ -3040,8 +3261,88 @@ index 767a102..8b4c930 100644
      pub fn layout_mode(&self) -> LayoutMode { self.layout_mode }
  
      pub fn create_layout_system(mode: LayoutMode, settings: &LayoutSettings) -> LayoutSystemKind {
+diff --git a/src/sys/event.rs b/src/sys/event.rs
+index 858c3fe..9c3c982 100644
+--- a/src/sys/event.rs
++++ b/src/sys/event.rs
+@@ -3,8 +3,8 @@ use std::convert::TryFrom;
+ use objc2_core_foundation::CGPoint;
+ use objc2_core_graphics::{
+     CGAssociateMouseAndMouseCursorPosition, CGDisplayHideCursor, CGDisplayShowCursor, CGError,
+-    CGEvent, CGEventField, CGEventFlags, CGEventSource, CGEventSourceStateID, CGMouseButton,
+-    kCGNullDirectDisplay,
++    CGEvent, CGEventField, CGEventFlags, CGEventSource, CGEventSourceStateID, CGEventType,
++    CGMouseButton, kCGNullDirectDisplay,
+ };
+ use serde::{Deserialize, Serialize};
+ 
+@@ -56,6 +56,38 @@ pub fn get_mouse_state() -> Option<MouseState> {
+     })
+ }
+ 
++/// Seconds since the user last pressed a mouse button or a key, from the HID
++/// system state. Rift's own make-key event records and cursor warps are not
++/// presses, so a focus change with no press since rift raised a window is
++/// that raise's, not the user's.
++pub fn seconds_since_user_press() -> f64 {
++    #[cfg(test)]
++    if let Some(seconds) = TEST_SECONDS_SINCE_USER_PRESS.with(std::cell::Cell::get) {
++        return seconds;
++    }
++    [
++        CGEventType::LeftMouseDown,
++        CGEventType::RightMouseDown,
++        CGEventType::KeyDown,
++    ]
++    .into_iter()
++    .map(|ty| {
++        CGEventSource::seconds_since_last_event_type(CGEventSourceStateID::HIDSystemState, ty)
++    })
++    .fold(f64::INFINITY, f64::min)
++}
++
++#[cfg(test)]
++thread_local! {
++    static TEST_SECONDS_SINCE_USER_PRESS: std::cell::Cell<Option<f64>> =
++        const { std::cell::Cell::new(None) };
++}
++
++#[cfg(test)]
++pub fn set_seconds_since_user_press_override(seconds: Option<f64>) {
++    TEST_SECONDS_SINCE_USER_PRESS.with(|cell| cell.set(seconds));
++}
++
+ pub fn warp_mouse(point: CGPoint) -> Result<(), CGError> {
+     let src = unsafe { CGEventSourceCreate(CGEventSourceStateID::CombinedSessionState) };
+     unsafe { CGEventSourceSetLocalEventsSuppressionInterval(src, 0.0) };
+diff --git a/src/sys/process.rs b/src/sys/process.rs
+index c156b0c..04ce1f5 100644
+--- a/src/sys/process.rs
++++ b/src/sys/process.rs
+@@ -60,6 +60,11 @@ impl ProcessSerialNumber {
+         cg_ok(unsafe { GetProcessForPID(pid, &mut psn) })?;
+         Ok(psn)
+     }
++
++    pub(super) fn pid(&self) -> Option<pid_t> {
++        let mut pid = 0;
++        (unsafe { GetProcessPID(self, &mut pid) } == 0).then_some(pid)
++    }
+ }
+ 
+ #[link(name = "ApplicationServices", kind = "framework")]
+@@ -67,6 +72,9 @@ unsafe extern "C" {
+     // Deprecated in macOS 10.9.
+     fn GetProcessForPID(pid: pid_t, psn: *mut ProcessSerialNumber) -> CGError;
+ 
++    // Deprecated in macOS 10.9.
++    fn GetProcessPID(psn: *const ProcessSerialNumber, pid: *mut pid_t) -> i32;
++
+     // Deprecated in macOS 10.9.
+     fn GetProcessInformation(psn: *const ProcessSerialNumber, info: *mut ProcessInfoRec)
+     -> CGError;
 diff --git a/src/sys/window_server.rs b/src/sys/window_server.rs
-index 2fd635d..3434546 100644
+index 2fd635d..d38ebfc 100644
 --- a/src/sys/window_server.rs
 +++ b/src/sys/window_server.rs
 @@ -708,6 +708,14 @@ pub fn window_level(wid: u32) -> Option<NSWindowLevel> {
@@ -3059,3 +3360,20 @@ index 2fd635d..3434546 100644
  pub fn window_sub_level(wid: u32) -> c_int { unsafe { mach_get_window_sub_level(wid) } }
  
  /// Returns the typed Skylight tags exposed by a window-query iterator.
+@@ -859,6 +867,16 @@ pub fn key_focused_window(space: SpaceId) -> Option<WindowId> {
+     })
+ }
+ 
++/// The process holding WindowServer key focus. Authoritative and current,
++/// unlike an app's own AX `frontmost`, which lags until that app processes
++/// its deactivation.
++pub fn key_focus_pid() -> Option<pid_t> {
++    let mut psn = ProcessSerialNumber::default();
++    let mut fallback = 0u8;
++    cg_ok(unsafe { SLPSGetKeyFocusProcess(&mut psn, &mut fallback) }).ok()?;
++    psn.pid()
++}
++
+ /// The space on the display currently holding WindowServer focus.
+ pub fn active_space() -> SpaceId { SpaceId::new(unsafe { CGSGetActiveSpace(*G_CONNECTION) }) }
+ 
