@@ -57,9 +57,10 @@
 #   only the focus, which left the cascade buried until the next
 #   interaction (measured: ~8s with Slack); the reactor now tracks the
 #   restack's members and retries the plan on a raise timeout, bounded at
-#   three attempts within 2s. Residual: cross-app raise landings can
-#   interleave for one to two compositor frames, so a buried intermediate
-#   can appear below the 2ms sampling resolution of the probe.
+#   three attempts within 2s. Residual: the focus command's synchronous
+#   make-key lands before the queued corrective raises, so a jump over a
+#   member buries it for ~10-50ms until the correctives land (sampled at
+#   2ms); AX raises across apps cannot be ordered atomically.
 # Measured live with a window-server probe (432 points, ~4ms sampling):
 # two-window round trips showed no third window or desktop at any point.
 # With four windows, 34 of 38 transitions showed none either; the other 4
