@@ -348,10 +348,10 @@ index 544e373..db9db33 100644
 +    }
  }
 diff --git a/src/actor/reactor.rs b/src/actor/reactor.rs
-index 21e4a04..28891d6 100644
+index 21e4a04..5e1cff3 100644
 --- a/src/actor/reactor.rs
 +++ b/src/actor/reactor.rs
-@@ -423,6 +423,10 @@ pub struct Reactor {
+@@ -423,6 +423,16 @@ pub struct Reactor {
      space_activation_policy: SpaceActivationPolicy,
      main_window_tracker: MainWindowTracker,
      pending_mouse_focus: Option<(WindowId, Instant)>,
@@ -359,10 +359,16 @@ index 21e4a04..28891d6 100644
 +    /// window-server focus changes resolve to transient key windows; a stack
 +    /// restack computed from one of those would fight the raise in flight.
 +    last_raise_request_sent_at: Option<Instant>,
++    /// The members of the most recent stack restack, so a raise-manager
++    /// timeout (which cancels the corrective raises and delivers only the
++    /// focus) can retry the plan. Cleared as the members' raises complete.
++    restack_retry: Option<(Vec<WindowId>, Instant)>,
++    /// Retry attempts for the tracked restack, bounded per window.
++    restack_retries: u8,
      drag_manager: managers::DragManager,
      workspace_switch_manager: managers::WorkspaceSwitchManager,
      recording_manager: managers::RecordingManager,
-@@ -447,6 +451,14 @@ pub struct Reactor {
+@@ -447,6 +457,16 @@ pub struct Reactor {
  }
  
  impl Reactor {
@@ -373,19 +379,66 @@ index 21e4a04..28891d6 100644
 +    /// batch its own 250ms, so the window must cover both before a stale
 +    /// focus event can start a correction that fights the raise.
 +    const RAISE_STORM_RESTACK_SUPPRESS: Duration = Duration::from_millis(550);
++    /// How long after a restack a raise timeout may still retry its plan.
++    const RETRY_RESTACK_WINDOW: Duration = Duration::from_secs(2);
 +
      pub fn spawn(
          config: Config,
          layout_engine: LayoutEngine,
-@@ -512,6 +524,7 @@ impl Reactor {
+@@ -512,6 +532,9 @@ impl Reactor {
              space_activation_policy: SpaceActivationPolicy::new(),
              main_window_tracker: MainWindowTracker::default(),
              pending_mouse_focus: None,
 +            last_raise_request_sent_at: None,
++            restack_retry: None,
++            restack_retries: 0,
              drag_manager: managers::DragManager {
                  actor: crate::actor::drag::DragActor::new(config.settings.drag_drop),
                  native_motion_active: std::sync::Arc::default(),
-@@ -2555,6 +2568,7 @@ impl Reactor {
+@@ -2005,6 +2028,13 @@ impl Reactor {
+                 if self.pending_mouse_focus.is_some_and(|(window, _)| window == window_id) {
+                     self.pending_mouse_focus = None;
+                 }
++                if let Some((members, _)) = &mut self.restack_retry {
++                    members.retain(|member| *member != window_id);
++                    if members.is_empty() {
++                        self.restack_retry = None;
++                        self.restack_retries = 0;
++                    }
++                }
+                 return Ok(system_workflow::handle_raise_completed(
+                     system_workflow::RaiseCompletedPayload {
+                         window: window_id,
+@@ -2013,7 +2043,27 @@ impl Reactor {
+                 )?);
+             }
+             Event::RaiseTimeout { sequence_id } => {
+-                return Ok(system_workflow::handle_raise_timeout(sequence_id)?);
++                let mut outcome = system_workflow::handle_raise_timeout(sequence_id)?;
++                // A timed-out sequence drops its corrective raises: the raise
++                // manager cancels them and delivers only the focus. Retry the
++                // restack while the plan is recent, bounded, so a hung app
++                // cannot bury a cascade forever.
++                if let Some((members, sent_at)) = &self.restack_retry {
++                    if self.restack_retries < 3 && sent_at.elapsed() < Self::RETRY_RESTACK_WINDOW {
++                        self.restack_retries += 1;
++                        let members = members.clone();
++                        // The timed-out raises are cancelled; the storm that
++                        // would suppress a replan is over.
++                        self.last_raise_request_sent_at = None;
++                        self.layout_manager.layout_engine.rearm_pending_restack(members);
++                        outcome =
++                            outcome.with_layout_response(layout::EventResponse::default(), None);
++                    } else {
++                        self.restack_retry = None;
++                        self.restack_retries = 0;
++                    }
++                }
++                return Ok(outcome);
+             }
+             Event::ConfigUpdated(new_cfg) => {
+                 return command_workflow::handle_config_updated(
+@@ -2555,6 +2605,7 @@ impl Reactor {
              for _ in 0..outcome.arrange.passes.max(1) {
                  layout_changed |= self.update_layout_or_warn(
                      outcome.arrange.is_resize,
@@ -393,7 +446,7 @@ index 21e4a04..28891d6 100644
                      matches!(
                          self.workspace_switch_manager.workspace_switch_state,
                          WorkspaceSwitchState::Active
-@@ -2563,8 +2577,12 @@ impl Reactor {
+@@ -2563,8 +2614,12 @@ impl Reactor {
                  );
              }
              if let Some(space) = outcome.arrange.secondary_space_scope {
@@ -408,7 +461,7 @@ index 21e4a04..28891d6 100644
              }
              // Publish the menu state once after all arrange passes have completed.
              self.maybe_send_menu_update();
-@@ -2857,7 +2875,7 @@ impl Reactor {
+@@ -2857,7 +2912,7 @@ impl Reactor {
              }
  
              self.refocus_manager.refocus_state = RefocusState::Pending(space);
@@ -417,7 +470,7 @@ index 21e4a04..28891d6 100644
              self.update_focus_follows_mouse_state();
          }
      }
-@@ -3889,6 +3907,7 @@ impl Reactor {
+@@ -3889,6 +3944,7 @@ impl Reactor {
          self.handle_layout_response(response, workspace_switch_space);
          if geometry_changed {
              self.update_layout_or_warn(
@@ -425,7 +478,7 @@ index 21e4a04..28891d6 100644
                  false,
                  workspace_switch_space.is_some(),
                  workspace_switch_space.or(event_space),
-@@ -4315,12 +4334,81 @@ impl Reactor {
+@@ -4315,12 +4371,81 @@ impl Reactor {
          EventOutcome::no_change()
      }
  
@@ -507,7 +560,7 @@ index 21e4a04..28891d6 100644
              self.workspace_switch_manager.mark_workspace_switch_inactive();
              return;
          }
-@@ -4332,11 +4420,38 @@ impl Reactor {
+@@ -4332,11 +4457,38 @@ impl Reactor {
              };
          let layout::EventResponse {
              changed: _,
@@ -547,7 +600,7 @@ index 21e4a04..28891d6 100644
          if let Some(space) = workspace_switch_space
              && matches!(
                  self.workspace_switch_manager.workspace_switch_state,
-@@ -4464,7 +4579,11 @@ impl Reactor {
+@@ -4464,7 +4616,11 @@ impl Reactor {
              }
          }
  
@@ -560,7 +613,7 @@ index 21e4a04..28891d6 100644
              if handled_without_raise {
                  self.workspace_switch_manager.mark_workspace_switch_inactive();
              }
-@@ -4519,6 +4638,42 @@ impl Reactor {
+@@ -4519,6 +4675,52 @@ impl Reactor {
              (wid, warp)
          });
  
@@ -569,6 +622,16 @@ index 21e4a04..28891d6 100644
 +        // then whatever the response itself raises or focuses.
 +        for &wid in &restack_members {
 +            self.insert_app_handle_for_window(&mut app_handles, wid);
++        }
++        if !restack_runs.is_empty() {
++            // A retry of the same container keeps its attempt budget; a plan
++            // for different members starts fresh.
++            if self.restack_retry.as_ref().map(|(members, _)| members.as_slice())
++                != Some(restack_members.as_slice())
++            {
++                self.restack_retries = 0;
++            }
++            self.restack_retry = Some((restack_members.clone(), Instant::now()));
 +        }
 +        for run in &restack_runs {
 +            self.last_raise_request_sent_at = Some(Instant::now());
@@ -603,7 +666,7 @@ index 21e4a04..28891d6 100644
          let msg = raise_manager::Event::RaiseRequest(RaiseRequest {
              raise_windows: windows_by_app_and_screen.into_values().collect(),
              focus_window: focus_window_with_warp,
-@@ -4526,6 +4681,7 @@ impl Reactor {
+@@ -4526,6 +4728,7 @@ impl Reactor {
              focus_quiet,
          });
  
@@ -611,7 +674,7 @@ index 21e4a04..28891d6 100644
          if let Err(e) = self.communication_manager.raise_manager_tx.try_send(msg) {
              warn!("Failed to send raise request to raise manager: {}", e);
          }
-@@ -4838,7 +4994,7 @@ impl Reactor {
+@@ -4838,7 +5041,7 @@ impl Reactor {
              !self.space_state.membership_complete,
          );
          self.request_window_inventories();
@@ -620,7 +683,7 @@ index 21e4a04..28891d6 100644
          self.maybe_send_menu_update();
      }
  
-@@ -5118,11 +5274,13 @@ impl Reactor {
+@@ -5118,11 +5321,13 @@ impl Reactor {
      pub(crate) fn update_layout_or_warn(
          &mut self,
          is_resize: bool,
@@ -634,7 +697,7 @@ index 21e4a04..28891d6 100644
              is_workspace_switch,
              space_scope,
              "Layout update failed",
-@@ -5132,6 +5290,7 @@ impl Reactor {
+@@ -5132,6 +5337,7 @@ impl Reactor {
      pub(crate) fn update_layout_or_warn_with(
          &mut self,
          is_resize: bool,
@@ -642,7 +705,7 @@ index 21e4a04..28891d6 100644
          is_workspace_switch: bool,
          space_scope: Option<SpaceId>,
          context: &'static str,
-@@ -5140,7 +5299,7 @@ impl Reactor {
+@@ -5140,7 +5346,7 @@ impl Reactor {
          {
              self.layout_update_count += 1;
          }
@@ -1139,7 +1202,7 @@ index 5ffb3e0..583cdbf 100644
          }
  
 diff --git a/src/actor/reactor/tests.rs b/src/actor/reactor/tests.rs
-index 325846f..b72d5f2 100644
+index 325846f..877f876 100644
 --- a/src/actor/reactor/tests.rs
 +++ b/src/actor/reactor/tests.rs
 @@ -78,6 +78,112 @@ fn geometry_commands_request_arrangement_without_camera_movement() {
@@ -1288,7 +1351,7 @@ index 325846f..b72d5f2 100644
      ));
  
      let requests = apps.requests();
-@@ -7378,3 +7487,210 @@ fn inventory_observes_only_eligible_omitted_windows() {
+@@ -7378,3 +7487,245 @@ fn inventory_observes_only_eligible_omitted_windows() {
      assert_eq!(retired, vec![(windows[1], Some(omitted_wsid))]);
      reactor.state.windows.debug_assert_invariants();
  }
@@ -1450,6 +1513,41 @@ index 325846f..b72d5f2 100644
 +    assert!(requests[1].raise_windows.is_empty());
 +    assert_eq!(
 +        requests[1].focus_window.map(|(wid, _)| wid),
++        Some(WindowId::new(1, 1))
++    );
++}
++
++#[test]
++fn raise_timeout_retries_the_dropped_corrective_raises() {
++    // A slow app can hang its corrective raise past the raise manager's
++    // timeout: the sequence is cancelled and only the focus is delivered,
++    // leaving the cascade buried. The reactor must retry the plan.
++    let (_, mut reactor, mut raise_rx) = stack_reactor_with_z(
++        WindowId::new(1, 2),
++        &[
++            WindowId::new(1, 1),
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++        ],
++        false,
++    );
++    reactor.handle_event(Event::WindowServerFocusChanged(
++        WindowId::new(1, 1),
++        SpaceId::new(1),
++    ));
++    let first = raise_requests(&mut raise_rx);
++    assert_eq!(first.len(), 3, "{first:?}");
++    assert_eq!(first[0].raise_windows, vec![vec![WindowId::new(1, 3)]]);
++
++    reactor.handle_event(Event::RaiseTimeout { sequence_id: 1 });
++    let retried = raise_requests(&mut raise_rx);
++    // The relayed RaiseTimeout is not a RaiseRequest; the retry replans and
++    // raises window 3 again, then re-focuses window 1.
++    assert_eq!(retried.len(), 3, "{retried:?}");
++    assert_eq!(retried[0].raise_windows, vec![vec![WindowId::new(1, 3)]]);
++    assert!(retried[0].focus_window.is_none());
++    assert_eq!(
++        retried[1].focus_window.map(|(wid, _)| wid),
 +        Some(WindowId::new(1, 1))
 +    );
 +}
