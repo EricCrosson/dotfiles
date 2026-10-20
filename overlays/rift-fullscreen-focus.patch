@@ -47,11 +47,320 @@ index 7253234..442cb80 100644
  }
  
  struct PendingFrame {
+diff --git a/src/actor/raise_manager.rs b/src/actor/raise_manager.rs
+index 544e373..fc7c9fa 100644
+--- a/src/actor/raise_manager.rs
++++ b/src/actor/raise_manager.rs
+@@ -327,6 +327,102 @@ impl RaiseManager {
+     }
+ }
+ 
++/// Corrective raise batches for a stacked container's cascade.
++///
++/// `members` lists the container's windows in slot order (their frames step
++/// through the container by `stack_offset`, so a member's slot decides which
++/// side of it shows an edge). `focused` is the member that just took (or is
++/// about to take) focus and must end on top; `current` lists the members in
++/// their current z-order, front to back. Returns same-app runs in
++/// chronological raise order — each app raises its list in order, last on
++/// top — and whether the focused window must be (re)raised last to end on
++/// top.
++///
++/// A raise moves a window above everything, so exactly a bottom suffix of
++/// the target order can be kept; the rest are raised in reverse target
++/// order. A cascade whose every member is covered from one side only (each
++/// edge visible) is left untouched unless the focused window still has to be
++/// raised, which itself scrambles the order.
++pub(crate) fn corrective_restack_plan(
++    members: &[WindowId],
++    focused: WindowId,
++    current: &[WindowId],
++) -> (Vec<Vec<WindowId>>, bool) {
++    let slots: HashMap<WindowId, usize> =
++        members.iter().enumerate().map(|(slot, wid)| (*wid, slot)).collect();
++    let Some(&focused) = slots.get(&focused) else {
++        return (Vec::new(), false);
++    };
++    let focused_wid = members[focused];
++    let needs_focus_raise = current.first() != Some(&focused_wid);
++    if !needs_focus_raise && cascade_edges_all_visible(&slots, current) {
++        return (Vec::new(), false);
++    }
++
++    let target = crate::layout_engine::canonical_stack_z_order(members, focused_wid);
++    let others_target = &target[1..];
++    let others_current: Vec<WindowId> =
++        current.iter().copied().filter(|wid| *wid != focused_wid).collect();
++
++    // Members already sitting in their final relative order as the bottom of
++    // the stack need no raise; find the longest such target suffix.
++    let mut keep = 0;
++    for suffix in (1..=others_target.len()).rev() {
++        let start = others_target.len() - suffix;
++        let mut cursor = 0;
++        let mut matched = true;
++        for wanted in &others_target[start..] {
++            let Some(offset) = others_current[cursor..].iter().position(|wid| wid == wanted) else {
++                matched = false;
++                break;
++            };
++            cursor += offset + 1;
++        }
++        if matched {
++            keep = suffix;
++            break;
++        }
++    }
++
++    let raise_count = others_target.len() - keep;
++    let chronological: Vec<WindowId> = others_target[..raise_count].iter().rev().copied().collect();
++    let mut runs: Vec<Vec<WindowId>> = Vec::new();
++    for wid in chronological {
++        match runs.last_mut() {
++            Some(run) if run.last().is_some_and(|last| last.pid == wid.pid) => run.push(wid),
++            _ => runs.push(vec![wid]),
++        }
++    }
++
++    // A raise lands above the focused window, and the planned focus raise
++    // must be the last touch of the cascade.
++    (runs, true)
++}
++
++/// Whether every member of `current` (front to back) keeps a visible edge:
++/// the members above any one of them must all sit on the same side of its
++/// slot, since a lower-slot cover hides the right edge and a higher-slot
++/// cover hides the left edge. Members covered from both sides are fully
++/// hidden.
++fn cascade_edges_all_visible(slots: &HashMap<WindowId, usize>, current: &[WindowId]) -> bool {
++    for (position, wid) in current.iter().enumerate() {
++        let Some(&slot) = slots.get(wid) else { return false };
++        let mut saw_lower = false;
++        let mut saw_higher = false;
++        for above in &current[..position] {
++            let Some(&above_slot) = slots.get(above) else {
++                return false;
++            };
++            saw_lower |= above_slot < slot;
++            saw_higher |= above_slot > slot;
++        }
++        if saw_lower && saw_higher {
++            return false;
++        }
++    }
++    true
++}
++
+ #[cfg(test)]
+ mod tests {
+ 
+@@ -854,4 +950,170 @@ mod tests {
+             }
+         });
+     }
++
++    fn stack() -> Vec<WindowId> {
++        vec![
++            WindowId::new(1, 1),
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++        ]
++    }
++
++    #[test]
++    fn valid_cascade_with_focused_on_top_needs_no_corrective_raise() {
++        let (runs, focus_last) = corrective_restack_plan(&stack(), WindowId::new(1, 1), &stack());
++        assert!(runs.is_empty());
++        assert!(!focus_last);
++    }
++
++    #[test]
++    fn valid_but_unsorted_cascade_is_left_alone() {
++        // z [3,2,1] keeps every edge visible (each member is covered from one
++        // side only); canonicalizing it would raise windows for no gain.
++        let current = vec![
++            WindowId::new(1, 3),
++            WindowId::new(1, 2),
++            WindowId::new(1, 1),
++        ];
++        let (runs, focus_last) = corrective_restack_plan(&stack(), WindowId::new(1, 3), &current);
++        assert!(runs.is_empty());
++        assert!(!focus_last);
++    }
++
++    #[test]
++    fn clicking_a_buried_low_window_raises_the_straddled_neighbor_first() {
++        // Window 1 selected on top of z [1,3,2]: window 2 (middle slot) is
++        // covered from both sides and completely hidden. Raising window 2
++        // alone restores the cascade, then window 1 is raised again on top.
++        let current = vec![
++            WindowId::new(1, 1),
++            WindowId::new(1, 3),
++            WindowId::new(1, 2),
++        ];
++        let (runs, focus_last) = corrective_restack_plan(&stack(), WindowId::new(1, 1), &current);
++        assert_eq!(runs, vec![vec![WindowId::new(1, 2)]]);
++        assert!(focus_last);
++    }
++
++    #[test]
++    fn keyboard_focus_needs_only_the_focus_raise_when_the_rest_already_sorts() {
++        // z [2,3,1] is valid and already sorts below window 1; its focus
++        // raise lands it on top without any corrective raise.
++        let current = vec![
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++            WindowId::new(1, 1),
++        ];
++        let (runs, focus_last) = corrective_restack_plan(&stack(), WindowId::new(1, 1), &current);
++        assert!(runs.is_empty());
++        assert!(focus_last);
++    }
++
++    #[test]
++    fn keyboard_focus_of_a_low_window_from_descending_cascade_raises_the_middle() {
++        // Window 1 taking focus from z [3,2,1]: the focus raise alone would
++        // bury window 2 under window 3, so window 2 is raised first.
++        let current = vec![
++            WindowId::new(1, 3),
++            WindowId::new(1, 2),
++            WindowId::new(1, 1),
++        ];
++        let (runs, focus_last) = corrective_restack_plan(&stack(), WindowId::new(1, 1), &current);
++        assert_eq!(runs, vec![vec![WindowId::new(1, 2)]]);
++        assert!(focus_last);
++    }
++
++    #[test]
++    fn keyboard_focus_of_a_middle_window_raises_the_buried_left_window() {
++        // Window 2 taking focus from z [3,2,1]: the focus raise alone would
++        // bury window 1 under windows 2 and 3, so window 1 is raised first.
++        let current = vec![
++            WindowId::new(1, 3),
++            WindowId::new(1, 2),
++            WindowId::new(1, 1),
++        ];
++        let (runs, focus_last) = corrective_restack_plan(&stack(), WindowId::new(1, 2), &current);
++        assert_eq!(runs, vec![vec![WindowId::new(1, 1)]]);
++        assert!(focus_last);
++    }
++
++    #[test]
++    fn four_window_jump_focus_raises_the_two_straddled_windows_in_order() {
++        // Active 4, click/focus 1: z becomes [1,4,3,2]; windows 2 and 3 are
++        // both covered. Raise 3 then 2 (reverse canonical), then 1 on top.
++        let members = vec![
++            WindowId::new(1, 1),
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++            WindowId::new(1, 4),
++        ];
++        let current = vec![
++            WindowId::new(1, 1),
++            WindowId::new(1, 4),
++            WindowId::new(1, 3),
++            WindowId::new(1, 2),
++        ];
++        let (runs, focus_last) = corrective_restack_plan(&members, WindowId::new(1, 1), &current);
++        assert_eq!(runs, vec![vec![WindowId::new(1, 3), WindowId::new(1, 2)]]);
++        assert!(focus_last);
++    }
++
++    #[test]
++    fn corrective_runs_split_by_app_but_keep_chronological_order() {
++        // Members of two apps. Clicking window 1 while window 4 was frontmost
++        // leaves 2 and 3 straddled: 3 (app 1) is raised first, then 2 (app 2)
++        // above it, then the focused window 1 last.
++        let members = vec![
++            WindowId::new(1, 1),
++            WindowId::new(2, 2),
++            WindowId::new(1, 3),
++            WindowId::new(1, 4),
++        ];
++        let current = vec![
++            WindowId::new(1, 4),
++            WindowId::new(1, 1),
++            WindowId::new(2, 2),
++            WindowId::new(1, 3),
++        ];
++        let (runs, focus_last) = corrective_restack_plan(&members, WindowId::new(1, 1), &current);
++        assert_eq!(runs, vec![vec![WindowId::new(1, 3)], vec![WindowId::new(2, 2)]]);
++        assert!(focus_last);
++    }
++
++    #[test]
++    fn slot_order_decides_which_side_is_covered() {
++        // Slots hold [1, 3, 2]: window 3 sits in the middle slot. z [2,3,1]
++        // (window 2 focused on top) is valid and left alone.
++        let members = vec![
++            WindowId::new(1, 1),
++            WindowId::new(1, 3),
++            WindowId::new(1, 2),
++        ];
++        let current = vec![
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++            WindowId::new(1, 1),
++        ];
++        let (runs, focus_last) = corrective_restack_plan(&members, WindowId::new(1, 2), &current);
++        assert!(runs.is_empty());
++        assert!(!focus_last);
++
++        // Clicking window 1 from there buries window 3: z [1,2,3] covers the
++        // middle slot from both sides. Raising window 3 restores the edges.
++        let current = vec![
++            WindowId::new(1, 1),
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++        ];
++        let (runs, focus_last) = corrective_restack_plan(&members, WindowId::new(1, 1), &current);
++        assert_eq!(runs, vec![vec![WindowId::new(1, 3)]]);
++        assert!(focus_last);
++    }
++
++    #[test]
++    fn unknown_focused_window_yields_no_plan() {
++        let (runs, focus_last) = corrective_restack_plan(&stack(), WindowId::new(1, 9), &stack());
++        assert!(runs.is_empty());
++        assert!(!focus_last);
++    }
+ }
 diff --git a/src/actor/reactor.rs b/src/actor/reactor.rs
-index 21e4a04..6a0e059 100644
+index 21e4a04..6b0ed68 100644
 --- a/src/actor/reactor.rs
 +++ b/src/actor/reactor.rs
-@@ -2555,6 +2555,7 @@ impl Reactor {
+@@ -423,6 +423,10 @@ pub struct Reactor {
+     space_activation_policy: SpaceActivationPolicy,
+     main_window_tracker: MainWindowTracker,
+     pending_mouse_focus: Option<(WindowId, Instant)>,
++    /// The last time a RaiseRequest went to the raise manager. Raise-induced
++    /// window-server focus changes resolve to transient key windows; a stack
++    /// restack computed from one of those would fight the raise in flight.
++    last_raise_request_sent_at: Option<Instant>,
+     drag_manager: managers::DragManager,
+     workspace_switch_manager: managers::WorkspaceSwitchManager,
+     recording_manager: managers::RecordingManager,
+@@ -447,6 +451,11 @@ pub struct Reactor {
+ }
+ 
+ impl Reactor {
++    /// How long RaiseRequest-induced window-server focus churn can keep
++    /// resolving to transient key windows. A pending stack restack is dropped
++    /// while this window is open: the raise in flight owns the z-order.
++    const RAISE_STORM_RESTACK_SUPPRESS: Duration = Duration::from_millis(200);
++
+     pub fn spawn(
+         config: Config,
+         layout_engine: LayoutEngine,
+@@ -512,6 +521,7 @@ impl Reactor {
+             space_activation_policy: SpaceActivationPolicy::new(),
+             main_window_tracker: MainWindowTracker::default(),
+             pending_mouse_focus: None,
++            last_raise_request_sent_at: None,
+             drag_manager: managers::DragManager {
+                 actor: crate::actor::drag::DragActor::new(config.settings.drag_drop),
+                 native_motion_active: std::sync::Arc::default(),
+@@ -2555,6 +2565,7 @@ impl Reactor {
              for _ in 0..outcome.arrange.passes.max(1) {
                  layout_changed |= self.update_layout_or_warn(
                      outcome.arrange.is_resize,
@@ -59,7 +368,7 @@ index 21e4a04..6a0e059 100644
                      matches!(
                          self.workspace_switch_manager.workspace_switch_state,
                          WorkspaceSwitchState::Active
-@@ -2563,8 +2564,12 @@ impl Reactor {
+@@ -2563,8 +2574,12 @@ impl Reactor {
                  );
              }
              if let Some(space) = outcome.arrange.secondary_space_scope {
@@ -74,7 +383,7 @@ index 21e4a04..6a0e059 100644
              }
              // Publish the menu state once after all arrange passes have completed.
              self.maybe_send_menu_update();
-@@ -2857,7 +2862,7 @@ impl Reactor {
+@@ -2857,7 +2872,7 @@ impl Reactor {
              }
  
              self.refocus_manager.refocus_state = RefocusState::Pending(space);
@@ -83,7 +392,7 @@ index 21e4a04..6a0e059 100644
              self.update_focus_follows_mouse_state();
          }
      }
-@@ -3889,6 +3894,7 @@ impl Reactor {
+@@ -3889,6 +3904,7 @@ impl Reactor {
          self.handle_layout_response(response, workspace_switch_space);
          if geometry_changed {
              self.update_layout_or_warn(
@@ -91,7 +400,182 @@ index 21e4a04..6a0e059 100644
                  false,
                  workspace_switch_space.is_some(),
                  workspace_switch_space.or(event_space),
-@@ -4838,7 +4844,7 @@ impl Reactor {
+@@ -4315,11 +4331,76 @@ impl Reactor {
+         EventOutcome::no_change()
+     }
+ 
++    /// Plan the corrective raises for a stacked container whose member just
++    /// took (or is about to take) focus. `restack` lists the members in slot
++    /// order; the focused window comes from the engine's focus state.
++    /// Returns the members that were planned, the same-app raise runs in
++    /// chronological order, and whether the focused window must be raised
++    /// last to end on top. None when the members cannot be ordered safely
++    /// (untracked or minimized member, members on different spaces, inactive
++    /// space, floating focus).
++    fn stack_restack_plan(
++        &self,
++        restack: &[WindowId],
++    ) -> Option<(Vec<WindowId>, Vec<Vec<WindowId>>, bool)> {
++        let focused = self.layout_manager.layout_engine.focused_window()?;
++        if !restack.contains(&focused) {
++            return None;
++        }
++        let mut members: Vec<WindowId> = Vec::with_capacity(restack.len());
++        let mut member_wsids: HashMap<WindowId, WindowServerId> = HashMap::default();
++        let mut space: Option<SpaceId> = None;
++        for &wid in restack {
++            let state = self.state.windows.window(wid)?;
++            let Some(wsid) = state.info.sys_id else { return None };
++            if self.layout_manager.layout_engine.is_window_floating(wid) {
++                return None;
++            }
++            let window_space = self.best_space_for_window_id(wid)?;
++            match space {
++                None => space = Some(window_space),
++                Some(previous) if previous == window_space => {}
++                Some(_) => return None,
++            }
++            members.push(wid);
++            member_wsids.insert(wid, wsid);
++        }
++        if members.len() < 2 {
++            return None;
++        }
++        let space = space?;
++        if !self.is_space_active(space) {
++            return None;
++        }
++        let order = {
++            let space_id = space.get();
++            window_server::space_window_list_for_connection(&[space_id], 0, false)
++        };
++        let mut current: Vec<WindowId> = Vec::with_capacity(members.len());
++        for wsid in order {
++            let wsid = WindowServerId::new(wsid);
++            if let Some((&wid, _)) =
++                member_wsids.iter().find(|(_, member_wsid)| **member_wsid == wsid)
++            {
++                current.push(wid);
++            }
++        }
++        // A member the window server has not ordered in (minimized, another
++        // connection) has no trustworthy position: leave the stack alone.
++        if current.len() != members.len() {
++            return None;
++        }
++        let (runs, focus_last) =
++            raise_manager::corrective_restack_plan(&members, focused, &current);
++        Some((members, runs, focus_last))
++    }
++
+     fn handle_layout_response(
+         &mut self,
+         response: layout::EventResponse,
+         workspace_switch_space: Option<SpaceId>,
+     ) {
++        let restack = self.layout_manager.layout_engine.take_pending_restack().unwrap_or_default();
+         if self.is_in_drag() {
+             self.workspace_switch_manager.mark_workspace_switch_inactive();
+             return;
+@@ -4332,11 +4413,32 @@ impl Reactor {
+             };
+         let layout::EventResponse {
+             changed: _,
+-            raise_windows,
++            mut raise_windows,
+             mut focus_window,
+             boundary_hit,
+         } = response;
+ 
++        // Correct the native z-order of the stacked container whose member
++        // just took (or is about to take) focus. Raise-induced focus changes
++        // must not start a new correction while one is in flight.
++        let restack_in_raise_storm = self
++            .last_raise_request_sent_at
++            .is_some_and(|sent_at| sent_at.elapsed() < Self::RAISE_STORM_RESTACK_SUPPRESS);
++        let plan = if !restack.is_empty() && !restack_in_raise_storm {
++            self.stack_restack_plan(&restack)
++        } else {
++            None
++        };
++        let (restack_members, restack_runs, restack_focus_last) = match plan {
++            Some((members, runs, focus_last)) => {
++                // The plan owns these members' z-order: blanket raises of
++                // them would land above the correctives in arbitrary order.
++                raise_windows.retain(|wid| !members.contains(wid));
++                (members, runs, focus_last)
++            }
++            None => (Vec::new(), Vec::new(), false),
++        };
++
+         if let Some(space) = workspace_switch_space
+             && matches!(
+                 self.workspace_switch_manager.workspace_switch_state,
+@@ -4464,7 +4566,11 @@ impl Reactor {
+             }
+         }
+ 
+-        if raise_windows.is_empty() && focus_window.is_none() {
++        if raise_windows.is_empty()
++            && focus_window.is_none()
++            && restack_runs.is_empty()
++            && !restack_focus_last
++        {
+             if handled_without_raise {
+                 self.workspace_switch_manager.mark_workspace_switch_inactive();
+             }
+@@ -4519,6 +4625,42 @@ impl Reactor {
+             (wid, warp)
+         });
+ 
++        // The stacked container's z-order is corrected in order: corrective
++        // raises first (each batch above the last), then the focused window,
++        // then whatever the response itself raises or focuses.
++        for &wid in &restack_members {
++            self.insert_app_handle_for_window(&mut app_handles, wid);
++        }
++        for run in &restack_runs {
++            self.last_raise_request_sent_at = Some(Instant::now());
++            let msg = raise_manager::Event::RaiseRequest(RaiseRequest {
++                raise_windows: vec![run.clone()],
++                focus_window: None,
++                app_handles: app_handles.clone(),
++                focus_quiet: Quiet::Yes,
++            });
++            if let Err(e) = self.communication_manager.raise_manager_tx.try_send(msg) {
++                warn!(%e, "failed to send stack restack raise request");
++            }
++        }
++        if restack_focus_last
++            && focus_window.is_none()
++            && let Some(focused) = self.layout_manager.layout_engine.focused_window()
++            && restack_members.contains(&focused)
++        {
++            self.last_raise_request_sent_at = Some(Instant::now());
++            self.insert_app_handle_for_window(&mut app_handles, focused);
++            let msg = raise_manager::Event::RaiseRequest(RaiseRequest {
++                raise_windows: Vec::new(),
++                focus_window: Some((focused, None)),
++                app_handles: app_handles.clone(),
++                focus_quiet: Quiet::No,
++            });
++            if let Err(e) = self.communication_manager.raise_manager_tx.try_send(msg) {
++                warn!(%e, "failed to send stack restack focus request");
++            }
++        }
++
+         let msg = raise_manager::Event::RaiseRequest(RaiseRequest {
+             raise_windows: windows_by_app_and_screen.into_values().collect(),
+             focus_window: focus_window_with_warp,
+@@ -4526,6 +4668,7 @@ impl Reactor {
+             focus_quiet,
+         });
+ 
++        self.last_raise_request_sent_at = Some(Instant::now());
+         if let Err(e) = self.communication_manager.raise_manager_tx.try_send(msg) {
+             warn!("Failed to send raise request to raise manager: {}", e);
+         }
+@@ -4838,7 +4981,7 @@ impl Reactor {
              !self.space_state.membership_complete,
          );
          self.request_window_inventories();
@@ -100,7 +584,7 @@ index 21e4a04..6a0e059 100644
          self.maybe_send_menu_update();
      }
  
-@@ -5118,11 +5124,13 @@ impl Reactor {
+@@ -5118,11 +5261,13 @@ impl Reactor {
      pub(crate) fn update_layout_or_warn(
          &mut self,
          is_resize: bool,
@@ -114,7 +598,7 @@ index 21e4a04..6a0e059 100644
              is_workspace_switch,
              space_scope,
              "Layout update failed",
-@@ -5132,6 +5140,7 @@ impl Reactor {
+@@ -5132,6 +5277,7 @@ impl Reactor {
      pub(crate) fn update_layout_or_warn_with(
          &mut self,
          is_resize: bool,
@@ -122,7 +606,7 @@ index 21e4a04..6a0e059 100644
          is_workspace_switch: bool,
          space_scope: Option<SpaceId>,
          context: &'static str,
-@@ -5140,7 +5149,7 @@ impl Reactor {
+@@ -5140,7 +5286,7 @@ impl Reactor {
          {
              self.layout_update_count += 1;
          }
@@ -619,7 +1103,7 @@ index 5ffb3e0..583cdbf 100644
          }
  
 diff --git a/src/actor/reactor/tests.rs b/src/actor/reactor/tests.rs
-index 325846f..843a67b 100644
+index 325846f..42cc8e2 100644
 --- a/src/actor/reactor/tests.rs
 +++ b/src/actor/reactor/tests.rs
 @@ -78,6 +78,112 @@ fn geometry_commands_request_arrangement_without_camera_movement() {
@@ -768,11 +1252,293 @@ index 325846f..843a67b 100644
      ));
  
      let requests = apps.requests();
+@@ -7378,3 +7487,191 @@ fn inventory_observes_only_eligible_omitted_windows() {
+     assert_eq!(retired, vec![(windows[1], Some(omitted_wsid))]);
+     reactor.state.windows.debug_assert_invariants();
+ }
++
++/// A three-window stack on space 1 (slots hold [1, 3, 2]), entered with the
++/// window-server z-order overridden to `z_order` (window ids, front to
++/// back), with raise requests captured. `capture_entry` attaches the capture
++/// before the layout switch so the entry's own raise requests are observed.
++fn stack_reactor_with_z(
++    focused: WindowId,
++    z_order: &[WindowId],
++    capture_entry: bool,
++) -> (Apps, Reactor, actor::Receiver<raise_manager::Event>) {
++    let (mut apps, mut reactor) = test_context();
++    let screen = CGRect::new(CGPoint::new(0., 0.), CGSize::new(1000., 1000.));
++    let space = SpaceId::new(1);
++    reactor.handle_event(space_state_event(vec![screen], vec![Some(space)]));
++    make_active_app(&mut apps, &mut reactor, 1, make_windows(3), Some(focused));
++    apps.simulate_until_quiet(&mut reactor);
++    let z: Vec<u32> =
++        z_order.iter().map(|wid| reactor.test_window_server_id(*wid).as_u32()).collect();
++    window_server::set_space_window_list_for_connection_override(Some(z));
++    let (raise_tx, mut raise_rx) = actor::channel();
++    reactor.communication_manager.raise_manager_tx = raise_tx;
++    if capture_entry {
++        // Tests drive events within microseconds; the entry plan must not
++        // see the setup's raises as an in-flight storm.
++        reactor.last_raise_request_sent_at = None;
++    }
++    reactor.handle_test_layout_command(LayoutCommand::SetWorkspaceLayout {
++        workspace: None,
++        mode: LayoutMode::Stack,
++    });
++    let entry_requests = apps.requests();
++    for event in apps.simulate_events_for_requests(entry_requests) {
++        reactor.handle_event(event);
++    }
++    apps.simulate_until_quiet(&mut reactor);
++    if !capture_entry {
++        // The entry's raise requests belong to the setup, not the test.
++        while raise_rx.try_recv().is_ok() {}
++        // Lift the storm window the entry left open so tests can click.
++        reactor.last_raise_request_sent_at = None;
++    }
++    (apps, reactor, raise_rx)
++}
++
++fn raise_requests(
++    raise_rx: &mut actor::Receiver<raise_manager::Event>,
++) -> Vec<raise_manager::RaiseRequest> {
++    std::iter::from_fn(|| raise_rx.try_recv().ok())
++        .filter_map(|(_, event)| match event {
++            raise_manager::Event::RaiseRequest(request) => Some(request),
++            _ => None,
++        })
++        .collect()
++}
++
++#[test]
++fn clicking_a_straddled_stack_window_raises_the_buried_neighbor_then_the_target() {
++    // Slots hold [1, 3, 2] and z [2, 3, 1] is the happy cascade for window 2.
++    // Clicking window 1 (left slot) buries window 3 (middle slot) under both
++    // sides of its frame. Rift raises window 3 first, then window 1 last.
++    let (_, mut reactor, mut raise_rx) = stack_reactor_with_z(
++        WindowId::new(1, 2),
++        &[
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++            WindowId::new(1, 1),
++        ],
++        false,
++    );
++    reactor.handle_event(Event::WindowServerFocusChanged(
++        WindowId::new(1, 1),
++        SpaceId::new(1),
++    ));
++
++    let requests = raise_requests(&mut raise_rx);
++    assert_eq!(requests.len(), 3, "{requests:?}");
++    assert_eq!(requests[0].raise_windows, vec![vec![WindowId::new(1, 3)]]);
++    assert!(requests[0].focus_window.is_none());
++    assert!(requests[1].raise_windows.is_empty());
++    assert_eq!(
++        requests[1].focus_window.map(|(wid, _)| wid),
++        Some(WindowId::new(1, 1))
++    );
++    // The response itself carries no raise and no focus for a pure click.
++    assert!(requests[2].raise_windows.is_empty());
++    assert!(requests[2].focus_window.is_none());
++}
++
++#[test]
++fn clicking_a_window_that_keeps_every_edge_visible_sends_nothing() {
++    // The override holds the z-order the native click-leave behind: window 3
++    // on top of a valid cascade. Clicking it again keeps every edge visible
++    // and the window already frontmost, so rift sends nothing at all.
++    let (_, mut reactor, mut raise_rx) = stack_reactor_with_z(
++        WindowId::new(1, 1),
++        &[
++            WindowId::new(1, 3),
++            WindowId::new(1, 1),
++            WindowId::new(1, 2),
++        ],
++        false,
++    );
++    reactor.handle_event(Event::WindowServerFocusChanged(
++        WindowId::new(1, 3),
++        SpaceId::new(1),
++    ));
++    assert!(raise_requests(&mut raise_rx).is_empty());
++}
++
++#[test]
++fn keyboard_focus_in_a_valid_cascade_only_raises_the_target() {
++    // z [3, 1, 2] is the happy cascade for window 3; focusing window 1 with
++    // MoveFocus must raise window 1 on top and keep the cascade below it.
++    // (The default stack orientation is vertical, so the traversal is Up.)
++    let (_, mut reactor, mut raise_rx) = stack_reactor_with_z(
++        WindowId::new(1, 3),
++        &[
++            WindowId::new(1, 3),
++            WindowId::new(1, 1),
++            WindowId::new(1, 2),
++        ],
++        false,
++    );
++    reactor.handle_test_layout_command(LayoutCommand::MoveFocus(Direction::Up));
++
++    let requests = raise_requests(&mut raise_rx);
++    assert_eq!(requests.len(), 1, "{requests:?}");
++    assert!(requests[0].raise_windows.is_empty());
++    assert_eq!(
++        requests[0].focus_window.map(|(wid, _)| wid),
++        Some(WindowId::new(1, 1))
++    );
++}
++
++#[test]
++fn entering_stack_mode_raises_the_buried_member_before_the_focused_window() {
++    // The traditional leftovers z [2, 1, 3] bury window 3 (middle slot) as
++    // soon as the cascade appears: entry raises window 1 (corrective), then
++    // focuses window 3 (the carried selection) on top.
++    let (_, _reactor, mut raise_rx) = stack_reactor_with_z(
++        WindowId::new(1, 3),
++        &[
++            WindowId::new(1, 2),
++            WindowId::new(1, 1),
++            WindowId::new(1, 3),
++        ],
++        true,
++    );
++
++    let requests = raise_requests(&mut raise_rx);
++    assert_eq!(requests.len(), 2, "{requests:?}");
++    assert_eq!(requests[0].raise_windows, vec![vec![WindowId::new(1, 1)]]);
++    assert!(requests[0].focus_window.is_none());
++    assert!(requests[1].raise_windows.is_empty());
++    assert_eq!(
++        requests[1].focus_window.map(|(wid, _)| wid),
++        Some(WindowId::new(1, 3))
++    );
++}
++
++#[test]
++fn clicks_within_a_raise_storm_do_not_fight_the_raise_in_flight() {
++    // The first click starts a raise sequence; a second click arriving while
++    // raises are still in flight must not plan against transient key windows.
++    let (_, mut reactor, mut raise_rx) = stack_reactor_with_z(
++        WindowId::new(1, 2),
++        &[
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++            WindowId::new(1, 1),
++        ],
++        false,
++    );
++    reactor.handle_event(Event::WindowServerFocusChanged(
++        WindowId::new(1, 1),
++        SpaceId::new(1),
++    ));
++    let storm_requests = raise_requests(&mut raise_rx);
++    assert_eq!(storm_requests.len(), 3, "{storm_requests:?}");
++
++    // The corrective raises keep the storm window open; the second click's
++    // plan is dropped instead of racing the raises in flight.
++    reactor.handle_event(Event::WindowServerFocusChanged(
++        WindowId::new(1, 3),
++        SpaceId::new(1),
++    ));
++    assert!(raise_requests(&mut raise_rx).is_empty());
++}
+diff --git a/src/layout_engine.rs b/src/layout_engine.rs
+index 3f1cf15..01a64d3 100644
+--- a/src/layout_engine.rs
++++ b/src/layout_engine.rs
+@@ -5,11 +5,11 @@ pub mod systems;
+ pub mod utils;
+ pub(crate) mod workspaces;
+ 
+-pub(crate) use engine::WindowLayoutInfo;
+ pub use engine::{
+     EventResponse, LayoutCommand, LayoutEngine, LayoutEvent, LayoutEventOutcome, ResolvedWindow,
+     RestoreReport, RestoreRequest, RestoreScope, RestoreSource, RestoreWarning,
+ };
++pub(crate) use engine::{WindowLayoutInfo, canonical_stack_z_order};
+ pub(crate) use floating::FloatingManager;
+ pub use graph::{Direction, LayoutKind, Orientation, ResizeOrientation};
+ 
 diff --git a/src/layout_engine/engine.rs b/src/layout_engine/engine.rs
-index 9e94404..dfcd400 100644
+index 9e94404..d474bf1 100644
 --- a/src/layout_engine/engine.rs
 +++ b/src/layout_engine/engine.rs
-@@ -488,10 +488,19 @@ impl LayoutEngine {
+@@ -168,6 +168,32 @@ impl std::ops::Deref for LayoutEventOutcome {
+     fn deref(&self) -> &Self::Target { &self.response }
+ }
+ 
++/// Z-order (front to back) that keeps every member of a stacked container
++/// visible: the focused member on top, then the remaining members ordered
++/// outward from the focused one, nearest first. Windows left of the focused
++/// one cascade leftward and windows right of it rightward, so each shows a
++/// strip of its edge; windows on one side never bury a window on the other.
++pub(crate) fn canonical_stack_z_order(members: &[WindowId], focused: WindowId) -> Vec<WindowId> {
++    let Some(focused_idx) = members.iter().position(|&member| member == focused) else {
++        return Vec::new();
++    };
++    let mut order = Vec::with_capacity(members.len());
++    order.push(focused);
++    let mut left = focused_idx;
++    let mut right = focused_idx;
++    while left > 0 || right + 1 < members.len() {
++        if left > 0 {
++            left -= 1;
++            order.push(members[left]);
++        }
++        if right + 1 < members.len() {
++            right += 1;
++            order.push(members[right]);
++        }
++    }
++    order
++}
++
+ pub struct LayoutEngine {
+     floating: FloatingManager,
+     floating_positions: FloatingPositionStore,
+@@ -184,6 +210,10 @@ pub struct LayoutEngine {
+     startup_restore_pending: bool,
+     /// Legacy strip commands report boundary excess; workspace arbitration lives here.
+     scroll_boundary: Option<((VirtualWorkspaceId, LayoutId, Direction), f64)>,
++    /// The stacked container whose member selection just changed, in the
++    /// z-order its windows should hold (front to back). Consumed by the
++    /// reactor to correct native stacking; never set for non-stacked focus.
++    pending_restack: Option<Vec<WindowId>>,
+ }
+ 
+ pub(crate) struct WorkspaceLayoutQuerySnapshot {
+@@ -198,6 +228,28 @@ pub(crate) struct WorkspaceLayoutQuerySnapshot {
+ impl LayoutEngine {
+     pub fn focused_window(&self) -> Option<WindowId> { self.focused_window }
+ 
++    /// The stacked container whose member selection just changed, in the
++    /// z-order its windows should hold (front to back), or None when the
++    /// last focus change did not concern a stacked container. The reactor
++    /// consumes this once to correct native stacking.
++    pub fn take_pending_restack(&mut self) -> Option<Vec<WindowId>> { self.pending_restack.take() }
++
++    /// The stacked container holding `focused` as a plain cascade of window
++    /// leaves, in slot order, when it qualifies for z-order correction (at
++    /// least two members). The reactor plans the corrective raises from this
++    /// and from the focused window.
++    fn stacked_members_for(
++        &self,
++        ws_id: VirtualWorkspaceId,
++        layout: LayoutId,
++        focused: WindowId,
++    ) -> Option<Vec<WindowId>> {
++        let members = self.workspaces[ws_id]
++            .layout_system
++            .stacked_container_members(layout, focused)?;
++        (members.len() >= 2).then_some(members)
++    }
++
+     pub(crate) fn apply_window_drop(
+         &mut self,
+         request: crate::layout_engine::WindowDropRequest,
+@@ -488,10 +540,19 @@ impl LayoutEngine {
                  return false;
              }
              let old_layout = workspace.active_layout();
@@ -795,7 +1561,7 @@ index 9e94404..dfcd400 100644
                  .unwrap_or_default();
              // Keep windows hidden by stack/group selection when rebuilding into a new mode.
              let mut hidden_windows: Vec<_> = self
-@@ -522,18 +531,37 @@ impl LayoutEngine {
+@@ -522,18 +583,37 @@ impl LayoutEngine {
          let Some(workspace) = self.workspaces.workspaces.get_mut(workspace_id) else {
              return false;
          };
@@ -843,7 +1609,7 @@ index 9e94404..dfcd400 100644
          }
  
          if mode == LayoutMode::Scrolling {
-@@ -556,6 +584,25 @@ impl LayoutEngine {
+@@ -556,6 +636,25 @@ impl LayoutEngine {
          }
      }
  
@@ -869,7 +1635,39 @@ index 9e94404..dfcd400 100644
      fn toggle_orientation_for_system<S: LayoutSystem>(
          system: &mut S,
          layout: LayoutId,
-@@ -2286,10 +2333,25 @@ impl LayoutEngine {
+@@ -957,6 +1056,10 @@ impl LayoutEngine {
+             } else {
+                 let _ = self.workspaces[ws_id].layout_system.select_window(layout, wid);
+                 self.workspaces.set_last_focused_window(space, ws_id, Some(wid));
++                // Focus commands raise their target above the cascade while
++                // the other members keep their old relative order, which can
++                // bury one completely.
++                self.pending_restack = self.stacked_members_for(ws_id, layout, wid);
+             }
+         }
+     }
+@@ -1536,6 +1639,7 @@ impl LayoutEngine {
+             persistence: PersistenceState::default(),
+             startup_restore_pending: false,
+             scroll_boundary: None,
++            pending_restack: None,
+         }
+     }
+ 
+@@ -1883,6 +1987,12 @@ impl LayoutEngine {
+                         self.workspaces[ws_id].layout_system.selected_window(layout) != Some(wid);
+                     let _ = self.workspaces[ws_id].layout_system.select_window(layout, wid);
+                     self.workspaces.set_last_focused_window(space, ws_id, Some(wid));
++                    if selection_changed {
++                        // A click or native focus raise moves the window above
++                        // its cascade neighbors while the rest keep their old
++                        // relative order, which can bury a member completely.
++                        self.pending_restack = self.stacked_members_for(ws_id, layout, wid);
++                    }
+                     return EventResponse {
+                         changed: selection_changed
+                             && matches!(
+@@ -2286,10 +2396,25 @@ impl LayoutEngine {
                  EventResponse::default()
              }
              LayoutCommand::ToggleFullscreen => {
@@ -896,7 +1694,7 @@ index 9e94404..dfcd400 100644
                      EventResponse::default()
                  } else {
                      EventResponse {
-@@ -2301,10 +2363,19 @@ impl LayoutEngine {
+@@ -2301,10 +2426,19 @@ impl LayoutEngine {
                  }
              }
              LayoutCommand::ToggleFullscreenWithinGaps => {
@@ -917,7 +1715,7 @@ index 9e94404..dfcd400 100644
                      EventResponse::default()
                  } else {
                      EventResponse {
-@@ -2765,8 +2836,8 @@ impl LayoutEngine {
+@@ -2765,8 +2899,8 @@ impl LayoutEngine {
          positions.into_iter().collect()
      }
  
@@ -928,10 +1726,26 @@ index 9e94404..dfcd400 100644
          let (ws_id, layout) = self.workspaces.active_layout_for_space(space)?;
          self.workspaces[ws_id].layout_system.selected_window(layout)
      }
-@@ -2977,8 +3048,12 @@ impl LayoutEngine {
+@@ -2977,8 +3111,28 @@ impl LayoutEngine {
  
                  let is_active_workspace =
                      self.workspaces.active_workspace(space) == Some(workspace_id);
++                if *mode == LayoutMode::Stack && is_active_workspace {
++                    // Entering the fullscreen stack view inherits whatever
++                    // relative order the previous mode left behind, which can
++                    // bury a member completely until the first focus change.
++                    if let Some((ws_id, layout)) = self.workspaces.active_layout_for_space(space) {
++                        let probe = self
++                            .focused_window
++                            .filter(|wid| {
++                                self.workspaces[ws_id].layout_system.contains_window(layout, *wid)
++                            })
++                            .or_else(|| self.selected_window(space));
++                        if let Some(probe) = probe {
++                            self.pending_restack = self.stacked_members_for(ws_id, layout, probe);
++                        }
++                    }
++                }
 +                // Only the carried selection must end up on top. Raising
 +                // activates each window's app, so raising every member made
 +                // the activations race, and whichever landed last stole
@@ -942,7 +1756,7 @@ index 9e94404..dfcd400 100644
                  } else {
                      Vec::new()
                  };
-@@ -3593,6 +3668,342 @@ mod tests {
+@@ -3593,6 +3747,342 @@ mod tests {
          }
      }
  
@@ -1285,11 +2099,160 @@ index 9e94404..dfcd400 100644
      #[test]
      fn floating_toggle_frame_sizes_then_centers_in_the_native_screen_frame() {
          let screen = CGRect::new(CGPoint::new(100.0, 40.0), CGSize::new(1000.0, 800.0));
+@@ -5602,4 +6092,118 @@ mod tests {
+             Some(target_workspace)
+         );
+     }
++
++    #[test]
++    fn canonical_stack_z_order_expands_outward_from_the_focused_member() {
++        let stack = || {
++            vec![
++                WindowId::new(1, 1),
++                WindowId::new(1, 2),
++                WindowId::new(1, 3),
++            ]
++        };
++        assert_eq!(canonical_stack_z_order(&stack(), WindowId::new(1, 1)), {
++            vec![
++                WindowId::new(1, 1),
++                WindowId::new(1, 2),
++                WindowId::new(1, 3),
++            ]
++        });
++        assert_eq!(canonical_stack_z_order(&stack(), WindowId::new(1, 2)), {
++            vec![
++                WindowId::new(1, 2),
++                WindowId::new(1, 1),
++                WindowId::new(1, 3),
++            ]
++        });
++        assert_eq!(canonical_stack_z_order(&stack(), WindowId::new(1, 3)), {
++            vec![
++                WindowId::new(1, 3),
++                WindowId::new(1, 2),
++                WindowId::new(1, 1),
++            ]
++        });
++        // A window outside the container yields no order.
++        assert!(canonical_stack_z_order(&stack(), WindowId::new(1, 9)).is_empty());
++    }
++
++    #[test]
++    fn stack_entry_reports_cascade_members_for_the_carried_selection() {
++        let space = SpaceId::new(1);
++        let windows = [
++            WindowId::new(1, 1),
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++        ];
++        let (mut window_store, mut engine) =
++            traditional_engine_with(space, &windows, WindowId::new(1, 3));
++
++        set_layout(&mut engine, &mut window_store, space, LayoutMode::Stack);
++
++        // Entering the stack inherits the traditional z-order, so the carried
++        // selection's cascade must be corrected immediately. Sequentially
++        // observed windows land around the selection: slots hold [1, 3, 2].
++        assert_eq!(
++            engine.take_pending_restack(),
++            Some(vec![
++                WindowId::new(1, 1),
++                WindowId::new(1, 3),
++                WindowId::new(1, 2)
++            ])
++        );
++        assert!(engine.take_pending_restack().is_none());
++    }
++
++    #[test]
++    fn stack_focus_reports_cascade_members_of_the_focused_window() {
++        let space = SpaceId::new(1);
++        let windows = [
++            WindowId::new(1, 1),
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++        ];
++        let (mut window_store, mut engine) =
++            traditional_engine_with(space, &windows, WindowId::new(1, 3));
++        set_layout(&mut engine, &mut window_store, space, LayoutMode::Stack);
++        let _ = engine.take_pending_restack();
++
++        // Every member's focus reports the same cascade; the focused window
++        // itself decides the corrective plan downstream.
++        for focused in [
++            WindowId::new(1, 1),
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++        ] {
++            let _ =
++                engine.handle_event(&mut window_store, LayoutEvent::WindowFocused(space, focused));
++            assert_eq!(
++                engine.take_pending_restack(),
++                Some(vec![
++                    WindowId::new(1, 1),
++                    WindowId::new(1, 3),
++                    WindowId::new(1, 2)
++                ]),
++                "{focused:?}"
++            );
++        }
++    }
++
++    #[test]
++    fn traditional_focus_does_not_request_a_restack() {
++        let space = SpaceId::new(1);
++        let windows = [
++            WindowId::new(1, 1),
++            WindowId::new(1, 2),
++            WindowId::new(1, 3),
++        ];
++        let (mut window_store, mut engine) =
++            traditional_engine_with(space, &windows, WindowId::new(1, 3));
++        let _ = engine.take_pending_restack();
++
++        let _ = engine.handle_event(
++            &mut window_store,
++            LayoutEvent::WindowFocused(space, WindowId::new(1, 1)),
++        );
++        assert!(engine.take_pending_restack().is_none());
++    }
+ }
+diff --git a/src/layout_engine/engine/persistence/snapshot.rs b/src/layout_engine/engine/persistence/snapshot.rs
+index 251a639..5aef757 100644
+--- a/src/layout_engine/engine/persistence/snapshot.rs
++++ b/src/layout_engine/engine/persistence/snapshot.rs
+@@ -106,6 +106,7 @@ impl PersistedLayout {
+             display_last_space: self.display_last_space,
+             persistence: self.persistence,
+             startup_restore_pending: false,
++            pending_restack: None,
+         }
+     }
+ }
 diff --git a/src/layout_engine/systems.rs b/src/layout_engine/systems.rs
-index e4fb441..0024fae 100644
+index e4fb441..0cec64f 100644
 --- a/src/layout_engine/systems.rs
 +++ b/src/layout_engine/systems.rs
-@@ -271,6 +271,9 @@ pub trait LayoutSystem: Serialize + for<'de> Deserialize<'de> {
+@@ -180,6 +180,17 @@ pub trait LayoutSystem: Serialize + for<'de> Deserialize<'de> {
+     fn visible_windows_in_layout(&self, layout: LayoutId) -> Vec<WindowId>;
+     /// Members sharing the stack/group that directly contains `window`.
+     fn stack_members(&self, _layout: LayoutId, _window: WindowId) -> Vec<WindowId> { Vec::new() }
++    /// Windows of the stacked container that directly contains `window`, in
++    /// tree order, when the container is a plain cascade of window leaves
++    /// (no subtree members, no fullscreen member). None when `window` is not
++    /// a member of such a container.
++    fn stacked_container_members(
++        &self,
++        _layout: LayoutId,
++        _window: WindowId,
++    ) -> Option<Vec<WindowId>> {
++        None
++    }
+     fn visible_windows_under_selection(&self, layout: LayoutId) -> Vec<WindowId>;
+     fn ascend_selection(&mut self, layout: LayoutId) -> bool;
+     fn descend_selection(&mut self, layout: LayoutId) -> bool;
+@@ -271,6 +282,9 @@ pub trait LayoutSystem: Serialize + for<'de> Deserialize<'de> {
  
      fn toggle_fullscreen_of_selection(&mut self, layout: LayoutId) -> Vec<WindowId>;
      fn toggle_fullscreen_within_gaps_of_selection(&mut self, layout: LayoutId) -> Vec<WindowId>;
@@ -1299,7 +2262,21 @@ index e4fb441..0024fae 100644
      fn has_any_fullscreen_node(&self, layout: LayoutId) -> bool;
  
      fn join_selection_with_direction(&mut self, _layout: LayoutId, _direction: Direction) {}
-@@ -359,6 +362,9 @@ macro_rules! delegate_traditional_layout_system {
+@@ -332,6 +346,13 @@ macro_rules! delegate_traditional_layout_system {
+         fn stack_members(&self, layout: LayoutId, window: WindowId) -> Vec<WindowId> {
+             self.inner.stack_members(layout, window)
+         }
++        fn stacked_container_members(
++            &self,
++            layout: LayoutId,
++            window: WindowId,
++        ) -> Option<Vec<WindowId>> {
++            self.inner.stacked_container_members(layout, window)
++        }
+         fn visible_windows_under_selection(&self, layout: LayoutId) -> Vec<WindowId> {
+             self.inner.visible_windows_under_selection(layout)
+         }
+@@ -359,6 +380,9 @@ macro_rules! delegate_traditional_layout_system {
          ) -> Vec<WindowId> {
              self.inner.toggle_fullscreen_within_gaps_of_selection(layout)
          }
@@ -1363,10 +2340,43 @@ index 167ac3e..eab48e8 100644
          self.layouts
              .get(layout)
 diff --git a/src/layout_engine/systems/traditional.rs b/src/layout_engine/systems/traditional.rs
-index a8a7040..248e785 100644
+index a8a7040..cf6bd25 100644
 --- a/src/layout_engine/systems/traditional.rs
 +++ b/src/layout_engine/systems/traditional.rs
-@@ -987,6 +987,18 @@ impl LayoutSystem for TraditionalLayoutSystem {
+@@ -715,6 +715,32 @@ impl LayoutSystem for TraditionalLayoutSystem {
+         parent.children(self.map()).filter_map(|node| self.window_at(node)).collect()
+     }
+ 
++    fn stacked_container_members(
++        &self,
++        layout: LayoutId,
++        window: WindowId,
++    ) -> Option<Vec<WindowId>> {
++        use crate::layout_engine::LayoutKind::{HorizontalStack, VerticalStack};
++        let parent = self.window_node(layout, window).and_then(|node| node.parent(self.map()))?;
++        if !matches!(self.layout(parent), HorizontalStack | VerticalStack) {
++            return None;
++        }
++        let children: Vec<_> = parent.children(self.map()).collect();
++        if children.len() < 2 {
++            return None;
++        }
++        let mut members = Vec::with_capacity(children.len());
++        for child in children {
++            // A fullscreen member or a nested subtree breaks the flat
++            // cascade whose z-order this container can be expected to hold.
++            if self.tree.data.layout.is_effectively_fullscreen(child) {
++                return None;
++            }
++            members.push(self.window_at(child)?);
++        }
++        Some(members)
++    }
++
+     fn visible_windows_under_selection(&self, layout: LayoutId) -> Vec<WindowId> {
+         let selection = self.selection(layout);
+         self.visible_windows_under_internal(selection)
+@@ -987,6 +1013,18 @@ impl LayoutSystem for TraditionalLayoutSystem {
          }
      }
  
@@ -1385,7 +2395,7 @@ index a8a7040..248e785 100644
      fn has_any_fullscreen_node(&self, layout: LayoutId) -> bool {
          let root = self.root(layout);
          root.traverse_preorder(&self.tree.map)
-@@ -3015,49 +3027,69 @@ impl Layout {
+@@ -3015,49 +3053,69 @@ impl Layout {
                  let is_horizontal = matches!(info.kind, HorizontalStack);
                  let focused_child =
                      selection.local_selection(map, node).unwrap_or_else(|| children[0]);
@@ -1489,7 +2499,7 @@ index a8a7040..248e785 100644
                      self.apply_with_gaps(
                          map,
                          window,
-@@ -3110,6 +3142,75 @@ impl Layout {
+@@ -3110,6 +3168,75 @@ impl Layout {
          }
      }
  
@@ -1565,7 +2575,7 @@ index a8a7040..248e785 100644
      fn layout_axis(
          &self,
          map: &NodeMap,
-@@ -4442,6 +4543,112 @@ mod tests {
+@@ -4442,6 +4569,112 @@ mod tests {
          );
      }
  

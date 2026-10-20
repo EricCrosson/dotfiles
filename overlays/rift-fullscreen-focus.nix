@@ -34,6 +34,21 @@
 # - give stack slots only to windows that can cover them, so the stack always
 #   covers the screen (a non-resizable 1x32 Safari window left a 40px strip
 #   at the right edge showing the desktop).
+# - keep every member of a stacked container visible across focus changes:
+#   a click or focus raise moves its window above the cascade while the rest
+#   keep their relative order, and a member covered from both sides of its
+#   slot (e.g. clicking the left slot while the middle slot's window is
+#   frontmost) was buried completely. The engine reports the focused
+#   window's stacked container on selection changes and on entering the
+#   stack mode; the reactor reads the members' true window-server z-order
+#   and, when a member is covered from both sides (or the focused window
+#   still has to be raised, which scrambles the cascade itself), raises the
+#   buried members one raise-manager sequence at a time in bottom-up order
+#   and the focused window last. Valid cascades are left untouched: a
+#   neighbor click costs no raises at all; a jump over a member costs one
+#   corrective raise plus the focus raise. Raise-induced focus events
+#   resolve to transient key windows, so a restack started within 200ms of
+#   the previous raise request is dropped.
 # Measured live with a window-server probe (432 points, ~4ms sampling):
 # two-window round trips showed no third window or desktop at any point.
 # With four windows, 34 of 38 transitions showed none either; the other 4
