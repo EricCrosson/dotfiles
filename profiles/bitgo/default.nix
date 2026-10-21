@@ -143,6 +143,7 @@ in {
   };
 
   programs = {
+    gh.settings."expiring_credentials" = "enabled";
     ai.manifest = {
       mcpServers = {
         chrome-devtools = {
