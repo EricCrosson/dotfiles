@@ -71,6 +71,11 @@ jobs:
         with:
           name: ericcrosson
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          # Push only from master. Pull requests run concurrently in batches
+          # (one per auto-update PR) and their uploads contend at drain time:
+          # the push manager then aborts with "Push manager drain timed out"
+          # and cachix exits 3, failing an otherwise-green build.
+          skipPush: ${{ github.event_name != 'push' }}
 
       - name: Install EricCrosson/retry
         uses: EricCrosson/install-github-release-binary@c5bb56044443694d485fa40eb6d6f7ed600ff3b4
@@ -110,6 +115,11 @@ jobs:
         with:
           name: ericcrosson
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          # Push only from master. Pull requests run concurrently in batches
+          # (one per auto-update PR) and their uploads contend at drain time:
+          # the push manager then aborts with "Push manager drain timed out"
+          # and cachix exits 3, failing an otherwise-green build.
+          skipPush: ${{ github.event_name != 'push' }}
 
       - name: Install EricCrosson/retry
         uses: EricCrosson/install-github-release-binary@c5bb56044443694d485fa40eb6d6f7ed600ff3b4
