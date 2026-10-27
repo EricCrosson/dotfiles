@@ -206,6 +206,21 @@
     },
     "crane_4": {
       "locked": {
+        "lastModified": 1789760033,
+        "narHash": "sha256-jtT4yxZpR8seYnlCMMWSSPlFN92zO6ICuZ8pJrmi86k=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "73b980519cefc727a5f6cc8e5c0947a2f9be6edd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
+    "crane_5": {
+      "locked": {
         "lastModified": 1733016477,
         "narHash": "sha256-Hh0khbqBeCtiNS0SJgqdWrQDem9WlPEc2KF5pAY+st0=",
         "owner": "ipetkov",
@@ -947,6 +962,7 @@
       "inputs": {
         "bun2nix": "bun2nix_2",
         "bun2nix-darwin-x64": "bun2nix-darwin-x64",
+        "crane": "crane_4",
         "nix-bun": "nix-bun",
         "nixpkgs": [
           "public",
@@ -956,11 +972,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1793021787,
-        "narHash": "sha256-rMCcrQ5tKqTTesyRvAswNxTJiaIgMVGBj1Wyfgv9o5k=",
+        "lastModified": 1793106929,
+        "narHash": "sha256-E1iTzoQHPAoCJMA1jyeEAVh4prf4v/+rlwTxlPVNhlw=",
         "owner": "can1357",
         "repo": "oh-my-pi",
-        "rev": "553f0d10e813a5e1fb65e545efe7c814bc03a879",
+        "rev": "0cc43441f1e95d3b42fb16044882763db1a0cc9a",
         "type": "github"
       },
       "original": {
@@ -1050,7 +1066,7 @@
     },
     "retry": {
       "inputs": {
-        "crane": "crane_4",
+        "crane": "crane_5",
         "fenix": "fenix_4",
         "nixpkgs": [
           "public",
