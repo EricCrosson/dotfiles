@@ -687,11 +687,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1792925018,
-        "narHash": "sha256-R7Pb1CJ7cFr9bU06d+L6aHSnVwTB2iTA6IZMBx3/qCY=",
+        "lastModified": 1793092977,
+        "narHash": "sha256-VaO06prNUDGdRGbdyVAFCgFe83dZfr5vs8s/noTBWZA=",
         "owner": "cjpais",
         "repo": "handy",
-        "rev": "73c095857bc4eadff097f64767c40ad129cc372d",
+        "rev": "7bfb2e2c934b798bcf6e3627653aed2439996f89",
         "type": "github"
       },
       "original": {
@@ -972,11 +972,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1793106929,
-        "narHash": "sha256-E1iTzoQHPAoCJMA1jyeEAVh4prf4v/+rlwTxlPVNhlw=",
+        "lastModified": 1793198161,
+        "narHash": "sha256-57hl3iqpm7rrJ6a66SIzrEEHJtocu8qyUBIkURlVwUg=",
         "owner": "can1357",
         "repo": "oh-my-pi",
-        "rev": "0cc43441f1e95d3b42fb16044882763db1a0cc9a",
+        "rev": "76772d0c9729d95db30b60a7949dfbfdf47fd7f0",
         "type": "github"
       },
       "original": {
@@ -1015,11 +1015,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1792860496,
-        "narHash": "sha256-dzl36Gn7k/IQZpDL4BSX3vyfoZlcDeXA8N7/bZezSBs=",
+        "lastModified": 1793055988,
+        "narHash": "sha256-iKqw/XBTjsa0d0lc1IQodOwBJeTVO5iFEof2lvdSdM4=",
         "owner": "1Password",
         "repo": "shell-plugins",
-        "rev": "04dc8b0b7671b1d60aa2986fa6f466e55b76867e",
+        "rev": "d5ea8e8eac7705763542f30d9462754c40c142f0",
         "type": "github"
       },
       "original": {
