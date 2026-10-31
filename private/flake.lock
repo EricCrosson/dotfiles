@@ -808,11 +808,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792737899,
-        "narHash": "sha256-P0/GhewcEQmAbzq3QunNWY2jLJaYH9F6c/5dEM/jQ4M=",
+        "lastModified": 1793418699,
+        "narHash": "sha256-+RpTlcdh9KqZ+ZiLkNSTvibQWm935EcIdBzRPCTFsrQ=",
         "owner": "lnl7",
         "repo": "nix-darwin",
-        "rev": "bb0b90dbd54e207100de72b5dcbe3188c98a4b69",
+        "rev": "ff0e21a414d4547183396da1b44a66f2577b65e9",
         "type": "github"
       },
       "original": {
@@ -1015,11 +1015,11 @@
         "systems": "systems_5"
       },
       "locked": {
-        "lastModified": 1793134281,
-        "narHash": "sha256-RbmH3RQUWa+TcmeHG6zpk3NcLAkwxy6ctNhl++CJG2Q=",
+        "lastModified": 1793370725,
+        "narHash": "sha256-UPrAm114r4By1Ghi8kySPnoFXwR/yDWTmk8ZtsHTvzA=",
         "owner": "1Password",
         "repo": "shell-plugins",
-        "rev": "670a0d7b77f283511b30ad0f554f895fa582eb4d",
+        "rev": "6e8bcbcd3da774a881aa241bd32d52a12c618422",
         "type": "github"
       },
       "original": {
