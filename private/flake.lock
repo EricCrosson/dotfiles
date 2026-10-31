@@ -993,11 +993,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1793370725,
-        "narHash": "sha256-UPrAm114r4By1Ghi8kySPnoFXwR/yDWTmk8ZtsHTvzA=",
+        "lastModified": 1793376727,
+        "narHash": "sha256-7ajH+iQOARokZ/QV834BFKFUXpd+O9Mm1NBUkGLbrdY=",
         "owner": "1Password",
         "repo": "shell-plugins",
-        "rev": "6e8bcbcd3da774a881aa241bd32d52a12c618422",
+        "rev": "73d67aae81e3b004bb8e34d99b5cb75fe8115e02",
         "type": "github"
       },
       "original": {
